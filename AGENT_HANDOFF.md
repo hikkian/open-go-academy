@@ -1,42 +1,65 @@
 # AGENT HANDOFF — open-go-academy
 
-Обновлено 2026-10-15. M0 DONE; M1 IN PROGRESS. Приложение ещё не реализовано.
+Обновлено **2026-10-15**. **M0–M6 DONE в local-only области**, M7–M13 NOT STARTED. Это работающая платформа с первым полным уроком Zero и P1, а не полный курс/публичный hosted продукт.
 
-Completed milestone: M0 Research & Baseline.
-Files changed: docs/research/*, docs/architecture/ADR-0001-tech-stack.md, THREAT_MODEL.md, .codex/agents/builder.toml и researcher.toml (явная модель), .gitignore, EXECUTION_PLAN.md.
-Architecture decisions: local-first Go1.27.2 + SQLite modernc v1.60.1, React19.3.1/TS7.0.2/Vite8.3.4/CodeMirror; отдельный runner rootless Podman only Unix socket; public disabled. AI optional.
-Commands executed: git status --short (исходно no git), git init (локально, remote отсутствует); go version; node --version; npm --version; codex --version; codex features list; official schema/JSON/npm metadata fetch; podman pull docker.io/library/golang:1.27.2-alpine; rootless podman resource probe (точно описан ADR).
-Tests passed: schema ключи verified; configured researcher/reviewer успешно вернули reports; runtime probe uid65532 + cgroup memory/PID/CPU; официальный Go archive SHA256 verified.
-Tests failed/skipped: первоначальный bwrap probe не имел /lib loader, исправленный probe прошёл; app build/tests/E2E ещё NOT RUN. Docker rootful не используется. API цены документальны, платных вызовов нет.
-Open risks: shared kernel local runner; полный negative audit M3 не проведён; большая часть платформы/курса отсутствует; hosted auth/credentials trust не реализованы.
-Next milestone and first concrete task: M1 — создать Go API+SQLite миграции/local session и frontend; test чистой БД/restart и browser smoke. Go toolchain .tools/go/bin/go (ignored, скачан официально) и Node24.18.0 доступны. Detailed specs: docs/MASTER_SPEC.md; порядок docs/EXECUTION_PLAN.md.
+## Готово
 
-## Checkpoint M1/M2 — 2026-10-15
-Completed milestone: M1 foundation, M2 content/first lesson.
-Files changed: cmd/api, internal/httpapi, internal/store/migrations, internal/content/data+solutions, content/reference, web, Makefile, scripts/go.sh/restart-check.py, package locks, .env.example, CI.
-Architecture decisions: SQLite migration version1; deterministic server-only XP; profile cookie+CSRF; lessons bundled Markdown; solutions excluded from lesson JSON and fetched explicitly.
-Commands executed: .tools/go/bin/go test ./...; .tools/go/bin/go vet ./...; .tools/go/bin/go test -race ./...; cd web && npm run typecheck && npm run build; python3 scripts/restart-check.py; npm run e2e -- --grep 'profile, roadmap'.
-Tests passed: Go unit/race/vet, snippets2/refs3, real API process restart, browser desktop/mobile/light/dark+axe2 tests.
-Tests failed/skipped: initial contrast and scroll focus corrected; CI not run remotely; full runner E2E pending.
-Open risks: local shared-kernel sandbox, other OS unsupported; M5–M13 untouched; first lesson only.
-Next milestone and first concrete task: finish M3 real crash/cancel cleanup suite, M4 browser real Run/Submit/error/reload/noAI/XP replay. Current Makefile+README have startup commands.
+- Verified research: Go1.27.2/экосистема/frontend/Codex/models/sandbox/credentials; ADR и threat model. Codex0.162.0-alpha.17.2 custom agents реально применялись: builder/researcher=gpt-6-luna, reviewer=gpt-6.1-sol, максимум3children.
+- Go API/net-http/slog + SQLite modernc1.60.1, migrations1/2, persistent local profile/theme/drafts/evidence/XP, loopback/Host/Origin/session/CSRF, request quotas/retention.
+- React19.3.1/TS7.0.2/Vite8.3.4/CodeMirror, safeMarkdown, onboarding/dashboard/course search, six-rank criteria, evidence-linked skills0..4, theme/focus/responsive layouts, retry after save errors.
+- Полный Zero Day1,3задания, self-check/explicit solution reveal,2snippets+3references validated. Native Go run/submit/format; server exact+AST grader; XP replay protected, rank remainsZero/unverified.
+- Отдельный rootless Podman runner, permission0600 Unix socket. Image pinned digest, uid65532, networknone/read-only/capsdrop/seccomp/noNewPrivs; memory768MiB/swap0/CPU1/PID128; tmp128(noexec)+work192(exec)+cache192(exec)/shm16MiB; source64KiB/JSON64KiB8/output32KiB; deadline45s/cleanup10s/concurrency1. No unsafe fallback; cleanup failure poisons engine; scoped orphan recovery after SIGKILL tested.
+- P1 CLI Toolkit starter/reference/rubric, multi-file code/text/JSON, atomic save+snapshots10,restore,ZIP,real Run/GoTests/15blackbox grade. go.mod фиксирован cli-toolkitGo1.27.2/std-only, files16/total128KiB/Go64/JSON64. Student TestMain notsupported, genuineTestX required. Automatic-pass не завершает quality/Git review и не присваиваетrank.
 
-## Checkpoint M3/M4 — 2026-10-15
-Completed milestone: M3 confined LOCAL runner, M4 golden path.
-Files changed: internal/runner, cmd/runner, httpapi grader/API tests, tests/learning.spec.ts, playwright config, web autosave recovery, scripts/crash-check.py.
-Architecture decisions: rootless only, server exact+AST verdict, fixed resources after cold compile calibration; cleanup failure disables engine, scoped reconciliation after crash.
-Commands executed: ACADEMY_SANDBOX_TEST=1 .tools/go/bin/go test -count=1 -timeout=10m -v ./internal/runner; python3 scripts/crash-check.py; ACADEMY_E2E_RUNNER=1 npm run e2e; npm run e2e -- --grep 'failed draft'; .tools/go/bin/go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...; npm audit --omit=dev.
-Tests passed: sandbox suite94.60s11 real cases, SIGKILL recovery, E2E3+skip1, draft recovery2, govulncheck no vulnerabilities, npm audit0.
-Tests failed/skipped: earlier resource no-space/cancel grace defect fixed+retested; two negative-test fixtures had unintended unused import (fixed) and mobile retry reused same code marker (fixed); mobile real runtime is skipped to avoid duplicate resource test, editor+layout exercised.
-Open risks: shared kernel local-only; no public tenants/auth/credentials. M5–M13 pending.
-Next milestone and first concrete task: M5 server rank criteria/skills matrix from real exercise evidence; honest unpublished tracks, XP separate from assessment.
+## Последний checkpoint M6
 
-## Checkpoint M5 — 2026-10-15
-Completed milestone: M5 career/skills/XP.
-Files changed: internal/learning, httpapi learning/limits, store retention/evidence, web course/skills/path UI, tests/learning.spec.ts.
-Architecture decisions: rank-policy0.1 criteria from server, level2 only persisted basic exercise evidence; exams unavailable, verified rank false, no XP rank shortcuts. Retention100 recent + original verified attempts;6 executions/min120 mutations/min.
-Commands executed: make test; ACADEMY_E2E_RUNNER=1 npm run e2e.
-Tests passed: Go unit/vet/race, retention/concurrentXP; E2E7 PASS1 explicit mobile runner skip; skill/course search/criteria + axe desktop/mobile.
-Tests failed/skipped: no current failures; CI remote NOT RUN; no attestations/credentials.
-Open risks: full course not written, public execution disallowed, M6–M13 pending.
-Next milestone and first concrete task: M6 P1 multi-file project persistence/snapshots, rootless test/run, ZIP export.
+Files changed: internal/projects+content/projects/p1, store/migration0002, httpapi/project routes+tests, runnerArgs/Assets/test mode, web/ProjectWorkspace, tests/projects.spec.ts, Make/CI/docs.
+Architecture decisions: сохраняем source как data, только worker компилирует usercode; trusted grader снаружиcontainer; manual rubrics separate. Весь execution локальный, public bind запрещён. API12execution/min120mutations/min; попытки100recent+исходныеverified rows. No paid resources/API/remote publication.
+Commands executed (exact):
+
+```sh
+make test
+ACADEMY_SANDBOX_TEST=1 .tools/go/bin/go test -count=1 -timeout=10m -v ./internal/runner
+python3 scripts/restart-check.py
+python3 scripts/crash-check.py
+ACADEMY_E2E_RUNNER=1 npm run e2e
+ACADEMY_E2E_RUNNER=1 npm run e2e -- --grep 'P1 real'
+npm run e2e -- --grep 'project edits'
+make -C .data/fresh-source bootstrap
+make -C .data/fresh-source test build
+.tools/go/bin/go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
+npm audit
+cd web && npm audit
+```
+
+Tests passed (actual evidence): Go unit/vet/race+P1reference/TSbuild; sandbox118.231s12cases; API actualrestart; runneractualSIGKILLrestore; browser10PASS2explicitmobile-runnerduplicates skipped; expandedP1real1PASS1skip15cases+actualGoTests; projectfiles/versions/ZIP/axe2PASS; cleanGitarchive61e418b bootstrap/test/build; govulncheck/npm0vulnerabilities. Latest moduleASCII-whitespace regression+unit+TS/build PASS. Logs and snapshot limits: **docs/VALIDATION_REPORT.md**, docs/validation/*. Independent reviews findings resolved: RUNNER_REVIEW.md, PROJECT_REVIEW.md.
+Tests failed/skipped (reasons): исправлены cold compile space, defaultstop grace/cancel cleanup, structure/deadcode grader, contrast/focus, noexec test/cache binaries, module grammar/quotas/TestMain-only; retested. Mobile heavy runtime duplicates skipped, mobile editor/file/snapshot/export проверены. GitHub CI/notLinux/cross-tenant/public security NOT RUN; fullWCAG/perf certification не заявлена.
+
+## Как запустить / повторить
+
+```sh
+make bootstrap
+make build
+# Два процесса:
+make runner
+make dev
+# http://127.0.0.1:8380
+```
+
+PinnedGo script uses ignored .tools/go/bin/go если есть, иначе GOTOOLCHAIN=go1.27.2 auto-download через installedGo>=1.21. .data/academy.db и session.secret приватные; migrations auto. README содержит bootstrap/test/export instructions. Не очищать реальную .data/academy.db. E2E использует только .data/e2e/academy.db на8081; fresh archive копия внутри ignored.data/fresh-source, не отдельный remoteclone. Source archived locally in Git, remote absent; никаких публикаций.
+
+## Частично / не готово и риски
+
+- Только Zero Day1 и P1 baseline; полный syllabus/теория шести рангов иP2–P5 не написаны (M10/M11).
+- Exams/trusted rank policy(M7), optionalAIgateway(M8), badges/credentials/passport(M9) ещё отсутствуют. Нельзя превращать P1:auto или XP в подтверждениегрейда.
+- Fullaudit/M12 и release/cross-platform M13 не выполнены; Linux/rootlessPodman проверен, Windows/macOS не проверены.
+- Общийkernel/runtime local-only риск; нет microVM/gVisor/publicmultitenant допуска. Teacher/issuer identity/credentials не выданы, compliance не заявлена. README/Git/testquality требуют review.
+- License код/контент ещё не выбрана владельцем. CI workflow prepared/notexecuted remotely. Model availability может поменяться; APIaccess не равен подписке.
+
+## Next milestone and first concrete task
+
+**M7 — exams and earned-rank policy.** Сначала миграция `exam`, `exam_attempt`, `rank_award`, неизменяемые versionedcriteria/evidence; затем objective+coding/debugging assessment API и negative tests forged pass/replay/prerequisite bypass. До выдачи ранга проверять весь набор требований и наличие необходимых материалов/ручныхкритериев; одногоурока/P1auto недостаточно. Продолжать существующий код; не пересоздавать проект. Исходная спецификация docs/MASTER_SPEC.md, последовательность docs/EXECUTION_PLAN.md. Автоматического фонового продолжения разработки нет.
+
+## Финальные уточнения сессии
+
+Defaultport8380 выбран после обнаружения занятого8080 чужим Pythonservice (не изменён). Native API и runner сейчас запущены, livehealth подтвердилavailable=true. Open-in-app browser requestqueued, не заявлять, чтоонфактическиоткрыт. GoMod ASCII+UnicodeTestname/controlledpanic regressions PASS; workerJSONtransport1MiB protectsvalid escapedsource; hostproxy envforwardingfalse+actualsyntheticprobePASS. Все finalmake test/build пройдены. Точные limites/evidence актуализированыVALIDATION_REPORT. Git локальный, безremote; latestcheckpoint commit записан в EXECUTION_PLAN послеcommit. Никакой фоновой разработки/автоматизациинеобещано.

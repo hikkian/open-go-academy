@@ -42,3 +42,7 @@ Go tests, скомпилированные с пользовательским p
 5. Credential issuance из immutable серверной exam evidence; idempotency, atomic transaction, replay/race tests, key rotation/revocation и incident runbook.
 
 Остаточный риск local: общий kernel и UID владельца, возможные runtime/kernel уязвимости, side channels, DoS в пределах разрешённых лимитов. Для hostile public workloads local профиль не допускается даже при зелёных локальных tests. Публикация требует отдельного разрешения владельца проекта и выполнения gates; этот документ её не разрешает.
+
+## Evidence M3–M6 (2026-10-15)
+
+Local integration matrix12cases PASS118.231s, actual API restart и runnerSIGKILL recovery PASS, core browser10passed/2mobile runtime duplicates skipped, P1 expanded15cases+unit PASS. Commands/logs and exact limits: ../VALIDATION_REPORT.md. S01/S02/S03 проверены sentinel/RO root/TCP/mount plus preflightSeccomp/caps; не заявляются exhaustive ptrace/UDP/DNS/cross-tenant checks. Public gates по-прежнему blocked. exec cache/work являются частью одной per-job filesystem/cgroup boundary; no host mounts, per-job caches, no shared student state. Student test stdout не issuer authority; manual-review flags остаются true, ranks/credentials не выданы.

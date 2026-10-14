@@ -15,3 +15,7 @@ Runner отдельный процесс `cmd/runner`, transport Unix socket 060
 Контейнер делит ядро с host: это локальный учебный режим с остаточным kernel/runtime escape риском. Public multi-tenant требует независимого hardening audit и gVisor/microVM boundary, multi-user authorization, queue quotas, monitoring; пока API принудительно loopback, проверяет Host/Origin, profile session secret. Self-issued achievements не публичные trusted credentials.
 
 Источники и альтернативы: ../research/GO_CURRENT_STATE.md, ECOSYSTEM.md, FRONTEND.md, SANDBOX_SECURITY.md, CREDENTIALS.md, AI_CODEX.md; THREAT_MODEL.md. Платные облака, API и публикация не нужны и не выполняются.
+
+## Калибровка реализации M3–M6
+
+Фактически tested local limits: memory768MiB/swap0, CPU1/PID128, source64KiB/files16, JSON64KiB/8, output32KiB, deadline45s/job+cleanup10s, scratch tmp128(noexec)+work192(exec)+cache192(exec), shm16MiB. 512MiB scratch сумма не изменена после перераспределения дляGo test/cached executables. Main API/read-only content не выполняет user code; subprocess Podman толькоworker. Project files128KiB total, Go64KiB/JSON64KiB, fixed Go module для stdlib-only P1; saved versions/ZIP validated. Private evaluation15 blackbox cases+unit overall180s; 12exec/min120mutations/min (M5 initial6 увеличен дляproject workflow), no queue/unbounded workers. Quality/manual rubric не приравнивается к automatic-pass.

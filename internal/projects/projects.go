@@ -130,7 +130,14 @@ func ValidateFiles(files map[string]string) error {
 }
 
 func validGoMod(contents string) bool {
-	contents = strings.ReplaceAll(contents, "\r\n", "\n")
+	normalized := strings.ReplaceAll(contents, "\r\n", "\n")
+	for _, c := range normalized {
+		if c >= 127 || c < 32 && (c != '\t' && c != '\n') {
+			return false
+		}
+	}
+
+	contents = normalized
 	lines := make([][]string, 0, 2)
 	for _, line := range strings.Split(contents, "\n") {
 		fields := strings.Fields(line)

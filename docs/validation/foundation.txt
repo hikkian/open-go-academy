@@ -9,9 +9,14 @@ ok  	academy/internal/content	(cached)
 ?   	academy/internal/content/solutions/repair	[no test files]
 ?   	academy/internal/content/solutions/two-lines	[no test files]
 ok  	academy/internal/httpapi	(cached)
-ok  	academy/internal/learning	0.002s
-ok  	academy/internal/runner	(cached)
+ok  	academy/internal/learning	(cached)
+ok  	academy/internal/projects	(cached)
+?   	academy/internal/projects/p1/starter_files	[no test files]
+ok  	academy/internal/runner	0.018s
 ok  	academy/internal/store	(cached)
+sh scripts/go.sh -C content/projects/p1/reference test ./...
+ok  	cli-toolkit	(cached)
+sh scripts/go.sh -C content/projects/p1/reference vet ./...
 sh scripts/go.sh vet ./...
 sh scripts/go.sh test -race ./...
 ?   	academy/cmd/api	[no test files]
@@ -24,8 +29,10 @@ ok  	academy/internal/content	(cached)
 ?   	academy/internal/content/solutions/repair	[no test files]
 ?   	academy/internal/content/solutions/two-lines	[no test files]
 ok  	academy/internal/httpapi	(cached)
-ok  	academy/internal/learning	1.011s
-ok  	academy/internal/runner	(cached)
+ok  	academy/internal/learning	(cached)
+ok  	academy/internal/projects	(cached)
+?   	academy/internal/projects/p1/starter_files	[no test files]
+ok  	academy/internal/runner	1.081s
 ok  	academy/internal/store	(cached)
 cd web && npm run typecheck && npm run build
 
@@ -38,12 +45,12 @@ cd web && npm run typecheck && npm run build
 
 vite v8.3.4 building client environment for production...
 transforming...
-✓ 196 modules transformed.
+✓ 197 modules transformed.
 rendering chunks...
 computing gzip size...
-dist/index.html                     0.61 kB │ gzip:   0.41 kB
-dist/assets/index-CyEQx8QH.css     23.65 kB │ gzip:   5.93 kB
-dist/assets/index-Dojegn19.js     368.69 kB │ gzip: 112.91 kB
-dist/assets/GoEditor-wrD35veG.js  447.01 kB │ gzip: 147.00 kB
+dist/index.html                     0.60 kB │ gzip:   0.41 kB
+dist/assets/index-DTmTW2XE.css     30.60 kB │ gzip:   7.13 kB
+dist/assets/index-dFQwImUO.js     387.69 kB │ gzip: 117.49 kB
+dist/assets/GoEditor-DKT_5mRS.js  447.29 kB │ gzip: 147.09 kB
 
-✓ built in 145ms
+✓ built in 168ms

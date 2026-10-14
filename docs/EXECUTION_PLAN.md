@@ -16,7 +16,7 @@
 | M3 | Isolated Go runner, public/hidden evaluation | DONE | 2026-10-15 local-only: real rootless suite11 cases PASS94.60s, SIGKILL/restart PASS, independent findings resolved |
 | M4 | End-to-end interactive lesson + persistence | DONE | real Go golden-path browser PASS, XP replay/noAI/reload, network write recovery desktop/mobile PASS |
 | M5 | Roadmap, rank structure, XP and skills | DONE | six server rank criteria, verified attempt-linked skills, search/review, unit/race + E2E7 PASS1skip |
-| M6 | Project workspaces and tests | IN PROGRESS | P1 multi-file workspace + snapshots + ZIP + confined checks next |
+| M6 | Project workspaces and tests | DONE | P1 starter/reference, files/snapshots/ZIP + realGoRun/Test/15cases; reference/unit/race, browser+axe, independent review resolved |
 | M7 | Exam engine, earned-rank logic, negative tests | NOT STARTED | — |
 | M8 | Optional AI Tutor, model routing, usage controls | NOT STARTED | — |
 | M9 | Digital badges, certificates, verification, passport | NOT STARTED | — |
@@ -366,3 +366,17 @@ M4: `ACADEMY_E2E_RUNNER=1 npm run e2e` PASS3, skip1 (resource-intensive golden r
 Серверная versioned rank-policy0.1: 6 рангов с критериями/компетенциями; опубликован только первый Zero lesson, exams unavailable, verified=false. Skills0..4: фактические базовые упражнения дают2 с exercise+persisted attempt ID; без persisted evidence0. XP не присваивает rank. Course Explorer real server query, skills table/evidence links, review по последней неудачной попытке.
 
 Добавлены request budgets120 mutations/min и6 execution requests/min; retention100 recent attempts плюс исходные verified evidence rows; races/replays не накручиваютXP, исходные ссылки не теряются. API progress не отправляет все saved source snapshots, output preview bounded. `make test` PASS; full `ACADEMY_E2E_RUNNER=1 npm run e2e` PASS7/skip1 (mobile runner duplicate skipped, mobile UI tested), axe skill table+search+rank evidence checks PASS.
+
+## Checkpoint 2026-10-15 — M6
+
+P1 CLI Toolkit: sum/int64 errors/overflow + inspect JSON/files, ToolError struct, starter/reference/tests/readme/release rubric. Multi-file root workspace, JSON/text/Go editors, saved snapshots10 with atomic replacement/restore, ZIP Git-ready export. API+store tests validate migration1→2 preservation, injected rollback, reopen, quota/unsafe names/snapshot IDOR. No symlinks from client: data maps only, worker creates regular tar entries; ZIP filenames root allowlist.
+
+Project evaluation15 trusted black-box vectors+user Go tests actually run in isolated worker; total180s, perjob45s. User TestMain overrides refused, true TestX(*testing.T) required; quality/README/Git review remain pending and are explicitly shown. `p1:automatic` awards at most10XP but never rank/manual completion. Worker /tmp noexec; exec work/cache are bounded because Go test/go run may execute cached binaries. Final scratch128+192+192MiB, memory768MiB/PID128/CPU1/shm16MiB, no host mounts/network/privileges.
+
+`make test` PASS; sandboxfull118.231s PASS12cases+regressions; fullbrowser10PASS/2explicit mobile runtime skips; expandedP1real15vectors+actualGoTests browser1PASS/1mobileduplicate skip3.1m; project files/snapshots/ZIP/axe2PASS. Fresh Git archive61e418b bootstrap/test/build PASS including autoGo1.27.2 download. Latest module Unicode-whitespace validator changes checked unit+TS/build. Independent PROJECT_REVIEW all high/medium findings resolved in reviewed scope; fullM12 audit not implied. Exact commands/logs/caveats: VALIDATION_REPORT.md.
+
+Следующий этап M7: schema exam/attempt/rank evidence + versioned eligibility, mixed objective/coding assessment и negative tests, без fake promotion заXP/P1auto. Учитывать, что полногоZero/Juniorсодержания ещё нет; не выдавать весьrank по однойглаве.
+
+### Финальная регрессия и запуск
+
+APIdefault8380/Viteproxy8380 (8080 занятый чужойсервис не изменён), successfulbind передreadylog. `make test/build` повторён. Module ASCII grammar, UnicodeGoTest name, controlledCLI panic checks, escapedsource transport1MiB и proxyenvironment forwardingfalse regression прошли (смVALIDATION_REPORT). API+runner фактическиlivehealthok на8380; браузерныйpanelrequestqueued. Localcheckpoints only, remoteCI/publication отсутствуют.

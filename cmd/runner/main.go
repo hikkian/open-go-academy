@@ -70,7 +70,7 @@ func main() {
 		w.Write([]byte("ok"))
 	})
 	mux.HandleFunc("POST /execute", func(w http.ResponseWriter, r *http.Request) {
-		r.Body = http.MaxBytesReader(w, r.Body, 128<<10)
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var q runner.Request
 		d := json.NewDecoder(r.Body)
 		d.DisallowUnknownFields()

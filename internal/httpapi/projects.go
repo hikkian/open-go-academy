@@ -14,6 +14,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 )
 
 func projectJob(files map[string]string, tests bool, args []string) runner.Request {
@@ -60,7 +62,7 @@ func hasTests(files map[string]string) bool {
 				return false
 			}
 			name := fn.Name.Name
-			if fn.Recv != nil || len(name) <= 4 || !strings.HasPrefix(name, "Test") || name[4] >= 'a' && name[4] <= 'z' || fn.Type.Results != nil || fn.Type.Params.NumFields() != 1 {
+			if fn.Recv != nil || len(name) <= 4 || !strings.HasPrefix(name, "Test") || unicode.IsLower(firstRune(name[4:])) || fn.Type.Results != nil || fn.Type.Params.NumFields() != 1 {
 				continue
 			}
 			star, ok := fn.Type.Params.List[0].Type.(*ast.StarExpr)
@@ -274,7 +276,7 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 				fail(w, 503, err.Error())
 				return
 			}
-			ok := actual.ExitCode == v.code && actual.Stdout == v.stdout && (v.code == 0 && actual.Status == "ok" && actual.Stderr == "" || v.code != 0 && actual.Status == "error" && actual.Stderr != "")
+			ok := actual.ExitCode == v.code && actual.Stdout == v.stdout && (v.code == 0 && actual.Status == "ok" && actual.Stderr == "" || v.code != 0 && actual.Status == "error" && controlledCLIError(actual.Stderr))
 			result.Checks = append(result.Checks, runner.Check{Name: "Функциональная проверка " + strconv.Itoa(i+1), Passed: ok})
 			if !ok {
 				result.Passed = false
@@ -307,4 +309,10 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 		}
 		write(w, 200, map[string]any{"status": result.Status, "passed": result.Passed, "checks": result.Checks, "stdout": result.Stdout, "stderr": result.Stderr, "manual_review_required": true, "milestones": []map[string]any{{"id": "cli", "automatic_passed": result.Passed, "needs_review": false}, {"id": "json", "automatic_passed": result.Passed, "needs_review": false}, {"id": "release", "automatic_passed": result.Passed, "needs_review": true}}})
 	})
+}
+
+func firstRune(s string) rune { r, _ := utf8.DecodeRuneInString(s); return r }
+func controlledCLIError(s string) bool {
+	trimmed := strings.TrimSpace(s)
+	return trimmed != "" && len(s) < 2048 && !strings.HasPrefix(trimmed, "panic:") && !strings.HasPrefix(trimmed, "fatal error:") && !strings.Contains(s, "\ngoroutine ")
 }

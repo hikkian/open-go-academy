@@ -23,7 +23,7 @@ func env(key, fallback string) string {
 	return fallback
 }
 func main() {
-	addr := env("ACADEMY_ADDR", "127.0.0.1:8080")
+	addr := env("ACADEMY_ADDR", "127.0.0.1:8380")
 	if err := httpapi.ValidateAddress(addr); err != nil {
 		slog.Error("address rejected", "error", err)
 		os.Exit(1)
@@ -59,8 +59,13 @@ func main() {
 		defer cancel()
 		srv.Shutdown(ctx)
 	}()
+	listener, err := net.Listen("tcp", addr)
+	if err != nil {
+		slog.Error("listen failed", "error", err)
+		os.Exit(1)
+	}
 	slog.Info("academy local API ready", "address", addr)
-	if err = srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	if err = srv.Serve(listener); err != nil && err != http.ErrServerClosed {
 		slog.Error("server", "error", err)
 		os.Exit(1)
 	}

@@ -1,0 +1,32 @@
+make: Entering directory '/home/alisher/Desktop/open-go-academy/.data/fresh-source'
+sh scripts/go.sh mod download
+go: downloading go1.27.2 (linux/amd64)
+npm ci
+
+added 5 packages, and audited 6 packages in 1s
+
+found 0 vulnerabilities
+cd web && npm ci
+
+added 125 packages, and audited 126 packages in 808ms
+
+75 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+npx playwright install chromium
+BEWARE: your OS is not officially supported by Playwright; downloading fallback build for ubuntu24.04-x64.
+BEWARE: your OS is not officially supported by Playwright; downloading fallback build for ubuntu24.04-x64.
+BEWARE: your OS is not officially supported by Playwright; downloading fallback build for ubuntu24.04-x64.
+podman pull docker.io/library/golang@sha256:3b15ba438c60ab8fabe5fee3b11025c0049e358b31feff384648f11fc8e335f8
+Trying to pull docker.io/library/golang@sha256:3b15ba438c60ab8fabe5fee3b11025c0049e358b31feff384648f11fc8e335f8...
+Getting image source signatures
+Copying blob sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+Copying blob sha256:b2b6413ae8f393d11d32262c8dc6bd053dbaea3d074f95edd5605d3eb116e3c2
+Copying blob sha256:e2443a591f6296d5e94b53e785f358049a0c73d97e9e0941fcf48cf482f385b8
+Copying blob sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5
+Copying blob sha256:6ff05f868da7888e9c1d6b4967ff0892cf86b51d23c81149794e72c001604803
+Copying config sha256:0a761904b78c29eba4ec83bd83b7312db1e113dcd92da7fc669843ad9bca56a1
+Writing manifest to image destination
+0a761904b78c29eba4ec83bd83b7312db1e113dcd92da7fc669843ad9bca56a1
+make: Leaving directory '/home/alisher/Desktop/open-go-academy/.data/fresh-source'

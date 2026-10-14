@@ -104,3 +104,13 @@ func cloneFiles(files map[string]string) map[string]string {
 	return copy
 }
 func itoa(n int) string { return string(rune('a' + n)) }
+
+func TestModuleSyntaxRejectsNonGoWhitespace(t *testing.T) {
+	for _, space := range []string{"\v", "\f", "\u00a0", "\r"} {
+		p := Load()
+		p.StarterFiles["go.mod"] = "module" + space + "cli-toolkit\n\ngo 1.27.2\n"
+		if ValidateFiles(p.StarterFiles) == nil {
+			t.Fatalf("accepted invalid module whitespace %q", space)
+		}
+	}
+}

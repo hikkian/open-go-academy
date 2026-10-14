@@ -80,7 +80,7 @@ func (e *Engine) policy(name string) []string {
 	return append(policy(name), "--label=academy.install="+e.Scope)
 }
 func policy(name string) []string {
-	return []string{"run", "--rm", "--pull=never", "--name", name, "--label", "academy.runner=true", "--network=none", "--stop-timeout=0", "--read-only", "--cap-drop=ALL", "--security-opt=no-new-privileges", "--user=65532:65532", "--memory=768m", "--memory-swap=768m", "--pids-limit=128", "--cpus=1", "--tmpfs=/tmp:rw,noexec,nosuid,nodev,size=128m", "--tmpfs=/work:rw,nosuid,nodev,size=192m", "--workdir=/work", "--env=CGO_ENABLED=0", "--env=GOTOOLCHAIN=local", "--env=GOPROXY=off", "--env=GOSUMDB=off", "--tmpfs=/cache:rw,nosuid,nodev,size=192m", "--shm-size=16m", "--env=GOCACHE=/cache", "--env=HOME=/tmp", "--env=GOMAXPROCS=2"}
+	return []string{"run", "--rm", "--pull=never", "--name", name, "--label", "academy.runner=true", "--network=none", "--http-proxy=false", "--stop-timeout=0", "--read-only", "--cap-drop=ALL", "--security-opt=no-new-privileges", "--user=65532:65532", "--memory=768m", "--memory-swap=768m", "--pids-limit=128", "--cpus=1", "--tmpfs=/tmp:rw,noexec,nosuid,nodev,size=128m", "--tmpfs=/work:rw,nosuid,nodev,size=192m", "--workdir=/work", "--env=CGO_ENABLED=0", "--env=GOTOOLCHAIN=local", "--env=GOPROXY=off", "--env=GOSUMDB=off", "--tmpfs=/cache:rw,nosuid,nodev,size=192m", "--shm-size=16m", "--env=GOCACHE=/cache", "--env=HOME=/tmp", "--env=GOMAXPROCS=2"}
 }
 func (e *Engine) Preflight(ctx context.Context) (preflightErr error) {
 	out, err := exec.CommandContext(ctx, "podman", "info", "--format", "{{.Host.Security.Rootless}} {{.Host.CgroupsVersion}}").Output()
@@ -332,6 +332,6 @@ func (c *Client) Execute(ctx context.Context, req Request) (Result, error) {
 		return Result{}, errors.New("исполнитель отказал в запуске; повторите позже")
 	}
 	var result Result
-	err = json.NewDecoder(io.LimitReader(resp.Body, 256<<10)).Decode(&result)
+	err = json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&result)
 	return result, err
 }

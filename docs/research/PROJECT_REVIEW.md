@@ -2,7 +2,17 @@
 
 Дата: 2026-10-15. Область: `internal/httpapi/projects.go`, `internal/projects/projects.go`, `internal/runner/runner.go`, project методы `internal/store/store.go`, bundled P1 criteria. Режим local single-user; открытых HIGH/exploitable command-injection findings не обнаружено. Implementation reviewer не менял. Ниже findings исходного M6 snapshot, проверка исправлений дописывается отдельно.
 
-## Повторное ревью исправлений (2026-10-15)
+## Финальное заключение M6 (2026-10-15)
+
+Текущий snapshot повторно inspected: validGoMod нормализует CRLF, отвергает non-ASCII и control chars кроме tab/LF, затем проверяет отдельные module/go directives. `TestModuleSyntaxRejectsNonGoWhitespace` покрывает vertical-tab/form-feed/NBSP/lone-CR; reviewer `.tools/go/bin/go test ./internal/projects ./internal/httpapi`: PASS (cached). **P1, P2/P2a/P2b и P3 полностью resolved по текущему коду и regression evidence; открытых HIGH/MEDIUM findings этого ревью не осталось.**
+
+Ограничения остаются явными: качество student tests требует manual review, `manual_review_required=true`, automatic project XP не rank/credential. Local-only namespaces/rootless containers разделяют host kernel; public execution disabled. Parent предоставил PASS свежей archive-bootstrap/test/build и реальных15vectors+Go tests; reviewer эти длительные checks повторно не запускал. Sections ниже — история discoveries/проверок, а не открытые findings.
+
+## Предыдущее повторное ревью исправлений (2026-10-15)
+
+Последний M6 snapshot: single-line module counterexample P2a отвергается, Go/JSON quotas и genuine Test gate сохранены. Decoder project1MiB покрывает escaped JSON при source cap128KiB; общий submit deadline180s, API WriteTimeout200s. Scratch policy tmp128MiB(noexec)+work192MiB(exec)+cache192MiB(exec), shm16MiB, memory768MiB, CPU1/PID128, per-job45s. Exec cache нужен для Go1.27 cached go run binaries; assets/runtime API не получает host mounts. Parent сообщил full sandbox PASS118.231s, real15-vector project E2E1pass/1mobileSkip и workspace/export/axe2pass; это parent-provided evidence, reviewer повторно запускал только unit suite (PASS cached).
+
+**P2b narrow remaining variant:** per-line `strings.Fields` всё ещё принимает whitespace, не допустимую Go module lexer. `module\vcli-toolkit\n\ngo 1.27.2\n` даёт те же ожидаемые tokens у validator. Reviewer выполнил настоящий Go build temporary exported package: exit1, `go.mod:1:7: unexpected input character '\v'`. Минимально reject non-ASCII/control whitespace кроме ordinary space/tab/newline после CRLF normalization, либо нормативный parser. Поэтому P2 пока нельзя пометить полностью resolved. P1/P3 resolved; открытых HIGH нет.
 
 Current snapshot прочитан. `.tools/go/bin/go test ./internal/projects ./internal/httpapi ./internal/runner ./internal/store`: PASS (projects freshly executed, остальные cached).
 

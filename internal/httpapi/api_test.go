@@ -168,3 +168,17 @@ func TestProjectHasTestsRejectsOverridesAndHelpers(t *testing.T) {
 		t.Fatal("genuine aliased test rejected")
 	}
 }
+
+func TestProjectTestNamesAndControlledCLIError(t *testing.T) {
+	if hasTests(map[string]string{"main_test.go": `package main;import "testing";func Testα(t *testing.T){}`}) {
+		t.Fatal("lowercase Unicode suffix is not a Go test")
+	}
+	for _, s := range []string{"", "panic: bad input\n\ngoroutine 1 [running]:\n", "fatal error: unavailable\n"} {
+		if controlledCLIError(s) {
+			t.Fatal("uncontrolled CLI failure accepted", s)
+		}
+	}
+	if !controlledCLIError("sum overflows int64\n") {
+		t.Fatal("controlled error rejected")
+	}
+}

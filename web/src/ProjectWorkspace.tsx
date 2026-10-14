@@ -187,6 +187,7 @@ function validateProjectFiles(files: Record<string, string>) {
   if (!('README.md' in files)) return 'Добавь обязательный файл README.md.';
   if (!files['README.md'].trim()) return 'README.md должен содержать текст.';
   if (!('go.mod' in files)) return 'Добавь обязательный файл go.mod.';
+  if (!/^[\x20-\x7E\t\r\n]+$/.test(files['go.mod']) || files['go.mod'].replace(/\r\n/g,'\n').includes('\r')) return 'В go.mod разрешены обычные пробелы, табы и перевод строки.';
   if (files['go.mod'].replace(/\r\n/g,'\n').split('\n').map(line=>line.trim().split(/\s+/).join(' ')).filter(Boolean).join('\n') !== 'module cli-toolkit\ngo 1.27.2') return 'В go.mod должны остаться только module cli-toolkit и go 1.27.2 без внешних зависимостей.';
   return '';
 }

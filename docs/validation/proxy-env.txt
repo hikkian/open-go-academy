@@ -1,0 +1,7 @@
+=== RUN   TestSandboxIntegration
+=== RUN   TestSandboxIntegration/proxy-env-not-forwarded
+    runner_test.go:116: status=ok exit=0 stdout="true\n" stderr=""
+--- PASS: TestSandboxIntegration (7.51s)
+    --- PASS: TestSandboxIntegration/proxy-env-not-forwarded (7.28s)
+PASS
+ok  	academy/internal/runner	7.516s

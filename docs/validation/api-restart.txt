@@ -1,0 +1,1 @@
+PASS: actual API stop/restart preserved profile/theme/draft; migrations reapplied safely

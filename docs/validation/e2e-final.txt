@@ -1,0 +1,27 @@
+
+> e2e
+> playwright test
+
+[WebServer] 2026/10/15 01:11:30 INFO academy local API ready address=127.0.0.1:8081
+
+Running 12 tests using 1 worker
+
+(node:110647) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/learning.spec.ts:8:5 › profile, roadmap, safe content, themes, drafts and responsive layout (3.7s)
+  ✓   2 [desktop] › tests/learning.spec.ts:20:5 › real Go errors, output, server grading, no AI and idempotent XP (29.6s)
+  ✓   3 [desktop] › tests/learning.spec.ts:30:5 › failed draft write has explicit recovery and preserves code (2.3s)
+  ✓   4 [desktop] › tests/learning.spec.ts:35:5 › course search and server criteria/skills reflect only verified exercises (1.5s)
+  ✓   5 [desktop] › tests/projects.spec.ts:6:5 › project edits multiple files, persists, snapshots restore and ZIP exports (6.6s)
+  ✓   6 [desktop] › tests/projects.spec.ts:15:5 › P1 real run, Go tests and independent functional evaluation (1.6m)
+(node:120404) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓   7 [mobile] › tests/learning.spec.ts:8:5 › profile, roadmap, safe content, themes, drafts and responsive layout (3.8s)
+  -   8 [mobile] › tests/learning.spec.ts:20:5 › real Go errors, output, server grading, no AI and idempotent XP
+  ✓   9 [mobile] › tests/learning.spec.ts:30:5 › failed draft write has explicit recovery and preserves code (2.3s)
+  ✓  10 [mobile] › tests/learning.spec.ts:35:5 › course search and server criteria/skills reflect only verified exercises (1.5s)
+  ✓  11 [mobile] › tests/projects.spec.ts:6:5 › project edits multiple files, persists, snapshots restore and ZIP exports (6.6s)
+  -  12 [mobile] › tests/projects.spec.ts:15:5 › P1 real run, Go tests and independent functional evaluation
+
+  2 skipped
+  10 passed (2.6m)

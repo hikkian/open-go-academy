@@ -2,6 +2,9 @@ package runner
 
 import (
 	"context"
+	"encoding/json"
+	"net"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -107,6 +110,15 @@ func TestSandboxIntegration(t *testing.T) {
 		}
 	})
 
+	t.Run("proxy-env-not-forwarded", func(t *testing.T) {
+		t.Setenv("HTTP_PROXY", "http://synthetic-user:synthetic-secret@127.0.0.1:9")
+		t.Setenv("HTTPS_PROXY", "http://synthetic-user:synthetic-secret@127.0.0.1:9")
+		r := run(t, `package main;import("fmt";"os");func main(){fmt.Println(os.Getenv("HTTP_PROXY")==""&&os.Getenv("HTTPS_PROXY")==""&&os.Getenv("http_proxy")==""&&os.Getenv("https_proxy")=="")}`)
+		if r.Status != "ok" || r.Stdout != "true\n" {
+			t.Fatal("host proxy environment leaked", r.Status)
+		}
+	})
+
 	t.Run("multifile", func(t *testing.T) {
 		r, err := e.Execute(ctx, Request{Mode: "run", Files: map[string]string{"main.go": `package main;import "fmt";func main(){fmt.Println(sum(2,3))}`, "sum.go": `package main;func sum(a,b int)int{return a+b}`}})
 		if err != nil || r.Status != "ok" || r.Stdout != "5\n" {
@@ -203,5 +215,27 @@ esac
 	e := New()
 	if e.Preflight(context.Background()) == nil || e.Ready() {
 		t.Fatal("failed preflight cleanup admitted runner")
+	}
+}
+func TestClientPreservesLargeEscapedFormatResult(t *testing.T) {
+	socket := filepath.Join(t.TempDir(), "runner.sock")
+	listener, err := net.Listen("unix", socket)
+	if err != nil {
+		t.Fatal(err)
+	}
+	source := "package main\n\nfunc main() {}\n/*" + strings.Repeat("<>&", 20000) + "*/\n"
+	server := &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var req Request
+		if json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&req) != nil {
+			http.Error(w, "invalid", 400)
+			return
+		}
+		json.NewEncoder(w).Encode(Result{Status: "ok", Files: req.Files})
+	})}
+	go server.Serve(listener)
+	defer server.Close()
+	result, err := NewClient(socket).Execute(context.Background(), Request{Mode: "format", Files: map[string]string{"main.go": source}})
+	if err != nil || result.Files["main.go"] != source {
+		t.Fatal("valid64KiB source lost by JSON escaping/response cap", err)
 	}
 }

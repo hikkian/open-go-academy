@@ -1,0 +1,77 @@
+make: Entering directory '/home/alisher/Desktop/open-go-academy/.data/fresh-source'
+sh scripts/go.sh test ./...
+?   	academy/cmd/api	[no test files]
+?   	academy/cmd/runner	[no test files]
+?   	academy/content/reference/hello	[no test files]
+?   	academy/content/reference/repair	[no test files]
+?   	academy/content/reference/two-lines	[no test files]
+ok  	academy/internal/content	0.461s
+?   	academy/internal/content/solutions/hello	[no test files]
+?   	academy/internal/content/solutions/repair	[no test files]
+?   	academy/internal/content/solutions/two-lines	[no test files]
+ok  	academy/internal/httpapi	0.014s
+ok  	academy/internal/learning	0.003s
+ok  	academy/internal/projects	0.003s
+?   	academy/internal/projects/p1/starter_files	[no test files]
+ok  	academy/internal/runner	0.012s
+ok  	academy/internal/store	0.043s
+sh scripts/go.sh -C content/projects/p1/reference test ./...
+ok  	cli-toolkit	0.364s
+sh scripts/go.sh -C content/projects/p1/reference vet ./...
+sh scripts/go.sh vet ./...
+sh scripts/go.sh test -race ./...
+?   	academy/cmd/api	[no test files]
+?   	academy/cmd/runner	[no test files]
+?   	academy/content/reference/hello	[no test files]
+?   	academy/content/reference/repair	[no test files]
+?   	academy/content/reference/two-lines	[no test files]
+ok  	academy/internal/content	1.490s
+?   	academy/internal/content/solutions/hello	[no test files]
+?   	academy/internal/content/solutions/repair	[no test files]
+?   	academy/internal/content/solutions/two-lines	[no test files]
+ok  	academy/internal/httpapi	1.120s
+ok  	academy/internal/learning	1.013s
+ok  	academy/internal/projects	1.015s
+?   	academy/internal/projects/p1/starter_files	[no test files]
+ok  	academy/internal/runner	1.025s
+ok  	academy/internal/store	1.393s
+cd web && npm run typecheck && npm run build
+
+> web@1.0.0 typecheck
+> tsc --noEmit
+
+
+> web@1.0.0 build
+> tsc -b && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 197 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.61 kB │ gzip:   0.41 kB
+dist/assets/index-DTmTW2XE.css     30.60 kB │ gzip:   7.13 kB
+dist/assets/index-B1KeJcvA.js     387.49 kB │ gzip: 117.41 kB
+dist/assets/GoEditor-CzYMkZih.js  447.29 kB │ gzip: 147.09 kB
+
+✓ built in 162ms
+mkdir -p .tools
+sh scripts/go.sh build -o .tools/academy-api ./cmd/api
+sh scripts/go.sh build -o .tools/academy-runner ./cmd/runner
+cd web && npm run build
+
+> web@1.0.0 build
+> tsc -b && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 197 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.61 kB │ gzip:   0.41 kB
+dist/assets/index-DTmTW2XE.css     30.60 kB │ gzip:   7.13 kB
+dist/assets/index-B1KeJcvA.js     387.49 kB │ gzip: 117.41 kB
+dist/assets/GoEditor-CzYMkZih.js  447.29 kB │ gzip: 147.09 kB
+
+✓ built in 155ms
+make: Leaving directory '/home/alisher/Desktop/open-go-academy/.data/fresh-source'

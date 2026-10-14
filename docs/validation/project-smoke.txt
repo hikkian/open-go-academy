@@ -1,0 +1,16 @@
+
+> e2e
+> playwright test --grep project edits
+
+[WebServer] 2026/10/15 00:59:32 INFO academy local API ready address=127.0.0.1:8081
+
+Running 2 tests using 1 worker
+
+(node:75805) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/projects.spec.ts:6:5 › project edits multiple files, persists, snapshots restore and ZIP exports (6.7s)
+(node:75924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  2 [mobile] › tests/projects.spec.ts:6:5 › project edits multiple files, persists, snapshots restore and ZIP exports (6.6s)
+
+  2 passed (15.4s)
