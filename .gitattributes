@@ -1,0 +1,2 @@
+# Два пробела в конце Markdown-строки — намеренный CommonMark hard break.
+*.md whitespace=-blank-at-eol

@@ -13,12 +13,12 @@ test('project edits multiple files, persists, snapshots restore and ZIP exports'
  await page.getByRole('button',{name:'Удалить выбранный файл',exact:true}).click();await expect(page.getByText('Файлы сохранены.',{exact:true})).toBeVisible();
 });
 test('P1 real run, Go tests and independent functional evaluation',async({page},info)=>{
- test.skip(process.env.ACADEMY_E2E_RUNNER!=='1','requires confined local runner');test.skip(info.project.name!=='desktop','runtime project gate desktop, file workflow both');test.setTimeout(240000);
+ test.skip(process.env.ACADEMY_E2E_RUNNER!=='1','requires confined local runner');test.skip(info.project.name!=='desktop','runtime project gate desktop, file workflow both');test.setTimeout(300000);
  await enter(page);
  const profile=await page.request.get('/api/profile');const token=(await profile.json()).csrf_token;
  const files:Record<string,string>={};for(const name of readdirSync('content/projects/p1/reference'))if(name.endsWith('.go')||name==='go.mod')files[name]=readFileSync(join('content/projects/p1/reference',name),'utf8');files['README.md']=readFileSync('content/projects/p1/README.md','utf8');files['names.json']='["Ada","Lin","Go"]';
  const save=await page.request.put('/api/projects/p1/files',{headers:{'X-CSRF-Token':token},data:{files}});expect(save.ok()).toBe(true);await page.reload();await enter(page);await page.getByLabel('Аргументы запуска (JSON-массив строк)').fill('["sum","4","-1","9"]');await page.getByRole('button',{name:'Запустить',exact:true}).click();await expect(page.locator('.project-output pre')).toContainText('12',{timeout:65000});
  await page.getByRole('button',{name:'Запустить тесты',exact:true}).click();await expect(page.locator('.project-output')).toContainText('Состояние: ok',{timeout:65000});
- await page.getByRole('button',{name:'Проверить проект',exact:true}).click();await expect(page.locator('.project-output')).toContainText('Автоматические проверки пройдены.',{timeout:115000});await expect(page.locator('.project-output')).toContainText('требуют отдельного ревью');
+ await page.getByRole('button',{name:'Проверить проект',exact:true}).click();await expect(page.locator('.project-output')).toContainText('Автоматические проверки пройдены.',{timeout:190000});await expect(page.locator('.project-output')).toContainText('требуют отдельного ревью');
  const progress=(await (await page.request.get('/api/progress')).json());expect(progress.completed).toContain('p1:automatic');const learner=(await (await page.request.get('/api/learning')).json());expect(learner.current_rank).toBe('Zero');expect(learner.verified).toBe(false);await page.screenshot({path:'artifacts/project-passed.png',fullPage:true});
 });

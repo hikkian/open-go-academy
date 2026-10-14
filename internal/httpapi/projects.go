@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -236,7 +237,7 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 			write(w, 200, result)
 			return
 		}
-		ctx, cancel := context.WithTimeout(r.Context(), 100*time.Second)
+		ctx, cancel := context.WithTimeout(r.Context(), 180*time.Second)
 		defer cancel()
 		result := runner.Result{Status: "failed", Checks: []runner.Check{}, Passed: true}
 		vectors := []struct {
@@ -246,6 +247,16 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 			code   int
 		}{
 			{[]string{"sum", "-3", "5", "0"}, nil, "2\n", 0},
+			{nil, nil, "", 2},
+			{[]string{"unknown"}, nil, "", 2},
+			{[]string{"sum"}, nil, "", 2},
+			{[]string{"sum", "-9223372036854775808", "9223372036854775807"}, nil, "-1\n", 0},
+			{[]string{"sum", "-9223372036854775808", "-1"}, nil, "", 2},
+			{[]string{"inspect"}, nil, "", 2},
+			{[]string{"inspect", "missing.json"}, nil, "", 2},
+			{[]string{"inspect", "badtype.json"}, map[string]string{"badtype.json": "[1]"}, "", 2},
+			{[]string{"inspect", "null.json"}, map[string]string{"null.json": "null"}, "", 2},
+
 			{[]string{"sum", "9223372036854775807", "1"}, nil, "", 2},
 			{[]string{"sum", "not-a-number"}, nil, "", 2},
 			{[]string{"inspect", "hidden.json"}, map[string]string{"hidden.json": `["a","b","c","d"]`}, "4\n", 0},
@@ -264,7 +275,7 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 				return
 			}
 			ok := actual.ExitCode == v.code && actual.Stdout == v.stdout && (v.code == 0 && actual.Status == "ok" && actual.Stderr == "" || v.code != 0 && actual.Status == "error" && actual.Stderr != "")
-			result.Checks = append(result.Checks, runner.Check{Name: "Функциональная проверка " + string(rune('1'+i)), Passed: ok})
+			result.Checks = append(result.Checks, runner.Check{Name: "Функциональная проверка " + strconv.Itoa(i+1), Passed: ok})
 			if !ok {
 				result.Passed = false
 				result.Stdout = actual.Stdout
