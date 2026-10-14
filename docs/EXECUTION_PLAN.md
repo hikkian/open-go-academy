@@ -380,3 +380,5 @@ Project evaluation15 trusted black-box vectors+user Go tests actually run in iso
 ### Финальная регрессия и запуск
 
 APIdefault8380/Viteproxy8380 (8080 занятый чужойсервис не изменён), successfulbind передreadylog. `make test/build` повторён. Module ASCII grammar, UnicodeGoTest name, controlledCLI panic checks, escapedsource transport1MiB и proxyenvironment forwardingfalse regression прошли (смVALIDATION_REPORT). API+runner фактическиlivehealthok на8380; браузерныйpanelrequestqueued. Localcheckpoints only, remoteCI/publication отсутствуют.
+
+Контрольная точка функционального кода и финальных доказательств: `7f4cca4` (локальный Git, без remote). Последующее уточнение handoff/docs не изменяет проверенный код.
