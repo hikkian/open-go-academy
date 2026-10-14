@@ -1,0 +1,22 @@
+{
+  "curriculum_version": "0.1.0",
+  "go_version": "1.27.2",
+  "last_verified_at": "2026-10-15",
+  "dependency_versions": {
+    "@codemirror/lang-go": "6.0.1",
+    "@codemirror/language": "6.13.1",
+    "@lezer/highlight": "1.2.5",
+    "codemirror": "6.0.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-markdown": "10.1.0"
+  },
+  "source_urls": [
+    "https://go.dev/doc/go1.27",
+    "https://go.dev/doc/devel/release"
+  ],
+  "compatibility_notes": [
+    "Один завершённый урок Zero Day1; остальной курс не опубликован.",
+    "local-only rootless Podman, Linux amd64; hosted trust отсутствует."
+  ]
+}

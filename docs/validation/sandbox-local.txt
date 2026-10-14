@@ -1,0 +1,43 @@
+=== RUN   TestValidateFiles
+--- PASS: TestValidateFiles (0.00s)
+=== RUN   TestCleanupFailureDisablesNextJob
+--- PASS: TestCleanupFailureDisablesNextJob (0.00s)
+=== RUN   TestMissingRuntimeFailClosed
+--- PASS: TestMissingRuntimeFailClosed (0.00s)
+=== RUN   TestSandboxIntegration
+=== RUN   TestSandboxIntegration/orphan-reconciliation
+=== RUN   TestSandboxIntegration/cancel-descendants
+=== RUN   TestSandboxIntegration/multifile
+=== RUN   TestSandboxIntegration/compile-error
+    runner_test.go:106: status=error exit=1 stdout="" stderr="# command-line-arguments\n./main.go:1:26: undefined: missing\n"
+=== RUN   TestSandboxIntegration/isolation
+    runner_test.go:114: status=ok exit=0 stdout="true true true true true\n" stderr=""
+=== RUN   TestSandboxIntegration/output-limit
+    runner_test.go:124: status=output_limit exit=-1 stdout="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx… (truncated)" stderr=""
+=== RUN   TestSandboxIntegration/timeout
+    runner_test.go:131: status=timeout exit=-1 stdout="" stderr=""
+=== RUN   TestSandboxIntegration/memory-limit
+    runner_test.go:137: status=error exit=137 stdout="" stderr=""
+=== RUN   TestSandboxIntegration/disk-limit
+    runner_test.go:143: status=ok exit=0 stdout="bounded\n" stderr=""
+=== RUN   TestSandboxIntegration/pid-limit
+    runner_test.go:149: status=ok exit=0 stdout="bounded\n" stderr=""
+=== RUN   TestSandboxIntegration/format
+--- PASS: TestSandboxIntegration (94.60s)
+    --- PASS: TestSandboxIntegration/orphan-reconciliation (0.36s)
+    --- PASS: TestSandboxIntegration/cancel-descendants (1.08s)
+    --- PASS: TestSandboxIntegration/multifile (7.41s)
+    --- PASS: TestSandboxIntegration/compile-error (4.01s)
+    --- PASS: TestSandboxIntegration/isolation (8.62s)
+    --- PASS: TestSandboxIntegration/output-limit (7.10s)
+    --- PASS: TestSandboxIntegration/timeout (45.13s)
+    --- PASS: TestSandboxIntegration/memory-limit (5.51s)
+    --- PASS: TestSandboxIntegration/disk-limit (7.24s)
+    --- PASS: TestSandboxIntegration/pid-limit (7.79s)
+    --- PASS: TestSandboxIntegration/format (0.10s)
+=== RUN   TestConcurrencyAdmissionIsBounded
+--- PASS: TestConcurrencyAdmissionIsBounded (0.00s)
+=== RUN   TestPreflightCleanupFailureReturnsError
+--- PASS: TestPreflightCleanupFailureReturnsError (0.00s)
+PASS
+ok  	academy/internal/runner	94.610s

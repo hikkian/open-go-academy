@@ -1,0 +1,10 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+# Основную модель выберите в Codex UI/CLI согласно доступу вашей учётной записи.
+# Субагенты по умолчанию используют экономичную модель; при отсутствии доступа
+# Codex должен предложить/применить доступную замену.
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3
+default_subagent_model = "gpt-6-luna"
+default_subagent_reasoning_effort = "low"

@@ -1,0 +1,19 @@
+
+> e2e
+> playwright test
+
+[WebServer] 2026/10/15 00:31:23 INFO academy local API ready address=127.0.0.1:8081
+
+Running 4 tests using 1 worker
+
+(node:44996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/learning.spec.ts:8:5 › profile, roadmap, safe content, themes, drafts and responsive layout (3.6s)
+  ✓  2 [desktop] › tests/learning.spec.ts:20:5 › real Go errors, output, server grading, no AI and idempotent XP (30.1s)
+(node:48638) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile] › tests/learning.spec.ts:8:5 › profile, roadmap, safe content, themes, drafts and responsive layout (3.7s)
+  -  4 [mobile] › tests/learning.spec.ts:20:5 › real Go errors, output, server grading, no AI and idempotent XP
+
+  1 skipped
+  3 passed (39.5s)

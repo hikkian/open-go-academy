@@ -1,0 +1,24 @@
+import { test,expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import {readFileSync,readdirSync} from 'node:fs';
+import {join} from 'node:path';
+async function enter(page:any){await page.goto('/');if(await page.getByLabel('Твоё имя').isVisible()){await page.getByLabel('Твоё имя').fill('Проектный студент');await page.getByRole('button',{name:'Создать профиль'}).click()};await page.getByRole('button',{name:'Проекты',exact:true}).click();await page.getByRole('button',{name:/Go CLI Toolkit/}).click();await expect(page.getByRole('heading',{name:'Go CLI Toolkit',exact:true})).toBeVisible();}
+test('project edits multiple files, persists, snapshots restore and ZIP exports',async({page},info)=>{
+ await enter(page);await page.getByRole('button',{name:'README.md',exact:true}).click();await page.getByLabel('Содержимое файла README.md').fill('# CLI Toolkit\n\nBrowser persistence check '+info.project.name);await expect(page.getByText('Файлы сохранены.',{exact:true})).toBeVisible();
+ await page.getByLabel('Добавить файл').fill('extra.json');await page.getByRole('button',{name:'Добавить',exact:true}).click();await page.getByLabel('Содержимое файла extra.json').fill('["draft"]');await expect(page.getByText('Файлы сохранены.',{exact:true})).toBeVisible();
+ await page.reload();await enter(page);await page.getByRole('button',{name:'extra.json',exact:true}).click();await expect(page.getByLabel('Содержимое файла extra.json')).toHaveValue('["draft"]');
+ await page.getByLabel('Содержимое файла extra.json').fill('["changed"]');await expect(page.getByText('Файлы сохранены.',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Восстановить',exact:true}).nth(1).click();await expect(page.getByText(/Версия восстановлена/)).toBeVisible();await page.getByRole('button',{name:'extra.json',exact:true}).click();await expect(page.getByLabel('Содержимое файла extra.json')).toHaveValue('["draft"]');
+ const downloaded=page.waitForEvent('download');await page.getByRole('button',{name:'Скачать ZIP',exact:true}).click();const file=await downloaded;expect(file.suggestedFilename()).toBe('p1.zip');const archivePath=await file.path();expect(archivePath).toBeTruthy();const bytes=readFileSync(archivePath!);expect(bytes.subarray(0,2).toString()).toBe('PK');expect(bytes.toString()).toContain('README.md');expect(bytes.toString()).toContain('extra.json');
+ const scan=await new AxeBuilder({page}).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await page.screenshot({path:`artifacts/${info.project.name}-project.png`,fullPage:true});
+ await page.getByRole('button',{name:'Удалить выбранный файл',exact:true}).click();await expect(page.getByText('Файлы сохранены.',{exact:true})).toBeVisible();
+});
+test('P1 real run, Go tests and independent functional evaluation',async({page},info)=>{
+ test.skip(process.env.ACADEMY_E2E_RUNNER!=='1','requires confined local runner');test.skip(info.project.name!=='desktop','runtime project gate desktop, file workflow both');test.setTimeout(240000);
+ await enter(page);
+ const profile=await page.request.get('/api/profile');const token=(await profile.json()).csrf_token;
+ const files:Record<string,string>={};for(const name of readdirSync('content/projects/p1/reference'))if(name.endsWith('.go')||name==='go.mod')files[name]=readFileSync(join('content/projects/p1/reference',name),'utf8');files['README.md']=readFileSync('content/projects/p1/README.md','utf8');files['names.json']='["Ada","Lin","Go"]';
+ const save=await page.request.put('/api/projects/p1/files',{headers:{'X-CSRF-Token':token},data:{files}});expect(save.ok()).toBe(true);await page.reload();await enter(page);await page.getByLabel('Аргументы запуска (JSON-массив строк)').fill('["sum","4","-1","9"]');await page.getByRole('button',{name:'Запустить',exact:true}).click();await expect(page.locator('.project-output pre')).toContainText('12',{timeout:65000});
+ await page.getByRole('button',{name:'Запустить тесты',exact:true}).click();await expect(page.locator('.project-output')).toContainText('Состояние: ok',{timeout:65000});
+ await page.getByRole('button',{name:'Проверить проект',exact:true}).click();await expect(page.locator('.project-output')).toContainText('Автоматические проверки пройдены.',{timeout:115000});await expect(page.locator('.project-output')).toContainText('требуют отдельного ревью');
+ const progress=(await (await page.request.get('/api/progress')).json());expect(progress.completed).toContain('p1:automatic');const learner=(await (await page.request.get('/api/learning')).json());expect(learner.current_rank).toBe('Zero');expect(learner.verified).toBe(false);await page.screenshot({path:'artifacts/project-passed.png',fullPage:true});
+});

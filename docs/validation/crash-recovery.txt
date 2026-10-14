@@ -1,0 +1,1 @@
+PASS: real runner SIGKILL -> stale socket removed -> scoped orphan killed -> health restored

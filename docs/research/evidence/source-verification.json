@@ -1,0 +1,22 @@
+[
+  {
+    "url": "https://learn.chatgpt.com/docs/models.md",
+    "verified_at": "2026-10-15",
+    "sha256": "77779d7adf13e05df5bf7fa82088ebbaa647d16682a91cea5cd3cad043474f8e"
+  },
+  {
+    "url": "https://learn.chatgpt.com/docs/agent-configuration/subagents.md",
+    "verified_at": "2026-10-15",
+    "sha256": "e7469d41c5a18a4ee66ee40ca4a9a2617a697e42554a0198ac4481e1e597357f"
+  },
+  {
+    "url": "https://developers.openai.com/api/docs/pricing.md",
+    "verified_at": "2026-10-15",
+    "sha256": "e0767b5009dcc929a2f9eeb9ce6096a57ff12e5d8c011de9d69ff145aef2fc28"
+  },
+  {
+    "url": "https://developers.openai.com/codex/config-schema.json",
+    "verified_at": "2026-10-15",
+    "sha256": "7933a70506e753a6e98c16800d2a76770b2af2b7295491f8f0b8e713e952027e"
+  }
+]

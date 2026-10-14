@@ -1,0 +1,25 @@
+name: foundation
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.27.2'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24.18.0'
+      - run: go test ./... && go vet ./... && go test -race ./... && go -C content/projects/p1/reference test ./... && go -C content/projects/p1/reference vet ./...
+      - run: npm ci && cd web && npm ci && npm run typecheck && npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e -- --grep 'profile, roadmap|failed draft|course search|project edits'
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: browser-evidence
+          path: artifacts/
+# Local rootless sandbox validation is a separate required gate; this CI does not certify it.

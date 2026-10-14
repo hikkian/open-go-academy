@@ -1,0 +1,10 @@
+node_modules/
+web/dist/
+.tools/
+.data/
+artifacts/
+.env
+*.db
+*.db-shm
+*.db-wal
+web/*.tsbuildinfo

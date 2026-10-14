@@ -1,0 +1,124 @@
+{
+  "react": {
+    "version": "19.3.1",
+    "engines": {
+      "node": ">=0.10.0"
+    },
+    "peerDependencies": {}
+  },
+  "react-dom": {
+    "version": "19.3.1",
+    "engines": {},
+    "peerDependencies": {
+      "react": "^19.3.1"
+    }
+  },
+  "typescript": {
+    "version": "7.0.2",
+    "engines": {
+      "node": ">=16.20.0"
+    },
+    "peerDependencies": {}
+  },
+  "vite": {
+    "version": "8.3.4",
+    "engines": {
+      "node": "^20.19.0 || >=22.12.0"
+    },
+    "peerDependencies": {
+      "tsx": "^4.8.1",
+      "jiti": ">=1.21.0",
+      "less": "^4.0.0",
+      "sass": "^1.70.0",
+      "yaml": "^2.4.2",
+      "stylus": ">=0.54.8",
+      "terser": "^5.16.0",
+      "esbuild": "^0.27.0 || ^0.28.0",
+      "sugarss": "^5.0.0",
+      "@types/node": "^20.19.0 || >=22.12.0",
+      "sass-embedded": "^1.70.0",
+      "@vitejs/devtools": "^0.7.1"
+    }
+  },
+  "@vitejs/plugin-react": {
+    "version": "6.1.2",
+    "engines": {
+      "node": "^20.19.0 || >=22.12.0"
+    },
+    "peerDependencies": {
+      "vite": "^8.0.0",
+      "oxc-transform-react": "^0.152.0",
+      "@rolldown/plugin-babel": "^0.1.7 || ^0.2.0",
+      "babel-plugin-react-compiler": "^1.0.0"
+    }
+  },
+  "@types/react": {
+    "version": "19.3.0",
+    "engines": {},
+    "peerDependencies": {}
+  },
+  "@types/react-dom": {
+    "version": "19.3.0",
+    "engines": {},
+    "peerDependencies": {
+      "@types/react": "^19.3.0"
+    }
+  },
+  "codemirror": {
+    "version": "6.0.2",
+    "engines": {},
+    "peerDependencies": {}
+  },
+  "@codemirror/lang-go": {
+    "version": "6.0.1",
+    "engines": {},
+    "peerDependencies": {}
+  },
+  "react-markdown": {
+    "version": "10.1.0",
+    "engines": {},
+    "peerDependencies": {
+      "react": ">=18",
+      "@types/react": ">=18"
+    }
+  },
+  "@playwright/test": {
+    "version": "1.64.1",
+    "engines": {
+      "node": ">=20"
+    },
+    "peerDependencies": {}
+  },
+  "@axe-core/playwright": {
+    "version": "4.13.0",
+    "engines": {},
+    "peerDependencies": {
+      "playwright-core": ">= 1.0.0"
+    }
+  },
+  "vitest": {
+    "version": "5.0.4",
+    "engines": {
+      "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
+    },
+    "peerDependencies": {
+      "vite": "^6.4.0 || ^7.0.0 || ^8.0.0",
+      "jsdom": "*",
+      "happy-dom": "*",
+      "@vitest/ui": "5.0.4",
+      "@types/node": "^22.0.0 || >=24.0.0",
+      "@edge-runtime/vm": "*",
+      "@opentelemetry/api": "^1.9.0",
+      "@vitest/coverage-v8": "5.0.4",
+      "@vitest/browser-preview": "5.0.4",
+      "@vitest/coverage-istanbul": "5.0.4",
+      "@vitest/browser-playwright": "5.0.4",
+      "@vitest/browser-webdriverio": "^5.0.0-beta.5 || >=5.0.0"
+    }
+  },
+  "@types/node": {
+    "version": "26.6.5",
+    "engines": {},
+    "peerDependencies": {}
+  }
+}
