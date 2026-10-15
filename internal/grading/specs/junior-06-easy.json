@@ -1,0 +1,49 @@
+{
+  "allowed_imports": [
+    "errors",
+    "fmt",
+    "strconv",
+    "strings"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []string\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; v, err := parsePositiveID(in); if err != nil { out = []any{0, \"error\"} } else { out = []any{v, nil} }; if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-06-easy",
+  "private_expected": [
+    [
+      0,
+      "error"
+    ],
+    [
+      0,
+      "error"
+    ],
+    [
+      0,
+      "error"
+    ],
+    [
+      0,
+      "error"
+    ]
+  ],
+  "private_input": [
+    "-1",
+    "x",
+    "",
+    "9223372036854775808"
+  ],
+  "public_expected": [
+    [
+      42,
+      null
+    ],
+    [
+      0,
+      "error"
+    ]
+  ],
+  "public_input": [
+    "42",
+    "0"
+  ],
+  "signature": "func parsePositiveID(text string) (int, error)"
+}

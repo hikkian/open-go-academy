@@ -1,0 +1,172 @@
+{
+  "id": "juniorplus-19",
+  "title": "P2 LinkHub: интеграция и безопасность",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-18"
+  ],
+  "estimated_minutes": 120,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Проследить authenticated owner от HTTP boundary до SQL условия.",
+    "Проверить полный путь создания ссылки, tag association и redirect.",
+    "Разделять automated acceptance и ручной review архитектуры и риска."
+  ],
+  "glossary": [
+    {
+      "term": "threat_model",
+      "translation": "модель угроз",
+      "definition": "Активы, actors, границы доверия и заранее очерченные отказы."
+    },
+    {
+      "term": "abuse_case",
+      "translation": "сценарий злоупотребления",
+      "definition": "Негативный путь, которым пытаются обойти ограничение."
+    },
+    {
+      "term": "owner_scope",
+      "translation": "область владельца",
+      "definition": "Связь действия и ресурса с principal из server session."
+    },
+    {
+      "term": "acceptance_test",
+      "translation": "приёмочная проверка",
+      "definition": "Проверка observable HTTP и DB контракта в работающей системе."
+    },
+    {
+      "term": "CSRF",
+      "translation": "межсайтовая подделка запроса",
+      "definition": "Browser запрос, использующий приложенные cookie для нежелательного действия."
+    },
+    {
+      "term": "SSRF",
+      "translation": "подделка server request",
+      "definition": "Риск, когда сервер обращается к пользовательскому адресу."
+    }
+  ],
+  "markdown_file": "juniorplus-19.md",
+  "order": 39,
+  "exercises": [
+    {
+      "id": "juniorplus-19-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Перенаправляй только валидную активную ссылку",
+      "prompt": "Разреши redirect только при enabled и ранее выполненной validation URL. Pure helper не проверяет базу или сетевую политику. LinkHub не должен сам вызывать HTTP к target.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc RedirectAllowed(enabled, targetValidated bool) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse",
+      "criteria": [
+        "Сигнатура и детерминированное поведение совпадают с условием.",
+        "Public и private cases проверяют границы контракта.",
+        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет эта функция?",
+          "answer": "Разреши redirect только при enabled и ранее выполненной validation URL. Pure helper не проверяет базу или сетевую политику. LinkHub не должен сам вызывать HTTP к target."
+        },
+        {
+          "question": "Что требуется для полного project evidence?",
+          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-19-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Проверь object ownership",
+      "prompt": "Без сессии верни unauthorized. Пустые либо несовпадающие непустые owner ID → not_found. Только совпадение дает allow. Session owner устанавливается сервером; не читай owner из body/query. Helper не проверяет SQL predicate или server session.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc OwnerAccess(authenticated bool, sessionOwner, resourceOwner string) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"unauthorized\"\n\"not_found\"",
+      "criteria": [
+        "Сигнатура и детерминированное поведение совпадают с условием.",
+        "Public и private cases проверяют границы контракта.",
+        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет эта функция?",
+          "answer": "Без сессии верни unauthorized. Пустые либо несовпадающие непустые owner ID → not_found. Только совпадение дает allow. Session owner устанавливается сервером; не читай owner из body/query. Helper не проверяет SQL predicate или server session."
+        },
+        {
+          "question": "Что требуется для полного project evidence?",
+          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-19-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Свяжи ссылку и tag атомарно",
+      "prompt": "Пустые или разные владельцы дают rejected; совпадающие владельцы и незавершённая transaction дают rolled_back; только совпадающие непустые ID с committed → linked. Pure function не доказывает атомарность. Она требует P2 PostgreSQL integration test.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc TagAssociationOutcome(linkOwner, tagOwner string, transactionCommitted bool) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"linked\"\n\"rejected\"",
+      "criteria": [
+        "Сигнатура и детерминированное поведение совпадают с условием.",
+        "Public и private cases проверяют границы контракта.",
+        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет эта функция?",
+          "answer": "Пустые или разные владельцы дают rejected; совпадающие владельцы и незавершённая transaction дают rolled_back; только совпадающие непустые ID с committed → linked. Pure function не доказывает атомарность. Она требует P2 PostgreSQL integration test."
+        },
+        {
+          "question": "Что требуется для полного project evidence?",
+          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Как отличить автоматическое evidence от утверждения?",
+      "answer": "Назовите контракт, конкретный test boundary и остающиеся неизвестными зависимости."
+    },
+    {
+      "question": "Где посмотреть фактический P2?",
+      "answer": "В приложении «Проекты → LinkHub API» и в P2 README, OpenAPI, Compose и threat model."
+    },
+    {
+      "question": "Что означает reviewed course evidence?",
+      "answer": "Только проверку требований курса, не профессию, external accreditation или trusted credential."
+    },
+    {
+      "question": "Что должно оставаться ручным?",
+      "answer": "Читаемость проекта, объяснение компромисса, threat boundary и review security критериев."
+    },
+    {
+      "question": "Как безопасно повторить проверку?",
+      "answer": "Fresh local/disposable environment, точная команда и результат без секретов и production данных."
+    },
+    {
+      "question": "Нужен ли Tutor?",
+      "answer": "Нет, объяснение и критерии доступны самостоятельно."
+    }
+  ]
+}

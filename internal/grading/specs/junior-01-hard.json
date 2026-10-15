@@ -1,0 +1,72 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []struct{ Values []int; Minimum int }\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; out = keepAtLeast(in.Values, in.Minimum); if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-01-hard",
+  "private_expected": [
+    [],
+    [
+      4,
+      4
+    ],
+    [
+      0,
+      -1
+    ],
+    [
+      6
+    ]
+  ],
+  "private_input": [
+    {
+      "Minimum": 3,
+      "Values": [
+        1,
+        2
+      ]
+    },
+    {
+      "Minimum": 4,
+      "Values": [
+        4,
+        3,
+        4
+      ]
+    },
+    {
+      "Minimum": -1,
+      "Values": [
+        0,
+        -1
+      ]
+    },
+    {
+      "Minimum": 6,
+      "Values": [
+        6
+      ]
+    }
+  ],
+  "public_expected": [
+    [
+      5,
+      5
+    ],
+    []
+  ],
+  "public_input": [
+    {
+      "Minimum": 3,
+      "Values": [
+        5,
+        1,
+        5,
+        2
+      ]
+    },
+    {
+      "Minimum": 0,
+      "Values": []
+    }
+  ],
+  "signature": "func keepAtLeast(values []int, minimum int) []int"
+}

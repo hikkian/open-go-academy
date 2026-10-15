@@ -1,6 +1,7 @@
 package httpapi
 
 import (
+	"academy/internal/projectrunner"
 	"academy/internal/projects"
 	"academy/internal/runner"
 	"archive/zip"
@@ -82,16 +83,25 @@ func hasTests(files map[string]string) bool {
 	return found
 }
 func (a *API) projectRoutes(mux *http.ServeMux) {
-	project := projects.Load()
-	mux.HandleFunc("GET /api/projects", func(w http.ResponseWriter, r *http.Request) { write(w, 200, []projects.Project{project}) })
+	mux.HandleFunc("GET /api/projects", func(w http.ResponseWriter, r *http.Request) { write(w, 200, projects.All()) })
 	mux.HandleFunc("GET /api/projects/{id}", func(w http.ResponseWriter, r *http.Request) {
-		if r.PathValue("id") != project.ID {
+		project, ok := projects.Find(r.PathValue("id"))
+		if !ok {
 			fail(w, 404, "проект не найден")
 			return
 		}
-		write(w, 200, project)
+		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+		defer cancel()
+		available := a.Runner != nil && a.Runner.Available(ctx)
+		if project.ID == "p2" {
+			available = a.ProjectRunner != nil && a.ProjectRunner.Available(ctx)
+		}
+		write(w, 200, struct {
+			projects.Project
+			ExecutionAvailable bool `json:"execution_available"`
+		}{project, available})
 	})
-	files := func() (map[string]string, error) {
+	files := func(project projects.Project) (map[string]string, error) {
 		files, err := a.Store.ProjectFiles(project.ID)
 		if len(files) == 0 && err == nil {
 			files = project.StarterFiles
@@ -99,11 +109,12 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 		return files, err
 	}
 	mux.HandleFunc("GET /api/projects/{id}/files", func(w http.ResponseWriter, r *http.Request) {
-		if r.PathValue("id") != project.ID {
+		project, ok := projects.Find(r.PathValue("id"))
+		if !ok {
 			fail(w, 404, "проект не найден")
 			return
 		}
-		f, err := files()
+		f, err := files(project)
 		if err != nil {
 			fail(w, 500, "не удалось прочитать файлы")
 			return
@@ -111,7 +122,8 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 		write(w, 200, map[string]any{"files": f})
 	})
 	mux.HandleFunc("PUT /api/projects/{id}/files", func(w http.ResponseWriter, r *http.Request) {
-		if r.PathValue("id") != project.ID {
+		project, ok := projects.Find(r.PathValue("id"))
+		if !ok {
 			fail(w, 404, "проект не найден")
 			return
 		}
@@ -122,7 +134,7 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 			fail(w, 400, "некорректные файлы")
 			return
 		}
-		if err := projects.ValidateFiles(q.Files); err != nil {
+		if err := projects.ValidateFor(project.ID, q.Files); err != nil {
 			fail(w, 422, err.Error())
 			return
 		}
@@ -133,7 +145,8 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 		write(w, 200, map[string]any{"files": q.Files})
 	})
 	mux.HandleFunc("GET /api/projects/{id}/snapshots", func(w http.ResponseWriter, r *http.Request) {
-		if r.PathValue("id") != project.ID {
+		project, ok := projects.Find(r.PathValue("id"))
+		if !ok {
 			fail(w, 404, "проект не найден")
 			return
 		}
@@ -145,7 +158,8 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 		write(w, 200, s)
 	})
 	mux.HandleFunc("POST /api/projects/{id}/restore", func(w http.ResponseWriter, r *http.Request) {
-		if r.PathValue("id") != project.ID {
+		project, ok := projects.Find(r.PathValue("id"))
+		if !ok {
 			fail(w, 404, "проект не найден")
 			return
 		}
@@ -168,17 +182,18 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 		write(w, 200, map[string]any{"files": f})
 	})
 	mux.HandleFunc("GET /api/projects/{id}/export", func(w http.ResponseWriter, r *http.Request) {
-		if r.PathValue("id") != project.ID {
+		project, ok := projects.Find(r.PathValue("id"))
+		if !ok {
 			fail(w, 404, "проект не найден")
 			return
 		}
-		f, err := files()
-		if err != nil || projects.ValidateFiles(f) != nil {
+		f, err := files(project)
+		if err != nil || projects.ValidateFor(project.ID, f) != nil {
 			fail(w, 500, "не удалось подготовить архив")
 			return
 		}
 		w.Header().Set("Content-Type", "application/zip")
-		w.Header().Set("Content-Disposition", `attachment; filename="cli-toolkit.zip"`)
+		w.Header().Set("Content-Disposition", `attachment; filename="`+project.ID+`.zip"`)
 		z := zip.NewWriter(w)
 		names := make([]string, 0, len(f))
 		for name := range f {
@@ -197,7 +212,8 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 		z.Close()
 	})
 	mux.HandleFunc("POST /api/projects/{id}/{action}", func(w http.ResponseWriter, r *http.Request) {
-		if r.PathValue("id") != project.ID {
+		project, ok := projects.Find(r.PathValue("id"))
+		if !ok {
 			fail(w, 404, "проект не найден")
 			return
 		}
@@ -214,8 +230,12 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 			fail(w, 400, "некорректный проект")
 			return
 		}
-		if err := projects.ValidateFiles(q.Files); err != nil {
+		if err := projects.ValidateFor(project.ID, q.Files); err != nil {
 			fail(w, 422, err.Error())
+			return
+		}
+		if project.ID == "p2" {
+			a.executeP2(w, r, action, q.Files)
 			return
 		}
 		if a.Runner == nil {
@@ -315,4 +335,42 @@ func firstRune(s string) rune { r, _ := utf8.DecodeRuneInString(s); return r }
 func controlledCLIError(s string) bool {
 	trimmed := strings.TrimSpace(s)
 	return trimmed != "" && len(s) < 2048 && !strings.HasPrefix(trimmed, "panic:") && !strings.HasPrefix(trimmed, "fatal error:") && !strings.Contains(s, "\ngoroutine ")
+}
+
+// executeP2 uses a different isolated database worker; export-only infrastructure
+// files are never interpreted by the worker or used to configure its containers.
+func (a *API) executeP2(w http.ResponseWriter, r *http.Request, action string, files map[string]string) {
+	if a.ProjectRunner == nil {
+		fail(w, 503, "исполнитель P2 недоступен; настройте отдельный project-runner")
+		return
+	}
+	if err := a.Store.SaveProjectFiles("p2", files); err != nil {
+		fail(w, 500, "не удалось сохранить проект")
+		return
+	}
+	source := map[string]string{}
+	for name, data := range files {
+		base := filepath.Base(name)
+		if base == "Dockerfile" || base == "compose.yaml" || base == "docker-compose.yml" {
+			continue
+		}
+		source[name] = data
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), 210*time.Second)
+	defer cancel()
+	result, err := a.ProjectRunner.Execute(ctx, projectrunner.Request{ProjectID: "p2", Action: action, Files: source})
+	if err != nil {
+		fail(w, 503, "изолированная проверка P2 недоступна или завершилась ошибкой")
+		return
+	}
+	if action == "submit" {
+		if _, err := a.Store.RecordAttempt("p2:automatic", files, result.Passed, result.Stdout+result.Stderr); err != nil {
+			fail(w, 500, "не удалось сохранить результат")
+			return
+		}
+	}
+	write(w, 200, struct {
+		runner.Result
+		ManualReviewRequired bool `json:"manual_review_required"`
+	}{result, true})
 }

@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-17-medium",
+  "signature": "func LogFieldAllowed(name string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {Name string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := LogFieldAllowed(in.Name);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Name": "request_id"
+    },
+    {
+      "Name": "Authorization"
+    },
+    {
+      "Name": "status"
+    }
+  ],
+  "public_expected": [
+    true,
+    false,
+    true
+  ],
+  "private_input": [
+    {
+      "Name": "duration_ms"
+    },
+    {
+      "Name": "path"
+    },
+    {
+      "Name": "cookie"
+    }
+  ],
+  "private_expected": [
+    true,
+    false,
+    false
+  ]
+}

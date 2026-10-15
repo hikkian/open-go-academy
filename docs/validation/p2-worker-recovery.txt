@@ -1,0 +1,2 @@
+PASS: disconnected request cancels its job and removes owned containers
+PASS: actual SIGKILL, stale socket recovery and scoped orphan cleanup

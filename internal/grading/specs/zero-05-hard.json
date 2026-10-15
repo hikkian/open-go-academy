@@ -1,0 +1,28 @@
+{
+  "allowed_imports": [
+    "strings"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases []string\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(normalizeText(in)) }\n}\n",
+  "id": "zero-05-hard",
+  "private_expected": [
+    "...go!",
+    "",
+    "mixed  case",
+    "a  b"
+  ],
+  "private_input": [
+    "...Go!",
+    "\t\n",
+    "  MiXeD  case ",
+    "a  b"
+  ],
+  "public_expected": [
+    "go язык",
+    "уже  два"
+  ],
+  "public_input": [
+    "  Go ЯЗЫК  ",
+    " Уже  Два  "
+  ],
+  "signature": "func normalizeText(text string) string"
+}

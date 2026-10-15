@@ -1,0 +1,39 @@
+{
+  "id": "juniorplus-17-hard",
+  "signature": "func ReadinessState(databaseConnected, migrationsCurrent bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {DatabaseConnected bool; MigrationsCurrent bool}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := ReadinessState(in.DatabaseConnected,in.MigrationsCurrent);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "DatabaseConnected": false,
+      "MigrationsCurrent": false
+    },
+    {
+      "DatabaseConnected": true,
+      "MigrationsCurrent": false
+    },
+    {
+      "DatabaseConnected": true,
+      "MigrationsCurrent": true
+    }
+  ],
+  "public_expected": [
+    "not_ready",
+    "migrations_pending",
+    "ready"
+  ],
+  "private_input": [
+    {
+      "DatabaseConnected": false,
+      "MigrationsCurrent": true
+    },
+    {
+      "DatabaseConnected": true,
+      "MigrationsCurrent": true
+    }
+  ],
+  "private_expected": [
+    "not_ready",
+    "ready"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "juniorplus-11-easy",
+  "signature": "func ShouldRollback(operationFailed, committed bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\";)\ntype input struct {OperationFailed bool; Committed bool}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := ShouldRollback(in.OperationFailed, in.Committed);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "OperationFailed": true,
+      "Committed": false
+    },
+    {
+      "OperationFailed": false,
+      "Committed": false
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "OperationFailed": true,
+      "Committed": true
+    },
+    {
+      "OperationFailed": false,
+      "Committed": true
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

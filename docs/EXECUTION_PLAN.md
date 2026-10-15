@@ -20,7 +20,7 @@
 | M7 | Exam engine, earned-rank logic, negative tests | DONE | 2026-10-15: native exam3PASS1skip; CAS/replay/award unit/race + independent review; full14PASS/5skip, stale P1 assertion corrected+target1PASS1skip |
 | M8 | Optional AI Tutor, model routing, usage controls | DONE | 2026-10-15: Go unit/vet/race+TS/build; actualHTTP test-provider browser3PASS1skip, noAI desktop/mobile, consent/fallback/quota/privacy review |
 | M9 | Digital badges, certificates, verification, passport | DONE | 2026-10-15: native exam→credential→verify/revoke/privacy; PDF/PNG/QR+independent crypto, actual keyrecovery; full17PASS5skip6min, graph/project/badgedates tested |
-| M10 | Full Zero/Junior/Junior+ curriculum and projects | IN PROGRESS | 2026-10-15: 40-lesson dependency syllabus, P2 source research, generic grader + substantive Zero chapters in production |
+| M10 | Full Zero/Junior/Junior+ curriculum and projects | VALIDATING | 2026-10-15: 40chapters/120exercises;117nativefunctionsPASS;P2native44checks/recovery;Junior→Junior+nativeawards/credentialsPASS64.3s;final34browserpending |
 | M11 | Full Middle/Middle+/Senior curriculum and projects | NOT STARTED | — |
 | M12 | Hardening, full E2E, performance, visual and accessibility | NOT STARTED | — |
 | M13 | Open-source release preparation and final acceptance audit | NOT STARTED | — |
@@ -392,3 +392,15 @@ Evidence: make test PASS; native exam3PASS1skip; testprovider tutor3PASS1skip; f
 ### 2026-10-15 — M9 завершён
 
 Privatebydefault Ed25519 local credentials with serverRankAward guard, PDF/PNG/QR, privacy/revoke/audit, publicverify, private/publicPassport, actualbadgeeventdates/activitygraph/projectoverview. Independent Nodecrypto/jsQR + Poppler/pdftotext checks; actualmissing/different/originalkeyprocessprobes; independentreview3Mediumclosed. Full `ACADEMY_E2E_RUNNER=1 npm run e2e`17PASS5explicitSKIP6.0min after initialthemeassumptionfailure corrected+2targetPASS. Optionaltest-providerseparate3PASS1SKIP. make test,govulncheck/npm auditsPASS0. FullM10course/P2andhigherassessmentstofollow; localformatnotOB/VC/JCS/hostedissuer.
+
+## M10 checkpoint 2026-10-15 19:40 — частичная готовность
+
+Zero8 +Junior12 полных глав опубликованы manifest2026.10; trusted Go examples/57function references passed host-side content gate. Native all57 batch ещё выполняется, не считать завершённым. Reader+P1 files browser4PASS desktop/mobile19.1s+axe. P2reference actualisolatedPostgres18.6 fullHTTP/ownership/transactions/migrations/poolMaxConns1 PASS; actualresponses6schemas PASS OpenAPI3.1. Separateprojectworker staticfixes+unit/vet/race pass; nativeRUN/health+SCRAMaudit pass, test/submit/persistence/cleanupfullgate pending. FullM10 иadvancedM11 НЕ завершены. Подробные команды, незавершённые проверки и ownership в AGENT_HANDOFF.
+
+### M10 checkpoint 2026-10-15 19:55
+
+32полныеглавы published:Zero8/Junior12/Junior+12; 96exercises. ContentGoexamples/referencesPASS;57nativeZero/JuniorPASS,36Junior+batchещёвработе. P2actualPGHTTP+4SQLchapterfences+OpenAPI6responsesPASS. Separateworker44nativechecks+realSQLpersistedfixture/limitedrole+restart+cleanupPASS; cancel/SIGKILLrecoveryPASS. Fullbrowser22PASS6explicitSKIP7.2min plusP2native1PASS1skip10.2s andnewHTTP/SQLreaderthemes2PASS8.0s. Desktop/mobileP2screensvisuallyreviewed. Chapters13..20authoringandnewJunior/Junior+assessmentsstillpending, soM10notDONE. Detailedcommands/remainingjobs/honestfailedprobehistoryinAGENT_HANDOFF/docsvalidation.
+
+### M10 checkpoint 2026-10-16 00:50 — VALIDATING
+
+Все40глав/120упражнений реализованы,117новыхrefsactualsandboxPASS(57+36+24); всеGoexamplespassed. P2native44checks+actualSQL/session/restart/cleanup+recoveryPASS. Junior/Junior+exams20questions+3tasks, allcourse/project/priorranktransactionalevidence; actualnativechain+signedcredentialsPASS64.30s. Zero1.0.0hashfrozen. Policyv1confirmsautomaticacademycriteria, manualprojectqualityNOTconfirmedandremainsseparatemilestone; Seniorhumanreviewunchanged. Independentfunction/projectrunner/assessmentreviewsnoopenHigh/Medium. Full34browserandfinaltechnicalrerunsstillpending; doNOTmarkM10DONEuntilpassed. M11codeNOTstarted; missingecosystemversionsresearchdelegatedread-only.

@@ -1,0 +1,171 @@
+{
+  "id": "juniorplus-08",
+  "title": "Middleware",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-05",
+    "juniorplus-06",
+    "juniorplus-07"
+  ],
+  "estimated_minutes": 105,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Компоновать middleware с проверяемым порядком.",
+    "Добавлять request ID через внедрённый генератор.",
+    "Ограничивать body и исключать credentials из logs."
+  ],
+  "glossary": [
+    {
+      "term": "middleware",
+      "translation": "middleware",
+      "definition": "Handler wrapper для общей логики вокруг route handler."
+    },
+    {
+      "term": "request_id",
+      "translation": "request ID",
+      "definition": "Идентификатор корреляции одного обмена."
+    },
+    {
+      "term": "redaction",
+      "translation": "редактирование",
+      "definition": "Исключение чувствительных данных из записи."
+    },
+    {
+      "term": "body_limit",
+      "translation": "лимит тела",
+      "definition": "Максимальный размер HTTP request body."
+    },
+    {
+      "term": "access_log",
+      "translation": "access log",
+      "definition": "Ограниченное наблюдение о методе и результате запроса."
+    },
+    {
+      "term": "response_wrapper",
+      "translation": "обёртка ответа",
+      "definition": "Handler компонент, отслеживающий status или body."
+    }
+  ],
+  "markdown_file": "juniorplus-08.md",
+  "order": 28,
+  "exercises": [
+    {
+      "id": "juniorplus-08-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Добавь request ID в ответ",
+      "prompt": "Вызови внедрённый генератор на каждый запрос, установи X-Request-ID и ровно один раз вызови следующий handler. Не доверяй клиентскому header вместо генератора.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc WithRequestID(next http.Handler, newID func() string) http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "{\"Status\":204,\"RequestID\":\"test-1\"}\n{\"Status\":204,\"RequestID\":\"test-2\"}\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Публичный HTTP/error contract совпадает с условием.",
+        "Границы размера и некорректные входы безопасны, секреты не раскрываются."
+      ],
+      "self_check": [
+        {
+          "question": "Какие поля определяют результат?",
+          "answer": "Вызови внедрённый генератор на каждый запрос, установи X-Request-ID и ровно один раз вызови следующий handler. Не доверяй клиентскому header вместо генератора."
+        },
+        {
+          "question": "Что подтверждает deterministic test?",
+          "answer": "Только результат на заданных данных, не общую безопасность или production развертывание."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-08-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Запиши только безопасный access log",
+      "prompt": "Запиши method и итоговый status в io.Writer. Не добавляй path, query, headers, cookies и body. Проверяется отсутствие secret fixtures, а не форматирование пробелов.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nimport (\n\t\"net/http\"\n\t\"io\"\n)\n\nfunc RedactedAccessLog(next http.Handler, dst io.Writer) http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "{\"Status\":201,\"QueryLeak\":false,\"AuthLeak\":false,\"CookieLeak\":false,\"HasMethod\":true}\n{\"Status\":201,\"QueryLeak\":false,\"AuthLeak\":false,\"CookieLeak\":false,\"HasMethod\":true}\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Публичный HTTP/error contract совпадает с условием.",
+        "Границы размера и некорректные входы безопасны, секреты не раскрываются."
+      ],
+      "self_check": [
+        {
+          "question": "Какие поля определяют результат?",
+          "answer": "Запиши method и итоговый status в io.Writer. Не добавляй path, query, headers, cookies и body. Проверяется отсутствие secret fixtures, а не форматирование пробелов."
+        },
+        {
+          "question": "Что подтверждает deterministic test?",
+          "answer": "Только результат на заданных данных, не общую безопасность или production развертывание."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-08-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Ограничь чтение request body",
+      "prompt": "Лимит в 1..1 MiB. Прочитай максимум limit+1; ошибка чтения → 400, превышение → 413, иначе восстанови body для downstream handler. Не логируй body.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc LimitBody(next http.Handler, maxBytes int64) http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "{\"Status\":200,\"Body\":\"xxx\"}\n{\"Status\":200,\"Body\":\"xxxxx\"}\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Публичный HTTP/error contract совпадает с условием.",
+        "Границы размера и некорректные входы безопасны, секреты не раскрываются."
+      ],
+      "self_check": [
+        {
+          "question": "Какие поля определяют результат?",
+          "answer": "Лимит в 1..1 MiB. Прочитай максимум limit+1; ошибка чтения → 400, превышение → 413, иначе восстанови body для downstream handler. Не логируй body."
+        },
+        {
+          "question": "Что подтверждает deterministic test?",
+          "answer": "Только результат на заданных данных, не общую безопасность или production развертывание."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова главная граница темы?",
+      "answer": "Компоновать middleware с проверяемым порядком."
+    },
+    {
+      "question": "Что доказывает локальная функция?",
+      "answer": "Только явно проверенные детерминированные значения, не свойства сети или инфраструктуры."
+    },
+    {
+      "question": "Как воспроизвести проблему?",
+      "answer": "Свести её к одному request fixture и изменить один параметр за раз."
+    },
+    {
+      "question": "Что нельзя возвращать в HTTP ошибке?",
+      "answer": "Stack trace, текст SQL, file path, credential и секреты."
+    },
+    {
+      "question": "Как сравнивать JSON?",
+      "answer": "Сравнивать разобранные значения, а не порядок ключей или пробелы."
+    },
+    {
+      "question": "Нужен ли AI Tutor?",
+      "answer": "Нет, глава полностью доступна для самостоятельного прохождения."
+    }
+  ]
+}

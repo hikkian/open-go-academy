@@ -1,0 +1,46 @@
+{
+  "allowed_imports": [
+    "strings"
+  ],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Name string; Quantity int }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"isValidItem\" { case \"isValidItem\": out = isValidItem(Item{Name:in.Name,Quantity:in.Quantity}); if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-11-easy",
+  "private_expected": [
+    true,
+    false,
+    false,
+    true
+  ],
+  "private_input": [
+    {
+      "Name": " a ",
+      "Quantity": 1
+    },
+    {
+      "Name": "x",
+      "Quantity": 0
+    },
+    {
+      "Name": "x",
+      "Quantity": -1
+    },
+    {
+      "Name": "я",
+      "Quantity": 8
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "public_input": [
+    {
+      "Name": "pen",
+      "Quantity": 2
+    },
+    {
+      "Name": "",
+      "Quantity": 1
+    }
+  ],
+  "signature": "func isValidItem(item Item) bool"
+}

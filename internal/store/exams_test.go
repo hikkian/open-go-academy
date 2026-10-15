@@ -112,6 +112,91 @@ func TestExamPrerequisiteProfileAndFailDoNotAward(t *testing.T) {
 	}
 }
 
+func TestExamRankPrerequisiteRequiresPersistedSameProfileAward(t *testing.T) {
+	s, _ := newExamStore(t) // Includes XP and verified course progress, but no rank award.
+	if err := s.RegisterExam("junior-final", "1", "Junior", "junior-hash"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.StartExam("local", "junior-final", "1", "junior-token", nil, "Zero"); !errors.Is(err, ErrExamPrerequisites) {
+		t.Fatalf("XP/progress incorrectly satisfied Zero rank: %v", err)
+	}
+	// Legacy callers, including the Zero exam with no rank prerequisite, remain valid.
+	zero, err := s.StartExam("local", "zero-final", "1", "zero-token", nil)
+	if err != nil {
+		t.Fatalf("legacy Zero start: %v", err)
+	}
+	zero, err = s.ClaimExamAttempt("local", zero.ExamID, zero.ID, "zero-token", zero.Revision, `{}`, `{}`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.FinishExamAttempt("local", zero.ID, 100, true, `[]`); err != nil {
+		t.Fatal(err)
+	}
+	junior, err := s.StartExam("local", "junior-final", "1", "junior-token", nil, "Zero")
+	if err != nil {
+		t.Fatalf("persisted Zero award not accepted: %v", err)
+	}
+	if _, err = s.StartExam("other", "junior-final", "1", "another-token", nil, "Zero"); !errors.Is(err, ErrProfileNotFound) {
+		t.Fatalf("cross-profile request used local rank award: %v", err)
+	}
+	var evidence struct {
+		RankAwards map[string]rankAwardEvidence `json:"rank_awards"`
+	}
+	if err = json.Unmarshal([]byte(junior.EvidenceJSON), &evidence); err != nil {
+		t.Fatal(err)
+	}
+	proof := evidence.RankAwards["Zero"]
+	if proof.ExamID != "zero-final" || proof.Version != "1" || proof.AttemptID != zero.ID {
+		t.Fatalf("rank award evidence=%+v", proof)
+	}
+	junior, err = s.ClaimExamAttempt("local", junior.ExamID, junior.ID, "junior-token", junior.Revision, `{}`, `{}`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.db.Exec(`DELETE FROM rank_awards WHERE profile_id='local' AND rank='Zero'`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.FinishExamAttempt("local", junior.ID, 100, true, `[]`); err == nil {
+		t.Fatal("finish accepted after previous-rank award was removed")
+	}
+	stored, err := s.ExamAttempt("local", junior.ID)
+	if err != nil || stored.Status != "grading" {
+		t.Fatalf("failed award transaction changed attempt: %+v err=%v", stored, err)
+	}
+	awards, err := s.RankAwards("local")
+	if err != nil || len(awards) != 0 {
+		t.Fatalf("failed finish added rank award: %v %v", awards, err)
+	}
+}
+
+func TestExamRankPrerequisiteAwardMustRemainAtClaimAndBelongToProfile(t *testing.T) {
+	s, _ := newExamStore(t)
+	if err := s.RegisterExam("junior-final", "1", "Junior", "junior-hash"); err != nil {
+		t.Fatal(err)
+	}
+	zero, err := s.StartExam("local", "zero-final", "1", "zero-token", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	zero, err = s.ClaimExamAttempt("local", zero.ExamID, zero.ID, "zero-token", zero.Revision, `{}`, `{}`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.FinishExamAttempt("local", zero.ID, 100, true, `[]`); err != nil {
+		t.Fatal(err)
+	}
+	junior, err := s.StartExam("local", "junior-final", "1", "junior-token", nil, "Zero")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.db.Exec(`DELETE FROM rank_awards WHERE profile_id='local' AND rank='Zero'`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.ClaimExamAttempt("local", junior.ExamID, junior.ID, "junior-token", junior.Revision, `{}`, `{}`); err == nil {
+		t.Fatal("claim accepted after previous-rank award was removed")
+	}
+}
+
 func TestExamConcurrentStartClaimAndRecovery(t *testing.T) {
 	s, _ := newExamStore(t)
 	var wg sync.WaitGroup

@@ -1,0 +1,54 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Args []string; Flag string }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"hasFlag\" { case \"hasFlag\": out = hasFlag(in.Args,in.Flag); if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-10-easy",
+  "private_expected": [
+    true,
+    true,
+    false,
+    false
+  ],
+  "private_input": [
+    {
+      "Args": [
+        "--x",
+        "1"
+      ],
+      "Flag": "--x"
+    },
+    {
+      "Args": [
+        "--x",
+        "--x"
+      ],
+      "Flag": "--x"
+    },
+    {
+      "Args": [
+        "-x"
+      ],
+      "Flag": "--x"
+    },
+    {
+      "Args": [],
+      "Flag": ""
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "public_input": [
+    {
+      "Args": [
+        "--help"
+      ],
+      "Flag": "--help"
+    },
+    {
+      "Args": [],
+      "Flag": "--help"
+    }
+  ],
+  "signature": "func hasFlag(args []string, flag string) bool"
+}

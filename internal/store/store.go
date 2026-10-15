@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"academy/internal/projects"
 	_ "modernc.org/sqlite"
 )
 
@@ -349,7 +350,14 @@ func (s *Store) SaveProjectFiles(projectID string, files map[string]string) erro
 	if strings.TrimSpace(projectID) == "" {
 		return errors.New("project id is required")
 	}
-	if err := validateProjectFiles(files); err != nil {
+	if projectID == "p2" {
+		if err := projects.ValidateFor(projectID, files); err != nil {
+			return err
+		}
+		if err := validateProjectFilesWithLimits(files, projects.P2MaxFiles, projects.P2MaxBytes); err != nil {
+			return err
+		}
+	} else if err := validateProjectFiles(files); err != nil {
 		return err
 	}
 	if files == nil {
@@ -411,8 +419,12 @@ func (s *Store) SaveProjectFiles(projectID string, files map[string]string) erro
 }
 
 func validateProjectFiles(files map[string]string) error {
-	if len(files) > MaxProjectFiles {
-		return fmt.Errorf("project has %d files; limit is %d", len(files), MaxProjectFiles)
+	return validateProjectFilesWithLimits(files, MaxProjectFiles, MaxProjectSourceBytes)
+}
+
+func validateProjectFilesWithLimits(files map[string]string, maxFiles, maxBytes int) error {
+	if len(files) > maxFiles {
+		return fmt.Errorf("project has %d files; limit is %d", len(files), maxFiles)
 	}
 	total := 0
 	for filePath, source := range files {
@@ -421,8 +433,8 @@ func validateProjectFiles(files map[string]string) error {
 		}
 		total += len([]byte(source))
 	}
-	if total > MaxProjectSourceBytes {
-		return fmt.Errorf("project source is %d bytes; limit is %d", total, MaxProjectSourceBytes)
+	if total > maxBytes {
+		return fmt.Errorf("project source is %d bytes; limit is %d", total, maxBytes)
 	}
 	return nil
 }

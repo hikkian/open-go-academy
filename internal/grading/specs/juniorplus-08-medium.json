@@ -1,0 +1,70 @@
+{
+  "id": "juniorplus-08-medium",
+  "signature": "func RedactedAccessLog(next http.Handler, dst io.Writer) http.Handler",
+  "allowed_imports": [
+    "fmt",
+    "io",
+    "net/http"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n\t\"net/http\"\n\t\"net/http/httptest\"\n\t\"strings\"\n)\n\ntype input struct {\n\tMethod string\n\tPath string\n\tBody string\n\tSecret string\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nvar log strings.Builder;h:=RedactedAccessLog(http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){w.WriteHeader(201)}),&log);req:=httptest.NewRequest(in.Method,in.Path+\"?token=\"+in.Secret,strings.NewReader(in.Body));req.Header.Set(\"Authorization\",\"Bearer \"+in.Secret);req.AddCookie(&http.Cookie{Name:\"session\",Value:in.Secret});rr:=httptest.NewRecorder();h.ServeHTTP(rr,req);out=struct{Status int;QueryLeak bool;AuthLeak bool;CookieLeak bool;HasMethod bool}{rr.Code,strings.Contains(log.String(),in.Secret),strings.Contains(log.String(),\"Bearer \"+in.Secret),strings.Contains(log.String(),\"session=\"+in.Secret),strings.Contains(log.String(),\"method=\"+in.Method)}\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Method": "GET",
+      "Path": "/links",
+      "Body": "",
+      "Secret": "fixture-query"
+    },
+    {
+      "Method": "POST",
+      "Path": "/links",
+      "Body": "x",
+      "Secret": "fixture-auth"
+    }
+  ],
+  "public_expected": [
+    {
+      "Status": 201,
+      "QueryLeak": false,
+      "AuthLeak": false,
+      "CookieLeak": false,
+      "HasMethod": true
+    },
+    {
+      "Status": 201,
+      "QueryLeak": false,
+      "AuthLeak": false,
+      "CookieLeak": false,
+      "HasMethod": true
+    }
+  ],
+  "private_input": [
+    {
+      "Method": "DELETE",
+      "Path": "/links/private",
+      "Body": "private-body",
+      "Secret": "fixture-cookie"
+    },
+    {
+      "Method": "GET",
+      "Path": "/x",
+      "Body": "",
+      "Secret": "long-secret"
+    }
+  ],
+  "private_expected": [
+    {
+      "Status": 201,
+      "QueryLeak": false,
+      "AuthLeak": false,
+      "CookieLeak": false,
+      "HasMethod": true
+    },
+    {
+      "Status": 201,
+      "QueryLeak": false,
+      "AuthLeak": false,
+      "CookieLeak": false,
+      "HasMethod": true
+    }
+  ]
+}

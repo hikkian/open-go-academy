@@ -1,0 +1,73 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []struct{ Left map[string]int; Right map[string]int }\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; out = mergeMax(in.Left, in.Right); if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-02-hard",
+  "private_expected": [
+    {
+      "x": -2
+    },
+    {
+      "x": 7,
+      "y": 3
+    },
+    {
+      "k": 0
+    },
+    {
+      "": 4
+    }
+  ],
+  "private_input": [
+    {
+      "Left": null,
+      "Right": {
+        "x": -2
+      }
+    },
+    {
+      "Left": {
+        "x": 7
+      },
+      "Right": {
+        "y": 3
+      }
+    },
+    {
+      "Left": {
+        "k": 0
+      },
+      "Right": {
+        "k": -1
+      }
+    },
+    {
+      "Left": {},
+      "Right": {
+        "": 4
+      }
+    }
+  ],
+  "public_expected": [
+    {
+      "a": 5,
+      "b": 1
+    },
+    {}
+  ],
+  "public_input": [
+    {
+      "Left": {
+        "a": 2
+      },
+      "Right": {
+        "a": 5,
+        "b": 1
+      }
+    },
+    {
+      "Left": {},
+      "Right": {}
+    }
+  ],
+  "signature": "func mergeMax(left, right map[string]int) map[string]int"
+}

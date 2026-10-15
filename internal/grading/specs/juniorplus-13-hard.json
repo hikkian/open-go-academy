@@ -1,0 +1,47 @@
+{
+  "id": "juniorplus-13-hard",
+  "signature": "func RunRepository(ctx context.Context, load func(context.Context) error) string",
+  "allowed_imports": [
+    "context",
+    "errors"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n\t\"context\"\n\t\"errors\"\n)\n\ntype input struct {\n\tCancelled bool\n\tFail bool\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nctx,cancel:=context.WithCancel(context.Background());if in.Cancelled{cancel()};load:=func(got context.Context)error{if in.Fail{return errors.New(\"fixture failure\")};return got.Err()};out=RunRepository(ctx,load);cancel()\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Cancelled": false,
+      "Fail": false
+    },
+    {
+      "Cancelled": true,
+      "Fail": false
+    }
+  ],
+  "public_expected": [
+    "ok",
+    "cancelled"
+  ],
+  "private_input": [
+    {
+      "Cancelled": false,
+      "Fail": true
+    },
+    {
+      "Cancelled": true,
+      "Fail": true
+    },
+    {
+      "Cancelled": true,
+      "Fail": false
+    },
+    {
+      "Cancelled": false,
+      "Fail": false
+    }
+  ],
+  "private_expected": [
+    "repository_error",
+    "repository_error",
+    "cancelled",
+    "ok"
+  ]
+}

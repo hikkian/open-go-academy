@@ -1,0 +1,56 @@
+{
+  "id": "juniorplus-02-medium",
+  "signature": "func NextNetworkStage(dnsOK, tcpOK, tlsOK, httpOK bool) string",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tDNSOK bool\n\tTCPOK bool\n\tTLSOK bool\n\tHTTPOK bool\n}\n\nfunc main() {\n var cases []input\n if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }\n enc:=json.NewEncoder(os.Stdout)\n for _, in:=range cases {\n  var out any\n  out=NextNetworkStage(in.DNSOK,in.TCPOK,in.TLSOK,in.HTTPOK)\n  if err:=enc.Encode(out); err!=nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "DNSOK": false,
+      "TCPOK": false,
+      "TLSOK": false,
+      "HTTPOK": false
+    },
+    {
+      "DNSOK": true,
+      "TCPOK": false,
+      "TLSOK": false,
+      "HTTPOK": false
+    }
+  ],
+  "public_expected": [
+    "dns",
+    "tcp"
+  ],
+  "private_input": [
+    {
+      "DNSOK": true,
+      "TCPOK": true,
+      "TLSOK": false,
+      "HTTPOK": false
+    },
+    {
+      "DNSOK": true,
+      "TCPOK": true,
+      "TLSOK": true,
+      "HTTPOK": false
+    },
+    {
+      "DNSOK": true,
+      "TCPOK": true,
+      "TLSOK": true,
+      "HTTPOK": true
+    },
+    {
+      "DNSOK": false,
+      "TCPOK": true,
+      "TLSOK": true,
+      "HTTPOK": true
+    }
+  ],
+  "private_expected": [
+    "tls",
+    "http",
+    "complete",
+    "dns"
+  ]
+}

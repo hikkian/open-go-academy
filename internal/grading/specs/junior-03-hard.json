@@ -1,0 +1,26 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []string\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; out = reverseRunes(in); if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-03-hard",
+  "private_expected": [
+    "🙂oG",
+    "ё",
+    "́e",
+    "好你"
+  ],
+  "private_input": [
+    "Go🙂",
+    "ё",
+    "é",
+    "你好"
+  ],
+  "public_expected": [
+    "ток",
+    ""
+  ],
+  "public_input": [
+    "кот",
+    ""
+  ],
+  "signature": "func reverseRunes(text string) string"
+}

@@ -1,0 +1,17 @@
+
+> e2e
+> playwright test --grep P2 real isolated
+
+[WebServer] 2026/10/15 19:49:27 INFO academy local API ready address=127.0.0.1:8081
+
+Running 2 tests using 1 worker
+
+(node:286695) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/p2-workspace.spec.ts:19:5 › P2 real isolated API check persists evidence without assigning rank (8.1s)
+(node:289244) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  -  2 [mobile] › tests/p2-workspace.spec.ts:19:5 › P2 real isolated API check persists evidence without assigning rank
+
+  1 skipped
+  1 passed (10.2s)

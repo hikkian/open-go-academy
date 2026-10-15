@@ -1,0 +1,66 @@
+{
+  "id": "juniorplus-08-hard",
+  "signature": "func LimitBody(next http.Handler, maxBytes int64) http.Handler",
+  "allowed_imports": [
+    "bytes",
+    "io",
+    "net/http"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n\t\"net/http\"\n\t\"net/http/httptest\"\n\t\"strings\"\n\t\"io\"\n)\n\ntype input struct {\n\tLimit int64\n\tSize int\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nbody:=strings.Repeat(\"x\",in.Size);h:=LimitBody(http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){b,e:=io.ReadAll(r.Body);if e!=nil{http.Error(w,\"invalid request body\",400);return};w.WriteHeader(200);_,_=w.Write(b)}),in.Limit);rr:=httptest.NewRecorder();h.ServeHTTP(rr,httptest.NewRequest(\"POST\",\"/upload\",strings.NewReader(body)));out=struct{Status int;Body string}{rr.Code,rr.Body.String()}\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Limit": 4,
+      "Size": 3
+    },
+    {
+      "Limit": 5,
+      "Size": 5
+    }
+  ],
+  "public_expected": [
+    {
+      "Status": 200,
+      "Body": "xxx"
+    },
+    {
+      "Status": 200,
+      "Body": "xxxxx"
+    }
+  ],
+  "private_input": [
+    {
+      "Limit": 4,
+      "Size": 5
+    },
+    {
+      "Limit": 1,
+      "Size": 2
+    },
+    {
+      "Limit": 0,
+      "Size": 0
+    },
+    {
+      "Limit": 1048577,
+      "Size": 1
+    }
+  ],
+  "private_expected": [
+    {
+      "Status": 413,
+      "Body": "request body too large\n"
+    },
+    {
+      "Status": 413,
+      "Body": "request body too large\n"
+    },
+    {
+      "Status": 500,
+      "Body": "invalid body limit\n"
+    },
+    {
+      "Status": 500,
+      "Body": "invalid body limit\n"
+    }
+  ]
+}

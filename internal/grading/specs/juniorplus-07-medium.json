@@ -1,0 +1,40 @@
+{
+  "id": "juniorplus-07-medium",
+  "signature": "func ValidateTarget(raw string) string",
+  "allowed_imports": [
+    "net/url"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tRaw string\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=ValidateTarget(in.Raw)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Raw": "https://go.dev/"
+    },
+    {
+      "Raw": "http://example.test/docs"
+    }
+  ],
+  "public_expected": [
+    "",
+    ""
+  ],
+  "private_input": [
+    {
+      "Raw": "javascript:alert(1)"
+    },
+    {
+      "Raw": "/relative"
+    },
+    {
+      "Raw": "https://u:p@example.test/"
+    },
+    {
+      "Raw": "https://example.test/#frag"
+    }
+  ],
+  "private_expected": [
+    "unsupported_scheme",
+    "invalid_target",
+    "invalid_target",
+    "invalid_target"
+  ]
+}

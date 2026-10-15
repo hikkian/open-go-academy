@@ -1,0 +1,34 @@
+{
+  "id": "junior-exam-first-unique-rune",
+  "signature": "func FirstUniqueRune(text string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main(){ var cases []struct{ Text string }; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(FirstUniqueRune(in.Text)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "Text": "go"
+    },
+    {
+      "Text": "aabbc"
+    }
+  ],
+  "public_expected": [
+    "g",
+    "c"
+  ],
+  "private_input": [
+    {
+      "Text": "🙂a🙂b"
+    },
+    {
+      "Text": "ééøx"
+    },
+    {
+      "Text": ""
+    }
+  ],
+  "private_expected": [
+    "a",
+    "ø",
+    ""
+  ]
+}

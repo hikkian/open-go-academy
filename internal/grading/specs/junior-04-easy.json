@@ -1,0 +1,99 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []struct{ Users []User; ID int }\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; v, ok := findUser(in.Users, in.ID); if ok { out = []any{v, true} } else { out = []any{nil, false} }; if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-04-easy",
+  "private_expected": [
+    [
+      {
+        "ID": 7,
+        "Name": "first"
+      },
+      true
+    ],
+    [
+      null,
+      false
+    ],
+    [
+      null,
+      false
+    ],
+    [
+      {
+        "ID": 0,
+        "Name": "zero"
+      },
+      true
+    ]
+  ],
+  "private_input": [
+    {
+      "ID": 7,
+      "Users": [
+        {
+          "ID": 7,
+          "Name": "first"
+        },
+        {
+          "ID": 7,
+          "Name": "second"
+        }
+      ]
+    },
+    {
+      "ID": 2,
+      "Users": [
+        {
+          "ID": 1,
+          "Name": "A"
+        }
+      ]
+    },
+    {
+      "ID": 9,
+      "Users": null
+    },
+    {
+      "ID": 0,
+      "Users": [
+        {
+          "ID": 0,
+          "Name": "zero"
+        }
+      ]
+    }
+  ],
+  "public_expected": [
+    [
+      {
+        "ID": 2,
+        "Name": "B"
+      },
+      true
+    ],
+    [
+      null,
+      false
+    ]
+  ],
+  "public_input": [
+    {
+      "ID": 2,
+      "Users": [
+        {
+          "ID": 1,
+          "Name": "A"
+        },
+        {
+          "ID": 2,
+          "Name": "B"
+        }
+      ]
+    },
+    {
+      "ID": 4,
+      "Users": []
+    }
+  ],
+  "signature": "func findUser(users []User, id int) (*User, bool)"
+}

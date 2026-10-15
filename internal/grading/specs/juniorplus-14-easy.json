@@ -1,0 +1,46 @@
+{
+  "id": "juniorplus-14-easy",
+  "signature": "func IsJSONSuccessResponse(status int, contentType string) bool",
+  "allowed_imports": [
+    "strings"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tStatus int\n\tContentType string\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=IsJSONSuccessResponse(in.Status,in.ContentType)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Status": 200,
+      "ContentType": "application/json"
+    },
+    {
+      "Status": 200,
+      "ContentType": "application/json; charset=utf-8"
+    }
+  ],
+  "public_expected": [
+    true,
+    true
+  ],
+  "private_input": [
+    {
+      "Status": 201,
+      "ContentType": "application/json"
+    },
+    {
+      "Status": 200,
+      "ContentType": "text/plain"
+    },
+    {
+      "Status": 200,
+      "ContentType": "Application/JSON; charset=utf-8"
+    },
+    {
+      "Status": 200,
+      "ContentType": "application/jsonp"
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    true,
+    false
+  ]
+}

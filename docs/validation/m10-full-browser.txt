@@ -1,0 +1,43 @@
+
+> e2e
+> playwright test
+
+[WebServer] 2026/10/15 19:42:04 INFO academy local API ready address=127.0.0.1:8081
+
+Running 28 tests using 1 worker
+
+(node:158192) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/curriculum.spec.ts:5:5 › published Zero chapters and prerequisite guidance are usable (1.9s)
+  ✓   2 [desktop] › tests/curriculum.spec.ts:6:5 › native function diagnostics, private grading, replay XP and drafts (41.3s)
+  ✓   3 [desktop] › tests/exams.spec.ts:8:5 › exam catalog shows real eligibility and local trust boundaries (652ms)
+  ✓   4 [desktop] › tests/exams.spec.ts:9:5 › exam drafts conflict safely, failure denies rank, real pass awards only Zero (2.0m)
+  ✓   5 [desktop] › tests/learning.spec.ts:8:5 › profile, roadmap, safe content, themes, drafts and responsive layout (3.6s)
+  ✓   6 [desktop] › tests/learning.spec.ts:20:5 › real Go errors, output, server grading, no AI and idempotent XP (29.6s)
+  ✓   7 [desktop] › tests/learning.spec.ts:30:5 › failed draft write has explicit recovery and preserves code (2.4s)
+  ✓   8 [desktop] › tests/learning.spec.ts:35:5 › course search and server criteria/skills reflect only verified exercises (1.6s)
+  ✓   9 [desktop] › tests/p2-workspace.spec.ts:4:5 › P2 nested workspace, locked policy, snapshots and export (4.5s)
+  ✓  10 [desktop] › tests/passport.spec.ts:3:5 › passport private defaults, themes and responsive accessibility (1.9s)
+  ✓  11 [desktop] › tests/projects.spec.ts:6:5 › project edits multiple files, persists, snapshots restore and ZIP exports (6.8s)
+  ✓  12 [desktop] › tests/projects.spec.ts:15:5 › P1 real run, Go tests and independent functional evaluation (3.1m)
+  ✓  13 [desktop] › tests/tutor.spec.ts:4:5 › tutor privacy and no-AI remain usable (673ms)
+  -  14 [desktop] › tests/tutor.spec.ts:5:5 › tutor actual HTTP provider, consent, fallback, failure and quota
+(node:285026) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  15 [mobile] › tests/curriculum.spec.ts:5:5 › published Zero chapters and prerequisite guidance are usable (1.8s)
+  -  16 [mobile] › tests/curriculum.spec.ts:6:5 › native function diagnostics, private grading, replay XP and drafts
+  ✓  17 [mobile] › tests/exams.spec.ts:8:5 › exam catalog shows real eligibility and local trust boundaries (683ms)
+  -  18 [mobile] › tests/exams.spec.ts:9:5 › exam drafts conflict safely, failure denies rank, real pass awards only Zero
+  ✓  19 [mobile] › tests/learning.spec.ts:8:5 › profile, roadmap, safe content, themes, drafts and responsive layout (3.7s)
+  -  20 [mobile] › tests/learning.spec.ts:20:5 › real Go errors, output, server grading, no AI and idempotent XP
+  ✓  21 [mobile] › tests/learning.spec.ts:30:5 › failed draft write has explicit recovery and preserves code (2.3s)
+  ✓  22 [mobile] › tests/learning.spec.ts:35:5 › course search and server criteria/skills reflect only verified exercises (1.5s)
+  ✓  23 [mobile] › tests/p2-workspace.spec.ts:4:5 › P2 nested workspace, locked policy, snapshots and export (4.3s)
+  ✓  24 [mobile] › tests/passport.spec.ts:3:5 › passport private defaults, themes and responsive accessibility (1.7s)
+  ✓  25 [mobile] › tests/projects.spec.ts:6:5 › project edits multiple files, persists, snapshots restore and ZIP exports (6.6s)
+  -  26 [mobile] › tests/projects.spec.ts:15:5 › P1 real run, Go tests and independent functional evaluation
+  ✓  27 [mobile] › tests/tutor.spec.ts:4:5 › tutor privacy and no-AI remain usable (664ms)
+  -  28 [mobile] › tests/tutor.spec.ts:5:5 › tutor actual HTTP provider, consent, fallback, failure and quota
+
+  6 skipped
+  22 passed (7.2m)

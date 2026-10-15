@@ -1,0 +1,174 @@
+{
+  "id": "juniorplus-14",
+  "title": "HTTP и PostgreSQL tests",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-05",
+    "juniorplus-06",
+    "juniorplus-07",
+    "juniorplus-08",
+    "juniorplus-09",
+    "juniorplus-10",
+    "juniorplus-11",
+    "juniorplus-12",
+    "juniorplus-13"
+  ],
+  "estimated_minutes": 115,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Различать HTTP/fake проверки и реальные PostgreSQL tests.",
+    "Проверять migrations, rollback и cleanup disposable fixture.",
+    "Создавать детерминированные HTTP cases."
+  ],
+  "glossary": [
+    {
+      "term": "integration_test",
+      "translation": "интеграционный тест",
+      "definition": "Проверяет взаимодействие с реальной зависимостью."
+    },
+    {
+      "term": "fixture",
+      "translation": "фикстура",
+      "definition": "Изолированные данные и ресурсы одного теста."
+    },
+    {
+      "term": "rollback",
+      "translation": "откат",
+      "definition": "Отмена изменений неуспешной транзакции."
+    },
+    {
+      "term": "test_isolation",
+      "translation": "изоляция теста",
+      "definition": "Независимость от других данных и порядка."
+    },
+    {
+      "term": "deterministic_test",
+      "translation": "детерминированный тест",
+      "definition": "Повторяемая проверка с заданными входами."
+    },
+    {
+      "term": "table_driven_test",
+      "translation": "табличный тест",
+      "definition": "Именованный набор входов с общей setup частью."
+    }
+  ],
+  "markdown_file": "juniorplus-14.md",
+  "order": 34,
+  "exercises": [
+    {
+      "id": "juniorplus-14-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Проверь JSON response contract",
+      "prompt": "true только когда status 200 и media type case-insensitive application/json, в том числе с параметром charset. Это assertion helper, не HTTP вызов.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc IsJSONSuccessResponse(status int, contentType string) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\ntrue\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "true только когда status 200 и media type case-insensitive application/json, в том числе с параметром charset. Это assertion helper, не HTTP вызов."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-14-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Задай HTTP ожидаемый CRUD status",
+      "prompt": "GET found→200/missing→404; POST→201; PUT/PATCH found→200/missing→404; DELETE found→204/missing→404; иной method→405.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CRUDStatus(method string, resourceFound bool) int {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "200\n201\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "GET found→200/missing→404; POST→201; PUT/PATCH found→200/missing→404; DELETE found→204/missing→404; иной method→405."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-14-hard",
+      "kind": "function",
+      "skills": [
+        "sql",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Оцени rollback и cleanup evidence",
+      "prompt": "Не закрыта fixture→cleanup_failed; operation error + rollback seen→rollback_verified; error without rollback→rollback_missing; rollback without error→unexpected_rollback; otherwise committed. Функция классифицирует evidence и не выполняет транзакцию.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc TransactionTestOutcome(operationFailed, rollbackObserved, fixtureCleaned bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"rollback_verified\"\n\"committed\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "Не закрыта fixture→cleanup_failed; operation error + rollback seen→rollback_verified; error without rollback→rollback_missing; rollback without error→unexpected_rollback; otherwise committed. Функция классифицирует evidence и не выполняет транзакцию."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова граница или инвариант темы?",
+      "answer": "Различать HTTP/fake проверки и реальные PostgreSQL tests."
+    },
+    {
+      "question": "Что доказывает функциональный test?",
+      "answer": "Только заданные наблюдаемые результаты на перечисленных входах."
+    },
+    {
+      "question": "Как воспроизвести отказ?",
+      "answer": "Создать один маленький fixture и изменить один параметр."
+    },
+    {
+      "question": "Как обрабатывать внутреннюю ошибку?",
+      "answer": "Нормализовать её в стабильную безопасную категорию."
+    },
+    {
+      "question": "Почему важны negative cases?",
+      "answer": "Успешный случай не проверяет deny, rollback, cleanup или expiry."
+    },
+    {
+      "question": "Обязателен ли AI Tutor?",
+      "answer": "Нет, материал можно пройти самостоятельно."
+    }
+  ]
+}

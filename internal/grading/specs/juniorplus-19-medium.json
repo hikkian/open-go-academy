@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-19-medium",
+  "signature": "func OwnerAccess(authenticated bool, sessionOwner, resourceOwner string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {Authenticated bool; SessionOwner string; ResourceOwner string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := OwnerAccess(in.Authenticated,in.SessionOwner,in.ResourceOwner);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Authenticated": false,
+      "SessionOwner": "u1",
+      "ResourceOwner": "u1"
+    },
+    {
+      "Authenticated": true,
+      "SessionOwner": "u1",
+      "ResourceOwner": "u2"
+    }
+  ],
+  "public_expected": [
+    "unauthorized",
+    "not_found"
+  ],
+  "private_input": [
+    {
+      "Authenticated": true,
+      "SessionOwner": "u1",
+      "ResourceOwner": "u1"
+    },
+    {
+      "Authenticated": true,
+      "SessionOwner": "",
+      "ResourceOwner": ""
+    }
+  ],
+  "private_expected": [
+    "allow",
+    "not_found"
+  ]
+}

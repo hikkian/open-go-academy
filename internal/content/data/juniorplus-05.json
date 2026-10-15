@@ -1,0 +1,169 @@
+{
+  "id": "juniorplus-05",
+  "title": "Первый HTTP-сервер на net/http",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-04"
+  ],
+  "estimated_minutes": 110,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Создавать handler стандартной библиотекой.",
+    "Согласовывать статус, JSON headers и body.",
+    "Проверять handlers через httptest без listener."
+  ],
+  "glossary": [
+    {
+      "term": "net_http",
+      "translation": "net/http",
+      "definition": "Стандартный пакет HTTP-клиента и сервера."
+    },
+    {
+      "term": "handler",
+      "translation": "обработчик",
+      "definition": "Компонент, реализующий ServeHTTP."
+    },
+    {
+      "term": "serve_mux",
+      "translation": "ServeMux",
+      "definition": "Выбирает обработчик для маршрута."
+    },
+    {
+      "term": "response_writer",
+      "translation": "записыватель ответа",
+      "definition": "Интерфейс для HTTP headers и body."
+    },
+    {
+      "term": "httptest",
+      "translation": "httptest",
+      "definition": "Инструменты проверки HTTP локально."
+    },
+    {
+      "term": "listener",
+      "translation": "слушатель",
+      "definition": "Открытая сетевая точка, принимающая соединения."
+    }
+  ],
+  "markdown_file": "juniorplus-05.md",
+  "order": 25,
+  "exercises": [
+    {
+      "id": "juniorplus-05-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Ответь на health запрос",
+      "prompt": "GET /health → 200 JSON {status:ok}; другой method на пути → 405 и Allow: GET; неизвестный path → 404.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc NewHealthHandler() http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "{\"Status\":200,\"Body\":\"{\\\"status\\\":\\\"ok\\\"}\\n\",\"ContentType\":\"application/json; charset=utf-8\",\"Location\":\"\",\"Allow\":\"\"}\n{\"Status\":405,\"Body\":\"method not allowed\\n\",\"ContentType\":\"text/plain; charset=utf-8\",\"Location\":\"\",\"Allow\":\"GET\"}\n",
+      "criteria": [
+        "Точная сигнатура компилируется.",
+        "Проверяются HTTP method, path, status, headers и body по контракту.",
+        "Неверные случаи обрабатываются безопасно и детерминированно."
+      ],
+      "self_check": [
+        {
+          "question": "Что задаёт ожидаемое поведение?",
+          "answer": "GET /health → 200 JSON {status:ok}; другой method на пути → 405 и Allow: GET; неизвестный path → 404."
+        },
+        {
+          "question": "Что доказывает httptest?",
+          "answer": "Только наблюдаемое поведение handler в локальном процессе; не внешний listener или сервис."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-05-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Проверь JSON echo handler",
+      "prompt": "POST /echo декодирует объект с непустым message и возвращает JSON 200. Неверный method → 405/Allow POST; malformed, пустой или неизвестный field → 400.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc NewJSONEchoHandler() http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "{\"Status\":200,\"Body\":\"{\\\"message\\\":\\\"hello\\\"}\\n\",\"ContentType\":\"application/json; charset=utf-8\",\"Location\":\"\",\"Allow\":\"\"}\n{\"Status\":405,\"Body\":\"method not allowed\\n\",\"ContentType\":\"text/plain; charset=utf-8\",\"Location\":\"\",\"Allow\":\"POST\"}\n",
+      "criteria": [
+        "Точная сигнатура компилируется.",
+        "Проверяются HTTP method, path, status, headers и body по контракту.",
+        "Неверные случаи обрабатываются безопасно и детерминированно."
+      ],
+      "self_check": [
+        {
+          "question": "Что задаёт ожидаемое поведение?",
+          "answer": "POST /echo декодирует объект с непустым message и возвращает JSON 200. Неверный method → 405/Allow POST; malformed, пустой или неизвестный field → 400."
+        },
+        {
+          "question": "Что доказывает httptest?",
+          "answer": "Только наблюдаемое поведение handler в локальном процессе; не внешний listener или сервис."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-05-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Отдай согласованную коллекцию",
+      "prompt": "GET /links возвращает один фиксированный JSON список со статусом 200. Другой method → 405/Allow GET; неизвестный path → 404. Хранилище не симулируется.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc NewLinksCollectionHandler() http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "{\"Status\":200,\"Body\":\"[{\\\"alias\\\":\\\"go\\\",\\\"target\\\":\\\"https://go.dev/\\\"}]\\n\",\"ContentType\":\"application/json; charset=utf-8\",\"Location\":\"\",\"Allow\":\"\"}\n{\"Status\":405,\"Body\":\"method not allowed\\n\",\"ContentType\":\"text/plain; charset=utf-8\",\"Location\":\"\",\"Allow\":\"GET\"}\n",
+      "criteria": [
+        "Точная сигнатура компилируется.",
+        "Проверяются HTTP method, path, status, headers и body по контракту.",
+        "Неверные случаи обрабатываются безопасно и детерминированно."
+      ],
+      "self_check": [
+        {
+          "question": "Что задаёт ожидаемое поведение?",
+          "answer": "GET /links возвращает один фиксированный JSON список со статусом 200. Другой method → 405/Allow GET; неизвестный path → 404. Хранилище не симулируется."
+        },
+        {
+          "question": "Что доказывает httptest?",
+          "answer": "Только наблюдаемое поведение handler в локальном процессе; не внешний listener или сервис."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова граница темы?",
+      "answer": "Создавать handler стандартной библиотекой."
+    },
+    {
+      "question": "Что доказывает локальный тест?",
+      "answer": "Только случаи, запущенные в httptest, не сетевую доступность."
+    },
+    {
+      "question": "Как проверить неверный route или method?",
+      "answer": "Отдельно подать fixture и сверить status, headers, body."
+    },
+    {
+      "question": "Как сравнить JSON устойчиво?",
+      "answer": "Декодировать JSON и сравнивать значения полей, не пробелы."
+    },
+    {
+      "question": "Как отдавать внутренние ошибки?",
+      "answer": "Без SQL, stack trace, пути или секрета в клиентском ответе."
+    },
+    {
+      "question": "Нужен ли AI Tutor?",
+      "answer": "Нет, все критерии доступны для самостоятельной проверки."
+    }
+  ]
+}

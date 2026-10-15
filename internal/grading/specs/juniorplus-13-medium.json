@@ -1,0 +1,48 @@
+{
+  "id": "juniorplus-13-medium",
+  "signature": "func CanCreateSlug(repo SlugRepository, slug string) bool",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype memorySlugRepository struct { Existing []string }\nfunc(m memorySlugRepository)Exists(s string)bool{for _,v:=range m.Existing{if v==s{return true}};return false}\ntype input struct {\n\tSlug string\n\tExisting []string\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nrepo:=memorySlugRepository{Existing:in.Existing};out=CanCreateSlug(repo,in.Slug)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Slug": "new",
+      "Existing": [
+        "taken"
+      ]
+    },
+    {
+      "Slug": "taken",
+      "Existing": [
+        "taken"
+      ]
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "Slug": "",
+      "Existing": []
+    },
+    {
+      "Slug": "bad/slash",
+      "Existing": []
+    },
+    {
+      "Slug": "valid-2",
+      "Existing": []
+    },
+    {
+      "Slug": "toolong-alias-1234567890123456789012345",
+      "Existing": []
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    true,
+    false
+  ]
+}

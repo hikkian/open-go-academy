@@ -1,0 +1,62 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases [][]int\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; out = unique(in); if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-02-medium",
+  "private_expected": [
+    [
+      5
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      0,
+      -1
+    ],
+    [
+      9
+    ]
+  ],
+  "private_input": [
+    [
+      5,
+      5,
+      5
+    ],
+    [
+      2,
+      1,
+      2,
+      1,
+      2
+    ],
+    [
+      0,
+      -1,
+      0
+    ],
+    [
+      9
+    ]
+  ],
+  "public_expected": [
+    [
+      3,
+      1,
+      2
+    ],
+    []
+  ],
+  "public_input": [
+    [
+      3,
+      1,
+      3,
+      2,
+      1
+    ],
+    []
+  ],
+  "signature": "func unique(values []int) []int"
+}

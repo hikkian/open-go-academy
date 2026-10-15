@@ -1,0 +1,34 @@
+{
+  "id": "juniorplus-18-medium",
+  "signature": "func MayRemoveVolume(disposableProject, exactProjectVolume bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {DisposableProject bool; ExactProjectVolume bool}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := MayRemoveVolume(in.DisposableProject,in.ExactProjectVolume);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "DisposableProject": true,
+      "ExactProjectVolume": true
+    },
+    {
+      "DisposableProject": false,
+      "ExactProjectVolume": true
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "DisposableProject": true,
+      "ExactProjectVolume": false
+    },
+    {
+      "DisposableProject": false,
+      "ExactProjectVolume": false
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

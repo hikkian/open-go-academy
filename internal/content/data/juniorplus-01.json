@@ -1,0 +1,166 @@
+{
+  "id": "juniorplus-01",
+  "title": "Клиент, сервер и путь HTTP",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "junior-12"
+  ],
+  "estimated_minutes": 90,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Разбирать обмен по методу, пути, заголовкам, статусу и телу.",
+    "Проверять HTTP контракт в памяти без listener.",
+    "Разделять отправку запроса и подтверждение результата операции."
+  ],
+  "glossary": [
+    {
+      "term": "client",
+      "translation": "клиент",
+      "definition": "Начинает конкретный HTTP запрос."
+    },
+    {
+      "term": "server",
+      "translation": "сервер",
+      "definition": "Принимает запрос и формирует ответ."
+    },
+    {
+      "term": "request",
+      "translation": "запрос",
+      "definition": "Метод, путь, заголовки и необязательное тело."
+    },
+    {
+      "term": "response",
+      "translation": "ответ",
+      "definition": "Статус, заголовки и необязательное тело."
+    },
+    {
+      "term": "header",
+      "translation": "заголовок",
+      "definition": "Именованная метаинформация HTTP сообщения."
+    },
+    {
+      "term": "status_code",
+      "translation": "код состояния",
+      "definition": "Число наблюдаемого результата обмена."
+    }
+  ],
+  "markdown_file": "juniorplus-01.md",
+  "order": 21,
+  "exercises": [
+    {
+      "id": "juniorplus-01-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Классифицируй HTTP status",
+      "prompt": "200–299 → success; 300–399 → redirect; 400–499 → client-error; 500–599 → server-error; остальные → other.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ClassifyStatus(code int) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"success\"\n\"client-error\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "200–299 → success; 300–399 → redirect; 400–499 → client-error; 500–599 → server-error; остальные → other."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-01-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Составь безопасный снимок запроса",
+      "prompt": "Верни METHOD PATH host=HOST headers=N body=B. Пустые поля или отрицательные счётчики дают invalid. Не выводи body и значения секретных headers.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RequestSummary(method, path, host string, headerCount, bodyBytes int) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"POST /links host=api.example.test headers=2 body=41\"\n\"GET /health host=localhost headers=0 body=0\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "Верни METHOD PATH host=HOST headers=N body=B. Пустые поля или отрицательные счётчики дают invalid. Не выводи body и значения секретных headers."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-01-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Сверь статус и заголовки ответа",
+      "prompt": "201 + JSON Content-Type → created; 3xx + Location → redirect; 404 → resource-missing; прочий 4xx → client-error; 5xx → server-error; другое → inconsistent. Статус не доказывает сохранение записи.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ClassifyExchange(status int, contentType string, hasLocation bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"created\"\n\"resource-missing\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "201 + JSON Content-Type → created; 3xx + Location → redirect; 404 → resource-missing; прочий 4xx → client-error; 5xx → server-error; другое → inconsistent. Статус не доказывает сохранение записи."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова главная граница или инвариант темы?",
+      "answer": "Разбирать обмен по методу, пути, заголовкам, статусу и телу."
+    },
+    {
+      "question": "Что доказывает локальный тест?",
+      "answer": "Только перечисленное наблюдаемое поведение для данных входов, не свойства отсутствующей сети или инфраструктуры."
+    },
+    {
+      "question": "Как проверить границу?",
+      "answer": "Добавить малый воспроизводимый fixture и сравнить результат с явным контрактом."
+    },
+    {
+      "question": "Нужно ли подключаться к внешней сети для упражнений?",
+      "answer": "Нет: используются локальные значения и httptest."
+    },
+    {
+      "question": "Как вернуть ошибку безопасно?",
+      "answer": "Стабильной категорией без stack trace, SQL, пути файла, token или иных секретов."
+    },
+    {
+      "question": "Обязателен ли AI Tutor?",
+      "answer": "Нет, материал и критерии позволяют самостоятельную работу."
+    }
+  ]
+}

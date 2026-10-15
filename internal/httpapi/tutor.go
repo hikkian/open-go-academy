@@ -1,6 +1,7 @@
 package httpapi
 
 import (
+	"academy/internal/content"
 	"academy/internal/store"
 	"academy/internal/tutor"
 	"context"
@@ -71,11 +72,10 @@ func (a *API) tutorRoutes(mux *http.ServeMux) {
 				fail(w, 404, "урок не найден")
 				return
 			}
-			if len(lesson.Body) > 16384 {
-				fail(w, 422, "урок слишком велик для минимального AI-контекста")
-				return
-			}
-			contextText = fmt.Sprintf("Открытый учебный материал %s: %s\n%s", lesson.ID, lesson.Title, lesson.Body)
+			// Keep a bounded public overview even for long course chapters.
+			// Reference solutions and private grading cases never enter context.
+			contextText = tutorLessonContext(lesson)
+
 		}
 		if q.ShareCode && q.Source != "" {
 			contextText += "\nКод ученика (не исполнялся Tutor):\n" + q.Source
@@ -118,4 +118,19 @@ func (a *API) tutorRoutes(mux *http.ServeMux) {
 		}
 		write(w, 200, map[string]any{"text": result.Text, "model": result.Model, "input_tokens": result.InputTokens, "output_tokens": result.OutputTokens, "estimated": result.Estimated, "cached": result.Cached, "usage": usage})
 	})
+}
+
+func tutorLessonContext(lesson content.Lesson) string {
+	text := fmt.Sprintf("Открытый учебный материал %s: %s\nЦели урока:\n%s\nСловарь:\n", lesson.ID, lesson.Title, strings.Join(lesson.LearningOutcomes, "\n"))
+	for _, entry := range lesson.Glossary {
+		text += fmt.Sprintf("%s — %s: %s\n", entry.Term, entry.Translation, entry.Definition)
+	}
+	const limit = 16384
+	if len(text) > limit {
+		text = text[:limit]
+		for !utf8.ValidString(text) {
+			text = text[:len(text)-1]
+		}
+	}
+	return text
 }

@@ -1,0 +1,30 @@
+{
+  "id": "juniorplus-20-easy",
+  "signature": "func FailureCategory(check string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {Check string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := FailureCategory(in.Check);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Check": "http_contract"
+    },
+    {
+      "Check": "owner_scope"
+    }
+  ],
+  "public_expected": [
+    "http",
+    "ownership"
+  ],
+  "private_input": [
+    {
+      "Check": "postgres_integrity"
+    },
+    {
+      "Check": "made_up"
+    }
+  ],
+  "private_expected": [
+    "database",
+    "unknown"
+  ]
+}

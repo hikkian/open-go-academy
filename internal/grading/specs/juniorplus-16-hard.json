@@ -1,0 +1,70 @@
+{
+  "id": "juniorplus-16-hard",
+  "signature": "func Authorize(role string, authenticated bool, principalID, ownerID int64, action string) string",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tRole string\n\tAuthenticated bool\n\tPrincipalID int64\n\tOwnerID int64\n\tAction string\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=Authorize(in.Role,in.Authenticated,in.PrincipalID,in.OwnerID,in.Action)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Role": "user",
+      "Authenticated": true,
+      "PrincipalID": 7,
+      "OwnerID": 7,
+      "Action": "read"
+    },
+    {
+      "Role": "admin",
+      "Authenticated": true,
+      "PrincipalID": 2,
+      "OwnerID": 7,
+      "Action": "delete"
+    }
+  ],
+  "public_expected": [
+    "allow",
+    "allow"
+  ],
+  "private_input": [
+    {
+      "Role": "user",
+      "Authenticated": true,
+      "PrincipalID": 7,
+      "OwnerID": 9,
+      "Action": "read"
+    },
+    {
+      "Role": "guest",
+      "Authenticated": true,
+      "PrincipalID": 7,
+      "OwnerID": 7,
+      "Action": "read"
+    },
+    {
+      "Role": "admin",
+      "Authenticated": true,
+      "PrincipalID": 0,
+      "OwnerID": 7,
+      "Action": "update"
+    },
+    {
+      "Role": "admin",
+      "Authenticated": true,
+      "PrincipalID": 0,
+      "OwnerID": 9,
+      "Action": "read"
+    },
+    {
+      "Role": "user",
+      "Authenticated": false,
+      "PrincipalID": 7,
+      "OwnerID": 7,
+      "Action": "delete"
+    }
+  ],
+  "private_expected": [
+    "forbidden",
+    "forbidden",
+    "forbidden",
+    "forbidden",
+    "unauthenticated"
+  ]
+}

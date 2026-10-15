@@ -1,0 +1,66 @@
+{
+  "id": "juniorplus-08-easy",
+  "signature": "func WithRequestID(next http.Handler, newID func() string) http.Handler",
+  "allowed_imports": [
+    "net/http"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n\t\"net/http\"\n\t\"net/http/httptest\"\n\t\"strings\"\n)\n\ntype input struct {\n\tMethod string\n\tPath string\n\tBody string\n\tID string\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nh:=WithRequestID(http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){w.WriteHeader(204)}),func()string{return in.ID});rr:=httptest.NewRecorder();h.ServeHTTP(rr,httptest.NewRequest(in.Method,in.Path,strings.NewReader(in.Body)));out=struct{Status int;RequestID string}{rr.Code,rr.Header().Get(\"X-Request-ID\")}\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Method": "GET",
+      "Path": "/health",
+      "Body": "",
+      "ID": "test-1"
+    },
+    {
+      "Method": "POST",
+      "Path": "/links",
+      "Body": "",
+      "ID": "test-2"
+    }
+  ],
+  "public_expected": [
+    {
+      "Status": 204,
+      "RequestID": "test-1"
+    },
+    {
+      "Status": 204,
+      "RequestID": "test-2"
+    }
+  ],
+  "private_input": [
+    {
+      "Method": "GET",
+      "Path": "/",
+      "Body": "",
+      "ID": "generated"
+    },
+    {
+      "Method": "GET",
+      "Path": "/",
+      "Body": "",
+      "ID": "next-id"
+    },
+    {
+      "Method": "POST",
+      "Path": "/",
+      "Body": "",
+      "ID": "third"
+    }
+  ],
+  "private_expected": [
+    {
+      "Status": 204,
+      "RequestID": "generated"
+    },
+    {
+      "Status": 204,
+      "RequestID": "next-id"
+    },
+    {
+      "Status": 204,
+      "RequestID": "third"
+    }
+  ]
+}

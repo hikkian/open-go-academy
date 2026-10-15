@@ -1,0 +1,67 @@
+{
+  "allowed_imports": [
+    "errors",
+    "fmt",
+    "strconv",
+    "strings"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []string\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; v, err := parseRecord(in); if err != nil { out = []any{v, \"error\"} } else { out = []any{v, nil} }; if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-06-medium",
+  "private_expected": [
+    [
+      {
+        "ID": 1,
+        "Name": "Lin"
+      },
+      null
+    ],
+    [
+      {
+        "ID": 0,
+        "Name": ""
+      },
+      "error"
+    ],
+    [
+      {
+        "ID": 0,
+        "Name": ""
+      },
+      "error"
+    ],
+    [
+      {
+        "ID": 0,
+        "Name": ""
+      },
+      "error"
+    ]
+  ],
+  "private_input": [
+    "1,  Lin  ",
+    "2,",
+    "3,a,b",
+    "-1,x"
+  ],
+  "public_expected": [
+    [
+      {
+        "ID": 7,
+        "Name": "Ada"
+      },
+      null
+    ],
+    [
+      {
+        "ID": 0,
+        "Name": ""
+      },
+      "error"
+    ]
+  ],
+  "public_input": [
+    "7,Ada",
+    "x,Bob"
+  ],
+  "signature": "func parseRecord(line string) (Record, error)"
+}

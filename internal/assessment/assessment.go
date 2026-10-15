@@ -12,7 +12,10 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"sort"
 	"strings"
+
+	"academy/internal/grading"
 )
 
 const examVersion = "1.0.0"
@@ -46,6 +49,7 @@ type Exam struct {
 	Version          string     `json:"version"`
 	Title            string     `json:"title"`
 	Rank             string     `json:"rank"`
+	RequiredRank     string     `json:"required_rank,omitempty"`
 	Description      string     `json:"description"`
 	EstimatedMinutes int        `json:"estimated_minutes"`
 	Prerequisites    []string   `json:"prerequisites"`
@@ -55,6 +59,7 @@ type Exam struct {
 	correctIDs       map[string]string
 	cases            map[string][]Case
 	drivers          map[string]string
+	functionSpecs    map[string]*grading.Spec
 }
 type Check struct {
 	Detail string `json:"detail,omitempty"`
@@ -151,9 +156,15 @@ func (e *Exam) TaskCases(taskID string) []Case {
 }
 func (e *Exam) Driver(taskID string) string { return e.drivers[taskID] }
 
+// FunctionSpec returns the trusted, private function-grading policy for a task.
+func (e *Exam) FunctionSpec(taskID string) *grading.Spec { return e.functionSpecs[taskID] }
+
 // ValidateTaskSource applies structural limits only. Compilation and running
 // must happen in the dedicated isolated runner, never in this process.
 func (e *Exam) ValidateTaskSource(taskID, source string) error {
+	if spec := e.FunctionSpec(taskID); spec != nil {
+		return spec.ValidateSource(map[string]string{"main.go": source})
+	}
 	if taskID != "coding" && taskID != "debugging" {
 		return errors.New("unknown assessment task")
 	}
@@ -228,6 +239,25 @@ func validSignature(fn *ast.FuncDecl, name string) error {
 // Hash fingerprints all content that can affect a grade, including private
 // answers, hidden vectors, trusted driver source, and the criteria version.
 func (e *Exam) Hash() string {
+	if e.ID != "zero-core" || e.Version != examVersion || e.RequiredRank != "" || len(e.functionSpecs) != 0 {
+		pairs := make([]struct{ ID, Fingerprint string }, 0, len(e.functionSpecs))
+		for id, spec := range e.functionSpecs {
+			pairs = append(pairs, struct{ ID, Fingerprint string }{id, spec.Fingerprint()})
+		}
+		sort.Slice(pairs, func(i, j int) bool { return pairs[i].ID < pairs[j].ID })
+		payload := struct {
+			Base         string
+			RequiredRank string
+			Specs        any
+		}{e.baseHash(), e.RequiredRank, pairs}
+		b, _ := json.Marshal(payload)
+		sum := sha256.Sum256(b)
+		return hex.EncodeToString(sum[:])
+	}
+	return e.baseHash()
+}
+
+func (e *Exam) baseHash() string {
 	payload := struct {
 		ID, Version, Title, Rank, Description string
 		EstimatedMinutes                      int

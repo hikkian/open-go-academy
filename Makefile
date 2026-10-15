@@ -16,6 +16,11 @@ dev:
 	$(GO) run ./cmd/api
 runner:
 	$(GO) run ./cmd/runner
+project-runtime:
+	python3 scripts/p2-runtime-build.py
+project-runner:
+	$(GO) build -o .tools/academy-project-runner ./cmd/project-runner
+	python3 scripts/project-runner.py
 test:
 	$(GO) test ./...
 	$(GO) -C content/projects/p1/reference test ./...

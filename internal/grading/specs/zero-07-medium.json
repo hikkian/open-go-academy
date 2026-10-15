@@ -1,0 +1,63 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases []struct { Values []int; Threshold int }\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(countAbove(in.Values, in.Threshold)) }\n}\n",
+  "id": "zero-07-medium",
+  "private_expected": [
+    1,
+    2,
+    1,
+    1
+  ],
+  "private_input": [
+    {
+      "Threshold": 0,
+      "Values": [
+        -1,
+        0,
+        1
+      ]
+    },
+    {
+      "Threshold": 10,
+      "Values": [
+        11,
+        11
+      ]
+    },
+    {
+      "Threshold": 10,
+      "Values": [
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "Threshold": 15,
+      "Values": [
+        20,
+        -1,
+        12
+      ]
+    }
+  ],
+  "public_expected": [
+    2,
+    0
+  ],
+  "public_input": [
+    {
+      "Threshold": 10,
+      "Values": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "Threshold": 10,
+      "Values": []
+    }
+  ],
+  "signature": "func countAbove(values []int, threshold int) int"
+}

@@ -1,0 +1,34 @@
+{
+  "id": "juniorplus-10-medium",
+  "signature": "func LinkSortColumn(name string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\";)\ntype input struct {Name string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := LinkSortColumn(in.Name);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Name": "slug"
+    },
+    {
+      "Name": "status"
+    }
+  ],
+  "public_expected": [
+    "slug",
+    "enabled"
+  ],
+  "private_input": [
+    {
+      "Name": "created"
+    },
+    {
+      "Name": "slug DESC"
+    },
+    {
+      "Name": ""
+    }
+  ],
+  "private_expected": [
+    "created_at",
+    "created_at",
+    "created_at"
+  ]
+}

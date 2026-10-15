@@ -1,0 +1,166 @@
+{
+  "id": "juniorplus-03",
+  "title": "TLS и безопасный транспорт",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-02"
+  ],
+  "estimated_minutes": 100,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Объяснять задачи и границы настроенного TLS.",
+    "Отличать https URL scheme от проверки сертификата.",
+    "Тестировать TLS локально с доверием только сертификату тестового сервера."
+  ],
+  "glossary": [
+    {
+      "term": "tls",
+      "translation": "TLS",
+      "definition": "Криптографическая защита транспортного соединения."
+    },
+    {
+      "term": "certificate",
+      "translation": "сертификат",
+      "definition": "Подписанное удостоверение публичного ключа и идентичности."
+    },
+    {
+      "term": "https",
+      "translation": "HTTPS",
+      "definition": "HTTP, передаваемый через TLS."
+    },
+    {
+      "term": "encryption",
+      "translation": "шифрование",
+      "definition": "Сокрытие данных от наблюдателя без ключа."
+    },
+    {
+      "term": "certificate_verification",
+      "translation": "проверка сертификата",
+      "definition": "Проверка цепочки, срока и соответствия имени."
+    },
+    {
+      "term": "authorization",
+      "translation": "авторизация",
+      "definition": "Решение, разрешено ли субъекту действие."
+    }
+  ],
+  "markdown_file": "juniorplus-03.md",
+  "order": 23,
+  "exercises": [
+    {
+      "id": "juniorplus-03-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Проверь HTTPS-схему, не сертификат",
+      "prompt": "True только для абсолютного https URL с непустым host. Не соединяйся с узлом и не проверяй сертификат, имя или trust chain.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc IsHTTPSOrigin(raw string) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "True только для абсолютного https URL с непустым host. Не соединяйся с узлом и не проверяй сертификат, имя или trust chain."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-03-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Отдели HTTPS transport от HTTP",
+      "prompt": "Верни tls-required для точного scheme https, tls-not-used для http и unsupported-scheme для любого иного значения. Это классифицирует выбранный URL scheme и не удостоверяет сертификат.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc TLSBoundary(scheme string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"tls-required\"\n\"tls-not-used\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "Не https → not-https; недоверенный сертификат → untrusted-certificate; неверное имя → name-mismatch; иначе tls-verified. Это не означает авторизацию."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-03-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Выбери безопасную URL scheme",
+      "prompt": "Разбери абсолютный URL. Для https с host без userinfo верни https-selected; для http с host без userinfo — https-required; отсутствующая scheme, пустой host, userinfo или parse error → invalid-url; любая иная scheme → unsupported-scheme. Это policy решение, не TLS certificate validation.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RequireHTTPS(raw string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"https-selected\"\n\"https-required\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "Не https → not-https; плохой trust или имя → tls-invalid; корректный TLS без права → authorization-denied; иначе authorized. Не выводи право из HTTPS."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова главная граница или инвариант темы?",
+      "answer": "Объяснять задачи и границы настроенного TLS."
+    },
+    {
+      "question": "Что доказывает локальный тест?",
+      "answer": "Только перечисленное наблюдаемое поведение для данных входов, не свойства отсутствующей сети или инфраструктуры."
+    },
+    {
+      "question": "Как проверить границу?",
+      "answer": "Добавить малый воспроизводимый fixture и сравнить результат с явным контрактом."
+    },
+    {
+      "question": "Нужно ли подключаться к внешней сети для упражнений?",
+      "answer": "Нет: используются локальные значения и httptest."
+    },
+    {
+      "question": "Как вернуть ошибку безопасно?",
+      "answer": "Стабильной категорией без stack trace, SQL, пути файла, token или иных секретов."
+    },
+    {
+      "question": "Обязателен ли AI Tutor?",
+      "answer": "Нет, материал и критерии позволяют самостоятельную работу."
+    }
+  ]
+}

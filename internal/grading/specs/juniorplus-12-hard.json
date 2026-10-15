@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-12-hard",
+  "signature": "func RetryableSQLState(sqlState string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\";)\ntype input struct {SQLState string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := RetryableSQLState(in.SQLState);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "SQLState": "40001"
+    },
+    {
+      "SQLState": "57014"
+    },
+    {
+      "SQLState": "23505"
+    }
+  ],
+  "public_expected": [
+    true,
+    false,
+    false
+  ],
+  "private_input": [
+    {
+      "SQLState": "40P01"
+    },
+    {
+      "SQLState": "08006"
+    },
+    {
+      "SQLState": ""
+    }
+  ],
+  "private_expected": [
+    true,
+    false,
+    false
+  ]
+}

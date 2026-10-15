@@ -1,0 +1,169 @@
+{
+  "id": "juniorplus-09",
+  "title": "SQL с нуля: таблицы и CRUD",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-08"
+  ],
+  "estimated_minutes": 115,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Описывать данные PostgreSQL таблицами, строками, столбцами и ограничениями.",
+    "Читать CRUD запросы и объяснять назначение primary/foreign keys.",
+    "Передавать значения отдельными параметрами, а идентификаторы выбирать из allowlist."
+  ],
+  "glossary": [
+    {
+      "term": "SQL",
+      "translation": "язык запросов",
+      "definition": "Язык описания структуры, чтения и изменения реляционных данных."
+    },
+    {
+      "term": "table",
+      "translation": "таблица",
+      "definition": "Набор строк одной предметной сущности с общей схемой."
+    },
+    {
+      "term": "primary_key",
+      "translation": "первичный ключ",
+      "definition": "Ограничение, обеспечивающее уникальную идентичность каждой строки."
+    },
+    {
+      "term": "foreign_key",
+      "translation": "внешний ключ",
+      "definition": "Ограничение, связывающее строку с существующей строкой другой таблицы."
+    },
+    {
+      "term": "constraint",
+      "translation": "ограничение",
+      "definition": "Правило целостности, которое база проверяет при изменениях."
+    },
+    {
+      "term": "parameterized_query",
+      "translation": "параметризованный запрос",
+      "definition": "Запрос, в котором значения передаются драйверу отдельно от SQL текста."
+    }
+  ],
+  "markdown_file": "juniorplus-09.md",
+  "order": 29,
+  "exercises": [
+    {
+      "id": "juniorplus-09-easy",
+      "kind": "function",
+      "skills": [
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Распознай категорию ограничения",
+      "prompt": "Верни stable категорию SQLSTATE: 23505 → unique_conflict; 23503 → missing_reference; 23514 → check_violation; всё остальное → storage_error. Сравнивай код, не текст сообщения PostgreSQL. Это функция классифицирует входную строку и не подключается к базе.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc ConstraintCategory(sqlState string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"unique_conflict\"\n\"missing_reference\"\n\"check_violation\"\n\"storage_error\"",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт функции.",
+        "Наблюдаемый результат совпадает с опубликованным условием.",
+        "Проверены ошибки, границы и стабильные категории без зависимости от текста ошибки."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяет это упражнение?",
+          "answer": "Верни stable категорию SQLSTATE: 23505 → unique_conflict; 23503 → missing_reference; 23514 → check_violation; всё остальное → storage_error. Сравнивай код, не текст сообщения PostgreSQL. Это функция классифицирует входную строку и не подключается к базе."
+        },
+        {
+          "question": "Доказывает ли результат владение SQL и запуск запросов?",
+          "answer": "Нет. Функция детерминированно проверяет только оговорённое преобразование в Go; SQL исполняется в практическом проекте P2 с disposable PostgreSQL."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-09-medium",
+      "kind": "function",
+      "skills": [
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Оставь SQL значениям параметры",
+      "prompt": "Верни ровно INSERT INTO links(owner_id, slug, target_url) VALUES ($1, $2, $3) RETURNING id. Запрос фиксирован; не встраивай никакое значение пользователя в текст. Это проверяет только строковый контракт функции, не выполнение SQL.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc CreateLinkStatement() string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"INSERT INTO links(owner_id, slug, target_url) VALUES ($1, $2, $3) RETURNING id\"\n\"INSERT INTO links(owner_id, slug, target_url) VALUES ($1, $2, $3) RETURNING id\"",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт функции.",
+        "Наблюдаемый результат совпадает с опубликованным условием.",
+        "Проверены ошибки, границы и стабильные категории без зависимости от текста ошибки."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяет это упражнение?",
+          "answer": "Верни ровно INSERT INTO links(owner_id, slug, target_url) VALUES ($1, $2, $3) RETURNING id. Запрос фиксирован; не встраивай никакое значение пользователя в текст. Это проверяет только строковый контракт функции, не выполнение SQL."
+        },
+        {
+          "question": "Доказывает ли результат владение SQL и запуск запросов?",
+          "answer": "Нет. Функция детерминированно проверяет только оговорённое преобразование в Go; SQL исполняется в практическом проекте P2 с disposable PostgreSQL."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-09-hard",
+      "kind": "function",
+      "skills": [
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Разрешай только известный столбец",
+      "prompt": "Разреши только owner_id, slug, target_url, enabled и created_at. Не пытайся экранировать произвольный SQL identifier. Значения фильтров идут параметрами; имя столбца выбирается из allowlist.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc LinkColumnAllowed(name string) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\ntrue\nfalse",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт функции.",
+        "Наблюдаемый результат совпадает с опубликованным условием.",
+        "Проверены ошибки, границы и стабильные категории без зависимости от текста ошибки."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяет это упражнение?",
+          "answer": "Разреши только owner_id, slug, target_url, enabled и created_at. Не пытайся экранировать произвольный SQL identifier. Значения фильтров идут параметрами; имя столбца выбирается из allowlist."
+        },
+        {
+          "question": "Доказывает ли результат владение SQL и запуск запросов?",
+          "answer": "Нет. Функция детерминированно проверяет только оговорённое преобразование в Go; SQL исполняется в практическом проекте P2 с disposable PostgreSQL."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Как связана эта тема с реальной задачей P2?",
+      "answer": "Ответьте на вопрос словами и проследите запрос в ссылках на проект; локальная pure Go функция не исполняет SQL."
+    },
+    {
+      "question": "Как проверить отказ без раскрытия внутренностей?",
+      "answer": "Проверить устойчивую категорию, не возвращая клиенту текст драйвера, SQL, DSN или stack trace."
+    },
+    {
+      "question": "Что означает стабильный порядок результата?",
+      "answer": "Он задаётся явными ключами SQL и уникальным tie-breaker там, где несколько строк совпадают."
+    },
+    {
+      "question": "Как воспроизвести ошибку?",
+      "answer": "Минимизировать ввод и состояние, записать ожидаемое поведение и проверить подходящим disposable SQL или Go тестом."
+    },
+    {
+      "question": "Какие ограничения у function grader?",
+      "answer": "Он компилирует и запускает доверенную чистую Go функцию без PostgreSQL и ничего не сообщает о внешней инфраструктуре."
+    },
+    {
+      "question": "Нужен ли AI Tutor?",
+      "answer": "Нет, материал, примеры, задания и критерии самостоятельны."
+    }
+  ]
+}

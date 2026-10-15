@@ -1,0 +1,170 @@
+{
+  "id": "juniorplus-07",
+  "title": "Валидация и HTTP ошибки",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-05",
+    "juniorplus-06"
+  ],
+  "estimated_minutes": 110,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Отличать syntax validation от domain rule и conflict.",
+    "Ограничивать HTTP body до полного декодирования.",
+    "Возвращать безопасный стабильный error contract."
+  ],
+  "glossary": [
+    {
+      "term": "validation",
+      "translation": "валидация",
+      "definition": "Проверка формы и допустимого смысла входа."
+    },
+    {
+      "term": "domain_rule",
+      "translation": "доменное правило",
+      "definition": "Ограничение предметной модели приложения."
+    },
+    {
+      "term": "payload",
+      "translation": "полезная нагрузка",
+      "definition": "Данные request или response body."
+    },
+    {
+      "term": "bounded_input",
+      "translation": "ограниченный ввод",
+      "definition": "Данные с пределом размера и затрат обработки."
+    },
+    {
+      "term": "error_response",
+      "translation": "ответ-ошибка",
+      "definition": "Стабильная безопасная категория отказа."
+    },
+    {
+      "term": "conflict",
+      "translation": "конфликт",
+      "definition": "Валидный ввод, несовместимый с текущим состоянием."
+    }
+  ],
+  "markdown_file": "juniorplus-07.md",
+  "order": 27,
+  "exercises": [
+    {
+      "id": "juniorplus-07-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Отклони отсутствующий alias",
+      "prompt": "Alias 1..24 rune из строчных ASCII букв, цифр и дефисов. Иначе invalid_alias; длина свыше 24 → alias_too_long; успех — пустая строка.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ValidateAlias(alias string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"\"\n\"\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Публичный HTTP/error contract совпадает с условием.",
+        "Границы размера и некорректные входы безопасны, секреты не раскрываются."
+      ],
+      "self_check": [
+        {
+          "question": "Какие поля определяют результат?",
+          "answer": "Alias 1..24 rune из строчных ASCII букв, цифр и дефисов. Иначе invalid_alias; длина свыше 24 → alias_too_long; успех — пустая строка."
+        },
+        {
+          "question": "Что подтверждает deterministic test?",
+          "answer": "Только результат на заданных данных, не общую безопасность или production развертывание."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-07-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Проверь target URL",
+      "prompt": "Разреши абсолютные http/https URL с host, без userinfo/fragment, до 2048 байт. Верни invalid_target, target_too_long или unsupported_scheme.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ValidateTarget(raw string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"\"\n\"\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Публичный HTTP/error contract совпадает с условием.",
+        "Границы размера и некорректные входы безопасны, секреты не раскрываются."
+      ],
+      "self_check": [
+        {
+          "question": "Какие поля определяют результат?",
+          "answer": "Разреши абсолютные http/https URL с host, без userinfo/fragment, до 2048 байт. Верни invalid_target, target_too_long или unsupported_scheme."
+        },
+        {
+          "question": "Что подтверждает deterministic test?",
+          "answer": "Только результат на заданных данных, не общую безопасность или production развертывание."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-07-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Декодируй create request с безопасной ошибкой",
+      "prompt": "JSON тело до 1024 байт, ровно один object без неизвестных полей, обязательны alias и target. Верни body_too_large, malformed_json, alias error или ValidateTarget error. Не возвращай внутренний err.Error().",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ValidateCreateJSON(raw string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"\"\n\"\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Публичный HTTP/error contract совпадает с условием.",
+        "Границы размера и некорректные входы безопасны, секреты не раскрываются."
+      ],
+      "self_check": [
+        {
+          "question": "Какие поля определяют результат?",
+          "answer": "JSON тело до 1024 байт, ровно один object без неизвестных полей, обязательны alias и target. Верни body_too_large, malformed_json, alias error или ValidateTarget error. Не возвращай внутренний err.Error()."
+        },
+        {
+          "question": "Что подтверждает deterministic test?",
+          "answer": "Только результат на заданных данных, не общую безопасность или production развертывание."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова главная граница темы?",
+      "answer": "Отличать syntax validation от domain rule и conflict."
+    },
+    {
+      "question": "Что доказывает локальная функция?",
+      "answer": "Только явно проверенные детерминированные значения, не свойства сети или инфраструктуры."
+    },
+    {
+      "question": "Как воспроизвести проблему?",
+      "answer": "Свести её к одному request fixture и изменить один параметр за раз."
+    },
+    {
+      "question": "Что нельзя возвращать в HTTP ошибке?",
+      "answer": "Stack trace, текст SQL, file path, credential и секреты."
+    },
+    {
+      "question": "Как сравнивать JSON?",
+      "answer": "Сравнивать разобранные значения, а не порядок ключей или пробелы."
+    },
+    {
+      "question": "Нужен ли AI Tutor?",
+      "answer": "Нет, глава полностью доступна для самостоятельного прохождения."
+    }
+  ]
+}

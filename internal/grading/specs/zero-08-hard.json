@@ -1,0 +1,68 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases []ScoreSummary\n\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\tfor _, in := range cases { emit(reviewStatus(in)) }\n}\n",
+  "id": "zero-08-hard",
+  "private_expected": [
+    "review",
+    "review",
+    "ready",
+    "review"
+  ],
+  "private_input": [
+    {
+      "Average": 50,
+      "Count": 2,
+      "HasScores": true,
+      "Maximum": 60,
+      "Minimum": 40,
+      "Total": 100
+    },
+    {
+      "Average": 59,
+      "Count": 1,
+      "HasScores": true,
+      "Maximum": 59,
+      "Minimum": 59,
+      "Total": 59
+    },
+    {
+      "Average": 60,
+      "Count": 2,
+      "HasScores": true,
+      "Maximum": 60,
+      "Minimum": 60,
+      "Total": 120
+    },
+    {
+      "Average": 0,
+      "Count": 1,
+      "HasScores": true,
+      "Maximum": 0,
+      "Minimum": 0,
+      "Total": 0
+    }
+  ],
+  "public_expected": [
+    "no data",
+    "ready"
+  ],
+  "public_input": [
+    {
+      "Average": 0,
+      "Count": 0,
+      "HasScores": false,
+      "Maximum": 0,
+      "Minimum": 0,
+      "Total": 0
+    },
+    {
+      "Average": 60,
+      "Count": 1,
+      "HasScores": true,
+      "Maximum": 60,
+      "Minimum": 60,
+      "Total": 60
+    }
+  ],
+  "signature": "func reviewStatus(summary ScoreSummary) string"
+}

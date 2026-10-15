@@ -1,0 +1,80 @@
+{
+  "allowed_imports": [
+    "bytes",
+    "encoding/json",
+    "errors"
+  ],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Items []struct { Name string; Quantity int } }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"encodeItems\" { case \"encodeItems\": rows:=[]Item{}; for _,x:=range in.Items { rows=append(rows,Item{Name:x.Name,Quantity:x.Quantity}) }; v,e:=encodeItems(rows); err=e; out=map[string]any{\"JSON\":v,\"OK\":e==nil}; if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-11-hard",
+  "private_expected": [
+    {
+      "JSON": "[{\"name\":\"book\",\"quantity\":1}]\n",
+      "OK": true
+    },
+    {
+      "JSON": "[]\n",
+      "OK": true
+    },
+    {
+      "JSON": "[{\"name\":\"я\",\"quantity\":3}]\n",
+      "OK": true
+    },
+    {
+      "JSON": "",
+      "OK": false
+    }
+  ],
+  "private_input": [
+    {
+      "Items": [
+        {
+          "Name": "book",
+          "Quantity": 1
+        }
+      ]
+    },
+    {
+      "Items": []
+    },
+    {
+      "Items": [
+        {
+          "Name": "я",
+          "Quantity": 3
+        }
+      ]
+    },
+    {
+      "Items": [
+        {
+          "Name": "x",
+          "Quantity": 0
+        }
+      ]
+    }
+  ],
+  "public_expected": [
+    {
+      "JSON": "[{\"name\":\"pen\",\"quantity\":2}]\n",
+      "OK": true
+    },
+    {
+      "JSON": "[]\n",
+      "OK": true
+    }
+  ],
+  "public_input": [
+    {
+      "Items": [
+        {
+          "Name": "pen",
+          "Quantity": 2
+        }
+      ]
+    },
+    {
+      "Items": []
+    }
+  ],
+  "signature": "func encodeItems(items []Item) (string, error)"
+}

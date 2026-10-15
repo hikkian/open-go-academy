@@ -1,0 +1,71 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases []struct { Values []int; Value int }\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(appendCopy(in.Values, in.Value)) }\n}\n",
+  "id": "zero-07-hard",
+  "private_expected": [
+    [
+      5,
+      5
+    ],
+    [
+      0
+    ],
+    [
+      1,
+      2,
+      3,
+      -1
+    ],
+    [
+      4
+    ]
+  ],
+  "private_input": [
+    {
+      "Value": 5,
+      "Values": [
+        5
+      ]
+    },
+    {
+      "Value": 0,
+      "Values": null
+    },
+    {
+      "Value": -1,
+      "Values": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "Value": 4,
+      "Values": []
+    }
+  ],
+  "public_expected": [
+    [
+      1,
+      2,
+      3
+    ],
+    [
+      9
+    ]
+  ],
+  "public_input": [
+    {
+      "Value": 3,
+      "Values": [
+        1,
+        2
+      ]
+    },
+    {
+      "Value": 9,
+      "Values": []
+    }
+  ],
+  "signature": "func appendCopy(values []int, value int) []int"
+}

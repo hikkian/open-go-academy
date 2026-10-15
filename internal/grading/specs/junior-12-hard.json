@@ -1,0 +1,50 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Value int64; Low int64; High int64 }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"clampInt\" { case \"clampInt\": out = clampInt[int64](in.Value,in.Low,in.High); if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-12-hard",
+  "private_expected": [
+    10,
+    4,
+    7,
+    -5
+  ],
+  "private_input": [
+    {
+      "High": 10,
+      "Low": 0,
+      "Value": 11
+    },
+    {
+      "High": 8,
+      "Low": 4,
+      "Value": 3
+    },
+    {
+      "High": 7,
+      "Low": 7,
+      "Value": 7
+    },
+    {
+      "High": -2,
+      "Low": -9,
+      "Value": -5
+    }
+  ],
+  "public_expected": [
+    5,
+    0
+  ],
+  "public_input": [
+    {
+      "High": 10,
+      "Low": 0,
+      "Value": 5
+    },
+    {
+      "High": 10,
+      "Low": 0,
+      "Value": -1
+    }
+  ],
+  "signature": "func clampInt[T interface{ ~int | ~int64 }](value, low, high T) T"
+}

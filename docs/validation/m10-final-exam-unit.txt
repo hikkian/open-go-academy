@@ -1,0 +1,4 @@
+ok  	academy/internal/httpapi	0.462s
+ok  	academy/internal/assessment	1.378s
+ok  	academy/internal/store	0.255s
+ok  	academy/internal/grading	0.195s

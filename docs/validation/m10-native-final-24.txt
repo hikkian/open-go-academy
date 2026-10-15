@@ -1,0 +1,25 @@
+PASS juniorplus-13-easy 6 actual confined cases
+PASS juniorplus-13-medium 6 actual confined cases
+PASS juniorplus-13-hard 6 actual confined cases
+PASS juniorplus-14-easy 6 actual confined cases
+PASS juniorplus-14-medium 6 actual confined cases
+PASS juniorplus-14-hard 6 actual confined cases
+PASS juniorplus-15-easy 6 actual confined cases
+PASS juniorplus-15-medium 6 actual confined cases
+PASS juniorplus-15-hard 6 actual confined cases
+PASS juniorplus-16-easy 6 actual confined cases
+PASS juniorplus-16-medium 6 actual confined cases
+PASS juniorplus-16-hard 7 actual confined cases
+PASS juniorplus-17-easy 4 actual confined cases
+PASS juniorplus-17-medium 6 actual confined cases
+PASS juniorplus-17-hard 5 actual confined cases
+PASS juniorplus-18-easy 5 actual confined cases
+PASS juniorplus-18-medium 4 actual confined cases
+PASS juniorplus-18-hard 6 actual confined cases
+PASS juniorplus-19-easy 4 actual confined cases
+PASS juniorplus-19-medium 4 actual confined cases
+PASS juniorplus-19-hard 4 actual confined cases
+PASS juniorplus-20-easy 4 actual confined cases
+PASS juniorplus-20-medium 4 actual confined cases
+PASS juniorplus-20-hard 4 actual confined cases
+PASS: 24 native references, persisted evidence, idempotent XP, no earned rank; temporary DB only

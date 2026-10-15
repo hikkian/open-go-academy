@@ -1,0 +1,166 @@
+{
+  "id": "juniorplus-02",
+  "title": "IP, TCP, DNS и порты",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-01"
+  ],
+  "estimated_minutes": 100,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Разбирать hostname/IP и port без обращения к сети.",
+    "Объяснять порядок DNS → TCP → TLS → HTTP.",
+    "Определять первую неуспешную границу по наблюдениям."
+  ],
+  "glossary": [
+    {
+      "term": "ip",
+      "translation": "IP",
+      "definition": "Числовой сетевой адрес узла или интерфейса."
+    },
+    {
+      "term": "tcp",
+      "translation": "TCP",
+      "definition": "Упорядоченный поток байтов между сетевыми концами."
+    },
+    {
+      "term": "dns",
+      "translation": "DNS",
+      "definition": "Поиск IP адресов по доменному имени."
+    },
+    {
+      "term": "port",
+      "translation": "порт",
+      "definition": "Номер службы внутри сетевого узла."
+    },
+    {
+      "term": "localhost",
+      "translation": "локальный узел",
+      "definition": "Имя или адрес loopback текущей машины."
+    },
+    {
+      "term": "endpoint",
+      "translation": "конечная точка",
+      "definition": "Адрес узла вместе с портом службы."
+    }
+  ],
+  "markdown_file": "juniorplus-02.md",
+  "order": 22,
+  "exercises": [
+    {
+      "id": "juniorplus-02-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Разбери endpoint без DNS",
+      "prompt": "Разбери host:port, включая bracketed IPv6. Порт 1..65535. Не выполняй lookup.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\ntype Endpoint struct { Host string; Port int }\n\nfunc ParseEndpoint(address string) (Endpoint, bool) {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "{\"Endpoint\":{\"Host\":\"127.0.0.1\",\"Port\":8080},\"OK\":true}\n{\"Endpoint\":{\"Host\":\"::1\",\"Port\":443},\"OK\":true}\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "Разбери host:port, включая bracketed IPv6. Порт 1..65535. Не выполняй lookup."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-02-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Найди первый неуспешный сетевой этап",
+      "prompt": "Верни первую незавершённую границу DNS, TCP, TLS, HTTP либо complete. Это фикстура, не сетевой тест.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc NextNetworkStage(dnsOK, tcpOK, tlsOK, httpOK bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"dns\"\n\"tcp\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "Верни первую незавершённую границу DNS, TCP, TLS, HTTP либо complete. Это фикстура, не сетевой тест."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-02-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Собери адрес host:port",
+      "prompt": "Собери IPv4/IPv6 или hostname endpoint для порта 1..65535. IPv6 оформляется скобками. Отклоняй пустоту, пробелы, slash, colon в hostname и неверные DNS labels; сеть не проверяй.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc JoinEndpoint(host string, port int) (string, bool) {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "{\"Address\":\"127.0.0.1:8080\",\"OK\":true}\n{\"Address\":\"api.example.test:443\",\"OK\":true}\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "Собери IPv4/IPv6 или hostname endpoint для порта 1..65535. IPv6 оформляется скобками. Отклоняй пустоту, пробелы, slash, colon в hostname и неверные DNS labels; сеть не проверяй."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова главная граница или инвариант темы?",
+      "answer": "Разбирать hostname/IP и port без обращения к сети."
+    },
+    {
+      "question": "Что доказывает локальный тест?",
+      "answer": "Только перечисленное наблюдаемое поведение для данных входов, не свойства отсутствующей сети или инфраструктуры."
+    },
+    {
+      "question": "Как проверить границу?",
+      "answer": "Добавить малый воспроизводимый fixture и сравнить результат с явным контрактом."
+    },
+    {
+      "question": "Нужно ли подключаться к внешней сети для упражнений?",
+      "answer": "Нет: используются локальные значения и httptest."
+    },
+    {
+      "question": "Как вернуть ошибку безопасно?",
+      "answer": "Стабильной категорией без stack trace, SQL, пути файла, token или иных секретов."
+    },
+    {
+      "question": "Обязателен ли AI Tutor?",
+      "answer": "Нет, материал и критерии позволяют самостоятельную работу."
+    }
+  ]
+}

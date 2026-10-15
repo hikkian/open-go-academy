@@ -1,0 +1,169 @@
+{
+  "id": "juniorplus-20",
+  "title": "Защита P2 и Junior+ assessment",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-19"
+  ],
+  "estimated_minutes": 120,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Подготовить воспроизводимый clean setup и evidence выполнения проектных критериев.",
+    "Разобрать seeded HTTP/SQL mismatch и добавить regression test.",
+    "Разделять автоматические проверки, security gate, ручное review и внешние квалификационные claims."
+  ],
+  "glossary": [
+    {
+      "term": "assessment",
+      "translation": "учебная оценка",
+      "definition": "Сбор evidence проекта по критериям учебного курса."
+    },
+    {
+      "term": "evidence",
+      "translation": "доказательство",
+      "definition": "Повторяемый результат команды, теста, review или объяснения."
+    },
+    {
+      "term": "regression_test",
+      "translation": "регрессионный тест",
+      "definition": "Проверка, которая сохраняет восстановленное поведение."
+    },
+    {
+      "term": "security_gate",
+      "translation": "обязательный критерий безопасности",
+      "definition": "Условие, провал которого нельзя компенсировать другими пунктами."
+    },
+    {
+      "term": "manual_review",
+      "translation": "ручное ревью",
+      "definition": "Оценка решения и объяснения человеком."
+    },
+    {
+      "term": "credential",
+      "translation": "учётное подтверждение",
+      "definition": "Формальное удостоверение отдельного issuer с явными claims."
+    }
+  ],
+  "markdown_file": "juniorplus-20.md",
+  "order": 40,
+  "exercises": [
+    {
+      "id": "juniorplus-20-easy",
+      "kind": "function",
+      "skills": [
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Сгруппируй failure без заявления о pass",
+      "prompt": "Точные symbolic keys: http_contract → http; auth_session → authentication; owner_scope → ownership; postgres_integrity → database; redirect_boundary → redirect; неизвестное значение → unknown. Это группирует evidence, не запускает acceptance suite.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc FailureCategory(check string) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"http\"\n\"ownership\"",
+      "criteria": [
+        "Сигнатура и детерминированное поведение совпадают с условием.",
+        "Public и private cases проверяют границы контракта.",
+        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет эта функция?",
+          "answer": "Точные symbolic keys: http_contract → http; auth_session → authentication; owner_scope → ownership; postgres_integrity → database; redirect_boundary → redirect; неизвестное значение → unknown. Это группирует evidence, не запускает acceptance suite."
+        },
+        {
+          "question": "Что требуется для полного project evidence?",
+          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-20-medium",
+      "kind": "function",
+      "skills": [
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Подготовь evidence для ручного review",
+      "prompt": "Если любой сигнал false — incomplete; если все true — manual_review_required. Выход не означает ранг, credential, security certification или профессию.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc EvidenceStage(automaticPassed, cleanSetup, testsAndDocs bool) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"incomplete\"\n\"manual_review_required\"",
+      "criteria": [
+        "Сигнатура и детерминированное поведение совпадают с условием.",
+        "Public и private cases проверяют границы контракта.",
+        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет эта функция?",
+          "answer": "Если любой сигнал false — incomplete; если все true — manual_review_required. Выход не означает ранг, credential, security certification или профессию."
+        },
+        {
+          "question": "Что требуется для полного project evidence?",
+          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-20-hard",
+      "kind": "function",
+      "skills": [
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Раздели security gate и ручное решение",
+      "prompt": "При securityGatePassed=false → security_gate_failed; иначе если automaticPassed=false → automatic_checks_incomplete; иначе если manualReviewComplete=false → manual_review_required; иначе reviewed_evidence. Последняя категория означает только просмотренный evidence курса, не выдачу ранга, публичного credential или профессиональной квалификации.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc AssessmentDisposition(automaticPassed, securityGatePassed, manualReviewComplete bool) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"automatic_checks_incomplete\"\n\"manual_review_required\"\n\"security_gate_failed\"",
+      "criteria": [
+        "Сигнатура и детерминированное поведение совпадают с условием.",
+        "Public и private cases проверяют границы контракта.",
+        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет эта функция?",
+          "answer": "При securityGatePassed=false → security_gate_failed; иначе если automaticPassed=false → automatic_checks_incomplete; иначе если manualReviewComplete=false → manual_review_required; иначе reviewed_evidence. Последняя категория означает только просмотренный evidence курса, не выдачу ранга, публичного credential или профессиональной квалификации."
+        },
+        {
+          "question": "Что требуется для полного project evidence?",
+          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Как отличить автоматическое evidence от утверждения?",
+      "answer": "Назовите контракт, конкретный test boundary и остающиеся неизвестными зависимости."
+    },
+    {
+      "question": "Где посмотреть фактический P2?",
+      "answer": "В приложении «Проекты → LinkHub API» и в P2 README, OpenAPI, Compose и threat model."
+    },
+    {
+      "question": "Что означает reviewed course evidence?",
+      "answer": "Только проверку требований курса, не профессию, external accreditation или trusted credential."
+    },
+    {
+      "question": "Что должно оставаться ручным?",
+      "answer": "Читаемость проекта, объяснение компромисса, threat boundary и review security критериев."
+    },
+    {
+      "question": "Как безопасно повторить проверку?",
+      "answer": "Fresh local/disposable environment, точная команда и результат без секретов и production данных."
+    },
+    {
+      "question": "Нужен ли Tutor?",
+      "answer": "Нет, объяснение и критерии доступны самостоятельно."
+    }
+  ]
+}

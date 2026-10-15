@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-20-medium",
+  "signature": "func EvidenceStage(automaticPassed, cleanSetup, testsAndDocs bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {AutomaticPassed bool; CleanSetup bool; TestsAndDocs bool}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := EvidenceStage(in.AutomaticPassed,in.CleanSetup,in.TestsAndDocs);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "AutomaticPassed": false,
+      "CleanSetup": true,
+      "TestsAndDocs": true
+    },
+    {
+      "AutomaticPassed": true,
+      "CleanSetup": true,
+      "TestsAndDocs": true
+    }
+  ],
+  "public_expected": [
+    "incomplete",
+    "manual_review_required"
+  ],
+  "private_input": [
+    {
+      "AutomaticPassed": true,
+      "CleanSetup": false,
+      "TestsAndDocs": true
+    },
+    {
+      "AutomaticPassed": true,
+      "CleanSetup": true,
+      "TestsAndDocs": false
+    }
+  ],
+  "private_expected": [
+    "incomplete",
+    "incomplete"
+  ]
+}

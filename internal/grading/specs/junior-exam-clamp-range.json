@@ -1,0 +1,44 @@
+{
+  "id": "junior-exam-clamp-range",
+  "signature": "func ClampRange(value, low, high int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main(){ var cases []struct{ Value int; Low int; High int }; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ClampRange(in.Value,in.Low,in.High)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "Value": 4,
+      "Low": 0,
+      "High": 9
+    },
+    {
+      "Value": -2,
+      "Low": 0,
+      "High": 9
+    }
+  ],
+  "public_expected": [
+    4,
+    0
+  ],
+  "private_input": [
+    {
+      "Value": 99,
+      "Low": 5,
+      "High": 5
+    },
+    {
+      "Value": 8,
+      "Low": 10,
+      "High": 2
+    },
+    {
+      "Value": -8,
+      "Low": -4,
+      "High": 3
+    }
+  ],
+  "private_expected": [
+    5,
+    10,
+    -4
+  ]
+}

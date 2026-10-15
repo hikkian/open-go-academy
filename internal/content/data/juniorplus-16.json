@@ -1,0 +1,169 @@
+{
+  "id": "juniorplus-16",
+  "title": "Authorization, роли и ownership",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-15"
+  ],
+  "estimated_minutes": 110,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Отличать principal, resource owner и action.",
+    "Проверять owner predicate для каждой CRUD операции.",
+    "Отклонять unknown roles/actions при deny-by-default."
+  ],
+  "glossary": [
+    {
+      "term": "authorization",
+      "translation": "авторизация",
+      "definition": "Решение о разрешённости action для principal."
+    },
+    {
+      "term": "principal",
+      "translation": "субъект",
+      "definition": "Проверенный user или service account запроса."
+    },
+    {
+      "term": "ownership",
+      "translation": "владение",
+      "definition": "Server-side связь principal с объектом."
+    },
+    {
+      "term": "role",
+      "translation": "роль",
+      "definition": "Доверенная группа разрешённых действий."
+    },
+    {
+      "term": "least_privilege",
+      "translation": "минимальные полномочия",
+      "definition": "Доступ только к нужным операциям и области."
+    },
+    {
+      "term": "IDOR",
+      "translation": "небезопасная ссылка на объект",
+      "definition": "Ошибка object-level проверки прямого ID."
+    }
+  ],
+  "markdown_file": "juniorplus-16.md",
+  "order": 36,
+  "exercises": [
+    {
+      "id": "juniorplus-16-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Запрети mutation без principal",
+      "prompt": "Верни true только для authenticated principal. Public read является отдельным явно открытым route и не использует этот mutation gate.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CanMutate(authenticated bool) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "Верни true только для authenticated principal. Public read является отдельным явно открытым route и не использует этот mutation gate."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-16-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Сравни principal и owner",
+      "prompt": "true только при положительных равных ID. Principal должен быть получен из server-side session, owner — из storage, не из body.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc OwnsResource(principalID, ownerID int64) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "true только при положительных равных ID. Principal должен быть получен из server-side session, owner — из storage, не из body."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-16-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Прими deny-by-default решение",
+      "prompt": "Unauthenticated→unauthenticated. PrincipalID и ownerID должны быть positive. User может read/update/delete только своего positive ID; admin — перечисленные read/update/delete любого positive owner. Unknown role/action/ID→forbidden. Role не приходит из body.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc Authorize(role string, authenticated bool, principalID, ownerID int64, action string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"allow\"\n\"allow\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "Unauthenticated→unauthenticated. PrincipalID и ownerID должны быть positive. User может read/update/delete только своего positive ID; admin — перечисленные read/update/delete любого positive owner. Unknown role/action/ID→forbidden. Role не приходит из body."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова граница или инвариант темы?",
+      "answer": "Отличать principal, resource owner и action."
+    },
+    {
+      "question": "Что доказывает функциональный test?",
+      "answer": "Только заданные наблюдаемые результаты на перечисленных входах."
+    },
+    {
+      "question": "Как воспроизвести отказ?",
+      "answer": "Создать один маленький fixture и изменить один параметр."
+    },
+    {
+      "question": "Как обрабатывать внутреннюю ошибку?",
+      "answer": "Нормализовать её в стабильную безопасную категорию."
+    },
+    {
+      "question": "Почему важны negative cases?",
+      "answer": "Успешный случай не проверяет deny, rollback, cleanup или expiry."
+    },
+    {
+      "question": "Обязателен ли AI Tutor?",
+      "answer": "Нет, материал можно пройти самостоятельно."
+    }
+  ]
+}

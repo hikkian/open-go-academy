@@ -1,0 +1,50 @@
+{
+  "allowed_imports": [
+    "encoding/json"
+  ],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Value json.RawMessage }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"identity\" { case \"identity\": out = identity[json.RawMessage](in.Value); if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-12-easy",
+  "private_expected": [
+    null,
+    true,
+    [
+      1,
+      2
+    ],
+    {
+      "x": 1
+    }
+  ],
+  "private_input": [
+    {
+      "Value": null
+    },
+    {
+      "Value": true
+    },
+    {
+      "Value": [
+        1,
+        2
+      ]
+    },
+    {
+      "Value": {
+        "x": 1
+      }
+    }
+  ],
+  "public_expected": [
+    1,
+    "\"Go\""
+  ],
+  "public_input": [
+    {
+      "Value": 1
+    },
+    {
+      "Value": "\"Go\""
+    }
+  ],
+  "signature": "func identity[T any](value T) T"
+}

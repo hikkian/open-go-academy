@@ -1,0 +1,48 @@
+PostgreSQL: 18.6 (Debian 18.6-1.pgdg12+2)
+PASS actual PostgreSQL SQL example: juniorplus-09 1
+PASS actual PostgreSQL SQL example: juniorplus-10 1
+PASS actual PostgreSQL SQL example: juniorplus-11 1
+PASS actual PostgreSQL SQL example: juniorplus-12 1
+=== RUN   TestLoadConfigNormalizesOriginAndCookieSecurity
+=== RUN   TestLoadConfigNormalizesOriginAndCookieSecurity/_HTTPS://EXAMPLE.TEST:443/_
+=== RUN   TestLoadConfigNormalizesOriginAndCookieSecurity/HTTP://LOCALHOST:80/
+=== RUN   TestLoadConfigNormalizesOriginAndCookieSecurity/http://127.0.0.1:8097
+--- PASS: TestLoadConfigNormalizesOriginAndCookieSecurity (0.00s)
+    --- PASS: TestLoadConfigNormalizesOriginAndCookieSecurity/_HTTPS://EXAMPLE.TEST:443/_ (0.00s)
+    --- PASS: TestLoadConfigNormalizesOriginAndCookieSecurity/HTTP://LOCALHOST:80/ (0.00s)
+    --- PASS: TestLoadConfigNormalizesOriginAndCookieSecurity/http://127.0.0.1:8097 (0.00s)
+=== RUN   TestLoadConfigRejectsNonOriginURL
+--- PASS: TestLoadConfigRejectsNonOriginURL (0.00s)
+=== RUN   TestMutationRequiresOriginAndCSRF
+=== RUN   TestMutationRequiresOriginAndCSRF/missing_csrf
+=== RUN   TestMutationRequiresOriginAndCSRF/cross_origin
+=== RUN   TestMutationRequiresOriginAndCSRF/cross-site_fetch
+=== RUN   TestMutationRequiresOriginAndCSRF/valid
+--- PASS: TestMutationRequiresOriginAndCSRF (0.00s)
+    --- PASS: TestMutationRequiresOriginAndCSRF/missing_csrf (0.00s)
+    --- PASS: TestMutationRequiresOriginAndCSRF/cross_origin (0.00s)
+    --- PASS: TestMutationRequiresOriginAndCSRF/cross-site_fetch (0.00s)
+    --- PASS: TestMutationRequiresOriginAndCSRF/valid (0.00s)
+=== RUN   TestCreateLinkRejectsInvalidAndIgnoresOwnerField
+--- PASS: TestCreateLinkRejectsInvalidAndIgnoresOwnerField (0.00s)
+=== RUN   TestOwnerPredicateAndLogoutRevocation
+--- PASS: TestOwnerPredicateAndLogoutRevocation (0.00s)
+=== RUN   TestRedirectOnlyEnabledLookupAndNoOutboundFetch
+--- PASS: TestRedirectOnlyEnabledLookupAndNoOutboundFetch (0.00s)
+=== RUN   TestHelpersAndJSONBounds
+--- PASS: TestHelpersAndJSONBounds (0.00s)
+=== RUN   TestRegisterStoresOnlyPasswordHashAndSetsCookieFlags
+--- PASS: TestRegisterStoresOnlyPasswordHashAndSetsCookieFlags (0.25s)
+=== RUN   TestGeneratedSlugRetriesUniqueConstraint
+--- PASS: TestGeneratedSlugRetriesUniqueConstraint (0.00s)
+=== RUN   TestGeneratedSlugExhaustionReturnsConflict
+--- PASS: TestGeneratedSlugExhaustionReturnsConflict (0.00s)
+=== RUN   TestTagResponseHasOpenAPISchemaFields
+--- PASS: TestTagResponseHasOpenAPISchemaFields (0.00s)
+=== RUN   TestPostgresHTTPFlow
+--- PASS: TestPostgresHTTPFlow (0.28s)
+=== RUN   TestPostgresOwnershipAndAtomicTags
+--- PASS: TestPostgresOwnershipAndAtomicTags (0.01s)
+PASS
+ok  	linkhub	0.647s
+PASS: trusted reference + actual PostgreSQL ownership/transactions/migrations/single-connection pool tests; no host network/ports

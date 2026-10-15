@@ -1,0 +1,61 @@
+{
+  "id": "juniorplus-07-hard",
+  "signature": "func ValidateCreateJSON(raw string) string",
+  "allowed_imports": [
+    "bytes",
+    "encoding/json",
+    "io",
+    "net/url",
+    "strings",
+    "unicode/utf8"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n\t\"strings\"\n)\n\ntype input struct {\n\tRaw string\n\tRepeat int\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nraw:=in.Raw;if in.Repeat>0{raw=strings.Repeat(\"x\",in.Repeat)}\n\tout=ValidateCreateJSON(raw)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Raw": "{\"alias\":\"go\",\"target\":\"https://go.dev/\"}",
+      "Repeat": 0
+    },
+    {
+      "Raw": "{\"alias\":\"green\",\"target\":\"http://example.test\"}",
+      "Repeat": 0
+    }
+  ],
+  "public_expected": [
+    "",
+    ""
+  ],
+  "private_input": [
+    {
+      "Raw": "{",
+      "Repeat": 0
+    },
+    {
+      "Raw": "{\"alias\":\"go\",\"target\":\"https://go.dev/\",\"extra\":1}",
+      "Repeat": 0
+    },
+    {
+      "Raw": "{}",
+      "Repeat": 0
+    },
+    {
+      "Raw": "{\"alias\":\"bad space\",\"target\":\"https://go.dev/\"}",
+      "Repeat": 0
+    },
+    {
+      "Raw": "",
+      "Repeat": 1025
+    },
+    {
+      "Raw": "{\"alias\":\"go\",\"target\":\"ftp://x.test\"}",
+      "Repeat": 0
+    }
+  ],
+  "private_expected": [
+    "malformed_json",
+    "malformed_json",
+    "invalid_alias",
+    "invalid_alias",
+    "body_too_large",
+    "unsupported_scheme"
+  ]
+}

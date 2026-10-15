@@ -1,0 +1,44 @@
+{
+  "id": "juniorplus-14-medium",
+  "signature": "func CRUDStatus(method string, resourceFound bool) int",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tMethod string\n\tResourceFound bool\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=CRUDStatus(in.Method,in.ResourceFound)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Method": "GET",
+      "ResourceFound": true
+    },
+    {
+      "Method": "POST",
+      "ResourceFound": false
+    }
+  ],
+  "public_expected": [
+    200,
+    201
+  ],
+  "private_input": [
+    {
+      "Method": "GET",
+      "ResourceFound": false
+    },
+    {
+      "Method": "PUT",
+      "ResourceFound": true
+    },
+    {
+      "Method": "PATCH",
+      "ResourceFound": false
+    },
+    {
+      "Method": "DELETE",
+      "ResourceFound": true
+    }
+  ],
+  "private_expected": [
+    404,
+    200,
+    404,
+    204
+  ]
+}

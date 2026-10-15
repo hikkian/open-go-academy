@@ -1,0 +1,40 @@
+{
+  "id": "juniorplus-03-hard",
+  "signature": "func RequireHTTPS(raw string) string",
+  "allowed_imports": [
+    "net/url"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct { Raw string }\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out:=RequireHTTPS(in.Raw);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Raw": "https://api.example.test/a"
+    },
+    {
+      "Raw": "http://example.test/"
+    }
+  ],
+  "public_expected": [
+    "https-selected",
+    "https-required"
+  ],
+  "private_input": [
+    {
+      "Raw": "/relative"
+    },
+    {
+      "Raw": "https://"
+    },
+    {
+      "Raw": "https://user:pass@example.test/"
+    },
+    {
+      "Raw": "ftp://example.test/"
+    }
+  ],
+  "private_expected": [
+    "invalid-url",
+    "invalid-url",
+    "invalid-url",
+    "unsupported-scheme"
+  ]
+}

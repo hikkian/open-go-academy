@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:18.6-bookworm@sha256:9551dd5bf356409a21b31248f49b33bba9bb1877365f3a7e933aecd9af3cf52d
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?copy .env.example to .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set a local generated password in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-linkhub}
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - linkhub-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+  api:
+    build:
+      context: reference
+    environment:
+      LINKHUB_ADDR: 0.0.0.0:8097
+      LINKHUB_ORIGIN: ${LINKHUB_ORIGIN:-http://127.0.0.1:8097}
+      LINKHUB_DATABASE_URL: postgres://${POSTGRES_USER:-linkhub}:${POSTGRES_PASSWORD:?set a local generated password in .env}@db:5432/${POSTGRES_DB:-linkhub}?sslmode=disable
+    ports:
+      - "127.0.0.1:8097:8097"
+    depends_on:
+      db:
+        condition: service_healthy
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    tmpfs: [/tmp]
+volumes:
+  linkhub-data:

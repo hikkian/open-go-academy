@@ -1,0 +1,46 @@
+{
+  "id": "juniorplus-12-easy",
+  "signature": "func OptionalValue(present bool, value string) (string, bool)",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\";)\ntype input struct {Present bool; Value string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{v, ok := OptionalValue(in.Present, in.Value); out := []any{v, ok};if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Present": false,
+      "Value": "stale"
+    },
+    {
+      "Present": true,
+      "Value": ""
+    }
+  ],
+  "public_expected": [
+    [
+      "",
+      false
+    ],
+    [
+      "",
+      true
+    ]
+  ],
+  "private_input": [
+    {
+      "Present": true,
+      "Value": "slug"
+    },
+    {
+      "Present": false,
+      "Value": ""
+    }
+  ],
+  "private_expected": [
+    [
+      "slug",
+      true
+    ],
+    [
+      "",
+      false
+    ]
+  ]
+}

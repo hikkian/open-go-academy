@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-const examTrustNotice = "Локальная учебная проверка критериев Zero: без прокторинга и проверки личности; не подтверждает должность или стаж."
+const examTrustNotice = "Локальная учебная проверка версионированных критериев Go Academy: без прокторинга и проверки личности; не подтверждает должность или стаж."
 
 type examInput struct {
 	Revision *int64            `json:"revision"`
@@ -79,9 +79,10 @@ func examStoreError(w http.ResponseWriter, err error) {
 	}
 }
 func (a *API) examRoutes(mux *http.ServeMux) {
-	e := assessment.Load()
-	if err := a.Store.RegisterExam(e.ID, e.Version, e.Rank, e.Hash()); err != nil {
-		panic(fmt.Errorf("immutable exam registration: %w", err))
+	for _, e := range assessment.All() {
+		if err := a.Store.RegisterExam(e.ID, e.Version, e.Rank, e.Hash()); err != nil {
+			panic(fmt.Errorf("immutable exam registration: %w", err))
+		}
 	}
 	mux.HandleFunc("GET /api/exams", func(w http.ResponseWriter, r *http.Request) {
 		p, err := a.Store.Progress()
@@ -89,23 +90,41 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 			examStoreError(w, err)
 			return
 		}
-		missing := []string{}
-		for _, id := range e.Prerequisites {
-			if p.Evidence[id] == 0 {
-				missing = append(missing, id)
-			}
+		awards, err := a.Store.RankAwards("local")
+		if err != nil {
+			examStoreError(w, err)
+			return
 		}
-		write(w, 200, []map[string]any{{"id": e.ID, "version": e.Version, "title": e.Title, "rank": e.Rank, "description": e.Description, "estimated_minutes": e.EstimatedMinutes, "criteria": e.Criteria, "eligible": len(missing) == 0, "missing_prerequisites": missing}})
+		ranks := map[string]bool{}
+		for _, award := range awards {
+			ranks[award.Rank] = true
+		}
+		catalog := []map[string]any{}
+		for _, e := range assessment.All() {
+			missing := []string{}
+			for _, id := range e.Prerequisites {
+				if p.Evidence[id] == 0 {
+					missing = append(missing, id)
+				}
+			}
+			if e.RequiredRank != "" && !ranks[e.RequiredRank] {
+				missing = append(missing, "rank:"+e.RequiredRank)
+			}
+			catalog = append(catalog, map[string]any{"id": e.ID, "version": e.Version, "title": e.Title, "rank": e.Rank, "description": e.Description, "estimated_minutes": e.EstimatedMinutes, "criteria": e.Criteria, "eligible": len(missing) == 0, "missing_prerequisites": missing})
+		}
+		write(w, 200, catalog)
 	})
 	mux.HandleFunc("GET /api/exams/{id}", func(w http.ResponseWriter, r *http.Request) {
-		if r.PathValue("id") != e.ID {
+		e, ok := assessment.Find(r.PathValue("id"), r.URL.Query().Get("version"))
+		if !ok {
 			fail(w, 404, "экзамен не найден")
 			return
 		}
 		write(w, 200, e)
 	})
 	mux.HandleFunc("POST /api/exams/{id}/attempts", func(w http.ResponseWriter, r *http.Request) {
-		if r.PathValue("id") != e.ID {
+		e, ok := assessment.Find(r.PathValue("id"), "")
+		if !ok {
 			fail(w, 404, "экзамен не найден")
 			return
 		}
@@ -120,7 +139,11 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 			return
 		}
 		token := hex.EncodeToString(raw)
-		attempt, err := a.Store.StartExam("local", e.ID, e.Version, tokenHash(token), e.Prerequisites)
+		requiredRanks := []string{}
+		if e.RequiredRank != "" {
+			requiredRanks = append(requiredRanks, e.RequiredRank)
+		}
+		attempt, err := a.Store.StartExam("local", e.ID, e.Version, tokenHash(token), e.Prerequisites, requiredRanks...)
 		if err != nil {
 			examStoreError(w, err)
 			return
@@ -173,6 +196,16 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 			fail(w, 400, "некорректный черновик")
 			return
 		}
+		existing, err := a.Store.ExamAttempt("local", r.PathValue("id"))
+		if err != nil {
+			examStoreError(w, err)
+			return
+		}
+		e, ok := assessment.Find(existing.ExamID, existing.Version)
+		if !ok || existing.CriteriaHash != e.Hash() {
+			fail(w, 409, "версия экзамена недоступна; начните новую попытку")
+			return
+		}
 		if err := validateExamInput(e, q); err != nil {
 			fail(w, 422, err.Error())
 			return
@@ -192,15 +225,21 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 			fail(w, 400, "оценку, ранг и результат назначает только сервер; передайте ответы и код")
 			return
 		}
-		if err := validateExamInput(e, q); err != nil {
-			fail(w, 422, err.Error())
-			return
-		}
 		existing, err := a.Store.ExamAttempt("local", r.PathValue("id"))
 		if err != nil {
 			examStoreError(w, err)
 			return
 		}
+		e, ok := assessment.Find(existing.ExamID, existing.Version)
+		if !ok {
+			fail(w, 409, "версия экзамена недоступна; начните новую попытку")
+			return
+		}
+		if err := validateExamInput(e, q); err != nil {
+			fail(w, 422, err.Error())
+			return
+		}
+
 		if existing.ExamID != e.ID || existing.Version != e.Version || existing.CriteriaHash != e.Hash() {
 			fail(w, 409, "версия экзамена обновлена; начните новую попытку")
 			return
@@ -228,6 +267,37 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 		for _, task := range e.Tasks {
 			source := q.Codes[task.ID]
 			sourceErr := e.ValidateTaskSource(task.ID, source)
+			if spec := e.FunctionSpec(task.ID); spec != nil {
+				actual := runner.Result{}
+				if quizPassed && sourceErr == nil {
+					request, requestErr := spec.Request(map[string]string{"solution.go": source}, true)
+					if requestErr != nil {
+						sourceErr = requestErr
+					} else {
+						if a.Runner == nil {
+							fail(w, 503, "исполнитель недоступен; попытка не засчитана")
+							return
+						}
+						actual, err = a.Runner.Execute(ctx, request)
+						if err != nil {
+							fail(w, 503, "исполнитель прервал проверку; начните новую попытку")
+							return
+						}
+					}
+				}
+				for i, c := range spec.Check(actual, true) {
+					check := assessment.Check{ID: fmt.Sprintf("%s-%d", task.ID, i+1), Name: task.Title + ": " + c.Name, Passed: quizPassed && sourceErr == nil && c.Passed}
+					if !quizPassed {
+						check.Detail = "Не запускалась: сначала исправьте теоретические ответы."
+					} else if sourceErr != nil {
+						check.Detail = "Проверка исходника: " + boundedExamDetail(sourceErr.Error())
+					} else if !check.Passed {
+						check.Detail = "Результат не соответствует критериям. Закрытые входы и вывод не раскрываются."
+					}
+					checks = append(checks, check)
+				}
+				continue
+			}
 			failedCase := false
 			for i, tc := range e.TaskCases(task.ID) {
 				check := assessment.Check{ID: fmt.Sprintf("%s-%d", task.ID, i+1), Name: fmt.Sprintf("%s: проверка %d", task.Title, i+1), Passed: false}
@@ -252,9 +322,6 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 					failedCase = !check.Passed
 					if !check.Passed {
 						check.Detail = "Вывод или завершение программы не соответствует критериям."
-						if actual.Stderr != "" {
-							check.Detail = boundedExamDetail(actual.Stderr)
-						}
 					}
 				}
 				checks = append(checks, check)

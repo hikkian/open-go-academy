@@ -1,0 +1,42 @@
+{
+  "id": "juniorplus-exam-retry-status",
+  "signature": "func RetryableStatus(status int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main(){ var cases []struct{ Status int }; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RetryableStatus(in.Status)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "Status": 200
+    },
+    {
+      "Status": 503
+    }
+  ],
+  "public_expected": [
+    false,
+    true
+  ],
+  "private_input": [
+    {
+      "Status": 429
+    },
+    {
+      "Status": 500
+    },
+    {
+      "Status": 599
+    },
+    {
+      "Status": 600
+    },
+    {
+      "Status": 302
+    }
+  ],
+  "private_expected": [
+    true,
+    true,
+    true,
+    false,
+    false
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "id": "juniorplus-18-easy",
+  "signature": "func IsLoopbackBind(host string) bool",
+  "allowed_imports": [
+    "net",
+    "strings"
+  ],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {Host string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := IsLoopbackBind(in.Host);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Host": "127.0.0.1"
+    },
+    {
+      "Host": "0.0.0.0"
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "Host": "localhost"
+    },
+    {
+      "Host": "::1"
+    },
+    {
+      "Host": "192.168.1.10"
+    }
+  ],
+  "private_expected": [
+    true,
+    true,
+    false
+  ]
+}

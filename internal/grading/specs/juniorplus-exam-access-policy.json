@@ -1,0 +1,92 @@
+{
+  "id": "juniorplus-exam-access-policy",
+  "signature": "func CanAccessResource(ownerID, actorID int, role string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main(){ var cases []struct{ OwnerID int; ActorID int; Role string }; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CanAccessResource(in.OwnerID,in.ActorID,in.Role)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "OwnerID": 4,
+      "ActorID": 4,
+      "Role": "user"
+    },
+    {
+      "OwnerID": 4,
+      "ActorID": 9,
+      "Role": "admin"
+    },
+    {
+      "OwnerID": 0,
+      "ActorID": 0,
+      "Role": "admin"
+    }
+  ],
+  "public_expected": [
+    true,
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "OwnerID": 0,
+      "ActorID": 1,
+      "Role": "admin"
+    },
+    {
+      "OwnerID": 1,
+      "ActorID": 0,
+      "Role": "admin"
+    },
+    {
+      "OwnerID": -1,
+      "ActorID": 5,
+      "Role": "admin"
+    },
+    {
+      "OwnerID": 1,
+      "ActorID": 2,
+      "Role": "admin"
+    },
+    {
+      "OwnerID": 4,
+      "ActorID": 9,
+      "Role": "user"
+    },
+    {
+      "OwnerID": 4,
+      "ActorID": 9,
+      "Role": "Admin"
+    },
+    {
+      "OwnerID": 4,
+      "ActorID": 9,
+      "Role": "root"
+    },
+    {
+      "OwnerID": 0,
+      "ActorID": 0,
+      "Role": "user"
+    },
+    {
+      "OwnerID": 4,
+      "ActorID": 4,
+      "Role": "root"
+    },
+    {
+      "OwnerID": 4,
+      "ActorID": 4,
+      "Role": ""
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

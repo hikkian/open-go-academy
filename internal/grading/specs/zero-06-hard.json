@@ -1,0 +1,44 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases []struct { Message string; Stage string }\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(explainDiagnostic(in.Message, in.Stage)) }\n}\n",
+  "id": "zero-06-hard",
+  "private_expected": [
+    "Прочитай первую ошибку и указанную строку",
+    "Прочитай первую ошибку и указанную строку",
+    "Прочитай первую ошибку и указанную строку",
+    "Проверь папку и имя файла"
+  ],
+  "private_input": [
+    {
+      "Message": "undefined: x",
+      "Stage": "source"
+    },
+    {
+      "Message": "syntax error",
+      "Stage": "source"
+    },
+    {
+      "Message": "anything",
+      "Stage": "other"
+    },
+    {
+      "Message": "file absent",
+      "Stage": "path"
+    }
+  ],
+  "public_expected": [
+    "Проверь папку и имя файла",
+    "Проверь установку и открой новый терминал"
+  ],
+  "public_input": [
+    {
+      "Message": "file missing",
+      "Stage": "path"
+    },
+    {
+      "Message": "command absent",
+      "Stage": "tool"
+    }
+  ],
+  "signature": "func explainDiagnostic(message string, stage string) string"
+}

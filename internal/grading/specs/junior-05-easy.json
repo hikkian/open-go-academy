@@ -1,0 +1,28 @@
+{
+  "allowed_imports": [
+    "fmt"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []int64\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), &cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; out = formatTotal(in); if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-05-easy",
+  "private_expected": [
+    "0.00",
+    "1.00",
+    "-1.00",
+    "-92233720368547758.08"
+  ],
+  "private_input": [
+    0,
+    100,
+    -100,
+    -9223372036854775808
+  ],
+  "public_expected": [
+    "123.45",
+    "-0.05"
+  ],
+  "public_input": [
+    12345,
+    -5
+  ],
+  "signature": "func formatTotal(cents int64) string"
+}

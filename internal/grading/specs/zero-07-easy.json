@@ -1,0 +1,42 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases [][]int\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(sumSlice(in)) }\n}\n",
+  "id": "zero-07-easy",
+  "private_expected": [
+    3,
+    10,
+    8,
+    -15
+  ],
+  "private_input": [
+    [
+      -2,
+      5
+    ],
+    [
+      10
+    ],
+    [
+      1,
+      -1,
+      8
+    ],
+    [
+      -10,
+      -5
+    ]
+  ],
+  "public_expected": [
+    6,
+    0
+  ],
+  "public_input": [
+    [
+      1,
+      2,
+      3
+    ],
+    []
+  ],
+  "signature": "func sumSlice(values []int) int"
+}

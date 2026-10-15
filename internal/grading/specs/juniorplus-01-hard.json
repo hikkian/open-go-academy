@@ -1,0 +1,52 @@
+{
+  "id": "juniorplus-01-hard",
+  "signature": "func ClassifyExchange(status int, contentType string, hasLocation bool) string",
+  "allowed_imports": [
+    "strings"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tStatus int\n\tContentType string\n\tHasLocation bool\n}\n\nfunc main() {\n var cases []input\n if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }\n enc:=json.NewEncoder(os.Stdout)\n for _, in:=range cases {\n  var out any\n  out = ClassifyExchange(in.Status,in.ContentType,in.HasLocation)\n  if err:=enc.Encode(out); err!=nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Status": 201,
+      "ContentType": "application/json",
+      "HasLocation": true
+    },
+    {
+      "Status": 404,
+      "ContentType": "application/json",
+      "HasLocation": false
+    }
+  ],
+  "public_expected": [
+    "created",
+    "resource-missing"
+  ],
+  "private_input": [
+    {
+      "Status": 302,
+      "ContentType": "text/html",
+      "HasLocation": true
+    },
+    {
+      "Status": 302,
+      "ContentType": "text/html",
+      "HasLocation": false
+    },
+    {
+      "Status": 409,
+      "ContentType": "application/json",
+      "HasLocation": false
+    },
+    {
+      "Status": 500,
+      "ContentType": "application/json",
+      "HasLocation": false
+    }
+  ],
+  "private_expected": [
+    "redirect",
+    "inconsistent",
+    "client-error",
+    "server-error"
+  ]
+}

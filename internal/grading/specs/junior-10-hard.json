@@ -1,0 +1,47 @@
+{
+  "allowed_imports": [
+    "errors",
+    "strconv"
+  ],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []string; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"parseLimit\" { case \"parseLimit\": v, e := parseLimit(in); err = e; out = map[string]any{\"Value\":v,\"OK\":e==nil}; if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-10-hard",
+  "private_expected": [
+    {
+      "OK": true,
+      "Value": 1
+    },
+    {
+      "OK": false,
+      "Value": 0
+    },
+    {
+      "OK": false,
+      "Value": 0
+    },
+    {
+      "OK": true,
+      "Value": 999
+    }
+  ],
+  "private_input": [
+    "1",
+    "0",
+    "-2",
+    "999"
+  ],
+  "public_expected": [
+    {
+      "OK": true,
+      "Value": 3
+    },
+    {
+      "OK": false,
+      "Value": 0
+    }
+  ],
+  "public_input": [
+    "3",
+    "x"
+  ],
+  "signature": "func parseLimit(s string) (int, error)"
+}

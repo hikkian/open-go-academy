@@ -1,0 +1,46 @@
+{
+  "allowed_imports": [
+    "errors"
+  ],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main() { var inputs []int; if err := json.Unmarshal([]byte(os.Args[1]), \u0026inputs); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, n := range inputs { value, err := sumTo(n); if err := enc.Encode([]any{value, err != nil}); err != nil { panic(err) } } }\n",
+  "id": "zero-04-medium",
+  "private_expected": [
+    [
+      0,
+      true
+    ],
+    [
+      210,
+      false
+    ],
+    [
+      0,
+      true
+    ]
+  ],
+  "private_input": [
+    -1,
+    20,
+    1000001
+  ],
+  "public_expected": [
+    [
+      0,
+      false
+    ],
+    [
+      1,
+      false
+    ],
+    [
+      15,
+      false
+    ]
+  ],
+  "public_input": [
+    0,
+    1,
+    5
+  ],
+  "signature": "func sumTo(n int) (int, error)"
+}

@@ -1,11 +1,11 @@
 export type Profile = { id?: string; name: string; theme: 'light' | 'dark'; rank?: string; xp?: number };
 export type Exercise = {
-  id: string; title: string; difficulty?: string; instructions?: string; prompt?: string;
+  id: string; kind?: 'function'; skills?: string[]; title: string; difficulty?: string; instructions?: string; prompt?: string;
   starter_code?: string; starter?: string; starter_file?: string; public_output?: string; expected_output?: string;
   self_check?: { question: string; answer: string }[];
 };
 export type Lesson = {
-  id: string; title: string; rank: string; module: string; estimated_minutes: number; body?: string;
+  id: string; title: string; rank: string; module: string; order?: number; curriculum_version?: string; prerequisites?: string[]; estimated_minutes: number; body?: string;
   learning_outcomes?: string[]; glossary?: { term: string; translation: string; definition: string }[]; exercises?: Exercise[];
   self_check?: { question: string; answer: string }[];
 };

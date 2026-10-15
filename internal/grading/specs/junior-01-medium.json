@@ -1,0 +1,62 @@
+{
+  "allowed_imports": [
+    "errors"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases [][]int\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), &cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; v, err := sum(in); if err != nil { out = []any{0, \"overflow\"} } else { out = []any{v, nil} }; if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-01-medium",
+  "private_expected": [
+    [
+      0,
+      "overflow"
+    ],
+    [
+      0,
+      "overflow"
+    ],
+    [
+      4,
+      null
+    ],
+    [
+      7,
+      null
+    ]
+  ],
+  "private_input": [
+    [
+      9223372036854775807,
+      1
+    ],
+    [
+      -9223372036854775808,
+      -1
+    ],
+    [
+      10,
+      -10,
+      4
+    ],
+    [
+      7
+    ]
+  ],
+  "public_expected": [
+    [
+      4,
+      null
+    ],
+    [
+      0,
+      null
+    ]
+  ],
+  "public_input": [
+    [
+      2,
+      3,
+      -1
+    ],
+    []
+  ],
+  "signature": "func sum(values []int) (int, error)"
+}

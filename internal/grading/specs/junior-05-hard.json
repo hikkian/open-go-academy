@@ -1,0 +1,64 @@
+{
+  "allowed_imports": [
+    "errors"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []struct{ Left int64; Right int64 }\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), &cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; v, err := addMoney(in.Left, in.Right); if err != nil { out = []any{0, \"overflow\"} } else { out = []any{v, nil} }; if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-05-hard",
+  "private_expected": [
+    [
+      0,
+      "overflow"
+    ],
+    [
+      0,
+      "overflow"
+    ],
+    [
+      9223372036854775806,
+      null
+    ],
+    [
+      0,
+      null
+    ]
+  ],
+  "private_input": [
+    {
+      "Left": 9223372036854775807,
+      "Right": 1
+    },
+    {
+      "Left": -9223372036854775808,
+      "Right": -1
+    },
+    {
+      "Left": 9223372036854775807,
+      "Right": -1
+    },
+    {
+      "Left": -5,
+      "Right": 5
+    }
+  ],
+  "public_expected": [
+    [
+      100,
+      null
+    ],
+    [
+      25,
+      null
+    ]
+  ],
+  "public_input": [
+    {
+      "Left": 120,
+      "Right": -20
+    },
+    {
+      "Left": 10,
+      "Right": 15
+    }
+  ],
+  "signature": "func addMoney(left, right int64) (int64, error)"
+}

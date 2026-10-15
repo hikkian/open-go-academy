@@ -1,0 +1,41 @@
+{
+  "allowed_imports": [
+    "errors",
+    "fmt"
+  ],
+  "driver": "package main\n\nimport (\n    \"encoding/json\"\n    \"errors\"\n    \"fmt\"\n    \"os\"\n)\n\nvar ErrNotFound = errors.New(\"not found\")\nvar cases []struct { Code int }\nfunc main() {\n    if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n    enc := json.NewEncoder(os.Stdout)\n    for _, in := range cases {\n        err := describeFailure(in.Code, ErrNotFound)\n        var out any\n        if errors.Is(err, ErrNotFound) { out = \"not_found\" } else {\n            var target *InputError\n            if errors.As(err, \u0026target) { out = fmt.Sprintf(\"input:%d\", target.Code) }\n        }\n        if err := enc.Encode(out); err != nil { panic(err) }\n    }\n}\n",
+  "id": "junior-06-hard",
+  "private_expected": [
+    null,
+    "not_found",
+    "input:2",
+    null
+  ],
+  "private_input": [
+    {
+      "Code": 0
+    },
+    {
+      "Code": 1
+    },
+    {
+      "Code": 2
+    },
+    {
+      "Code": 3
+    }
+  ],
+  "public_expected": [
+    "not_found",
+    "input:2"
+  ],
+  "public_input": [
+    {
+      "Code": 1
+    },
+    {
+      "Code": 2
+    }
+  ],
+  "signature": "func describeFailure(code int, cause error) error"
+}

@@ -16,7 +16,7 @@ const goHighlight = HighlightStyle.define([
   { tag: [tags.operator, tags.punctuation], color: '#85d8d2' },
 ]);
 
-export default function GoEditor({ value, onChange, readOnly = false }: { value: string; onChange: (value: string) => void; readOnly?: boolean }) {
+export default function GoEditor({ value, onChange, readOnly = false, scrollLabel = 'Прокрутка кода Go' }: { value: string; onChange: (value: string) => void; readOnly?: boolean; scrollLabel?: string }) {
   const host = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const changeRef = useRef(onChange);
@@ -26,9 +26,13 @@ export default function GoEditor({ value, onChange, readOnly = false }: { value:
   useEffect(() => {
     if (!host.current) return;
     const view = new EditorView({ doc: value, extensions: [basicSetup, go(), syntaxHighlighting(goHighlight), readonlyConfig.current.of([EditorState.readOnly.of(readOnly), EditorView.editable.of(!readOnly)]), EditorView.lineWrapping, EditorView.contentAttributes.of({ 'aria-label': 'Go-код' }), EditorView.updateListener.of(update => { if (update.docChanged&&!externalChange.current) changeRef.current(update.state.doc.toString()); })], parent: host.current });
+    view.scrollDOM.tabIndex = 0;
+    view.scrollDOM.setAttribute('role', 'region');
+    view.scrollDOM.setAttribute('aria-label', scrollLabel);
     viewRef.current = view;
     return () => { view.destroy(); viewRef.current = null; };
   }, []);
+  useEffect(() => { viewRef.current?.scrollDOM.setAttribute('aria-label', scrollLabel); }, [scrollLabel]);
  useEffect(()=>{viewRef.current?.dispatch({effects:readonlyConfig.current.reconfigure([EditorState.readOnly.of(readOnly),EditorView.editable.of(!readOnly)])});},[readOnly]);
   useEffect(() => {
     const view = viewRef.current;

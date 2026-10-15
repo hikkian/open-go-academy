@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-20-hard",
+  "signature": "func AssessmentDisposition(automaticPassed, securityGatePassed, manualReviewComplete bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {AutomaticPassed bool; SecurityGatePassed bool; ManualReviewComplete bool}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := AssessmentDisposition(in.AutomaticPassed,in.SecurityGatePassed,in.ManualReviewComplete);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "AutomaticPassed": false,
+      "SecurityGatePassed": true,
+      "ManualReviewComplete": false
+    },
+    {
+      "AutomaticPassed": true,
+      "SecurityGatePassed": true,
+      "ManualReviewComplete": false
+    },
+    {
+      "AutomaticPassed": true,
+      "SecurityGatePassed": false,
+      "ManualReviewComplete": true
+    }
+  ],
+  "public_expected": [
+    "automatic_checks_incomplete",
+    "manual_review_required",
+    "security_gate_failed"
+  ],
+  "private_input": [
+    {
+      "AutomaticPassed": true,
+      "SecurityGatePassed": true,
+      "ManualReviewComplete": true
+    }
+  ],
+  "private_expected": [
+    "reviewed_evidence"
+  ]
+}

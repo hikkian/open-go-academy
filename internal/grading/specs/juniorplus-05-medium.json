@@ -1,0 +1,89 @@
+{
+  "id": "juniorplus-05-medium",
+  "signature": "func NewJSONEchoHandler() http.Handler",
+  "allowed_imports": [
+    "encoding/json",
+    "net/http"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n\t\"net/http/httptest\"\n\t\"strings\"\n)\n\ntype input struct {\n\tMethod string\n\tPath string\n\tBody string\n}\n\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nh:=NewJSONEchoHandler();r:=httptest.NewRecorder();h.ServeHTTP(r,httptest.NewRequest(in.Method,in.Path,strings.NewReader(in.Body)));body:=r.Body.String();if r.Code>=300&&r.Code<400&&r.Header().Get(\"Location\")!=\"\"{body=\"\"};out=struct{Status int;Body string;ContentType string;Location string;Allow string}{r.Code,body,r.Header().Get(\"Content-Type\"),r.Header().Get(\"Location\"),r.Header().Get(\"Allow\")}\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Method": "POST",
+      "Path": "/echo",
+      "Body": "{\"message\":\"hello\"}"
+    },
+    {
+      "Method": "GET",
+      "Path": "/echo",
+      "Body": ""
+    }
+  ],
+  "public_expected": [
+    {
+      "Status": 200,
+      "Body": "{\"message\":\"hello\"}\n",
+      "ContentType": "application/json; charset=utf-8",
+      "Location": "",
+      "Allow": ""
+    },
+    {
+      "Status": 405,
+      "Body": "method not allowed\n",
+      "ContentType": "text/plain; charset=utf-8",
+      "Location": "",
+      "Allow": "POST"
+    }
+  ],
+  "private_input": [
+    {
+      "Method": "POST",
+      "Path": "/echo",
+      "Body": "{"
+    },
+    {
+      "Method": "POST",
+      "Path": "/echo",
+      "Body": "{\"message\":\"\"}"
+    },
+    {
+      "Method": "POST",
+      "Path": "/echo",
+      "Body": "{\"message\":\"x\",\"extra\":1}"
+    },
+    {
+      "Method": "POST",
+      "Path": "/bad",
+      "Body": "{}"
+    }
+  ],
+  "private_expected": [
+    {
+      "Status": 400,
+      "Body": "invalid request\n",
+      "ContentType": "text/plain; charset=utf-8",
+      "Location": "",
+      "Allow": ""
+    },
+    {
+      "Status": 400,
+      "Body": "invalid request\n",
+      "ContentType": "text/plain; charset=utf-8",
+      "Location": "",
+      "Allow": ""
+    },
+    {
+      "Status": 400,
+      "Body": "invalid request\n",
+      "ContentType": "text/plain; charset=utf-8",
+      "Location": "",
+      "Allow": ""
+    },
+    {
+      "Status": 404,
+      "Body": "404 page not found\n",
+      "ContentType": "text/plain; charset=utf-8",
+      "Location": "",
+      "Allow": ""
+    }
+  ]
+}

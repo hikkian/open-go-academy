@@ -1,0 +1,59 @@
+{
+  "allowed_imports": [
+    "encoding/json",
+    "errors",
+    "io",
+    "strings"
+  ],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n\"strings\"\n)\nfunc main() { var cases []string; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"ReadItems\" { case \"ReadItems\": v,e := ReadItems(strings.NewReader(in)); err=e; rows:=[]map[string]any{}; for _,x:=range v { rows=append(rows,map[string]any{\"Name\":x.Name,\"Quantity\":x.Quantity}) }; out=map[string]any{\"Items\":rows,\"OK\":e==nil}; if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-11-medium",
+  "private_expected": [
+    {
+      "Items": [
+        {
+          "Name": "book",
+          "Quantity": 1
+        }
+      ],
+      "OK": true
+    },
+    {
+      "Items": [],
+      "OK": false
+    },
+    {
+      "Items": [],
+      "OK": false
+    },
+    {
+      "Items": [],
+      "OK": false
+    }
+  ],
+  "private_input": [
+    "[{\"name\":\"book\",\"quantity\":1}]",
+    "{",
+    "[{\"name\":\"\",\"quantity\":2}]",
+    "[] trailing"
+  ],
+  "public_expected": [
+    {
+      "Items": [
+        {
+          "Name": "pen",
+          "Quantity": 2
+        }
+      ],
+      "OK": true
+    },
+    {
+      "Items": [],
+      "OK": true
+    }
+  ],
+  "public_input": [
+    "[{\"name\":\"pen\",\"quantity\":2}]",
+    "[]"
+  ],
+  "signature": "func ReadItems(r io.Reader) ([]Item, error)"
+}

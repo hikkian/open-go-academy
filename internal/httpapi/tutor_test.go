@@ -12,6 +12,7 @@ import (
 	"strings"
 	"testing"
 	"time"
+	"unicode/utf8"
 )
 
 func TestTutorConsentBudgetContextAndNoRankAuthority(t *testing.T) {
@@ -102,5 +103,13 @@ func TestTutorConsentBudgetContextAndNoRankAuthority(t *testing.T) {
 	valid["rank"] = "Senior"
 	if w := request("POST", valid); w.Code != 400 {
 		t.Fatal(w.Code, w.Body)
+	}
+}
+
+func TestTutorLongLessonUsesBoundedPublicOverview(t *testing.T) {
+	lesson := content.Lesson{ID: "long-public", Title: "Тема", Body: strings.Repeat("PRIVATE_BODY", 5000), LearningOutcomes: []string{"Понять публичную цель"}, Glossary: []content.GlossaryEntry{{Term: "word", Translation: "слово", Definition: strings.Repeat("я", 20000)}}}
+	context := tutorLessonContext(lesson)
+	if len(context) > 16384 || !utf8.ValidString(context) || strings.Contains(context, "PRIVATE_BODY") || !strings.Contains(context, "Понять публичную цель") {
+		t.Fatal("unbounded/private/invalid overview")
 	}
 }

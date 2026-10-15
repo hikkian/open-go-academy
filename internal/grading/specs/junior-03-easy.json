@@ -1,0 +1,29 @@
+{
+  "allowed_imports": [
+    "strings",
+    "unicode/utf8"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []string\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; out = countRunes(in); if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-03-easy",
+  "private_expected": [
+    1,
+    1,
+    2,
+    1
+  ],
+  "private_input": [
+    "🙂",
+    "ё",
+    "é",
+    "界"
+  ],
+  "public_expected": [
+    3,
+    0
+  ],
+  "public_input": [
+    "кот",
+    ""
+  ],
+  "signature": "func countRunes(text string) int"
+}

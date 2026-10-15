@@ -1,0 +1,64 @@
+{
+  "id": "juniorplus-01-medium",
+  "signature": "func RequestSummary(method, path, host string, headerCount, bodyBytes int) string",
+  "allowed_imports": [
+    "fmt"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tMethod string\n\tPath string\n\tHost string\n\tHeaderCount int\n\tBodyBytes int\n}\n\nfunc main() {\n var cases []input\n if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }\n enc:=json.NewEncoder(os.Stdout)\n for _, in:=range cases {\n  var out any\n  out = RequestSummary(in.Method,in.Path,in.Host,in.HeaderCount,in.BodyBytes)\n  if err:=enc.Encode(out); err!=nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Method": "POST",
+      "Path": "/links",
+      "Host": "api.example.test",
+      "HeaderCount": 2,
+      "BodyBytes": 41
+    },
+    {
+      "Method": "GET",
+      "Path": "/health",
+      "Host": "localhost",
+      "HeaderCount": 0,
+      "BodyBytes": 0
+    }
+  ],
+  "public_expected": [
+    "POST /links host=api.example.test headers=2 body=41",
+    "GET /health host=localhost headers=0 body=0"
+  ],
+  "private_input": [
+    {
+      "Method": "PATCH",
+      "Path": "/links/x",
+      "Host": "example.test",
+      "HeaderCount": 4,
+      "BodyBytes": 7
+    },
+    {
+      "Method": "",
+      "Path": "/",
+      "Host": "",
+      "HeaderCount": 0,
+      "BodyBytes": 0
+    },
+    {
+      "Method": "GET",
+      "Path": "/x",
+      "Host": "h",
+      "HeaderCount": -1,
+      "BodyBytes": 2
+    },
+    {
+      "Method": "GET",
+      "Path": "/x",
+      "Host": "h",
+      "HeaderCount": 1,
+      "BodyBytes": -1
+    }
+  ],
+  "private_expected": [
+    "PATCH /links/x host=example.test headers=4 body=7",
+    "invalid",
+    "invalid",
+    "invalid"
+  ]
+}

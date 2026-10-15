@@ -1,0 +1,86 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []struct{ User *User; Name string }\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; v, ok := renamedCopy(in.User, in.Name); if ok { out = []any{v, true} } else { out = []any{nil, false} }; if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-04-hard",
+  "private_expected": [
+    [
+      {
+        "ID": 0,
+        "Name": "x"
+      },
+      true
+    ],
+    [
+      {
+        "ID": 9,
+        "Name": ""
+      },
+      true
+    ],
+    [
+      null,
+      false
+    ],
+    [
+      {
+        "ID": -2,
+        "Name": "new"
+      },
+      true
+    ]
+  ],
+  "private_input": [
+    {
+      "Name": "x",
+      "User": {
+        "ID": 0,
+        "Name": ""
+      }
+    },
+    {
+      "Name": "",
+      "User": {
+        "ID": 9,
+        "Name": "N"
+      }
+    },
+    {
+      "Name": "x",
+      "User": null
+    },
+    {
+      "Name": "new",
+      "User": {
+        "ID": -2,
+        "Name": "old"
+      }
+    }
+  ],
+  "public_expected": [
+    [
+      {
+        "ID": 5,
+        "Name": "Irina"
+      },
+      true
+    ],
+    [
+      null,
+      false
+    ]
+  ],
+  "public_input": [
+    {
+      "Name": "Irina",
+      "User": {
+        "ID": 5,
+        "Name": "Ira"
+      }
+    },
+    {
+      "Name": "n/a",
+      "User": null
+    }
+  ],
+  "signature": "func renamedCopy(user *User, name string) (*User, bool)"
+}

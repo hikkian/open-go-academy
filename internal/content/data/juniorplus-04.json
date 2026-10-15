@@ -1,0 +1,167 @@
+{
+  "id": "juniorplus-04",
+  "title": "JSON API и REST-ресурсы",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "junior-11",
+    "juniorplus-01"
+  ],
+  "estimated_minutes": 100,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Сопоставлять метод, статус и смысл операции над ресурсом.",
+    "Разбирать JSON без доверия данным клиента.",
+    "Формировать безопасный escaped path segment."
+  ],
+  "glossary": [
+    {
+      "term": "api",
+      "translation": "API",
+      "definition": "Контракт взаимодействия программ."
+    },
+    {
+      "term": "rest",
+      "translation": "REST",
+      "definition": "Стиль проектирования API через ресурсы и их представления."
+    },
+    {
+      "term": "resource",
+      "translation": "ресурс",
+      "definition": "Объект или коллекция, адресуемые API."
+    },
+    {
+      "term": "representation",
+      "translation": "представление",
+      "definition": "Передаваемая форма данных ресурса."
+    },
+    {
+      "term": "idempotency",
+      "translation": "идемпотентность",
+      "definition": "Повтор операции сохраняет смысловой итог."
+    },
+    {
+      "term": "json",
+      "translation": "JSON",
+      "definition": "Текстовый формат структурированных данных."
+    }
+  ],
+  "markdown_file": "juniorplus-04.md",
+  "order": 24,
+  "exercises": [
+    {
+      "id": "juniorplus-04-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Сопоставь метод и статус API",
+      "prompt": "Контракт: GET/HEAD→200, POST→201, PUT/PATCH→200, DELETE→204, прочее→405.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc MethodStatus(method string) int {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "200\n201\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "Контракт: GET/HEAD→200, POST→201, PUT/PATCH→200, DELETE→204, прочее→405."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-04-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Определи идемпотентность метода",
+      "prompt": "Верни true для GET, HEAD, PUT, DELETE; false для POST, PATCH и других методов. Идемпотентность — о смысловом результате, не о совпадении статусов.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc IsIdempotentMethod(method string) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "Верни true для GET, HEAD, PUT, DELETE; false для POST, PATCH и других методов. Идемпотентность — о смысловом результате, не о совпадении статусов."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-04-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Сформируй URI ресурса",
+      "prompt": "Верни /links/{alias}, кодируя alias одним path segment через net/url. Пустой alias или alias с whitespace отклоняй пустой строкой.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ResourceLocation(alias string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"/links/green\"\n\"/links/go\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соблюдает контракт.",
+        "Status, headers и body или возвращаемое значение соответствуют условию.",
+        "Граничные и отказные входы обрабатываются детерминированно и безопасно."
+      ],
+      "self_check": [
+        {
+          "question": "Какая входная граница важна?",
+          "answer": "Верни /links/{alias}, кодируя alias одним path segment через net/url. Пустой alias или alias с whitespace отклоняй пустой строкой."
+        },
+        {
+          "question": "Что доказывают локальные cases?",
+          "answer": "Только наблюдаемое поведение на выбранных входах."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова главная граница или инвариант темы?",
+      "answer": "Сопоставлять метод, статус и смысл операции над ресурсом."
+    },
+    {
+      "question": "Что доказывает локальный тест?",
+      "answer": "Только перечисленное наблюдаемое поведение для данных входов, не свойства отсутствующей сети или инфраструктуры."
+    },
+    {
+      "question": "Как проверить границу?",
+      "answer": "Добавить малый воспроизводимый fixture и сравнить результат с явным контрактом."
+    },
+    {
+      "question": "Нужно ли подключаться к внешней сети для упражнений?",
+      "answer": "Нет: используются локальные значения и httptest."
+    },
+    {
+      "question": "Как вернуть ошибку безопасно?",
+      "answer": "Стабильной категорией без stack trace, SQL, пути файла, token или иных секретов."
+    },
+    {
+      "question": "Обязателен ли AI Tutor?",
+      "answer": "Нет, материал и критерии позволяют самостоятельную работу."
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import (
 	"academy/internal/content"
 	"academy/internal/credentials"
 	"academy/internal/httpapi"
+	"academy/internal/projectrunner"
 	"academy/internal/runner"
 	"academy/internal/store"
 	"academy/internal/tutor"
@@ -72,6 +73,7 @@ func main() {
 	}
 	_, port, _ := net.SplitHostPort(addr)
 	a := httpapi.New(s, catalog, runner.NewClient(env("ACADEMY_RUNNER_SOCKET", ".data/runner.sock")), secret, addr, "localhost:"+port, "127.0.0.1:5173", "localhost:5173")
+	a.ProjectRunner = projectrunner.NewClient(env("ACADEMY_PROJECT_RUNNER_SOCKET", ".data/project-runner.sock"))
 	issuerPath := env("ACADEMY_ISSUER_KEY", filepath.Join(filepath.Dir(dbPath), "issuer.key"))
 	var credentialCount int
 	if err = s.DB().QueryRow(`SELECT COUNT(*) FROM credentials`).Scan(&credentialCount); err != nil {
@@ -117,7 +119,7 @@ func main() {
 		a.TutorSettings.EconomyModel = cfg.EconomyModel
 		a.TutorSettings.AdvancedModel = cfg.AdvancedModel
 	}
-	srv := &http.Server{Addr: addr, Handler: a.Handler(env("ACADEMY_WEB", "web/dist")), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 200 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 << 10}
+	srv := &http.Server{Addr: addr, Handler: a.Handler(env("ACADEMY_WEB", "web/dist")), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 230 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 << 10}
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 	go func() {

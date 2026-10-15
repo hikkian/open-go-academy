@@ -1,0 +1,63 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases [][]User\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; out = activeUsers(in); if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-04-medium",
+  "private_expected": [
+    {
+      "4": true
+    },
+    {
+      "-1": true
+    },
+    {},
+    {
+      "0": false
+    }
+  ],
+  "private_input": [
+    [
+      {
+        "Active": false,
+        "ID": 4
+      },
+      {
+        "Active": true,
+        "ID": 4
+      }
+    ],
+    [
+      {
+        "Active": true,
+        "ID": -1
+      }
+    ],
+    [],
+    [
+      {
+        "Active": false,
+        "ID": 0
+      }
+    ]
+  ],
+  "public_expected": [
+    {
+      "1": true,
+      "2": false
+    },
+    {}
+  ],
+  "public_input": [
+    [
+      {
+        "Active": true,
+        "ID": 1
+      },
+      {
+        "Active": false,
+        "ID": 2
+      }
+    ],
+    []
+  ],
+  "signature": "func activeUsers(users []User) map[int]bool"
+}

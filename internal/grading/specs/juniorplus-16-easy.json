@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-16-easy",
+  "signature": "func CanMutate(authenticated bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tAuthenticated bool\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=CanMutate(in.Authenticated)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Authenticated": true
+    },
+    {
+      "Authenticated": false
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "Authenticated": false
+    },
+    {
+      "Authenticated": true
+    },
+    {
+      "Authenticated": false
+    },
+    {
+      "Authenticated": true
+    }
+  ],
+  "private_expected": [
+    false,
+    true,
+    false,
+    true
+  ]
+}

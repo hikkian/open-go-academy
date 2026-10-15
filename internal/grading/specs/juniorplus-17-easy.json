@@ -1,0 +1,37 @@
+{
+  "id": "juniorplus-17-easy",
+  "signature": "func ConfigValid(databaseURL, origin string) bool",
+  "allowed_imports": [
+    "net/url",
+    "strings"
+  ],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {DatabaseURL string; Origin string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := ConfigValid(in.DatabaseURL,in.Origin);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "DatabaseURL": "postgres://local:secret@db/linkhub",
+      "Origin": "http://127.0.0.1:8097"
+    },
+    {
+      "DatabaseURL": "",
+      "Origin": "http://127.0.0.1:8097"
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "DatabaseURL": "postgresql://db/linkhub",
+      "Origin": "https://example.test"
+    },
+    {
+      "DatabaseURL": "postgres://db/linkhub",
+      "Origin": "https://example.test/path"
+    }
+  ],
+  "private_expected": [
+    true,
+    false
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "juniorplus-11-medium",
+  "signature": "func MigrationVersionAllowed(version string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\";)\ntype input struct {Version string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := MigrationVersionAllowed(in.Version);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Version": "0001_init"
+    },
+    {
+      "Version": "latest"
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "Version": "0002_link_index"
+    },
+    {
+      "Version": "../../drop"
+    },
+    {
+      "Version": ""
+    }
+  ],
+  "private_expected": [
+    true,
+    false,
+    false
+  ]
+}

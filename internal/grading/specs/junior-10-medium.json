@@ -1,0 +1,87 @@
+{
+  "allowed_imports": [
+    "errors",
+    "strconv",
+    "strings"
+  ],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Args []string }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"ParseArgs\" { case \"ParseArgs\": v,e := ParseArgs(in.Args); err=e; out=map[string]any{\"Name\":v.Name,\"Limit\":v.Limit,\"OK\":e==nil}; if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-10-medium",
+  "private_expected": [
+    {
+      "Limit": 1,
+      "Name": "Алия",
+      "OK": true
+    },
+    {
+      "Limit": 0,
+      "Name": "",
+      "OK": false
+    },
+    {
+      "Limit": 0,
+      "Name": "",
+      "OK": false
+    },
+    {
+      "Limit": 0,
+      "Name": "",
+      "OK": false
+    }
+  ],
+  "private_input": [
+    {
+      "Args": [
+        "--name",
+        "Алия",
+        "--limit",
+        "1"
+      ]
+    },
+    {
+      "Args": [
+        "--name",
+        "x",
+        "--limit",
+        "0"
+      ]
+    },
+    {
+      "Args": [
+        "--unknown",
+        "x"
+      ]
+    },
+    {
+      "Args": [
+        "--limit",
+        "bad"
+      ]
+    }
+  ],
+  "public_expected": [
+    {
+      "Limit": 3,
+      "Name": "Ada",
+      "OK": true
+    },
+    {
+      "Limit": 0,
+      "Name": "",
+      "OK": false
+    }
+  ],
+  "public_input": [
+    {
+      "Args": [
+        "--name",
+        "Ada",
+        "--limit",
+        "3"
+      ]
+    },
+    {
+      "Args": []
+    }
+  ],
+  "signature": "func ParseArgs(args []string) (Config, error)"
+}

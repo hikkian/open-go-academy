@@ -1,0 +1,24 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main() { var inputs []string; if err := json.Unmarshal([]byte(os.Args[1]), \u0026inputs); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, name := range inputs { if err := enc.Encode(formatGreeting(name)); err != nil { panic(err) } } }\n",
+  "id": "zero-02-easy",
+  "private_expected": [
+    "Привет, !",
+    "Привет, Имя с пробелом!",
+    "Привет, Élodie!"
+  ],
+  "private_input": [
+    "",
+    "Имя с пробелом",
+    "Élodie"
+  ],
+  "public_expected": [
+    "Привет, Алия!",
+    "Привет, Ada!"
+  ],
+  "public_input": [
+    "Алия",
+    "Ada"
+  ],
+  "signature": "func formatGreeting(name string) string"
+}

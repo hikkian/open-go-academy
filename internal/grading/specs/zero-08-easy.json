@@ -1,0 +1,42 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases [][]int\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(countPassing(in)) }\n}\n",
+  "id": "zero-08-easy",
+  "private_expected": [
+    1,
+    0,
+    2,
+    2
+  ],
+  "private_input": [
+    [
+      100
+    ],
+    [
+      0,
+      59
+    ],
+    [
+      60,
+      60
+    ],
+    [
+      59,
+      61,
+      100
+    ]
+  ],
+  "public_expected": [
+    2,
+    0
+  ],
+  "public_input": [
+    [
+      59,
+      60,
+      61
+    ],
+    []
+  ],
+  "signature": "func countPassing(scores []int) int"
+}

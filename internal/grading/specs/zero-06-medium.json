@@ -1,0 +1,28 @@
+{
+  "allowed_imports": [
+    "strings"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases []string\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(nextSafeStep(in)) }\n}\n",
+  "id": "zero-06-medium",
+  "private_expected": [
+    "read_first_error",
+    "read_first_error",
+    "save_and_rerun",
+    "read_first_error"
+  ],
+  "private_input": [
+    "main.go: syntax error",
+    "undefined: total",
+    "build failed",
+    "SYNTAX ERROR"
+  ],
+  "public_expected": [
+    "check_install",
+    "check_path"
+  ],
+  "public_input": [
+    "go: command not found",
+    "stat main.go: no such file or directory"
+  ],
+  "signature": "func nextSafeStep(message string) string"
+}

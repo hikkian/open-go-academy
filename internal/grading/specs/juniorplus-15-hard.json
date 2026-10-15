@@ -1,0 +1,50 @@
+{
+  "id": "juniorplus-15-hard",
+  "signature": "func AllowCookieMutation(method string, csrfValid, originTrusted bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tMethod string\n\tCSRFValid bool\n\tOriginTrusted bool\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=AllowCookieMutation(in.Method,in.CSRFValid,in.OriginTrusted)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Method": "POST",
+      "CSRFValid": true,
+      "OriginTrusted": true
+    },
+    {
+      "Method": "PATCH",
+      "CSRFValid": true,
+      "OriginTrusted": true
+    }
+  ],
+  "public_expected": [
+    true,
+    true
+  ],
+  "private_input": [
+    {
+      "Method": "GET",
+      "CSRFValid": true,
+      "OriginTrusted": true
+    },
+    {
+      "Method": "DELETE",
+      "CSRFValid": false,
+      "OriginTrusted": true
+    },
+    {
+      "Method": "PUT",
+      "CSRFValid": true,
+      "OriginTrusted": false
+    },
+    {
+      "Method": "TRACE",
+      "CSRFValid": true,
+      "OriginTrusted": true
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false
+  ]
+}

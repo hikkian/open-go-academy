@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-04-easy",
+  "signature": "func MethodStatus(method string) int",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tMethod string\n}\n\nfunc main() {\n var cases []input\n if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }\n enc:=json.NewEncoder(os.Stdout)\n for _, in:=range cases {\n  var out any\n  out=MethodStatus(in.Method)\n  if err:=enc.Encode(out); err!=nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Method": "GET"
+    },
+    {
+      "Method": "POST"
+    }
+  ],
+  "public_expected": [
+    200,
+    201
+  ],
+  "private_input": [
+    {
+      "Method": "DELETE"
+    },
+    {
+      "Method": "PATCH"
+    },
+    {
+      "Method": "OPTIONS"
+    },
+    {
+      "Method": "get"
+    }
+  ],
+  "private_expected": [
+    204,
+    200,
+    405,
+    405
+  ]
+}

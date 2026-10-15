@@ -1,0 +1,34 @@
+{
+  "id": "juniorplus-12-medium",
+  "signature": "func RepositoryOutcome(sqlState string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\";)\ntype input struct {SQLState string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := RepositoryOutcome(in.SQLState);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "SQLState": "23505"
+    },
+    {
+      "SQLState": ""
+    }
+  ],
+  "public_expected": [
+    "conflict",
+    "success"
+  ],
+  "private_input": [
+    {
+      "SQLState": "57014"
+    },
+    {
+      "SQLState": "08006"
+    },
+    {
+      "SQLState": "02000"
+    }
+  ],
+  "private_expected": [
+    "canceled",
+    "storage_error",
+    "not_found"
+  ]
+}

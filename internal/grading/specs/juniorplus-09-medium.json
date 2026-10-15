@@ -1,0 +1,20 @@
+{
+  "id": "juniorplus-09-medium",
+  "signature": "func CreateLinkStatement() string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\";)\ntype input struct {}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{_ = in; out := CreateLinkStatement();if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {},
+    {}
+  ],
+  "public_expected": [
+    "INSERT INTO links(owner_id, slug, target_url) VALUES ($1, $2, $3) RETURNING id",
+    "INSERT INTO links(owner_id, slug, target_url) VALUES ($1, $2, $3) RETURNING id"
+  ],
+  "private_input": [
+    {}
+  ],
+  "private_expected": [
+    "INSERT INTO links(owner_id, slug, target_url) VALUES ($1, $2, $3) RETURNING id"
+  ]
+}

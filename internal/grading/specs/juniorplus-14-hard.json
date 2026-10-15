@@ -1,0 +1,50 @@
+{
+  "id": "juniorplus-14-hard",
+  "signature": "func TransactionTestOutcome(operationFailed, rollbackObserved, fixtureCleaned bool) string",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tOperationFailed bool\n\tRollbackObserved bool\n\tFixtureCleaned bool\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=TransactionTestOutcome(in.OperationFailed,in.RollbackObserved,in.FixtureCleaned)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "OperationFailed": true,
+      "RollbackObserved": true,
+      "FixtureCleaned": true
+    },
+    {
+      "OperationFailed": false,
+      "RollbackObserved": false,
+      "FixtureCleaned": true
+    }
+  ],
+  "public_expected": [
+    "rollback_verified",
+    "committed"
+  ],
+  "private_input": [
+    {
+      "OperationFailed": true,
+      "RollbackObserved": false,
+      "FixtureCleaned": true
+    },
+    {
+      "OperationFailed": false,
+      "RollbackObserved": true,
+      "FixtureCleaned": true
+    },
+    {
+      "OperationFailed": false,
+      "RollbackObserved": false,
+      "FixtureCleaned": false
+    },
+    {
+      "OperationFailed": true,
+      "RollbackObserved": false,
+      "FixtureCleaned": false
+    }
+  ],
+  "private_expected": [
+    "rollback_missing",
+    "unexpected_rollback",
+    "cleanup_failed",
+    "cleanup_failed"
+  ]
+}

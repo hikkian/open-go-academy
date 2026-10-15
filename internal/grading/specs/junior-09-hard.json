@@ -1,0 +1,58 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Values []int; Target int }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"linearSearch\" { case \"linearSearch\": out = linearSearch(in.Values, in.Target); if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-09-hard",
+  "private_expected": [
+    -1,
+    0,
+    0,
+    1
+  ],
+  "private_input": [
+    {
+      "Target": 0,
+      "Values": []
+    },
+    {
+      "Target": 5,
+      "Values": [
+        5
+      ]
+    },
+    {
+      "Target": 2,
+      "Values": [
+        2,
+        2
+      ]
+    },
+    {
+      "Target": 0,
+      "Values": [
+        -1,
+        0
+      ]
+    }
+  ],
+  "public_expected": [
+    1,
+    -1
+  ],
+  "public_input": [
+    {
+      "Target": 2,
+      "Values": [
+        9,
+        2,
+        4
+      ]
+    },
+    {
+      "Target": 3,
+      "Values": [
+        1
+      ]
+    }
+  ],
+  "signature": "func linearSearch(values []int, target int) int"
+}

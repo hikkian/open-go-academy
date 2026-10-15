@@ -1,0 +1,46 @@
+{
+  "id": "juniorplus-13-easy",
+  "signature": "func ValidateLinkInput(alias, target string) string",
+  "allowed_imports": [
+    "net/url"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tAlias string\n\tTarget string\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=ValidateLinkInput(in.Alias,in.Target)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Alias": "go",
+      "Target": "https://go.dev/"
+    },
+    {
+      "Alias": "green-2",
+      "Target": "http://example.test/path"
+    }
+  ],
+  "public_expected": [
+    "",
+    ""
+  ],
+  "private_input": [
+    {
+      "Alias": "bad name",
+      "Target": "https://go.dev/"
+    },
+    {
+      "Alias": "go",
+      "Target": "javascript:alert(1)"
+    },
+    {
+      "Alias": "go",
+      "Target": "https://u:p@example.test/"
+    },
+    {
+      "Alias": "go",
+      "Target": "https://go.dev/#frag"
+    }
+  ],
+  "private_expected": [
+    "invalid_alias",
+    "unsupported_scheme",
+    "invalid_target",
+    "invalid_target"
+  ]
+}

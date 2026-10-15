@@ -3,6 +3,7 @@ package httpapi
 import (
 	"academy/internal/content"
 	"academy/internal/learning"
+	"academy/internal/projectrunner"
 	"academy/internal/runner"
 	"academy/internal/store"
 	"context"
@@ -26,7 +27,12 @@ type Executor interface {
 	Available(context.Context) bool
 	Execute(context.Context, runner.Request) (runner.Result, error)
 }
+type ProjectExecutor interface {
+	Available(context.Context) bool
+	Execute(context.Context, projectrunner.Request) (runner.Result, error)
+}
 type API struct {
+	ProjectRunner ProjectExecutor
 	Store         *store.Store
 	Content       *content.Catalog
 	Runner        Executor
@@ -110,6 +116,14 @@ func (a *API) Handler(staticDir string) http.Handler {
 	a.examRoutes(mux)
 	a.tutorRoutes(mux)
 	a.credentialRoutes(mux)
+	mux.HandleFunc("GET /api/curriculum", func(w http.ResponseWriter, r *http.Request) {
+		m, err := content.Manifest()
+		if err != nil {
+			fail(w, 500, "manifest недоступен")
+			return
+		}
+		write(w, 200, m)
+	})
 	mux.HandleFunc("GET /api/health", func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), time.Second)
 		defer cancel()
@@ -189,7 +203,7 @@ func (a *API) Handler(staticDir string) http.Handler {
 			fail(w, 500, "не удалось прочитать подтверждения ранга")
 			return
 		}
-		write(w, 200, learning.WithAwards(learning.Build(p), awards))
+		write(w, 200, learning.WithAwards(learning.WithCatalog(learning.Build(p), p, a.Content), awards))
 	})
 
 	mux.HandleFunc("GET /api/progress", func(w http.ResponseWriter, r *http.Request) {
@@ -256,6 +270,10 @@ func (a *API) Handler(staticDir string) http.Handler {
 		}
 		if a.Runner == nil {
 			fail(w, 503, "исполнитель недоступен; запустите make runner")
+			return
+		}
+		if ex.Kind == "function" && action != "format" {
+			a.functionExercise(w, r, ex.ID, action, q.Files)
 			return
 		}
 		q.Mode = "run"

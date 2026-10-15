@@ -110,8 +110,8 @@ func (a *API) credentialRoutes(mux *http.ServeMux) {
 			fail(w, 404, "попытка не найдена")
 			return
 		}
-		exam := assessment.Load()
-		if attempt.ExamID != exam.ID || attempt.Version != exam.Version || attempt.CriteriaHash != exam.Hash() || attempt.Status != "completed" || !attempt.Passed || attempt.Score != 100 {
+		exam, knownExam := assessment.Find(attempt.ExamID, attempt.Version)
+		if !knownExam || attempt.ExamID != exam.ID || attempt.Version != exam.Version || attempt.CriteriaHash != exam.Hash() || attempt.Status != "completed" || !attempt.Passed || attempt.Score != 100 {
 			credentialError(w, store.ErrCredentialPrerequisites)
 			return
 		}
@@ -290,7 +290,7 @@ func (a *API) passport(w http.ResponseWriter, public bool) {
 		credentialError(w, err)
 		return
 	}
-	snapshot := learning.WithAwards(learning.Build(progress), awards)
+	snapshot := learning.WithAwards(learning.WithCatalog(learning.Build(progress), progress, a.Content), awards)
 	verifiedTimes := map[string]time.Time{}
 	activityByDate := map[string]int{}
 	for exerciseID, attemptID := range progress.Evidence {
@@ -347,6 +347,9 @@ func (a *API) passport(w http.ResponseWriter, public bool) {
 		case "repair":
 			title = "Охотник за ошибками"
 			description = "Исправлена и проверена первая программа."
+		case "p2:automatic":
+			title = "API Builder"
+			description = "Пройдены изолированные автоматические проверки P2; архитектурное ревью отдельно."
 		case "p1:automatic":
 			title = "CLI Builder"
 			description = "Пройдены автоматические проверки P1; ручное ревью отдельно."
@@ -357,12 +360,11 @@ func (a *API) passport(w http.ResponseWriter, public bool) {
 			}
 		}
 	}
-	catalogProject := projects.Load()
-	projectOverview := make([]map[string]any, 0, 1)
-	if catalogProject.ID != "" {
+	projectOverview := make([]map[string]any, 0, len(projects.All()))
+	for _, catalogProject := range projects.All() {
 		automaticPassed := false
 		for _, completedID := range progress.Completed {
-			if completedID == "p1:automatic" {
+			if completedID == catalogProject.ID+":automatic" {
 				automaticPassed = true
 				break
 			}

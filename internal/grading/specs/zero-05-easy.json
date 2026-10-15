@@ -1,0 +1,40 @@
+{
+  "allowed_imports": [
+    "strings"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases []struct { Name string }\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(greet(in.Name)) }\n}\n",
+  "id": "zero-05-easy",
+  "private_expected": [
+    "Привет, !",
+    "Привет, Мир!",
+    "Привет, Кот!",
+    "Привет, Ada Lovelace!"
+  ],
+  "private_input": [
+    {
+      "Name": ""
+    },
+    {
+      "Name": "Мир"
+    },
+    {
+      "Name": "Кот"
+    },
+    {
+      "Name": "Ada Lovelace"
+    }
+  ],
+  "public_expected": [
+    "Привет, Ада!",
+    "Привет, Go!"
+  ],
+  "public_input": [
+    {
+      "Name": "Ада"
+    },
+    {
+      "Name": "Go"
+    }
+  ],
+  "signature": "func greet(name string) string"
+}

@@ -1,0 +1,40 @@
+{
+  "id": "juniorplus-03-easy",
+  "signature": "func IsHTTPSOrigin(raw string) bool",
+  "allowed_imports": [
+    "net/url"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tRaw string\n}\n\nfunc main() {\n var cases []input\n if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }\n enc:=json.NewEncoder(os.Stdout)\n for _, in:=range cases {\n  var out any\n  out=IsHTTPSOrigin(in.Raw)\n  if err:=enc.Encode(out); err!=nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Raw": "https://api.example.test/v1"
+    },
+    {
+      "Raw": "http://api.example.test/"
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "Raw": "/relative"
+    },
+    {
+      "Raw": "https://"
+    },
+    {
+      "Raw": "https://user:pass@example.test/"
+    },
+    {
+      "Raw": "https://example.test:8443"
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    true,
+    true
+  ]
+}

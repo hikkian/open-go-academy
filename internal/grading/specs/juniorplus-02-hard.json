@@ -1,0 +1,66 @@
+{
+  "id": "juniorplus-02-hard",
+  "signature": "func JoinEndpoint(host string, port int) (string, bool)",
+  "allowed_imports": [
+    "net",
+    "strconv",
+    "strings"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tHost string\n\tPort int\n}\n\nfunc main() {\n var cases []input\n if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }\n enc:=json.NewEncoder(os.Stdout)\n for _, in:=range cases {\n  var out any\n  address,ok:=JoinEndpoint(in.Host,in.Port)\n  \tout=struct{Address string;OK bool}{address,ok}\n  if err:=enc.Encode(out); err!=nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Host": "127.0.0.1",
+      "Port": 8080
+    },
+    {
+      "Host": "api.example.test",
+      "Port": 443
+    }
+  ],
+  "public_expected": [
+    {
+      "Address": "127.0.0.1:8080",
+      "OK": true
+    },
+    {
+      "Address": "api.example.test:443",
+      "OK": true
+    }
+  ],
+  "private_input": [
+    {
+      "Host": "2001:db8::1",
+      "Port": 8443
+    },
+    {
+      "Host": "",
+      "Port": 80
+    },
+    {
+      "Host": "bad host",
+      "Port": 80
+    },
+    {
+      "Host": "host",
+      "Port": 65536
+    }
+  ],
+  "private_expected": [
+    {
+      "Address": "[2001:db8::1]:8443",
+      "OK": true
+    },
+    {
+      "Address": "",
+      "OK": false
+    },
+    {
+      "Address": "",
+      "OK": false
+    },
+    {
+      "Address": "",
+      "OK": false
+    }
+  ]
+}

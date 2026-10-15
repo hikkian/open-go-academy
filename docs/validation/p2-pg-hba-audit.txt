@@ -1,0 +1,6 @@
+PASS actual disposable worker DB host authentication rules:
+host|127.0.0.1|scram-sha-256
+host|::1|scram-sha-256
+host|127.0.0.1|scram-sha-256
+host|::1|scram-sha-256
+host|all|scram-sha-256

@@ -1,0 +1,46 @@
+{
+  "id": "juniorplus-15-medium",
+  "signature": "func SessionExpired(now, expiresAt time.Time) bool",
+  "allowed_imports": [
+    "time"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n\t\"time\"\n)\n\ntype input struct {\n\tNow time.Time\n\tExpiresAt time.Time\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=SessionExpired(in.Now,in.ExpiresAt)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Now": "2026-10-15T10:00:00Z",
+      "ExpiresAt": "2026-10-15T10:01:00Z"
+    },
+    {
+      "Now": "2026-10-15T10:00:00Z",
+      "ExpiresAt": "2026-10-15T10:00:00Z"
+    }
+  ],
+  "public_expected": [
+    false,
+    true
+  ],
+  "private_input": [
+    {
+      "Now": "2026-10-15T10:00:00Z",
+      "ExpiresAt": "2026-10-15T09:59:59Z"
+    },
+    {
+      "Now": "2026-10-15T10:00:00Z",
+      "ExpiresAt": "2026-10-15T10:00:01Z"
+    },
+    {
+      "Now": "2026-10-15T09:00:00-01:00",
+      "ExpiresAt": "2026-10-15T10:00:00Z"
+    },
+    {
+      "Now": "0001-01-01T00:00:00Z",
+      "ExpiresAt": "0001-01-01T00:00:00Z"
+    }
+  ],
+  "private_expected": [
+    true,
+    false,
+    true,
+    true
+  ]
+}

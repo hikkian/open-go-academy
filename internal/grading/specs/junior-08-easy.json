@@ -1,0 +1,44 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Got int; Want int }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"isPassing\" { case \"isPassing\": out = isPassing(in.Got,in.Want); if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-08-easy",
+  "private_expected": [
+    true,
+    false,
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "Got": 0,
+      "Want": 0
+    },
+    {
+      "Got": -1,
+      "Want": 0
+    },
+    {
+      "Got": 9,
+      "Want": 9
+    },
+    {
+      "Got": 2,
+      "Want": 1
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "public_input": [
+    {
+      "Got": 3,
+      "Want": 3
+    },
+    {
+      "Got": 3,
+      "Want": 4
+    }
+  ],
+  "signature": "func isPassing(got, want int) bool"
+}

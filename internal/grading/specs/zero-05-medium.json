@@ -1,0 +1,28 @@
+{
+  "allowed_imports": [
+    "unicode/utf8"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases []string\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(countRunes(in)) }\n}\n",
+  "id": "zero-05-medium",
+  "private_expected": [
+    6,
+    0,
+    1,
+    2
+  ],
+  "private_input": [
+    "Привет",
+    "",
+    "🙂",
+    "é"
+  ],
+  "public_expected": [
+    2,
+    1
+  ],
+  "public_input": [
+    "Go",
+    "Я"
+  ],
+  "signature": "func countRunes(text string) int"
+}

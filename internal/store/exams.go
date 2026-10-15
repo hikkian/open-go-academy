@@ -120,12 +120,22 @@ func attemptFromRow(row interface{ Scan(...any) error }) (ExamAttempt, error) {
 
 const examAttemptColumns = `id,profile_id,exam_id,version,rank,criteria_hash,status,answers_json,codes_json,score,passed,created_at,finished_at,checks_json,evidence_json,revision`
 
-func (s *Store) StartExam(profileID, examID, version, tokenHash string, prerequisites []string) (ExamAttempt, error) {
+func (s *Store) StartExam(profileID, examID, version, tokenHash string, prerequisites []string, requiredRanks ...string) (ExamAttempt, error) {
 	if profileID != "local" {
 		return ExamAttempt{}, ErrProfileNotFound
 	}
 	if !validExamText(examID) || !validExamText(version) || !validExamText(tokenHash) {
 		return ExamAttempt{}, errors.New("invalid exam attempt request")
+	}
+	rankEvidence := make(map[string]rankAwardEvidence, len(requiredRanks))
+	for _, required := range requiredRanks {
+		if !validRank(required) {
+			return ExamAttempt{}, fmt.Errorf("%w: unknown rank %q", ErrExamPrerequisites, required)
+		}
+		if _, duplicate := rankEvidence[required]; duplicate {
+			return ExamAttempt{}, fmt.Errorf("%w: duplicate rank %q", ErrExamPrerequisites, required)
+		}
+		rankEvidence[required] = rankAwardEvidence{}
 	}
 	tx, err := s.db.Begin()
 	if err != nil {
@@ -155,12 +165,23 @@ func (s *Store) StartExam(profileID, examID, version, tokenHash string, prerequi
 		}
 		verified[prereq] = attemptID
 	}
+	for required := range rankEvidence {
+		var proof rankAwardEvidence
+		err = tx.QueryRow(`SELECT exam_id,version,attempt_id FROM rank_awards WHERE profile_id=? AND rank=? ORDER BY awarded_at,exam_id,version LIMIT 1`, profileID, required).Scan(&proof.ExamID, &proof.Version, &proof.AttemptID)
+		if errors.Is(err, sql.ErrNoRows) {
+			return ExamAttempt{}, fmt.Errorf("%w: rank %s", ErrExamPrerequisites, required)
+		}
+		if err != nil {
+			return ExamAttempt{}, err
+		}
+		rankEvidence[required] = proof
+	}
 	id, err := newExamAttemptID()
 	if err != nil {
 		return ExamAttempt{}, err
 	}
 	now := time.Now().UTC()
-	evidence, _ := json.Marshal(map[string]any{"verified_progress": verified})
+	evidence, _ := json.Marshal(map[string]any{"verified_progress": verified, "rank_awards": rankEvidence})
 	_, err = tx.Exec(`INSERT INTO exam_attempts(id,profile_id,exam_id,version,rank,criteria_hash,token_hash,status,created_at,evidence_json) VALUES(?,?,?,?,?,?,?,'active',?,?)`, id, profileID, examID, version, rank, hash, tokenHash, now.Format(time.RFC3339Nano), string(evidence))
 	if err != nil {
 		if isConstraint(err) {
@@ -191,9 +212,9 @@ func (s *Store) ClaimExamAttempt(profileID, examID, attemptID, tokenHash string,
 		return ExamAttempt{}, err
 	}
 	defer tx.Rollback()
-	var storedToken, storedExam, status string
+	var storedToken, storedExam, status, evidenceJSON string
 	var revision int64
-	err = tx.QueryRow(`SELECT token_hash,exam_id,status,revision FROM exam_attempts WHERE profile_id=? AND id=?`, profileID, attemptID).Scan(&storedToken, &storedExam, &status, &revision)
+	err = tx.QueryRow(`SELECT token_hash,exam_id,status,revision,evidence_json FROM exam_attempts WHERE profile_id=? AND id=?`, profileID, attemptID).Scan(&storedToken, &storedExam, &status, &revision, &evidenceJSON)
 	if errors.Is(err, sql.ErrNoRows) {
 		return ExamAttempt{}, ErrExamAttemptNotFound
 	}
@@ -205,6 +226,9 @@ func (s *Store) ClaimExamAttempt(profileID, examID, attemptID, tokenHash string,
 	}
 	if storedExam != examID || status != "active" || revision != expectedRevision {
 		return ExamAttempt{}, ErrExamAttemptConflict
+	}
+	if err = validateExamEvidenceTx(tx, profileID, evidenceJSON); err != nil {
+		return ExamAttempt{}, err
 	}
 	r, err := tx.Exec(`UPDATE exam_attempts SET status='grading',answers_json=?,codes_json=?,revision=revision+1 WHERE id=? AND profile_id=? AND status='active' AND revision=?`, answers, codes, attemptID, profileID, expectedRevision)
 	if err != nil {
@@ -285,7 +309,7 @@ func (s *Store) FinishExamAttempt(profileID, attemptID string, score int, passed
 		return ExamAttempt{}, errors.New("exam criteria snapshot mismatch")
 	}
 	if passed {
-		if err = validateExamEvidenceTx(tx, a.EvidenceJSON); err != nil {
+		if err = validateExamEvidenceTx(tx, profileID, a.EvidenceJSON); err != nil {
 			return ExamAttempt{}, err
 		}
 	}
@@ -331,9 +355,10 @@ func updateProfileRankTx(tx *sql.Tx, profileID, rank string) error {
 	return nil
 }
 
-func validateExamEvidenceTx(tx *sql.Tx, evidenceJSON string) error {
+func validateExamEvidenceTx(tx *sql.Tx, profileID, evidenceJSON string) error {
 	var evidence struct {
-		VerifiedProgress map[string]int64 `json:"verified_progress"`
+		VerifiedProgress map[string]int64             `json:"verified_progress"`
+		RankAwards       map[string]rankAwardEvidence `json:"rank_awards"`
 	}
 	if err := json.Unmarshal([]byte(evidenceJSON), &evidence); err != nil {
 		return fmt.Errorf("invalid exam evidence: %w", err)
@@ -347,7 +372,22 @@ func validateExamEvidenceTx(tx *sql.Tx, evidenceJSON string) error {
 			return errors.New("exam prerequisite evidence changed")
 		}
 	}
+	for rank, proof := range evidence.RankAwards {
+		var currentExam, currentVersion, currentAttempt string
+		if err := tx.QueryRow(`SELECT exam_id,version,attempt_id FROM rank_awards WHERE profile_id=? AND rank=? AND exam_id=? AND version=?`, profileID, rank, proof.ExamID, proof.Version).Scan(&currentExam, &currentVersion, &currentAttempt); err != nil {
+			return fmt.Errorf("exam rank prerequisite evidence missing: %w", err)
+		}
+		if currentExam != proof.ExamID || currentVersion != proof.Version || currentAttempt != proof.AttemptID {
+			return errors.New("exam rank prerequisite evidence changed")
+		}
+	}
 	return nil
+}
+
+type rankAwardEvidence struct {
+	ExamID    string `json:"exam_id"`
+	Version   string `json:"version"`
+	AttemptID string `json:"attempt_id"`
 }
 
 func pruneExamAttemptsTx(tx *sql.Tx, profileID string) error {

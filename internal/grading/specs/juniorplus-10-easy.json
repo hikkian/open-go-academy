@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-10-easy",
+  "signature": "func PageLimit(requested int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\";)\ntype input struct {Requested int}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := PageLimit(in.Requested);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Requested": 0
+    },
+    {
+      "Requested": 25
+    },
+    {
+      "Requested": 101
+    }
+  ],
+  "public_expected": [
+    20,
+    25,
+    100
+  ],
+  "private_input": [
+    {
+      "Requested": -50
+    },
+    {
+      "Requested": 1
+    },
+    {
+      "Requested": 100
+    }
+  ],
+  "private_expected": [
+    20,
+    1,
+    100
+  ]
+}

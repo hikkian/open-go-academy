@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-03-medium",
+  "signature": "func TLSBoundary(scheme string) string",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct { Scheme string }\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out:=TLSBoundary(in.Scheme);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Scheme": "https"
+    },
+    {
+      "Scheme": "http"
+    }
+  ],
+  "public_expected": [
+    "tls-required",
+    "tls-not-used"
+  ],
+  "private_input": [
+    {
+      "Scheme": "ftp"
+    },
+    {
+      "Scheme": ""
+    },
+    {
+      "Scheme": "HTTPS"
+    },
+    {
+      "Scheme": "ws"
+    }
+  ],
+  "private_expected": [
+    "unsupported-scheme",
+    "unsupported-scheme",
+    "unsupported-scheme",
+    "unsupported-scheme"
+  ]
+}

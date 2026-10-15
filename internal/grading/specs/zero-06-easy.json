@@ -1,0 +1,28 @@
+{
+  "allowed_imports": [
+    "strings"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases []string\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(classifyDiagnostic(in)) }\n}\n",
+  "id": "zero-06-easy",
+  "private_expected": [
+    "source",
+    "path",
+    "source",
+    "source"
+  ],
+  "private_input": [
+    "undefined: value",
+    "Cannot Find file",
+    "syntax error near token",
+    "build failed"
+  ],
+  "public_expected": [
+    "tool",
+    "path"
+  ],
+  "public_input": [
+    "go: command not found",
+    "stat main.go: no such file or directory"
+  ],
+  "signature": "func classifyDiagnostic(message string) string"
+}

@@ -1,0 +1,96 @@
+{
+  "id": "juniorplus-06-hard",
+  "signature": "func NewSafeRedirectHandler(target string) http.Handler",
+  "allowed_imports": [
+    "net/http",
+    "net/url",
+    "strings"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n\t\"net/http/httptest\"\n\t\"strings\"\n)\n\ntype input struct {\n\tMethod string\n\tPath string\n\tBody string\n\tTarget string\n}\n\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nh:=NewSafeRedirectHandler(in.Target);r:=httptest.NewRecorder();h.ServeHTTP(r,httptest.NewRequest(in.Method,in.Path,strings.NewReader(in.Body)));body:=r.Body.String();if r.Code>=300&&r.Code<400&&r.Header().Get(\"Location\")!=\"\"{body=\"\"};out=struct{Status int;Body string;ContentType string;Location string;Allow string}{r.Code,body,r.Header().Get(\"Content-Type\"),r.Header().Get(\"Location\"),r.Header().Get(\"Allow\")}\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Method": "GET",
+      "Path": "/go",
+      "Body": "",
+      "Target": "/articles/go"
+    },
+    {
+      "Method": "GET",
+      "Path": "/go",
+      "Body": "",
+      "Target": "/guide/http"
+    }
+  ],
+  "public_expected": [
+    {
+      "Status": 302,
+      "Body": "",
+      "ContentType": "text/html; charset=utf-8",
+      "Location": "/articles/go",
+      "Allow": ""
+    },
+    {
+      "Status": 302,
+      "Body": "",
+      "ContentType": "text/html; charset=utf-8",
+      "Location": "/guide/http",
+      "Allow": ""
+    }
+  ],
+  "private_input": [
+    {
+      "Method": "GET",
+      "Path": "/go",
+      "Body": "",
+      "Target": "//evil.example"
+    },
+    {
+      "Method": "GET",
+      "Path": "/go",
+      "Body": "",
+      "Target": "https://evil.example"
+    },
+    {
+      "Method": "POST",
+      "Path": "/go",
+      "Body": "",
+      "Target": "/safe"
+    },
+    {
+      "Method": "GET",
+      "Path": "/wrong",
+      "Body": "",
+      "Target": "/safe"
+    }
+  ],
+  "private_expected": [
+    {
+      "Status": 400,
+      "Body": "invalid redirect target\n",
+      "ContentType": "text/plain; charset=utf-8",
+      "Location": "",
+      "Allow": ""
+    },
+    {
+      "Status": 400,
+      "Body": "invalid redirect target\n",
+      "ContentType": "text/plain; charset=utf-8",
+      "Location": "",
+      "Allow": ""
+    },
+    {
+      "Status": 405,
+      "Body": "method not allowed\n",
+      "ContentType": "text/plain; charset=utf-8",
+      "Location": "",
+      "Allow": "GET"
+    },
+    {
+      "Status": 404,
+      "Body": "404 page not found\n",
+      "ContentType": "text/plain; charset=utf-8",
+      "Location": "",
+      "Allow": ""
+    }
+  ]
+}

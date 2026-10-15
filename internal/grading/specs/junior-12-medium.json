@@ -1,0 +1,65 @@
+{
+  "allowed_imports": [
+    "errors",
+    "fmt"
+  ],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Price int64; Percent int64 }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"ApplyDiscount\" { case \"ApplyDiscount\": v,e:=ApplyDiscount[int64](in.Price,in.Percent); err=e; out=map[string]any{\"Value\":v,\"OK\":e==nil}; if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-12-medium",
+  "private_expected": [
+    {
+      "OK": true,
+      "Value": 89
+    },
+    {
+      "OK": true,
+      "Value": 10
+    },
+    {
+      "OK": true,
+      "Value": 0
+    },
+    {
+      "OK": false,
+      "Value": 0
+    }
+  ],
+  "private_input": [
+    {
+      "Percent": 10,
+      "Price": 99
+    },
+    {
+      "Percent": 0,
+      "Price": 10
+    },
+    {
+      "Percent": 100,
+      "Price": 1
+    },
+    {
+      "Percent": 101,
+      "Price": 10
+    }
+  ],
+  "public_expected": [
+    {
+      "OK": true,
+      "Value": 1000
+    },
+    {
+      "OK": true,
+      "Value": 0
+    }
+  ],
+  "public_input": [
+    {
+      "Percent": 20,
+      "Price": 1250
+    },
+    {
+      "Percent": 100,
+      "Price": 100
+    }
+  ],
+  "signature": "func ApplyDiscount[T interface{ ~int | ~int64 }](price, percent T) (T, error)"
+}

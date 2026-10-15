@@ -1,0 +1,44 @@
+{
+  "id": "juniorplus-16-medium",
+  "signature": "func OwnsResource(principalID, ownerID int64) bool",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tPrincipalID int64\n\tOwnerID int64\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=OwnsResource(in.PrincipalID,in.OwnerID)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "PrincipalID": 7,
+      "OwnerID": 7
+    },
+    {
+      "PrincipalID": 7,
+      "OwnerID": 9
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "PrincipalID": 0,
+      "OwnerID": 0
+    },
+    {
+      "PrincipalID": -1,
+      "OwnerID": -1
+    },
+    {
+      "PrincipalID": 4,
+      "OwnerID": 0
+    },
+    {
+      "PrincipalID": 11,
+      "OwnerID": 11
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    true
+  ]
+}

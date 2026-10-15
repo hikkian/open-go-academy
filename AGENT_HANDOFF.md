@@ -1,6 +1,6 @@
 # AGENT HANDOFF — open-go-academy
 
-Обновлено **2026-10-15 12:20 Asia/Atyrau**. **M0–M9 DONE в local-only области; M10 IN PROGRESS; M11–M13 NOT STARTED.** Полный курс ещё не готов. Не пересоздавать существующую платформу.
+Обновлено **2026-10-16 00:50 Asia/Atyrau**. **M0–M9 DONE в local-only области; M10 IN PROGRESS; M11–M13 NOT STARTED.** Полный курс ещё не готов. Не пересоздавать существующую платформу.
 
 ## Что действительно работает
 
@@ -27,12 +27,23 @@
 
 Read docs/MASTER_SPEC.md+EXECUTION_PLAN first. New docs/curriculum/ZERO_JUNIOR_PLAN.md details40lessons: Zero8 IDs zero-01..08, Junior12 junior-01..12, Junior+20 juniorplus-01..20. It is a productionplan, not completedcontent. P2 currentprimarysources/versions/digest/security/teststrategy in docs/research/P2_LINKHUB.md (pgx5.11.0/Postgres18.6 checked; no P2implementationyet).
 
-Running agents in this turn:
-- m10_grading: ONLY internal/grading/*.go +specs/_demo-add.json. Genericfunctionprivatecases registry; Spec.Load/ValidateSource/Request/Check. Trusteddriver batchesJSONinputcases in one isolatedjob, no expectedvaluesinsidecontainer/API. Public/privateinputs+expected in privateJSONspec, ASTsignature/import/declarationguards. ParentintegratesHTTP/content/tests.
-- m10_zero_a: data/zero-02..04.json/md + internal/content/solutions/zero-0{2,3,4}-{easy,medium,hard}/main.go + matchinggrading/specs. Fulloriginalchapters and3tasks each;3complete runnableGoexamples/chapter; validatestrustedrefs. Nozero01changes.
-- m10_zero_b: samepaths zero-05..08. Functions/UTF8/tools/diagnostics/slices/mini-project; fullchapters+12tasks. Eachownerusesatomicfilewrites, noenginechanges.
+### M10 checkpoint 2026-10-16 00:50 — финальная валидация
 
-Parent next: add Lesson.order/curriculum_version and Exercise.kind/skills, privategradinglookup; topological/rank ordering instead oflexicaljunior-beforezero; generalizealllessonGoexample/reference validation whilekeepingold3contractregressions. HTTPfunctionRun usespublicdrivercases, Submitprivatecases viaexistingrunner, expectedchecksoutside; Formatnormal. Functionsnohostexecution. Add dynamicmetadata/prereqUI/skills in nextsteps. Reviewsecurity beforegenericgradednativeacceptance. ThenauthorJunior/Junior+allchapters, integrateP2workspace/starter/reference/tests/SQLDockerCompose withsafeisolatedDBtesting(D4), earnedJunior/Junior+assessments. Do not markM10DONE withjustZero, headers, fakebuttons oruncompiledrefs.
+**40полныхглав/120упражнений** в manifest2026.10:Zero8,Junior12,Junior+20. Каждыйновыйурок1200–2200слов/Goexamples/3tasks/selfcheck/glossary. AllpublishedGoexamples/multifilegroups/references productiongatePASS `.data/m10-40-promotion.log`. **Все117новыхfunctionrefs actualbasicrunnerPASS**:57Zero/Junior `.data/m10-native-functions-57.log`,36Junior+01..12 `.data/m10-native-http-sql-36.log`,24Junior+13..20 `.data/m10-native-final-24.log`; idempotentXP/persistedevidence/noRankPASS. Исходные3Zero01 проверенынативновfullbrowser. ActualSQLfences09..12PG18.6+P2referenceHTTP/ownership/transactions/MaxConns1PASS `.data/m10-sql-native.log`,6actualHTTP/OpenAPIresponsesPASS.
+
+P2workspace+separateprojectworker allfunctional:48files/nested/snapshots/ZIP, immutablemodsum/export-onlyinfra, isolatedtempPG/nohostports,SDKonlypublicdeps/checkerseparate. Native44checks includesauth401/CSRF/Origin/cookies/tagownerCRUD/SQLfixture+session/freshapprestart/cleanupPASS `.data/p2-worker-native-limited-role.log`; SQLONLYlimitedappRole/search_pathpg_catalog/schemaqualified. ActualSCRAMauditPASS, actualdisconnect/SIGKILLrecoveryPASS. PROJECT_RUNNER_REVIEW noopenHigh/Medium. Sharedkernel/localonly residualrisk; notpublicmulti-tenantcertification.
+
+**Newexams:** internal/assessment All/Find includes immutablezero-core1.0.0(hashbd2cc6db2c954ef3410db69039bcc12cb15085098194686e9883d1e7b70f2d53), junior-core1.0.0, juniorplus-api1.0.0. New20questions+3coding/debuggingtaskseach, privategenericSpecbatch(nohostusercompile). FullcourseexerciseIDs+P1/P2automatic+priorRank required. StoreStartExamvariadicrequiredRanks capturesrank_awards{rank:{exam_id,version,attempt_id}} withVerifiedProgress, rechecksclaim/finishtransaction. HashincludesrequiredRank+Spec.Fingerprint privatevectors/driver/boundtypes/sourcepolicyv2; types.Universepredeclaredguard. PrivateZeroStderrleakfixedwithoutchanginggrade/hash. Mutatingtransitionfixture/wrongroleowner/access/redirectpolicyguardregressionsPASS. ASSESSMENT_CATALOG_REVIEW noopenHigh/Medium.
+
+**Policyexplicit:** Junior/Junior+ are versionedautomaticGoAcademycriteria: allpublishedexercises+priorrank+functionalprojectproof+20quiz+3tasks. They doNOTconfirmmanualprojectquality/professionalgrade. P1/P2manual_review_required remaintrue. Criteria/credential explicitlystate manualqualitynotconfirmed. Seniorhumanreviewrequirementunaffected. PreviousparentphraseaboutfullJuniorrank referredmanualquality; nofakecompletionofmanualreview.
+
+**NativeexamchainPASS64.30s** `.data/m10-native-exam-chain.log`: actual6containergradedtasks Junior→Junior+, atomicawards,replaydeny,completedDraftdeny,signedcredentials. Allcourse/previousZero/prereqproof are EXPLICITtestfixtures only; individualcourse117andP2 separatelyactuallytested. `internal/httpapi/exam_catalog_test.go` testsXP/rankgate,crossExamdraft,wrongnonce409,unknownversion404,changedcriteriahash409,privateoutputZero/genericnoHTTP/Storeleak, credentialformatcompat. Nativegated ACADEMY_EXAM_CATALOG_NATIVE=1.
+
+**Browser/visual:** previousfull22PASS6skip7.2min plusP2native1PASS1skip10.2s andHTTP/SQLreaderbothlight/dark2PASS8s; P2desktop/mobileactuallyviewed. Newfull34cases run`.data/m10-final-full-browser-fixed.log` session37793 withbothnativeflags, STILLRUNNING: checkfinalstatusbeforeM10DONE. Earliernewfullruninterrupted afterduplicateGoEditorregionlabel axe failure; fixedper-taskscrollLabel, rebuiltweb. Lastfullmake `.data/m10-final-technical-complete.log` session73094 (checkexit). PreviousfullmakePASS `.data/m10-all-technical.log`.
+
+Certificate6criteriapreview exposed2-pagePDF, fixedQRmetadata3columnlayout. ActualnewJunior+PDF1page andPNG visuallyinspected, independentjsQRdecodedbothsameURL. Previewfixtures `.data/m10-certificates`, scriptassessment-credential-preview.go. Renderer/APIunitPASS `.data/m10-credential-layout.log`. NoLLMpaidcalls/remote/publication. Tutorlongchapterboundedpublicoverview16KiB/nohiddenrefs tested; lessonOrder/prereqlinks/Markdownanchors/mappedskills+actualprojectevidence2levels available; newexamselector/historyactualIDs.
+
+**Next:** waitfull34browserfixpass+latesttechnical; fixanyfailure beforeM10DONE. `tests/zz-exam-catalog-ui.spec.ts` runsLAST, usesexplicitdisposable`.data/e2e`seedfixture (`scripts/seed-exam-ui.go` guardedenv, noAPIbackdoor), testsnewexamselection/draft/cancel/history/axe/mobile. Do notrunUIseedagainstrealDB. Afterpassupdateplan/handoff/validation, commitM10, restartliveAPIwithnew40catalog+newexams (currentlyliveold32). ThenM11fullMiddle/Middle+/Senior/P3–P5, notDONEfromoutline. Researcher m11_ecosystem_research ownsdocs/research/M11_ECOSYSTEM.mdonly, verifiesmissingRedis/RabbitMQ/gRPC/OTelversionsprimarysources; noM11codeyet. AllM10authors/reviewercompleted. RetainimmutableallcurrentexamcriteriaafterliveDBregistration; newhashchangesrequireversionbump+retainedoldlookup.
 
 ## Runtime and reproduction
 
@@ -47,12 +58,12 @@ ACADEMY_E2E_RUNNER=1 npm run e2e
 
 Pinned .tools/go1.27.2 via scripts/go.sh; systemGo1.26.9custom not authoritative. RootlessPodmanimage pinned inrunner/Make. DefaultAPI8380 (foreignPython8080 nottouch); E2E8081 resets ONLY .data/e2e/academy.db, restart8090/keyprobe8094 temporarycopies. `.data/academy.db`, session.secret,issuer.key privateignored; neverdelete/commit/publish. Startuprecover reliesDBlock.
 
-Latest nativeAPI session79797 on8380 and separate runnerprocess stillavailable; inspecthealth/process before restart, don'tassumeallprocessessurvive futureappsession. Test-onlyHTTPprovider8095 stopped. Secrets neverlog. SQLproject newdependency/runtime requires allowlisted offline dependencies/isolatedlocalDB; don'tweaken existingnetworknone/compileuseronhost.
+LiveAPI session97991 on8380 started19:54 with32chapterbinary; basicrunner session33202, projectworker session64869 (latestrebuild). Inspecthealth/processbeforerestart; do notassumesurvival. Test-onlyHTTPprovider8095 stopped. Secrets neverlog. SQLproject newdependency/runtime requires allowlisted offline dependencies/isolatedlocalDB; don'tweaken existingnetworknone/compileuseronhost.
 
 ## Limits and continuation
 
-User renewedcontinue. Toolconfirmed **2026-10-15 12:10** actualreset: primary1%,secondary0%, ordinaryUsageAllowedtrue; noresetcreditused/purchase. Newprimaryreset1792066221. Existingheartbeat `open-go-academy-m13` rescheduled via app tool to **2026-10-15 17:11:21 Asia/Atyrau**, one-shot(actual5hreset+1min), notdaily. Whileallowedcontinue now; iflimitlaterchangesinspectbothwindows andupdateSAMEautomation, no duplicates. Mechanismrequiresapp/hostavailable; don'tpromiseworkwhileclosed. DeleteonlyafteractualM13allcriteria.
+2026-10-16 00:29 actualresetconfirmed primary0%,weekly31%,ordinaryUsageAllowedtrue. Newprimaryreset1792110557(05:29:17local),weekly1792653021. Noresetcredit/purchase. SAMEheartbeat open-go-academy-m13 rescheduledviatoolone-shot **2026-10-16 05:30:17 Asia/Atyrau**. ContinueNOWwhileavailable; adapttoactualbothwindows. App/hostrequired; nofalsebackgroundpromises.
 
 ## Remaining scope / limits
 
-M10fullZero/Junior/Junior+ andP2 notcomplete; M11Middle/Middle+/Senior/P3–P5notstarted. M12fullsecurity/performance/accessibility andM13freshrelease/crossplatform/acceptancematrix remain. Mainlicensecode/contentownerdecisionpending, no remoteCIrun/publicrelease. Localprofile/issuer is notpublicmulti-tenantauth/identityverification. Sharedkernelrisk remains, no microVMcertificate. Preserve honest tested/inferred/not-tested distinctions and updatehandoff aftereachstage.
+M10fullZero/Junior/Junior+ andP2 implemented, finalbrowservalidationpending; M11Middle/Middle+/Senior/P3–P5notstarted. M12fullsecurity/performance/accessibility andM13freshrelease/crossplatform/acceptancematrix remain. Mainlicensecode/contentownerdecisionpending, no remoteCIrun/publicrelease. Localprofile/issuer is notpublicmulti-tenantauth/identityverification. Sharedkernelrisk remains, no microVMcertificate. Preserve honest tested/inferred/not-tested distinctions and updatehandoff aftereachstage.

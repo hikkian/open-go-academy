@@ -1,0 +1,83 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nvar cases []struct{ Values []int; Index int }\nfunc main() {\n if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases { var out any; v, ok := safeAt(in.Values, in.Index); out = []any{v, ok}; if err := enc.Encode(out); err != nil { panic(err) } }\n}\n",
+  "id": "junior-01-easy",
+  "private_expected": [
+    [
+      9,
+      true
+    ],
+    [
+      0,
+      false
+    ],
+    [
+      0,
+      false
+    ],
+    [
+      5,
+      true
+    ]
+  ],
+  "private_input": [
+    {
+      "Index": 0,
+      "Values": [
+        9
+      ]
+    },
+    {
+      "Index": 3,
+      "Values": [
+        3,
+        6,
+        9
+      ]
+    },
+    {
+      "Index": 0,
+      "Values": null
+    },
+    {
+      "Index": 0,
+      "Values": [
+        5
+      ]
+    }
+  ],
+  "public_expected": [
+    [
+      8,
+      true
+    ],
+    [
+      0,
+      false
+    ],
+    [
+      0,
+      false
+    ]
+  ],
+  "public_input": [
+    {
+      "Index": 1,
+      "Values": [
+        4,
+        8
+      ]
+    },
+    {
+      "Index": 0,
+      "Values": []
+    },
+    {
+      "Index": -1,
+      "Values": [
+        -2
+      ]
+    }
+  ],
+  "signature": "func safeAt(values []int, index int) (int, bool)"
+}

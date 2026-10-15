@@ -1,0 +1,6 @@
+=== RUN   TestNativeJuniorAndJuniorPlusAssessmentChain
+    exam_catalog_test.go:243: PASS actual isolated junior-core grading, atomic rank, replay rejection and credential; prerequisites/previous Zero are explicit test fixtures
+    exam_catalog_test.go:243: PASS actual isolated juniorplus-api grading, atomic rank, replay rejection and credential; prerequisites/previous Zero are explicit test fixtures
+--- PASS: TestNativeJuniorAndJuniorPlusAssessmentChain (64.30s)
+PASS
+ok  	academy/internal/httpapi	64.310s

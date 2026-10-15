@@ -1,0 +1,219 @@
+openapi: 3.1.0
+info:
+  title: LinkHub API
+  version: 1.0.0
+  description: Educational personal short-link API. The session cookie is HttpOnly; mutation requests also send the csrf_token returned at login in X-CSRF-Token.
+servers:
+  - url: http://127.0.0.1:8097
+tags:
+  - name: Auth
+  - name: Links
+  - name: Tags
+paths:
+  /healthz:
+    get:
+      summary: Process health
+      responses:
+        '200': {description: Process is ready, content: {application/json: {schema: {$ref: '#/components/schemas/Health'}}}}
+  /api/v1/auth/register:
+    post:
+      tags: [Auth]
+      summary: Register and create a session
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/Credentials'}}}}
+      responses:
+        '200': {$ref: '#/components/responses/SessionCreated'}
+        '400': {$ref: '#/components/responses/InvalidInput'}
+        '409': {description: Registration unavailable}
+  /api/v1/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login; failures do not distinguish unknown email from wrong password
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/Credentials'}}}}
+      responses:
+        '200': {$ref: '#/components/responses/SessionCreated'}
+        '401': {description: Invalid credentials}
+  /api/v1/auth/logout:
+    post:
+      tags: [Auth]
+      security: [{sessionCookie: []}]
+      parameters: [{$ref: '#/components/parameters/CSRF'}]
+      responses:
+        '204': {description: Session revoked}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/CSRFRejected'}
+  /api/v1/me:
+    get:
+      tags: [Auth]
+      security: [{sessionCookie: []}]
+      responses:
+        '200': {description: Current user and CSRF token, content: {application/json: {schema: {$ref: '#/components/schemas/CurrentUser'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /api/v1/links:
+    get:
+      tags: [Links]
+      security: [{sessionCookie: []}]
+      parameters:
+        - {in: query, name: limit, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+        - {in: query, name: offset, schema: {type: integer, minimum: 0, maximum: 100000, default: 0}}
+      responses:
+        '200':
+          description: Current owner's links
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/Link'}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+    post:
+      tags: [Links]
+      security: [{sessionCookie: []}]
+      parameters: [{$ref: '#/components/parameters/CSRF'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/LinkInput'}}}}
+      responses:
+        '201': {description: Created, content: {application/json: {schema: {$ref: '#/components/schemas/Link'}}}}
+        '400': {$ref: '#/components/responses/InvalidInput'}
+        '403': {$ref: '#/components/responses/CSRFRejected'}
+        '409': {description: Slug is already used}
+  /api/v1/links/{id}:
+    parameters: [{in: path, name: id, required: true, schema: {type: string, format: uuid}}]
+    get:
+      tags: [Links]
+      security: [{sessionCookie: []}]
+      responses:
+        '200': {description: Owned link, content: {application/json: {schema: {$ref: '#/components/schemas/Link'}}}}
+        '404': {$ref: '#/components/responses/NotFound'}
+    patch:
+      tags: [Links]
+      security: [{sessionCookie: []}]
+      parameters: [{$ref: '#/components/parameters/CSRF'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/LinkUpdate'}}}}
+      responses:
+        '200': {description: Updated, content: {application/json: {schema: {$ref: '#/components/schemas/Link'}}}}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {description: Slug is already used}
+    delete:
+      tags: [Links]
+      security: [{sessionCookie: []}]
+      parameters: [{$ref: '#/components/parameters/CSRF'}]
+      responses:
+        '204': {description: Deleted}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /api/v1/tags:
+    get:
+      tags: [Tags]
+      security: [{sessionCookie: []}]
+      responses:
+        '200':
+          description: Current owner's tags
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: '#/components/schemas/Tag'}}
+    post:
+      tags: [Tags]
+      security: [{sessionCookie: []}]
+      parameters: [{$ref: '#/components/parameters/CSRF'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/TagInput'}}}}
+      responses:
+        '201': {description: Created, content: {application/json: {schema: {$ref: '#/components/schemas/Tag'}}}}
+        '409': {description: Tag name already exists for this user}
+  /api/v1/tags/{id}:
+    parameters: [{in: path, name: id, required: true, schema: {type: string, format: uuid}}]
+    patch:
+      tags: [Tags]
+      security: [{sessionCookie: []}]
+      parameters: [{$ref: '#/components/parameters/CSRF'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/TagInput'}}}}
+      responses:
+        '200': {description: Updated, content: {application/json: {schema: {$ref: '#/components/schemas/Tag'}}}}
+        '404': {$ref: '#/components/responses/NotFound'}
+    delete:
+      tags: [Tags]
+      security: [{sessionCookie: []}]
+      parameters: [{$ref: '#/components/parameters/CSRF'}]
+      responses:
+        '204': {description: Deleted; link-tag associations are removed}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /{slug}:
+    get:
+      summary: Redirect to the saved target of an enabled slug; the server does not fetch it
+      parameters: [{in: path, name: slug, required: true, schema: {type: string, pattern: '^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$'}}]
+      responses:
+        '302': {description: Redirect, headers: {Location: {schema: {type: string, format: uri}}}}
+        '404': {$ref: '#/components/responses/NotFound'}
+components:
+  securitySchemes:
+    sessionCookie: {type: apiKey, in: cookie, name: linkhub_session}
+  parameters:
+    CSRF: {in: header, name: X-CSRF-Token, required: true, schema: {type: string}}
+  responses:
+    SessionCreated:
+      description: Session established; response also sets HttpOnly session cookie and readable CSRF cookie
+      headers:
+        Set-Cookie: {schema: {type: string}, description: Includes linkhub_session and linkhub_csrf cookies}
+      content: {application/json: {schema: {$ref: '#/components/schemas/CurrentUser'}}}
+    Unauthorized: {description: Missing, invalid, or expired session}
+    NotFound: {description: Resource not found or not owned by the caller}
+    InvalidInput: {description: Invalid JSON or field values}
+    CSRFRejected: {description: Origin or CSRF validation failed}
+  schemas:
+    Health: {type: object, required: [status], properties: {status: {const: ok}}}
+    Credentials:
+      type: object
+      additionalProperties: false
+      required: [email, password]
+      properties:
+        email: {type: string, format: email, maxLength: 254}
+        password: {type: string, minLength: 12, maxLength: 128}
+    CurrentUser:
+      type: object
+      required: [user, csrf_token]
+      properties:
+        user: {$ref: '#/components/schemas/User'}
+        csrf_token: {type: string}
+    User:
+      type: object
+      required: [id, email, role]
+      properties:
+        id: {type: string, format: uuid}
+        email: {type: string, format: email}
+        role: {type: string, enum: [user, admin]}
+    LinkInput:
+      type: object
+      additionalProperties: false
+      required: [target_url]
+      properties:
+        slug: {type: string, pattern: '^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$', maxLength: 64, description: Optional at creation; omitted values are generated by the server}
+        target_url: {type: string, format: uri, maxLength: 2048}
+        enabled: {type: boolean, description: Defaults to true on creation; required on PATCH}
+        tags: {type: array, maxItems: 20, items: {type: string, maxLength: 40}}
+    LinkUpdate:
+      type: object
+      additionalProperties: false
+      required: [slug, target_url, enabled]
+      properties:
+        slug: {type: string, pattern: '^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$', maxLength: 64}
+        target_url: {type: string, format: uri, maxLength: 2048}
+        enabled: {type: boolean}
+        tags: {type: array, maxItems: 20, items: {type: string, maxLength: 40}}
+    Link:
+      type: object
+      additionalProperties: false
+      required: [id, slug, target_url, enabled, tags, created_at, updated_at]
+      properties:
+        id: {type: string, format: uuid}
+        slug: {type: string}
+        target_url: {type: string, format: uri}
+        enabled: {type: boolean}
+        tags: {type: array, items: {$ref: '#/components/schemas/Tag'}}
+        created_at: {type: string, format: date-time}
+        updated_at: {type: string, format: date-time}
+    TagInput:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties: {name: {type: string, minLength: 1, maxLength: 40}}
+    Tag:
+      type: object
+      additionalProperties: false
+      required: [id, name]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string, minLength: 1, maxLength: 40}

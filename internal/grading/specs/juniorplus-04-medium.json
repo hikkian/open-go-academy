@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-04-medium",
+  "signature": "func IsIdempotentMethod(method string) bool",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tMethod string\n}\n\nfunc main() {\n var cases []input\n if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }\n enc:=json.NewEncoder(os.Stdout)\n for _, in:=range cases {\n  var out any\n  out=IsIdempotentMethod(in.Method)\n  if err:=enc.Encode(out); err!=nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Method": "GET"
+    },
+    {
+      "Method": "POST"
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "Method": "PUT"
+    },
+    {
+      "Method": "DELETE"
+    },
+    {
+      "Method": "PATCH"
+    },
+    {
+      "Method": "get"
+    }
+  ],
+  "private_expected": [
+    true,
+    true,
+    false,
+    false
+  ]
+}

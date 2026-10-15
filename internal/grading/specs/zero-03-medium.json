@@ -1,0 +1,32 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main() { var inputs []int; if err := json.Unmarshal([]byte(os.Args[1]), \u0026inputs); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, n := range inputs { if err := enc.Encode(classify(n)); err != nil { panic(err) } } }\n",
+  "id": "zero-03-medium",
+  "private_expected": [
+    "мороз",
+    "прохладно",
+    "тепло",
+    "тепло",
+    "тепло",
+    "тепло"
+  ],
+  "private_input": [
+    -100,
+    19,
+    20,
+    21,
+    35,
+    100
+  ],
+  "public_expected": [
+    "мороз",
+    "прохладно",
+    "тепло"
+  ],
+  "public_input": [
+    -1,
+    0,
+    20
+  ],
+  "signature": "func classify(n int) string"
+}

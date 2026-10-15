@@ -1,0 +1,176 @@
+{
+  "id": "juniorplus-13",
+  "title": "Слои и зависимости",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-05",
+    "juniorplus-06",
+    "juniorplus-07",
+    "juniorplus-08",
+    "juniorplus-09",
+    "juniorplus-10",
+    "juniorplus-11",
+    "juniorplus-12"
+  ],
+  "estimated_minutes": 105,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Разделять handler, service и repository по ответственности.",
+    "Подставлять fake через узкую зависимость.",
+    "Передавать context и проверенную конфигурацию по цепочке."
+  ],
+  "glossary": [
+    {
+      "term": "handler",
+      "translation": "обработчик",
+      "definition": "Преобразует HTTP input в use case и response."
+    },
+    {
+      "term": "service",
+      "translation": "служба приложения",
+      "definition": "Координирует сценарий и доменные правила."
+    },
+    {
+      "term": "repository",
+      "translation": "репозиторий",
+      "definition": "Изолирует операции и результат хранения."
+    },
+    {
+      "term": "dependency_injection",
+      "translation": "внедрение зависимости",
+      "definition": "Передача нужной реализации при создании компонента."
+    },
+    {
+      "term": "configuration",
+      "translation": "конфигурация",
+      "definition": "Проверенные параметры запуска и лимитов."
+    },
+    {
+      "term": "modular_monolith",
+      "translation": "модульный монолит",
+      "definition": "Один процесс с ясными внутренними границами."
+    }
+  ],
+  "markdown_file": "juniorplus-13.md",
+  "order": 33,
+  "exercises": [
+    {
+      "id": "juniorplus-13-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Вынеси проверку в доменный слой",
+      "prompt": "Slug: 1..24 строчные ASCII буквы/цифры/дефисы; target: absolute HTTP(S), host, без userinfo/fragment, максимум 2048 байт. Категории invalid_alias, alias_too_long, invalid_target, unsupported_scheme, target_too_long; успех пустая строка. Не возвращай HTTP status.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ValidateLinkInput(alias, target string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"\"\n\"\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "Slug: 1..24 строчные ASCII буквы/цифры/дефисы; target: absolute HTTP(S), host, без userinfo/fragment, максимум 2048 байт. Категории invalid_alias, alias_too_long, invalid_target, unsupported_scheme, target_too_long; успех пустая строка. Не возвращай HTTP status."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-13-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Подставь узкий slug repository",
+      "prompt": "Разреши slug из 1..24 строчных ASCII букв/цифр/дефисов, если его нет в injected repo. При nil repository/недопустимом slug false. Уникальный SQL constraint всё равно нужен против гонки.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\ntype SlugRepository interface { Exists(string) bool }\n\nfunc CanCreateSlug(repo SlugRepository, slug string) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "Разреши slug из 1..24 строчных ASCII букв/цифр/дефисов, если его нет в injected repo. При nil repository/недопустимом slug false. Уникальный SQL constraint всё равно нужен против гонки."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-13-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Передай отмену через service seam",
+      "prompt": "Вызови dependency ровно один раз с тем же context. nil→ok, canceled/deadline→cancelled, иная ошибка→repository_error. Не заменяй request context на Background.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nimport (\n\t\"context\"\n)\n\nfunc RunRepository(ctx context.Context, load func(context.Context) error) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"ok\"\n\"cancelled\"\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "Вызови dependency ровно один раз с тем же context. nil→ok, canceled/deadline→cancelled, иная ошибка→repository_error. Не заменяй request context на Background."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова граница или инвариант темы?",
+      "answer": "Разделять handler, service и repository по ответственности."
+    },
+    {
+      "question": "Что доказывает функциональный test?",
+      "answer": "Только заданные наблюдаемые результаты на перечисленных входах."
+    },
+    {
+      "question": "Как воспроизвести отказ?",
+      "answer": "Создать один маленький fixture и изменить один параметр."
+    },
+    {
+      "question": "Как обрабатывать внутреннюю ошибку?",
+      "answer": "Нормализовать её в стабильную безопасную категорию."
+    },
+    {
+      "question": "Почему важны negative cases?",
+      "answer": "Успешный случай не проверяет deny, rollback, cleanup или expiry."
+    },
+    {
+      "question": "Обязателен ли AI Tutor?",
+      "answer": "Нет, материал можно пройти самостоятельно."
+    }
+  ]
+}

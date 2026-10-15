@@ -1,0 +1,28 @@
+{
+  "allowed_imports": [
+    "io"
+  ],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n\"strings\"\n\"io\"\n)\nfunc main() { var cases []bool; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"canRead\" { case \"canRead\": var r io.Reader; if in { r = strings.NewReader(\"data\") }; out = canRead(r); if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-07-easy",
+  "private_expected": [
+    true,
+    true,
+    false,
+    true
+  ],
+  "private_input": [
+    true,
+    true,
+    false,
+    true
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "public_input": [
+    true,
+    false
+  ],
+  "signature": "func canRead(r io.Reader) bool"
+}

@@ -1,0 +1,34 @@
+{
+  "id": "juniorplus-19-easy",
+  "signature": "func RedirectAllowed(enabled, targetValidated bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {Enabled bool; TargetValidated bool}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := RedirectAllowed(in.Enabled,in.TargetValidated);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Enabled": true,
+      "TargetValidated": true
+    },
+    {
+      "Enabled": false,
+      "TargetValidated": true
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "Enabled": true,
+      "TargetValidated": false
+    },
+    {
+      "Enabled": false,
+      "TargetValidated": false
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

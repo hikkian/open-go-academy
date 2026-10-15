@@ -1,0 +1,163 @@
+{
+  "id": "junior-11",
+  "title": "Файлы, JSON и интерфейсы ввода-вывода",
+  "rank": "Junior",
+  "module": "junior-core",
+  "prerequisites": [
+    "junior-10"
+  ],
+  "estimated_minutes": 115,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Объяснять ключевые понятия главы «Файлы, JSON и интерфейсы ввода-вывода» своими словами.",
+    "Применять контракт в небольшой законченной программе и проверять границы.",
+    "Различать автоматические функциональные проверки и качественное ручное ревью."
+  ],
+  "glossary": [
+    {
+      "term": "serialization",
+      "translation": "сериализация",
+      "definition": "Преобразование данных в формат передачи или хранения."
+    },
+    {
+      "term": "JSON",
+      "translation": "JSON",
+      "definition": "Текстовое представление структурированных данных."
+    },
+    {
+      "term": "reader",
+      "translation": "читатель",
+      "definition": "Контракт получения байтов."
+    },
+    {
+      "term": "writer",
+      "translation": "писатель",
+      "definition": "Контракт записи байтов."
+    },
+    {
+      "term": "validation",
+      "translation": "валидация",
+      "definition": "Проверка предметных ограничений."
+    },
+    {
+      "term": "resource",
+      "translation": "ресурс",
+      "definition": "Внешний объект с жизненным циклом, например файл."
+    }
+  ],
+  "markdown_file": "junior-11.md",
+  "exercises": [
+    {
+      "id": "junior-11-easy",
+      "kind": "function",
+      "skills": [
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Проверь запись",
+      "prompt": "Item{Name string; Quantity int}; непустое после TrimSpace имя и Quantity > 0.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\ntype Item struct { Name string; Quantity int }\n\nfunc isValidItem(item Item) bool {\n\t// Реализуй контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\n",
+      "criteria": [
+        "Функция имеет точную сигнатуру и компилируется.",
+        "Обычные входы обрабатываются согласно контракту задания.",
+        "Проверены пустое, граничное или ошибочное состояние из условия."
+      ],
+      "self_check": [
+        {
+          "question": "Какое предусловие или входная граница важны здесь?",
+          "answer": "Item{Name string; Quantity int}; непустое после TrimSpace имя и Quantity > 0."
+        },
+        {
+          "question": "Что именно доказывает функциональная проверка?",
+          "answer": "Она проверяет возвращённое поведение на перечисленных входах, но не доказывает качество тестов, документации или архитектуры."
+        }
+      ]
+    },
+    {
+      "id": "junior-11-medium",
+      "kind": "function",
+      "skills": [
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Прочитай и проверь JSON",
+      "prompt": "Item{Name string; Quantity int}; прочитай JSON-массив, проверь поля, отклони malformed/trailing data; на ошибке верни nil и ошибку.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nimport \"io\"\n\ntype Item struct { Name string `json:\"name\"`; Quantity int `json:\"quantity\"` }\n\nfunc ReadItems(r io.Reader) ([]Item, error) {\n\treturn nil, nil\n}\n",
+      "public_output": "{\"Items\":[{\"Name\":\"pen\",\"Quantity\":2}],\"OK\":true}\n{\"Items\":[],\"OK\":true}\n",
+      "criteria": [
+        "Функция имеет точную сигнатуру и компилируется.",
+        "Обычные входы обрабатываются согласно контракту задания.",
+        "Проверены пустое, граничное или ошибочное состояние из условия."
+      ],
+      "self_check": [
+        {
+          "question": "Какое предусловие или входная граница важны здесь?",
+          "answer": "Item{Name string; Quantity int}; прочитай JSON-массив, проверь поля, отклони malformed/trailing data; на ошибке верни nil и ошибку."
+        },
+        {
+          "question": "Что именно доказывает функциональная проверка?",
+          "answer": "Она проверяет возвращённое поведение на перечисленных входах, но не доказывает качество тестов, документации или архитектуры."
+        }
+      ]
+    },
+    {
+      "id": "junior-11-hard",
+      "kind": "function",
+      "skills": [
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Закодируй валидные записи",
+      "prompt": "Item{Name string; Quantity int}; отклони невалидные элементы и кодируй только валидный массив через json.Encoder.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\ntype Item struct { Name string; Quantity int }\n\nfunc encodeItems(items []Item) (string, error) {\n\t// Реализуй контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "{\"JSON\":\"[{\\\"name\\\":\\\"pen\\\",\\\"quantity\\\":2}]\\n\",\"OK\":true}\n{\"JSON\":\"[]\\n\",\"OK\":true}\n",
+      "criteria": [
+        "Функция имеет точную сигнатуру и компилируется.",
+        "Обычные входы обрабатываются согласно контракту задания.",
+        "Проверены пустое, граничное или ошибочное состояние из условия."
+      ],
+      "self_check": [
+        {
+          "question": "Какое предусловие или входная граница важны здесь?",
+          "answer": "Item{Name string; Quantity int}; отклони невалидные элементы и кодируй только валидный массив через json.Encoder."
+        },
+        {
+          "question": "Что именно доказывает функциональная проверка?",
+          "answer": "Она проверяет возвращённое поведение на перечисленных входах, но не доказывает качество тестов, документации или архитектуры."
+        }
+      ]
+    }
+  ],
+  "order": 25,
+  "self_check": [
+    {
+      "question": "Какое главное предусловие или инвариант управляет темой?",
+      "answer": "Следуй явно сформулированному контракту главы и проверь его на граничном входе."
+    },
+    {
+      "question": "Что доказывает green функциональная проверка?",
+      "answer": "Только результат функции на выбранных конечных входах."
+    },
+    {
+      "question": "Что следует сделать при непонятном результате?",
+      "answer": "Создать минимальное воспроизведение и подтвердить гипотезу детерминированной проверкой."
+    },
+    {
+      "question": "Когда обратиться к документации?",
+      "answer": "Когда точное поведение стандартного пакета/команды не следует из контракта."
+    },
+    {
+      "question": "Обязательно ли использовать AI Tutor?",
+      "answer": "Нет. Учебная программа и проверки доступны без AI."
+    },
+    {
+      "question": "Что остается за пределами проверки кода функции?",
+      "answer": "Качество тестов студента, объяснение решения, документация и Git оцениваются отдельно."
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "allowed_imports": [
+    "errors",
+    "fmt"
+  ],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main() { var inputs []int; if err := json.Unmarshal([]byte(os.Args[1]), \u0026inputs); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, n := range inputs { value, err := multiplicationTable(n); if err := enc.Encode([]any{value, err != nil}); err != nil { panic(err) } } }\n",
+  "id": "zero-04-hard",
+  "private_expected": [
+    [
+      "",
+      true
+    ],
+    [
+      "1 x 1 = 1\n1 x 2 = 2\n1 x 3 = 3\n1 x 4 = 4\n1 x 5 = 5\n1 x 6 = 6\n1 x 7 = 7\n1 x 8 = 8\n1 x 9 = 9\n1 x 10 = 10",
+      false
+    ],
+    [
+      "12 x 1 = 12\n12 x 2 = 24\n12 x 3 = 36\n12 x 4 = 48\n12 x 5 = 60\n12 x 6 = 72\n12 x 7 = 84\n12 x 8 = 96\n12 x 9 = 108\n12 x 10 = 120",
+      false
+    ],
+    [
+      "",
+      true
+    ]
+  ],
+  "private_input": [
+    -1,
+    1,
+    12,
+    13
+  ],
+  "public_expected": [
+    [
+      "0 x 1 = 0\n0 x 2 = 0\n0 x 3 = 0\n0 x 4 = 0\n0 x 5 = 0\n0 x 6 = 0\n0 x 7 = 0\n0 x 8 = 0\n0 x 9 = 0\n0 x 10 = 0",
+      false
+    ],
+    [
+      "4 x 1 = 4\n4 x 2 = 8\n4 x 3 = 12\n4 x 4 = 16\n4 x 5 = 20\n4 x 6 = 24\n4 x 7 = 28\n4 x 8 = 32\n4 x 9 = 36\n4 x 10 = 40",
+      false
+    ]
+  ],
+  "public_input": [
+    0,
+    4
+  ],
+  "signature": "func multiplicationTable(n int) (string, error)"
+}

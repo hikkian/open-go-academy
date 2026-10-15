@@ -1,0 +1,16 @@
+
+> e2e
+> playwright test --grep Junior\+ HTTP and SQL
+
+[WebServer] 2026/10/15 19:51:42 INFO academy local API ready address=127.0.0.1:8081
+
+Running 2 tests using 1 worker
+
+(node:323165) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/curriculum.spec.ts:8:5 › Junior+ HTTP and SQL chapters render in both themes (2.9s)
+(node:323450) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  2 [mobile] › tests/curriculum.spec.ts:8:5 › Junior+ HTTP and SQL chapters render in both themes (3.1s)
+
+  2 passed (8.0s)

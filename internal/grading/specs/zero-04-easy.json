@@ -1,0 +1,28 @@
+{
+  "allowed_imports": [
+    "fmt"
+  ],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main() { var inputs []int; if err := json.Unmarshal([]byte(os.Args[1]), \u0026inputs); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, n := range inputs { if err := enc.Encode(countTo(n)); err != nil { panic(err) } } }\n",
+  "id": "zero-04-easy",
+  "private_expected": [
+    "",
+    "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20",
+    "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20"
+  ],
+  "private_input": [
+    -1,
+    20,
+    21
+  ],
+  "public_expected": [
+    "",
+    "1",
+    "1 2 3 4 5"
+  ],
+  "public_input": [
+    0,
+    1,
+    5
+  ],
+  "signature": "func countTo(n int) string"
+}

@@ -1,0 +1,172 @@
+{
+  "id": "juniorplus-17",
+  "title": "Конфигурация, логи и OpenAPI",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-16"
+  ],
+  "estimated_minutes": 110,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Проверять обязательную конфигурацию при старте и не раскрывать секреты в ошибках и журналах.",
+    "Различать process health и readiness зависимости.",
+    "Сверять OpenAPI, безопасные поля лога и ответы реального P2."
+  ],
+  "glossary": [
+    {
+      "term": "configuration",
+      "translation": "конфигурация",
+      "definition": "Проверенные значения окружения, определяющие запуск приложения."
+    },
+    {
+      "term": "secret",
+      "translation": "секрет",
+      "definition": "Значение, раскрытие которого даёт доступ или раскрывает защищённые данные."
+    },
+    {
+      "term": "structured_log",
+      "translation": "структурированный журнал",
+      "definition": "Запись полей и значений по явной схеме."
+    },
+    {
+      "term": "OpenAPI",
+      "translation": "OpenAPI",
+      "definition": "Машиночитаемый контракт путей, параметров, запросов и ответов HTTP API."
+    },
+    {
+      "term": "health_check",
+      "translation": "проверка здоровья",
+      "definition": "Сигнал с явно описанным смыслом о состоянии процесса или приложения."
+    },
+    {
+      "term": "readiness",
+      "translation": "готовность",
+      "definition": "Состояние приложения, когда оно может принимать рабочий запрос с нужными зависимостями."
+    }
+  ],
+  "markdown_file": "juniorplus-17.md",
+  "order": 37,
+  "exercises": [
+    {
+      "id": "juniorplus-17-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Отклони неполную конфигурацию",
+      "prompt": "Верни true, если databaseURL разбирается как URL со схемой postgres/postgresql и непустым host; origin — абсолютный http/https origin без userinfo, path (кроме /), query и fragment. Не возвращай и не логируй исходные строки. Это синтаксическая проверка, не проверка доступности БД.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nimport \"net/url\"\nimport \"strings\"\n\nfunc ConfigValid(databaseURL, origin string) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse",
+      "criteria": [
+        "Сигнатура и детерминированное поведение совпадают с условием.",
+        "Public и private cases проверяют границы контракта.",
+        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет эта функция?",
+          "answer": "Верни true, если databaseURL разбирается как URL со схемой postgres/postgresql и непустым host; origin — абсолютный http/https origin без userinfo, path (кроме /), query и fragment. Не возвращай и не логируй исходные строки. Это синтаксическая проверка, не проверка доступности БД."
+        },
+        {
+          "question": "Что требуется для полного project evidence?",
+          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-17-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Оставь в журнале только разрешённые поля",
+      "prompt": "Разреши ровно request_id, method, status и duration_ms. Не включай path, query, headers, cookies, body, DSN, пароль или токен. Это проверяет helper allowlist; реальную запись и отсутствие secret fixtures нужно проверять отдельным log test.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc LogFieldAllowed(name string) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\ntrue",
+      "criteria": [
+        "Сигнатура и детерминированное поведение совпадают с условием.",
+        "Public и private cases проверяют границы контракта.",
+        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет эта функция?",
+          "answer": "Разреши ровно request_id, method, status и duration_ms. Не включай path, query, headers, cookies, body, DSN, пароль или токен. Это проверяет helper allowlist; реальную запись и отсутствие secret fixtures нужно проверять отдельным log test."
+        },
+        {
+          "question": "Что требуется для полного project evidence?",
+          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-17-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "sql",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Отдели готовность от доступности процесса",
+      "prompt": "Если база недоступна — not_ready; иначе если миграции не актуальны — migrations_pending; иначе ready. Helper обрабатывает уже измеренные состояния и сам не выполняет ping, healthcheck или миграцию. HTTP listener может отвечать, когда зависимость ещё не готова.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\n\nfunc ReadinessState(databaseConnected, migrationsCurrent bool) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"not_ready\"\n\"migrations_pending\"\n\"ready\"",
+      "criteria": [
+        "Сигнатура и детерминированное поведение совпадают с условием.",
+        "Public и private cases проверяют границы контракта.",
+        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет эта функция?",
+          "answer": "Если база недоступна — not_ready; иначе если миграции не актуальны — migrations_pending; иначе ready. Helper обрабатывает уже измеренные состояния и сам не выполняет ping, healthcheck или миграцию. HTTP listener может отвечать, когда зависимость ещё не готова."
+        },
+        {
+          "question": "Что требуется для полного project evidence?",
+          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Как отличить автоматическое evidence от утверждения?",
+      "answer": "Назовите контракт, конкретный test boundary и остающиеся неизвестными зависимости."
+    },
+    {
+      "question": "Где посмотреть фактический P2?",
+      "answer": "В приложении «Проекты → LinkHub API» и в P2 README, OpenAPI, Compose и threat model."
+    },
+    {
+      "question": "Что означает reviewed course evidence?",
+      "answer": "Только проверку требований курса, не профессию, external accreditation или trusted credential."
+    },
+    {
+      "question": "Что должно оставаться ручным?",
+      "answer": "Читаемость проекта, объяснение компромисса, threat boundary и review security критериев."
+    },
+    {
+      "question": "Как безопасно повторить проверку?",
+      "answer": "Fresh local/disposable environment, точная команда и результат без секретов и production данных."
+    },
+    {
+      "question": "Нужен ли Tutor?",
+      "answer": "Нет, объяснение и критерии доступны самостоятельно."
+    }
+  ]
+}

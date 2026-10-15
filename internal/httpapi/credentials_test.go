@@ -198,7 +198,7 @@ func TestPrivatePassportUsesVerifiedEvidenceDatesActivityAndProjectCatalog(t *te
 		return got
 	}
 	before := decode()
-	if len(before.Projects) != 1 || before.Projects[0].ID != "p1" || before.Projects[0].Title != "Go CLI Toolkit" || before.Projects[0].AutomaticPassed || !before.Projects[0].ManualReviewRequired {
+	if len(before.Projects) != 2 || before.Projects[0].ID != "p1" || before.Projects[0].Title != "Go CLI Toolkit" || before.Projects[0].AutomaticPassed || !before.Projects[0].ManualReviewRequired {
 		t.Fatalf("project before completion=%+v", before.Projects)
 	}
 	if len(before.Activity) != 1 || before.Activity[0] != (activityDay{Date: "2026-02-10", VerifiedCount: 1, CumulativeCount: 1}) {
@@ -216,7 +216,7 @@ func TestPrivatePassportUsesVerifiedEvidenceDatesActivityAndProjectCatalog(t *te
 		t.Fatal(err)
 	}
 	after := decode()
-	if len(after.Projects) != 1 || !after.Projects[0].AutomaticPassed || !after.Projects[0].ManualReviewRequired {
+	if len(after.Projects) != 2 || !after.Projects[0].AutomaticPassed || !after.Projects[0].ManualReviewRequired {
 		t.Fatalf("project after P1=%+v", after.Projects)
 	}
 	if len(after.Activity) != 2 || after.Activity[0] != (activityDay{Date: "2026-02-10", VerifiedCount: 1, CumulativeCount: 1}) || after.Activity[1] != (activityDay{Date: "2026-02-12", VerifiedCount: 1, CumulativeCount: 2}) {
@@ -231,6 +231,9 @@ func TestPrivatePassportUsesVerifiedEvidenceDatesActivityAndProjectCatalog(t *te
 	public := request("/api/passport/public")
 	if public.Code != 200 {
 		t.Fatalf("GET public passport: %d %s", public.Code, public.Body)
+	}
+	if before.Projects[1].ID != "p2" || before.Projects[1].AutomaticPassed || !before.Projects[1].ManualReviewRequired || after.Projects[1].AutomaticPassed {
+		t.Fatal("P1 completion changed P2 evidence")
 	}
 	for _, privateOnly := range []string{`"achievements"`, `"projects"`, `"activity"`} {
 		if strings.Contains(public.Body.String(), privateOnly) {

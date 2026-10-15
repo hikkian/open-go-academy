@@ -2,11 +2,12 @@
 package content
 
 import (
+	"academy/internal/grading"
+	"academy/internal/runner"
 	"embed"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/fs"
 	"path"
 	"regexp"
 	"sort"
@@ -21,6 +22,8 @@ var solutions embed.FS
 
 // Exercise describes a learner-facing task. Reference solutions live outside this package.
 type Exercise struct {
+	Kind         string      `json:"kind,omitempty"`
+	Skills       []string    `json:"skills,omitempty"`
 	ID           string      `json:"id"`
 	Difficulty   string      `json:"difficulty"`
 	Title        string      `json:"title"`
@@ -41,33 +44,44 @@ type GlossaryEntry struct {
 	Definition  string `json:"definition"`
 }
 type Lesson struct {
-	ID               string          `json:"id"`
-	Title            string          `json:"title"`
-	Rank             string          `json:"rank"`
-	Module           string          `json:"module"`
-	Prerequisites    []string        `json:"prerequisites"`
-	EstimatedMinutes int             `json:"estimated_minutes"`
-	GoVersion        string          `json:"go_version"`
-	LearningOutcomes []string        `json:"learning_outcomes"`
-	Glossary         []GlossaryEntry `json:"glossary"`
-	SelfCheck        []SelfCheck     `json:"self_check"`
-	MarkdownFile     string          `json:"markdown_file"`
-	Body             string          `json:"body"`
-	Exercises        []Exercise      `json:"exercises"`
+	Order             int             `json:"order,omitempty"`
+	CurriculumVersion string          `json:"curriculum_version,omitempty"`
+	ID                string          `json:"id"`
+	Title             string          `json:"title"`
+	Rank              string          `json:"rank"`
+	Module            string          `json:"module"`
+	Prerequisites     []string        `json:"prerequisites"`
+	EstimatedMinutes  int             `json:"estimated_minutes"`
+	GoVersion         string          `json:"go_version"`
+	LearningOutcomes  []string        `json:"learning_outcomes"`
+	Glossary          []GlossaryEntry `json:"glossary"`
+	SelfCheck         []SelfCheck     `json:"self_check"`
+	MarkdownFile      string          `json:"markdown_file"`
+	Body              string          `json:"body"`
+	Exercises         []Exercise      `json:"exercises"`
 }
 type Catalog struct {
 	Lessons   []Lesson
 	exercises map[string]Exercise
 	solutions map[string]string
+	grading   map[string]*grading.Spec
 }
 
 // Load parses and validates all embedded course material.
 func Load() (*Catalog, error) {
-	entries, err := fs.Glob(assets, "data/*.json")
+	manifest, err := Manifest()
 	if err != nil {
 		return nil, err
 	}
+	entries := make([]string, 0, len(manifest.Published))
+	for _, id := range manifest.Published {
+		if id == "" || strings.Contains(id, "/") || strings.Contains(id, "..") || path.Clean(id) != id {
+			return nil, errors.New("unsafe manifest lesson id")
+		}
+		entries = append(entries, "data/"+id+".json")
+	}
 	c := &Catalog{exercises: map[string]Exercise{}, solutions: map[string]string{}}
+	gradeIDs := []string{}
 	seen := map[string]bool{}
 	for _, name := range entries {
 		b, err := assets.ReadFile(name)
@@ -97,6 +111,12 @@ func Load() (*Catalog, error) {
 			return nil, fmt.Errorf("lesson %s has empty body", l.ID)
 		}
 		for _, ex := range l.Exercises {
+			if ex.Kind != "" && ex.Kind != "function" {
+				return nil, fmt.Errorf("exercise %s has unsupported kind", ex.ID)
+			}
+			if ex.Kind == "function" {
+				gradeIDs = append(gradeIDs, ex.ID)
+			}
 			if ex.ID == "" || ex.Title == "" || ex.Prompt == "" || ex.StarterFile == "" || ex.StarterCode == "" || len(ex.Criteria) == 0 {
 				return nil, fmt.Errorf("lesson %s has incomplete exercise", l.ID)
 			}
@@ -109,8 +129,28 @@ func Load() (*Catalog, error) {
 				return nil, fmt.Errorf("exercise %s reference solution: %w", ex.ID, err)
 			}
 			c.solutions[ex.ID] = string(ref)
+
 		}
 		c.Lessons = append(c.Lessons, l)
+	}
+	checks, err := grading.LoadFor(gradeIDs)
+	if err != nil {
+		return nil, fmt.Errorf("exercise grading: %w", err)
+	}
+	c.grading = checks
+	for _, ex := range c.exercises {
+		if ex.Kind != "function" {
+			continue
+		}
+		spec := c.grading[ex.ID]
+		if err := spec.BindReference(c.solutions[ex.ID]); err != nil {
+			return nil, fmt.Errorf("exercise %s trusted contract: %w", ex.ID, err)
+		}
+		for _, check := range spec.Check(runner.Result{Status: "ok", ExitCode: 0, Stdout: ex.PublicOutput}, false) {
+			if !check.Passed {
+				return nil, fmt.Errorf("exercise %s public result differs from executable public cases", ex.ID)
+			}
+		}
 	}
 	for _, l := range c.Lessons {
 		for _, dep := range l.Prerequisites {
@@ -130,7 +170,25 @@ func Load() (*Catalog, error) {
 	if len(c.Lessons) == 0 {
 		return nil, errors.New("no lessons found")
 	}
-	sort.Slice(c.Lessons, func(i, j int) bool { return c.Lessons[i].ID < c.Lessons[j].ID })
+	if len(manifest.Published) != len(c.Lessons) {
+		return nil, errors.New("curriculum manifest differs from published lessons")
+	}
+	for _, id := range manifest.Published {
+		if !seen[id] {
+			return nil, fmt.Errorf("manifest lesson %s is missing", id)
+		}
+	}
+	ranks := map[string]int{"Zero": 0, "Junior": 1, "Junior+": 2, "Middle": 3, "Middle+": 4, "Senior": 5}
+	sort.Slice(c.Lessons, func(i, j int) bool {
+		a, b := c.Lessons[i], c.Lessons[j]
+		if ranks[a.Rank] != ranks[b.Rank] {
+			return ranks[a.Rank] < ranks[b.Rank]
+		}
+		if a.Order != b.Order {
+			return a.Order < b.Order
+		}
+		return a.ID < b.ID
+	})
 	return c, nil
 }
 func safeAssetPath(p string) bool {
@@ -166,7 +224,8 @@ func (c *Catalog) checkCycles() error {
 	}
 	return nil
 }
-func (c *Catalog) AllLessons() []Lesson { return append([]Lesson(nil), c.Lessons...) }
+func (c *Catalog) AllLessons() []Lesson                    { return append([]Lesson(nil), c.Lessons...) }
+func (c *Catalog) Grading(id string) (*grading.Spec, bool) { s, ok := c.grading[id]; return s, ok }
 func (c *Catalog) FindLesson(id string) (Lesson, bool) {
 	for _, l := range c.Lessons {
 		if l.ID == id {
@@ -193,7 +252,7 @@ func (c *Catalog) Reference(id string) (string, bool) { s, ok := c.solutions[id]
 var markdownLinkPattern = regexp.MustCompile(`\[[^\]]*\]\(([^\s)]+)(?:\s+[^)]*)?\)`)
 
 func (c *Catalog) validateMarkdownLinks(l Lesson) error {
-	for _, match := range markdownLinkPattern.FindAllStringSubmatch(l.Body, -1) {
+	for _, match := range markdownLinkPattern.FindAllStringSubmatch(markdownLinkProse(l.Body), -1) {
 		target := match[1]
 		if strings.Contains(target, "://") || strings.HasPrefix(target, "mailto:") || strings.HasPrefix(target, "//") {
 			continue
@@ -260,4 +319,31 @@ func headingSlug(title string) string {
 		}
 	}
 	return b.String()
+}
+
+// Code examples are not Markdown links: generic calls such as F[T](value)
+// must not be interpreted as navigation. Rendering has its own safe URL policy.
+func markdownLinkProse(body string) string {
+	var out strings.Builder
+	fence := ""
+	for _, line := range strings.Split(body, "\n") {
+		trim := strings.TrimSpace(line)
+		if strings.HasPrefix(trim, "```") || strings.HasPrefix(trim, "~~~") {
+			marker := trim[:3]
+			if fence == "" {
+				fence = marker
+			} else if fence == marker {
+				fence = ""
+			}
+			out.WriteByte('\n')
+			continue
+		}
+		if fence != "" {
+			out.WriteByte('\n')
+			continue
+		}
+		out.WriteString(line)
+		out.WriteByte('\n')
+	}
+	return regexp.MustCompile("`+[^`]*`+").ReplaceAllString(out.String(), "")
 }

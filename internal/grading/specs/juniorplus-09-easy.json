@@ -1,0 +1,42 @@
+{
+  "id": "juniorplus-09-easy",
+  "signature": "func ConstraintCategory(sqlState string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\";)\ntype input struct {SQLState string}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := ConstraintCategory(in.SQLState);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "SQLState": "23505"
+    },
+    {
+      "SQLState": "23503"
+    },
+    {
+      "SQLState": "23514"
+    },
+    {
+      "SQLState": "08006"
+    }
+  ],
+  "public_expected": [
+    "unique_conflict",
+    "missing_reference",
+    "check_violation",
+    "storage_error"
+  ],
+  "private_input": [
+    {
+      "SQLState": "23502"
+    },
+    {
+      "SQLState": "23505"
+    },
+    {
+      "SQLState": ""
+    }
+  ],
+  "private_expected": [
+    "storage_error",
+    "unique_conflict",
+    "storage_error"
+  ]
+}

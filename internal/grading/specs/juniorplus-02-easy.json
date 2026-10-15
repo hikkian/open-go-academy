@@ -1,0 +1,77 @@
+{
+  "id": "juniorplus-02-easy",
+  "signature": "func ParseEndpoint(address string) (Endpoint, bool)",
+  "allowed_imports": [
+    "net",
+    "strconv"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tAddress string\n}\n\nfunc main() {\n var cases []input\n if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }\n enc:=json.NewEncoder(os.Stdout)\n for _, in:=range cases {\n  var out any\n  value,ok:=ParseEndpoint(in.Address)\n  \tout=struct{Endpoint Endpoint;OK bool}{value,ok}\n  if err:=enc.Encode(out); err!=nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Address": "127.0.0.1:8080"
+    },
+    {
+      "Address": "[::1]:443"
+    }
+  ],
+  "public_expected": [
+    {
+      "Endpoint": {
+        "Host": "127.0.0.1",
+        "Port": 8080
+      },
+      "OK": true
+    },
+    {
+      "Endpoint": {
+        "Host": "::1",
+        "Port": 443
+      },
+      "OK": true
+    }
+  ],
+  "private_input": [
+    {
+      "Address": "localhost:1"
+    },
+    {
+      "Address": "host:65535"
+    },
+    {
+      "Address": "host:0"
+    },
+    {
+      "Address": "::1:443"
+    }
+  ],
+  "private_expected": [
+    {
+      "Endpoint": {
+        "Host": "localhost",
+        "Port": 1
+      },
+      "OK": true
+    },
+    {
+      "Endpoint": {
+        "Host": "host",
+        "Port": 65535
+      },
+      "OK": true
+    },
+    {
+      "Endpoint": {
+        "Host": "",
+        "Port": 0
+      },
+      "OK": false
+    },
+    {
+      "Endpoint": {
+        "Host": "",
+        "Port": 0
+      },
+      "OK": false
+    }
+  ]
+}

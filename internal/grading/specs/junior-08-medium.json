@@ -1,0 +1,75 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Values []int }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"minMax\" { case \"minMax\": a,b,ok := minMax(in.Values); out = map[string]any{\"Min\":a,\"Max\":b,\"OK\":ok}; if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-08-medium",
+  "private_expected": [
+    {
+      "Max": 0,
+      "Min": 0,
+      "OK": false
+    },
+    {
+      "Max": 4,
+      "Min": 4,
+      "OK": true
+    },
+    {
+      "Max": -2,
+      "Min": -9,
+      "OK": true
+    },
+    {
+      "Max": 0,
+      "Min": 0,
+      "OK": true
+    }
+  ],
+  "private_input": [
+    {
+      "Values": null
+    },
+    {
+      "Values": [
+        4
+      ]
+    },
+    {
+      "Values": [
+        -5,
+        -2,
+        -9
+      ]
+    },
+    {
+      "Values": [
+        0,
+        0
+      ]
+    }
+  ],
+  "public_expected": [
+    {
+      "Max": 8,
+      "Min": -1,
+      "OK": true
+    },
+    {
+      "Max": 0,
+      "Min": 0,
+      "OK": false
+    }
+  ],
+  "public_input": [
+    {
+      "Values": [
+        3,
+        -1,
+        8
+      ]
+    },
+    {
+      "Values": []
+    }
+  ],
+  "signature": "func minMax(values []int) (int, int, bool)"
+}

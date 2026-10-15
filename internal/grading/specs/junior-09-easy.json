@@ -1,0 +1,69 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []struct { Values []int }; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"maxValue\" { case \"maxValue\": v,ok := maxValue(in.Values); out = map[string]any{\"Value\":v,\"OK\":ok}; if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-09-easy",
+  "private_expected": [
+    {
+      "OK": false,
+      "Value": 0
+    },
+    {
+      "OK": true,
+      "Value": -4
+    },
+    {
+      "OK": true,
+      "Value": -2
+    },
+    {
+      "OK": true,
+      "Value": 0
+    }
+  ],
+  "private_input": [
+    {
+      "Values": null
+    },
+    {
+      "Values": [
+        -4
+      ]
+    },
+    {
+      "Values": [
+        -5,
+        -2,
+        -8
+      ]
+    },
+    {
+      "Values": [
+        0,
+        0
+      ]
+    }
+  ],
+  "public_expected": [
+    {
+      "OK": true,
+      "Value": 7
+    },
+    {
+      "OK": false,
+      "Value": 0
+    }
+  ],
+  "public_input": [
+    {
+      "Values": [
+        2,
+        7,
+        1
+      ]
+    },
+    {
+      "Values": []
+    }
+  ],
+  "signature": "func maxValue(values []int) (int, bool)"
+}

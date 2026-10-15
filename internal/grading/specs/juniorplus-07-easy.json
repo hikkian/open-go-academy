@@ -1,0 +1,45 @@
+{
+  "id": "juniorplus-07-easy",
+  "signature": "func ValidateAlias(alias string) string",
+  "allowed_imports": [
+    "strings",
+    "unicode/utf8"
+  ],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tAlias string\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=ValidateAlias(in.Alias)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Alias": "go-2026"
+    },
+    {
+      "Alias": "green"
+    }
+  ],
+  "public_expected": [
+    "",
+    ""
+  ],
+  "private_input": [
+    {
+      "Alias": ""
+    },
+    {
+      "Alias": "has space"
+    },
+    {
+      "Alias": "Upper"
+    },
+    {
+      "Alias": "this-alias-is-much-too-long"
+    },
+    {
+      "Alias": "bad/slash"
+    }
+  ],
+  "private_expected": [
+    "invalid_alias",
+    "invalid_alias",
+    "invalid_alias",
+    "alias_too_long",
+    "invalid_alias"
+  ]
+}

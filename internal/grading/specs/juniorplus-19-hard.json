@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-19-hard",
+  "signature": "func TagAssociationOutcome(linkOwner, tagOwner string, transactionCommitted bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {LinkOwner string; TagOwner string; TransactionCommitted bool}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := TagAssociationOutcome(in.LinkOwner,in.TagOwner,in.TransactionCommitted);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "LinkOwner": "u1",
+      "TagOwner": "u1",
+      "TransactionCommitted": true
+    },
+    {
+      "LinkOwner": "u1",
+      "TagOwner": "u2",
+      "TransactionCommitted": true
+    }
+  ],
+  "public_expected": [
+    "linked",
+    "rejected"
+  ],
+  "private_input": [
+    {
+      "LinkOwner": "u1",
+      "TagOwner": "u1",
+      "TransactionCommitted": false
+    },
+    {
+      "LinkOwner": "",
+      "TagOwner": "",
+      "TransactionCommitted": true
+    }
+  ],
+  "private_expected": [
+    "rolled_back",
+    "rejected"
+  ]
+}

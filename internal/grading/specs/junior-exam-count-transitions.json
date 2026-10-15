@@ -1,0 +1,79 @@
+{
+  "id": "junior-exam-count-transitions",
+  "signature": "func CountTransitions(values []int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\"; \"slices\")\nfunc main(){ var cases []struct{ Values []int }; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { before:=append([]int(nil),in.Values...); answer:=CountTransitions(in.Values); if err:=enc.Encode([]any{answer,slices.Equal(before,in.Values)}); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "Values": []
+    },
+    {
+      "Values": [
+        1
+      ]
+    },
+    {
+      "Values": [
+        1,
+        2,
+        2,
+        5,
+        1
+      ]
+    },
+    {
+      "Values": [
+        -2,
+        -1,
+        0,
+        1
+      ]
+    }
+  ],
+  "public_expected": [
+    [
+      0,
+      true
+    ],
+    [
+      0,
+      true
+    ],
+    [
+      3,
+      true
+    ],
+    [
+      3,
+      true
+    ]
+  ],
+  "private_input": [
+    {
+      "Values": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "Values": [
+        7,
+        7,
+        7,
+        8,
+        7
+      ]
+    }
+  ],
+  "private_expected": [
+    [
+      2,
+      true
+    ],
+    [
+      2,
+      true
+    ]
+  ]
+}

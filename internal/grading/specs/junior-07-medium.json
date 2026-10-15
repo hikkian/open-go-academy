@@ -1,0 +1,30 @@
+{
+  "allowed_imports": [
+    "errors",
+    "strings",
+    "unicode"
+  ],
+  "driver": "package main\nimport (\n\"encoding/json\"\n\"os\"\n)\nfunc main() { var cases []string; if err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range cases { var out any; var err error; switch \"validateName\" { case \"validateName\": err = validateName(in); out = err == nil; if err != nil \u0026\u0026 out == nil { out = map[string]any{\"OK\":false} }; if e := enc.Encode(out); e != nil { panic(e) } } } }\n",
+  "id": "junior-07-medium",
+  "private_expected": [
+    true,
+    true,
+    false,
+    false
+  ],
+  "private_input": [
+    "Алия",
+    " A B ",
+    "\t",
+    "Ada!"
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "public_input": [
+    "Ada",
+    "   "
+  ],
+  "signature": "func validateName(s string) error"
+}

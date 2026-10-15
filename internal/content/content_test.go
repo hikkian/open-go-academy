@@ -148,3 +148,15 @@ func TestInternalMarkdownLinksRejectMissingTargets(t *testing.T) {
 		t.Fatal("expected missing internal heading link to fail validation")
 	}
 }
+
+func TestGenericCodeCallsAreNotMarkdownNavigation(t *testing.T) {
+	c := &Catalog{}
+	lesson := Lesson{ID: "example", Body: "```go\npackage main\nfunc main(){ _ = Sum[int](values) }\n```\nUse `Apply[T](values)` in code.\n"}
+	if err := c.validateMarkdownLinks(lesson); err != nil {
+		t.Fatal(err)
+	}
+	lesson.Body += "\n[broken](lesson:not-published)\n"
+	if err := c.validateMarkdownLinks(lesson); err == nil {
+		t.Fatal("real missing link was ignored")
+	}
+}

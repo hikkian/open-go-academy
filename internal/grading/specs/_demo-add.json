@@ -1,0 +1,10 @@
+{
+  "id": "_demo-add",
+  "signature": "func Add(a, b int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main() { var inputs [][]int; if err := json.Unmarshal([]byte(os.Args[1]), &inputs); err != nil { panic(err) }; enc := json.NewEncoder(os.Stdout); for _, in := range inputs { if len(in) != 2 { panic(\"bad input\") }; if err := enc.Encode(Add(in[0], in[1])); err != nil { panic(err) } } }\n",
+  "public_input": [[1, 2], [-4, 7]],
+  "public_expected": [3, 3],
+  "private_input": [[100, 200]],
+  "private_expected": [300]
+}

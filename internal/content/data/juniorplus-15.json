@@ -1,0 +1,176 @@
+{
+  "id": "juniorplus-15",
+  "title": "Пароли, сессии и authentication",
+  "rank": "Junior+",
+  "module": "juniorplus-web",
+  "prerequisites": [
+    "juniorplus-07",
+    "juniorplus-08",
+    "juniorplus-09",
+    "juniorplus-10",
+    "juniorplus-11",
+    "juniorplus-12",
+    "juniorplus-13",
+    "juniorplus-14"
+  ],
+  "estimated_minutes": 120,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Хранить versioned password verifier вместо password.",
+    "Управлять cookie flags, session expiry, rotation и revoke.",
+    "Разделять authentication и CSRF policy."
+  ],
+  "glossary": [
+    {
+      "term": "authentication",
+      "translation": "аутентификация",
+      "definition": "Установление субъекта запроса."
+    },
+    {
+      "term": "session",
+      "translation": "сессия",
+      "definition": "Серверное состояние аутентифицированного клиента."
+    },
+    {
+      "term": "password_kdf",
+      "translation": "функция получения ключа",
+      "definition": "Затратный verifier на основе password и случайной соли."
+    },
+    {
+      "term": "salt",
+      "translation": "соль",
+      "definition": "Уникальное случайное значение password verifier формата."
+    },
+    {
+      "term": "CSRF",
+      "translation": "межсайтовая подделка",
+      "definition": "Запрос с автоматически отправленной браузером cookie."
+    },
+    {
+      "term": "opaque_token",
+      "translation": "непрозрачный токен",
+      "definition": "Случайный ID без встроенных user claims."
+    }
+  ],
+  "markdown_file": "juniorplus-15.md",
+  "order": 35,
+  "exercises": [
+    {
+      "id": "juniorplus-15-easy",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "easy",
+      "title": "Проверь параметры password KDF baseline",
+      "prompt": "Параметры принимаются при 600000..1200000 PBKDF2 итераций, salt минимум 16 bytes, derived value ровно 32 bytes. Это validator конфигурации, не доказательство безопасности.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc PasswordKDFPolicy(iterations, saltBytes, outputBytes int) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\ntrue\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "Параметры принимаются при 600000..1200000 PBKDF2 итераций, salt минимум 16 bytes, derived value ровно 32 bytes. Это validator конфигурации, не доказательство безопасности."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-15-medium",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "medium",
+      "title": "Проверь expiry с injected clock",
+      "prompt": "Session expired, если expiresAt равен now или ранее. Передавай время аргументом вместо sleep.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nimport (\n\t\"time\"\n)\n\nfunc SessionExpired(now, expiresAt time.Time) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "false\ntrue\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "Session expired, если expiresAt равен now или ранее. Передавай время аргументом вместо sleep."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    },
+    {
+      "id": "juniorplus-15-hard",
+      "kind": "function",
+      "skills": [
+        "http",
+        "go-core",
+        "testing"
+      ],
+      "difficulty": "hard",
+      "title": "Проверь cookie-auth mutation policy",
+      "prompt": "Разрешай только POST/PUT/PATCH/DELETE и лишь после проверки CSRF token и доверенного Origin. Safe methods не являются изменяющими маршрутом. Функция использует проверенные policy сигналы, она сама не валидирует token.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc AllowCookieMutation(method string, csrfValid, originTrusted bool) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\ntrue\n",
+      "criteria": [
+        "Точная сигнатура компилируется и соответствует контракту.",
+        "Обычные и граничные значения обработаны согласно условию.",
+        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Какое условие определяет ответ?",
+          "answer": "Разрешай только POST/PUT/PATCH/DELETE и лишь после проверки CSRF token и доверенного Origin. Safe methods не являются изменяющими маршрутом. Функция использует проверенные policy сигналы, она сама не валидирует token."
+        },
+        {
+          "question": "Что доказывают перечисленные cases?",
+          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какова граница или инвариант темы?",
+      "answer": "Хранить versioned password verifier вместо password."
+    },
+    {
+      "question": "Что доказывает функциональный test?",
+      "answer": "Только заданные наблюдаемые результаты на перечисленных входах."
+    },
+    {
+      "question": "Как воспроизвести отказ?",
+      "answer": "Создать один маленький fixture и изменить один параметр."
+    },
+    {
+      "question": "Как обрабатывать внутреннюю ошибку?",
+      "answer": "Нормализовать её в стабильную безопасную категорию."
+    },
+    {
+      "question": "Почему важны negative cases?",
+      "answer": "Успешный случай не проверяет deny, rollback, cleanup или expiry."
+    },
+    {
+      "question": "Обязателен ли AI Tutor?",
+      "answer": "Нет, материал можно пройти самостоятельно."
+    }
+  ]
+}

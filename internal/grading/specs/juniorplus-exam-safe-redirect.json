@@ -1,0 +1,98 @@
+{
+  "id": "juniorplus-exam-safe-redirect",
+  "signature": "func SafeRedirectPath(path string) bool",
+  "allowed_imports": [
+    "net/url",
+    "strings",
+    "unicode/utf8"
+  ],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\nfunc main(){ var cases []struct{ Path string }; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(SafeRedirectPath(in.Path)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "Path": "/docs"
+    },
+    {
+      "Path": "/"
+    },
+    {
+      "Path": "https://example.test"
+    },
+    {
+      "Path": "//evil.test"
+    },
+    {
+      "Path": "/a/../b"
+    },
+    {
+      "Path": "/%2e%2e/x"
+    },
+    {
+      "Path": "/%2F%2Fevil"
+    },
+    {
+      "Path": "/a\\\\b"
+    }
+  ],
+  "public_expected": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "private_input": [
+    {
+      "Path": "/%5cadmin"
+    },
+    {
+      "Path": "/a?x=1"
+    },
+    {
+      "Path": "/a#x"
+    },
+    {
+      "Path": "/%0d%0aX:evil"
+    },
+    {
+      "Path": "/%ZZ"
+    },
+    {
+      "Path": "/%252e%252e"
+    },
+    {
+      "Path": "/caf%FF"
+    },
+    {
+      "Path": "relative"
+    },
+    {
+      "Path": "/caf%C3%A9"
+    },
+    {
+      "Path": "/%00"
+    },
+    {
+      "Path": "/a%20b"
+    },
+    {
+      "Path": "/%2fadmin"
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false
+  ]
+}

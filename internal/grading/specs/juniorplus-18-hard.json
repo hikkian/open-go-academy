@@ -1,0 +1,50 @@
+{
+  "id": "juniorplus-18-hard",
+  "signature": "func ComposeStartupState(dbHealthy, migrationsApplied, apiHealthy bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct {DBHealthy bool; MigrationsApplied bool; APIHealthy bool}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{out := ComposeStartupState(in.DBHealthy,in.MigrationsApplied,in.APIHealthy);if e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "DBHealthy": false,
+      "MigrationsApplied": false,
+      "APIHealthy": false
+    },
+    {
+      "DBHealthy": true,
+      "MigrationsApplied": false,
+      "APIHealthy": false
+    },
+    {
+      "DBHealthy": true,
+      "MigrationsApplied": true,
+      "APIHealthy": false
+    },
+    {
+      "DBHealthy": true,
+      "MigrationsApplied": true,
+      "APIHealthy": true
+    }
+  ],
+  "public_expected": [
+    "wait_database",
+    "migration_failed",
+    "api_unhealthy",
+    "ready"
+  ],
+  "private_input": [
+    {
+      "DBHealthy": false,
+      "MigrationsApplied": true,
+      "APIHealthy": true
+    },
+    {
+      "DBHealthy": true,
+      "MigrationsApplied": true,
+      "APIHealthy": true
+    }
+  ],
+  "private_expected": [
+    "wait_database",
+    "ready"
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\nfunc main() {\n\temit := func(v any) { if err := json.NewEncoder(os.Stdout).Encode(v); err != nil { panic(err) } }\n\tvar cases [][]int\n\t\tif err := json.Unmarshal([]byte(os.Args[1]), \u0026cases); err != nil { panic(err) }\n\t\tfor _, in := range cases { emit(summarizeScores(in)) }\n}\n",
+  "id": "zero-08-medium",
+  "private_expected": [
+    {
+      "Average": 60,
+      "Count": 1,
+      "HasScores": true,
+      "Maximum": 60,
+      "Minimum": 60,
+      "Total": 60
+    },
+    {
+      "Average": 75,
+      "Count": 3,
+      "HasScores": true,
+      "Maximum": 90,
+      "Minimum": 60,
+      "Total": 225
+    },
+    {
+      "Average": 40.5,
+      "Count": 2,
+      "HasScores": true,
+      "Maximum": 41,
+      "Minimum": 40,
+      "Total": 81
+    },
+    {
+      "Average": 50,
+      "Count": 2,
+      "HasScores": true,
+      "Maximum": 100,
+      "Minimum": 0,
+      "Total": 100
+    }
+  ],
+  "private_input": [
+    [
+      60
+    ],
+    [
+      75,
+      60,
+      90
+    ],
+    [
+      40,
+      41
+    ],
+    [
+      0,
+      100
+    ]
+  ],
+  "public_expected": [
+    {
+      "Average": 15,
+      "Count": 2,
+      "HasScores": true,
+      "Maximum": 20,
+      "Minimum": 10,
+      "Total": 30
+    },
+    {
+      "Average": 0,
+      "Count": 0,
+      "HasScores": false,
+      "Maximum": 0,
+      "Minimum": 0,
+      "Total": 0
+    }
+  ],
+  "public_input": [
+    [
+      10,
+      20
+    ],
+    []
+  ],
+  "signature": "func summarizeScores(scores []int) ScoreSummary"
+}

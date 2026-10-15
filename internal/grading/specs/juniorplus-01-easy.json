@@ -1,0 +1,38 @@
+{
+  "id": "juniorplus-01-easy",
+  "signature": "func ClassifyStatus(code int) string",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tCode int\n}\n\nfunc main() {\n var cases []input\n if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }\n enc:=json.NewEncoder(os.Stdout)\n for _, in:=range cases {\n  var out any\n  out = ClassifyStatus(in.Code)\n  if err:=enc.Encode(out); err!=nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Code": 200
+    },
+    {
+      "Code": 404
+    }
+  ],
+  "public_expected": [
+    "success",
+    "client-error"
+  ],
+  "private_input": [
+    {
+      "Code": 199
+    },
+    {
+      "Code": 300
+    },
+    {
+      "Code": 599
+    },
+    {
+      "Code": 600
+    }
+  ],
+  "private_expected": [
+    "other",
+    "redirect",
+    "server-error",
+    "other"
+  ]
+}

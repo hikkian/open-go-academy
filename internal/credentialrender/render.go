@@ -118,7 +118,7 @@ func PDF(e credentials.Envelope, revoked bool) ([]byte, error) {
 		})
 	})
 	page.AutoRow(func(r *template.RowBuilder) {
-		r.Col(6, func(c *template.ColBuilder) {
+		r.Col(4, func(c *template.ColBuilder) {
 			c.Text("Экзамен", template.FontSize(8), template.TextColor(pdf.RGBHex(0x576C7C)))
 			c.Text(e.Payload.ExamID, template.FontSize(10), template.Bold())
 			c.Spacer(document.Mm(2))
@@ -128,7 +128,7 @@ func PDF(e credentials.Envelope, revoked bool) ([]byte, error) {
 			c.Text("Дата выпуска (UTC)", template.FontSize(8), template.TextColor(pdf.RGBHex(0x576C7C)))
 			c.Text(issueDate(e.Payload.IssuedAt), template.FontSize(10), template.Bold())
 		})
-		r.Col(6, func(c *template.ColBuilder) {
+		r.Col(5, func(c *template.ColBuilder) {
 			c.Text("Идентификатор документа", template.FontSize(8), template.TextColor(pdf.RGBHex(0x576C7C)))
 			c.Text(e.Payload.ID, template.FontSize(9))
 			c.Spacer(document.Mm(2))
@@ -137,13 +137,16 @@ func PDF(e credentials.Envelope, revoked bool) ([]byte, error) {
 			c.Text("Отпечаток ключа эмитента (SHA-256)", template.FontSize(8), template.TextColor(pdf.RGBHex(0x576C7C)))
 			c.Text(e.KeyID, template.FontSize(8))
 		})
+		r.Col(3, func(c *template.ColBuilder) {
+			c.Text("Проверить документ", template.FontSize(8), template.TextColor(pdf.RGBHex(0x197F83)))
+			c.QRCode(e.Payload.VerifyURL, template.QRSize(document.Mm(28)))
+		})
 	})
 	page.AutoRow(func(r *template.RowBuilder) {
 		r.Col(12, func(c *template.ColBuilder) {
 			c.Spacer(document.Mm(4))
 			c.Text("Проверка подписи и статуса", template.FontSize(9), template.Bold(), template.TextColor(pdf.RGBHex(0x197F83)))
 			c.Text(e.Payload.VerifyURL, template.FontSize(8), template.TextColor(pdf.RGBHex(0x1B537E)))
-			c.QRCode(e.Payload.VerifyURL, template.QRSize(document.Mm(28)))
 			c.Spacer(document.Mm(3))
 			c.Text("Самостоятельно выпущенное локальное подтверждение учебных критериев Go Academy. Оно не удостоверяет личность, трудоустройство, годы опыта или аккредитацию.", template.FontSize(8), template.TextColor(pdf.RGBHex(0x576C7C)))
 		})

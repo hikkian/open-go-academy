@@ -1,0 +1,50 @@
+{
+  "id": "juniorplus-15-easy",
+  "signature": "func PasswordKDFPolicy(iterations, saltBytes, outputBytes int) bool",
+  "allowed_imports": [],
+  "driver": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n)\n\ntype input struct {\n\tIterations int\n\tSaltBytes int\n\tOutputBytes int\n}\nfunc main(){var cases []input;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{var out any\nout=PasswordKDFPolicy(in.Iterations,in.SaltBytes,in.OutputBytes)\nif e:=enc.Encode(out);e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Iterations": 600000,
+      "SaltBytes": 16,
+      "OutputBytes": 32
+    },
+    {
+      "Iterations": 700000,
+      "SaltBytes": 24,
+      "OutputBytes": 32
+    }
+  ],
+  "public_expected": [
+    true,
+    true
+  ],
+  "private_input": [
+    {
+      "Iterations": 599999,
+      "SaltBytes": 16,
+      "OutputBytes": 32
+    },
+    {
+      "Iterations": 1200001,
+      "SaltBytes": 16,
+      "OutputBytes": 32
+    },
+    {
+      "Iterations": 600000,
+      "SaltBytes": 15,
+      "OutputBytes": 32
+    },
+    {
+      "Iterations": 600000,
+      "SaltBytes": 16,
+      "OutputBytes": 31
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false
+  ]
+}
