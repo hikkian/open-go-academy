@@ -17,9 +17,9 @@
 | M4 | End-to-end interactive lesson + persistence | DONE | real Go golden-path browser PASS, XP replay/noAI/reload, network write recovery desktop/mobile PASS |
 | M5 | Roadmap, rank structure, XP and skills | DONE | six server rank criteria, verified attempt-linked skills, search/review, unit/race + E2E7 PASS1skip |
 | M6 | Project workspaces and tests | DONE | P1 starter/reference, files/snapshots/ZIP + realGoRun/Test/15cases; reference/unit/race, browser+axe, independent review resolved |
-| M7 | Exam engine, earned-rank logic, negative tests | VALIDATING | 2026-10-15: native exam browser3PASS1skip; CAS/replay/award tests + independent review; full regression running |
-| M8 | Optional AI Tutor, model routing, usage controls | IN PROGRESS | 2026-10-15: isolated gateway/usage/UI implementation; integration follows M7 gate |
-| M9 | Digital badges, certificates, verification, passport | NOT STARTED | — |
+| M7 | Exam engine, earned-rank logic, negative tests | DONE | 2026-10-15: native exam3PASS1skip; CAS/replay/award unit/race + independent review; full14PASS/5skip, stale P1 assertion corrected+target1PASS1skip |
+| M8 | Optional AI Tutor, model routing, usage controls | DONE | 2026-10-15: Go unit/vet/race+TS/build; actualHTTP test-provider browser3PASS1skip, noAI desktop/mobile, consent/fallback/quota/privacy review |
+| M9 | Digital badges, certificates, verification, passport | IN PROGRESS | 2026-10-15: Ed25519 local format, storeprivacy/revoke, PDF/PNG and API integration; visual/browser QA pending |
 | M10 | Full Zero/Junior/Junior+ curriculum and projects | NOT STARTED | — |
 | M11 | Full Middle/Middle+/Senior curriculum and projects | NOT STARTED | — |
 | M12 | Hardening, full E2E, performance, visual and accessibility | NOT STARTED | — |
@@ -382,3 +382,9 @@ Project evaluation15 trusted black-box vectors+user Go tests actually run in iso
 APIdefault8380/Viteproxy8380 (8080 занятый чужойсервис не изменён), successfulbind передreadylog. `make test/build` повторён. Module ASCII grammar, UnicodeGoTest name, controlledCLI panic checks, escapedsource transport1MiB и proxyenvironment forwardingfalse regression прошли (смVALIDATION_REPORT). API+runner фактическиlivehealthok на8380; браузерныйpanelrequestqueued. Localcheckpoints only, remoteCI/publication отсутствуют.
 
 Контрольная точка функционального кода и финальных доказательств: `7f4cca4` (локальный Git, без remote). Последующее уточнение handoff/docs не изменяет проверенный код.
+
+### 2026-10-15 — M7/M8 завершены
+
+M7: server-derived local Zero rank after immutable zero-core1.0.0, prerequisites,12objectivequestions+2coding/debuggingfunctions/12nativecases, draftCAS/replay/forgedawardguards; DBflock and recovery. M8: optional stdlibHTTP provider gateway, mode-specificRU prompts, modelrouting,3callsmax, budgetreservation4worstcasecalls, usageSQLite, explicitconsent/redaction/responseimageloadblocked, no modelauthority. Automatic freeform responsecache deliberately disabled: public deterministic glossary remains versionedcoursecontent; private AI requests/responses are not stored. Cloud/private-network restrictions and all limits documented README.
+
+Evidence: make test PASS; native exam3PASS1skip; testprovider tutor3PASS1skip; fullcore14PASS5skip1staleassertionfail (P1 expected unverified after earlierexam) -> P1 assertion now verifies before/after invariant, targeted native rerun1PASS1skip3.1min. No application failure in that P1 run; no claim fullcombinedrerunallgreen yet. Visualbaseexamstyles and completedlessonrepeat fixed. Reports EXAM_REVIEW/TUTOR_REVIEW close openHigh/Medium.

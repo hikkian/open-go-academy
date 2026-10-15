@@ -4,6 +4,7 @@ import { api, loadProfile, saveProfile, type Exercise, type Lesson, type Learnin
 import ProjectWorkspace, { type ProjectSummary } from './ProjectWorkspace';
 import Exams from './Exams';
 import Tutor from './Tutor';
+import Passport, { CredentialVerification, PublicPassport } from './Passport';
 const GoEditor = lazy(() => import('./GoEditor'));
 
 const ranks = ['Zero', 'Junior', 'Junior+', 'Middle', 'Middle+', 'Senior'];
@@ -12,7 +13,7 @@ type RunResult = { stdout?: string; stderr?: string; exit_code?: number; status?
 export default function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoaded, setProfileLoaded] = useState(false);
-  const [screen, setScreen] = useState<'home' | 'lesson' | 'path' | 'skills' | 'course' | 'projects' | 'project' | 'exams' | 'tutor'>('home');
+  const [screen, setScreen] = useState<'home' | 'lesson' | 'path' | 'skills' | 'course' | 'projects' | 'project' | 'exams' | 'tutor' | 'passport'>('home');
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [selectedProject, setSelectedProject] = useState<ProjectSummary | null>(null);
   const [projectsLoading, setProjectsLoading] = useState(false);
@@ -184,6 +185,8 @@ export default function App() {
     [lessons],
   );
 
+  if (/^\/verify\/[a-f0-9]{32}\/?$/.test(window.location.pathname)) return <CredentialVerification credentialId={window.location.pathname.split('/')[2]} />;
+  if (window.location.pathname === '/passport') return <PublicPassport />;
   if (!profileLoaded) return <main className="boot"><span className="go-mark">go</span><p>Открываем учебную мастерскую…</p></main>;
   if (!profile) return <Onboarding onSave={saveLearner} busy={busy} error={error} theme={theme} setTheme={setTheme} />;
 
@@ -198,6 +201,7 @@ export default function App() {
         <button className={screen === 'projects' || screen === 'project' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('projects')}>Проекты</button>
         <button className={screen === 'exams' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('exams')}>Экзамены</button>
         <button className={screen === 'tutor' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('tutor')}>ИИ-наставник</button>
+        <button className={screen === 'passport' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('passport')}>Паспорт</button>
         <button className={screen === 'lesson' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('lesson')} disabled={!lesson}>Урок</button>
       </nav>
       <div className="top-actions"><span className="profile-chip"><span className="avatar">{profile.name.slice(0, 1).toUpperCase()}</span>{profile.name}</span><button className="icon-button" onClick={() => void changeTheme()} disabled={themeBusy} aria-label={theme === 'light' ? 'Включить тёмную тему' : 'Включить светлую тему'} title="Сменить тему">◐</button></div>
@@ -221,6 +225,7 @@ export default function App() {
     {screen === 'projects' && <main className="page projects-page"><div className="page-heading"><p className="eyebrow">ПРАКТИКА ЦЕЛЫХ ПРИЛОЖЕНИЙ</p><h1>Проекты</h1><p>Собирай приложение по этапам, сохраняй файлы и запускай проверки в изолированном исполнителе.</p></div>{projectsLoading ? <p className="empty-state">Загружаем каталог проектов…</p> : projects.length ? <div className="project-catalog">{projects.map(project => <button className="project-card" key={project.id} onClick={() => { setSelectedProject(project); setScreen('project'); }}><span className="project-card-rank">{project.rank}</span><strong>{project.title}</strong><span>{project.description}</span><small>Открыть рабочую область ›</small></button>)}</div> : <p className="empty-state">В каталоге пока нет опубликованных проектов.</p>}</main>}
     {screen === 'project' && selectedProject && <ProjectWorkspace key={selectedProject.id} projectId={selectedProject.id} onBack={() => setScreen('projects')} />}
     {screen === 'exams' && <Exams onRankAwarded={refresh} />}
+    {screen === 'passport' && <Passport />}
     {screen === 'tutor' && <Tutor lessonId={lesson?.id} source={screen === 'tutor' && lesson ? files[activeFile] : undefined} />}
 
     {screen === 'lesson' && (lesson ? <main className="workspace" style={{ '--split': `${split}%` } as React.CSSProperties}>

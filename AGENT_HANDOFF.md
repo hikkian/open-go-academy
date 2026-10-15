@@ -1,6 +1,6 @@
 # AGENT HANDOFF — open-go-academy
 
-Обновлено **2026-10-15**. **M0–M6 DONE в local-only области**, M7 VALIDATING, M8 IN PROGRESS, M9–M13 NOT STARTED. Это работающая платформа с первым полным уроком Zero и P1, а не полный курс/публичный hosted продукт.
+Обновлено **2026-10-15**. **M0–M8 DONE в local-only области**, M9 IN PROGRESS, M10–M13 NOT STARTED. Это работающая платформа с первым полным уроком Zero и P1, а не полный курс/публичный hosted продукт.
 
 ## Готово
 
@@ -51,14 +51,14 @@ PinnedGo script uses ignored .tools/go/bin/go если есть, иначе GOTO
 ## Частично / не готово и риски
 
 - Только Zero Day1 и P1 baseline; полный syllabus/теория шести рангов иP2–P5 не написаны (M10/M11).
-- Exams/trusted rank policy(M7), optionalAIgateway(M8), badges/credentials/passport(M9) ещё отсутствуют. Нельзя превращать P1:auto или XP в подтверждениегрейда.
+- M7 экзамены/Zeroaward и M8 optionalTutor завершены; M9 credentials/passport ещё интегрируются. Нельзя превращать P1:auto или XP в подтверждениегрейда.
 - Fullaudit/M12 и release/cross-platform M13 не выполнены; Linux/rootlessPodman проверен, Windows/macOS не проверены.
 - Общийkernel/runtime local-only риск; нет microVM/gVisor/publicmultitenant допуска. Teacher/issuer identity/credentials не выданы, compliance не заявлена. README/Git/testquality требуют review.
 - License код/контент ещё не выбрана владельцем. CI workflow prepared/notexecuted remotely. Model availability может поменяться; APIaccess не равен подписке.
 
-## Next milestone and first concrete task
+## Следующий этап
 
-**M7 — exams and earned-rank policy.** Сначала миграция `exam`, `exam_attempt`, `rank_award`, неизменяемые versionedcriteria/evidence; затем objective+coding/debugging assessment API и negative tests forged pass/replay/prerequisite bypass. До выдачи ранга проверять весь набор требований и наличие необходимых материалов/ручныхкритериев; одногоурока/P1auto недостаточно. Продолжать существующий код; не пересоздавать проект. Исходная спецификация docs/MASTER_SPEC.md, последовательность docs/EXECUTION_PLAN.md. Автоматического фонового продолжения разработки нет.
+**M9 — local credentials, badges/passport.** Уже написаны stdlibEd25519 core internal/credentials, storemigration0006, HTTPcredentials and private/publicpassport, credentialrenderPDF/PNG/QR (gpdf1.0.13+x/image0.47.0, DejaVuSansTTF+matchinglicense). UI Passport.tsx/CSS и App routes подключены. Ключ issuer.key0600 создаётся при startup; missing/mismatchedkey+existingrecords failsclosed. Keyrestore/backupdocs ещё добавить. Формат oga-local-v1 — не OB/VC. Нужны actualPDF render+QRdecode, nativeexam→issue→download→publicverify→revoke→unpublish browser, finalreview/QA/docscheckpoint. Parent owns HTTP/App/main/tests; agentm7_ui ownscredentialrender; m8_gateway ownsPassportUI; m7_review ownsCREDENTIAL_REVIEW. Не публиковать.
 
 ## Финальные уточнения сессии
 
@@ -71,3 +71,19 @@ M7 реализован: immutable exam zero-core1.0.0,12вопросов+2чи�
 M8 параллельные файлы: internal/tutor/** gateway (m8_gateway); store/ai_usage+migration0005 (m7_store,unit/racePASS); web/src/Tutor.tsx+Tutor.css (m7_ui). Parent интегрирует API/env/settings/consent/budget. Нет настроенной локальной модели/ключа, реальные платные запросы не выполняются; тестовый provider проверяется actualHTTP httptest. Не включать AI по умолчанию.
 
 Автовозобновление существует в Codex heartbeat `open-go-academy-m13` текущегочата; расписание требует актуализации по фактическому limiting reset+1мин, не ежедневно. На07:52местного лимит41%/31%, работа разрешена. Это исправляет предыдущие утверждения об отсутствии механизма. Не обещать выполнение во время выключенного приложения.
+
+## Завершённые M7/M8 и текущая точка
+
+Локальный commit `9e1b794` сохраняет M7/M8код. make test PASS. Nativeexam3PASS1skip; tutor actualHTTPtestdouble3PASS1skip; fullsuite14PASS5skip1staleP1assertionfail -> fixedtest+targetedrealP1rerun1PASS1skip3.1min. Не обозначать исходный fullrun allgreen; новый полныйпрогон нужен после M9. Сохранившийся рангZeroverified после P1 корректен: P1 не меняет прежнийrank. Полныеpaths/logs docs/VALIDATION_REPORT.md и docs/validation/.
+
+Heartbeat `open-go-academy-m13` обновлён реальнымtool: один запуск **2026-10-15 12:26:20 Asia/Atyrau**, сброс5h+1мин. Не ежедневный. Передследующим запуском проверитьобаusagewindows и переноситьэтотжеheartbeat. В текущемтуре работа продолжается; расписание — восстановление после прерывания.
+
+## M9 checkpoint — 2026-10-15 08:16 Asia/Atyrau
+
+**Готово:** credentialscrypto/storage/API/private+publicPassportUI, JSON/PDF/PNG/QR, scopedprivacy/revoke/audit. ActualnativeExam→credentialbrowser3PASS1skip2.0мин (`docs/validation/credential-browser.txt`); Nodecrypto independentlyverifiedJSONsignature, alteredrankrejected; jsQR independentlydecodedQR fromcertificatePNG, PDFpreviewandQRPNG. ActualAPIkeyloss/differentkey/originalrestorePASS (`credential-key-recovery.txt`). make test unit/vet/race/TSbuildPASS; govulncheck0/npmroot+web0. Passportlight/dark/desktop/mobileaxe2PASS4.6s (`passport-layout.txt`). Independent CREDENTIAL_REVIEW closes3Medium; rendererboldDotdoubleprint fixed+visuallyrerendered. APIcanonicalVerifyOrigin fixsupportslocalhostentry whileURLnumeric.
+
+**Частично:** M9 stillINPROGRESS: addexplicitprojectoverviewandrealactivitygraph toPassport, datesforbadges(currentearned_atempty, UIhonestdateunknown). NoHostedissuer/OBVC/JCSclaim; formatoga-local-v1 fixedstructMarshalJSON, Ed25519domain+NUL. PDFitselfnotdigitallysigned; signedJSONauthoritative. Limits localonly. DejaVuTTFmatchinglicensevendored, docs/research/CREDENTIAL_IMPLEMENTATION describesdeps+provenance.
+
+**Следующие конкретные действия:** readcurrentfiles; implement realactivitytimeline fromretainedverifiedevidence and projectoverview/P1manualrubrics inprivatePassport+tests, badgeearnedAt fromactualevidence timestamps; runcombinedfullE2E (previousfull14pass5skip1staleP1assertionfixed,targetP1pass butfullrerunpending), refreshacceptancematrix, markM9DONEonlyaftergate. ThenM10detailedsyllabus+dependencygraph and substantiveZero/Junior/Junior+fullcontent/P2; M11advancedcontent/P3–P5; M12/M13. Neverfakecompletecurriculum.
+
+**Runtime:** API actual`.tools/academy-api`session90782 listening8380, runner`.tools/academy-runner`session9032(older) stillseparate; livehealthok/runnertruechecked. LocaltestHTTPproviderPython8095session42052 remainstestdouble, canstopaftertests (notrealLLM). Don'tkillforeignPython8080. M9keyprobe8094usescopiedDBonlytemporaryfoldercleanup. NativeE2E8081exited; E2EresetDBonlytestdata. UserDB/issuerkeyprivateignoreddonotpublish.

@@ -6,6 +6,7 @@ import (
 	"academy/internal/runner"
 	"academy/internal/store"
 	"context"
+	"crypto/ed25519"
 	"crypto/rand"
 	"crypto/subtle"
 	"encoding/hex"
@@ -35,12 +36,21 @@ type API struct {
 	Tutor         TutorExecutor
 	TutorSettings TutorSettings
 	tutorGate     chan struct{}
+	IssuerKey     ed25519.PrivateKey
+	VerifyOrigin  string
 }
 
 func New(s *store.Store, c *content.Catalog, r Executor, secret string, hosts ...string) *API {
 	a := &API{Store: s, Content: c, Runner: r, Session: secret, Hosts: map[string]bool{}, tutorGate: make(chan struct{}, 1)}
 	for _, h := range hosts {
 		a.Hosts[h] = true
+		if a.VerifyOrigin == "" {
+			if host, _, err := net.SplitHostPort(h); err == nil {
+				if ip := net.ParseIP(host); ip != nil && ip.IsLoopback() {
+					a.VerifyOrigin = "http://" + h
+				}
+			}
+		}
 	}
 	return a
 }
@@ -99,6 +109,7 @@ func (a *API) Handler(staticDir string) http.Handler {
 	a.projectRoutes(mux)
 	a.examRoutes(mux)
 	a.tutorRoutes(mux)
+	a.credentialRoutes(mux)
 	mux.HandleFunc("GET /api/health", func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), time.Second)
 		defer cancel()
@@ -307,7 +318,7 @@ func (a *API) Handler(staticDir string) http.Handler {
 			fail(w, 403, "cross-site запрос запрещён")
 			return
 		}
-		if strings.HasPrefix(r.URL.Path, "/api/") && r.URL.Path != "/api/profile" && r.URL.Path != "/api/health" {
+		if strings.HasPrefix(r.URL.Path, "/api/") && r.URL.Path != "/api/profile" && r.URL.Path != "/api/health" && !strings.HasPrefix(r.URL.Path, "/api/verify/") && r.URL.Path != "/api/passport/public" {
 			if !a.sessionOK(r) {
 				fail(w, 401, "откройте локальный профиль")
 				return

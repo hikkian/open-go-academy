@@ -1,3 +1,4 @@
+import {credentialFlow} from './credential-flow';
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {readFileSync} from 'node:fs';
@@ -15,4 +16,5 @@ test('exam drafts conflict safely, failure denies rank, real pass awards only Ze
  for(const [index,id] of ['coding','debugging'].entries()){const source=readFileSync(`content/exams/zero-core/reference/${id}/main.go`,'utf8');await page.locator('.exam-task').nth(index).getByLabel('Go-код',{exact:true}).fill(source)};await expect(page.getByText('Черновик сохранён',{exact:true})).toBeVisible();
  const scan=await new AxeBuilder({page}).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);await page.screenshot({path:'artifacts/exam-filled.png',fullPage:true});
  await page.getByRole('button',{name:'Завершить и проверить'}).click();await expect(page.getByRole('heading',{name:'Критерии экзамена выполнены'})).toBeVisible({timeout:190000});await expect(page.getByText('Подтверждён ранг Zero.',{exact:true})).toBeVisible();const learning=await(await page.request.get('/api/learning')).json();expect(learning.current_rank).toBe('Zero');expect(learning.verified).toBe(true);await page.screenshot({path:'artifacts/exam-passed.png',fullPage:true});await page.reload();await page.getByRole('button',{name:'Экзамены',exact:true}).click();await page.getByRole('button',{name:'Результат',exact:true}).last().click();await expect(page.getByRole('heading',{name:'Критерии экзамена выполнены'})).toBeVisible();
+ await credentialFlow(page,context);
 });

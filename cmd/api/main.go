@@ -3,11 +3,13 @@ package main
 import (
 	"academy/internal/apilock"
 	"academy/internal/content"
+	"academy/internal/credentials"
 	"academy/internal/httpapi"
 	"academy/internal/runner"
 	"academy/internal/store"
 	"academy/internal/tutor"
 	"context"
+	"crypto/ed25519"
 	"log/slog"
 	"net"
 	"net/http"
@@ -70,6 +72,29 @@ func main() {
 	}
 	_, port, _ := net.SplitHostPort(addr)
 	a := httpapi.New(s, catalog, runner.NewClient(env("ACADEMY_RUNNER_SOCKET", ".data/runner.sock")), secret, addr, "localhost:"+port, "127.0.0.1:5173", "localhost:5173")
+	issuerPath := env("ACADEMY_ISSUER_KEY", filepath.Join(filepath.Dir(dbPath), "issuer.key"))
+	var credentialCount int
+	if err = s.DB().QueryRow(`SELECT COUNT(*) FROM credentials`).Scan(&credentialCount); err != nil {
+		panic(err)
+	}
+	if _, err = os.Lstat(issuerPath); os.IsNotExist(err) && credentialCount > 0 {
+		slog.Error("issuer key missing: restore the original key from private backup before restarting")
+		os.Exit(1)
+	}
+	issuerKey, err := credentials.LoadOrCreateKey(issuerPath)
+	if err != nil {
+		slog.Error("issuer key rejected: regular private key file with mode 0600 required")
+		os.Exit(1)
+	}
+	var mismatchedKeys int
+	if err = s.DB().QueryRow(`SELECT COUNT(*) FROM credentials WHERE key_id<>?`, credentials.KeyID(issuerKey.Public().(ed25519.PublicKey))).Scan(&mismatchedKeys); err != nil {
+		panic(err)
+	}
+	if mismatchedKeys > 0 {
+		slog.Error("issuer key differs from stored credentials: restore original key; automatic rotation is unsupported")
+		os.Exit(1)
+	}
+	a.IssuerKey = issuerKey
 	// Provider access is opt-in configuration; keys never enter browser settings.
 	budget, budgetErr := strconv.Atoi(env("ACADEMY_AI_DAILY_TOKENS", "100000"))
 	maxOutput, outputErr := strconv.Atoi(env("ACADEMY_AI_MAX_OUTPUT_TOKENS", "512"))
