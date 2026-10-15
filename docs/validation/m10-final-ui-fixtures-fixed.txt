@@ -1,0 +1,22 @@
+
+> e2e
+> playwright test --grep new exam selection|P2 nested|published Zero
+
+[WebServer] 2026/10/16 01:01:52 INFO academy local API ready address=127.0.0.1:8081
+
+Running 6 tests using 1 worker
+
+(node:703698) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/curriculum.spec.ts:5:5 › published Zero chapters and prerequisite guidance are usable (2.0s)
+  ✓  2 [desktop] › tests/p2-workspace.spec.ts:4:5 › P2 nested workspace, locked policy, snapshots and export (4.6s)
+
+  ✓  3 [desktop] › tests/zz-exam-catalog-ui.spec.ts:10:5 › new exam selection, versioned history and cancellation use the selected catalog entry (6.6s)
+(node:704291) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile] › tests/curriculum.spec.ts:5:5 › published Zero chapters and prerequisite guidance are usable (1.9s)
+  ✓  5 [mobile] › tests/p2-workspace.spec.ts:4:5 › P2 nested workspace, locked policy, snapshots and export (4.5s)
+
+  ✓  6 [mobile] › tests/zz-exam-catalog-ui.spec.ts:10:5 › new exam selection, versioned history and cancellation use the selected catalog entry (5.2s)
+
+  6 passed (26.8s)

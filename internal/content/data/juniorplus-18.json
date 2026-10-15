@@ -61,7 +61,7 @@
       "title": "Оставь host bind на loopback",
       "prompt": "Разреши ровно hostname localhost или loopback IP. Отклони 0.0.0.0 и обычные интерфейсы. Helper классифицирует host и не читает весь Compose manifest.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nimport \"net\"\nimport \"strings\"\n\nfunc IsLoopbackBind(host string) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "starter_code": "package main\n\n\nfunc IsLoopbackBind(host string) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse",
       "criteria": [
         "Сигнатура и детерминированное поведение совпадают с условием.",

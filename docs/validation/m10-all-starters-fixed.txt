@@ -1,0 +1,1 @@
+ok  	academy/internal/content	48.402s

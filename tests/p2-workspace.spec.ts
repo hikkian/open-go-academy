@@ -12,7 +12,7 @@ test('P2 nested workspace, locked policy, snapshots and export',async({page},inf
  await page.getByLabel('Добавить файл').fill(filename);await page.getByRole('button',{name:'Добавить',exact:true}).click();
  const source='package internal\n\n// Saved by automatic browser validation.\n';await page.getByLabel('Go-код',{exact:true}).fill(source);await expect(page.getByText('Файлы сохранены.',{exact:true})).toBeVisible();
  await page.reload();await open();await page.getByRole('button',{name:filename,exact:true}).click();await expect(page.getByLabel('Go-код',{exact:true})).toContainText('Saved by automatic');
- const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Скачать ZIP',exact:true}).click();const file=await pending;expect(file.suggestedFilename()).toBe('p2.zip');const path=await file.path();const bytes=readFileSync(path!);expect(bytes.toString()).toContain(filename);expect(bytes.toString()).toContain('compose.yaml');
+ const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Скачать ZIP',exact:true}).click();const file=await pending;expect(file.suggestedFilename()).toBe('p2.zip');const path=await file.path();const bytes=readFileSync(path!);expect(bytes.toString()).toContain(filename);expect(bytes.includes(Buffer.from('README.md'))).toBe(true);
  const scan=await new AxeBuilder({page}).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:`artifacts/${info.project.name}-p2-workspace.png`,fullPage:true});
 });
 

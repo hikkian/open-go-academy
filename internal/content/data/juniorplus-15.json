@@ -129,7 +129,7 @@
       "prompt": "Разрешай только POST/PUT/PATCH/DELETE и лишь после проверки CSRF token и доверенного Origin. Safe methods не являются изменяющими маршрутом. Функция использует проверенные policy сигналы, она сама не валидирует token.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc AllowCookieMutation(method string, csrfValid, originTrusted bool) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\ntrue\n",
+      "public_output": "true\ntrue\ntrue\ntrue\nfalse\nfalse\n",
       "criteria": [
         "Точная сигнатура компилируется и соответствует контракту.",
         "Обычные и граничные значения обработаны согласно условию.",

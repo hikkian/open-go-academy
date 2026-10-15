@@ -39,12 +39,24 @@
       "Iterations": 600000,
       "SaltBytes": 16,
       "OutputBytes": 31
+    },
+    {
+      "Iterations": 1200000,
+      "SaltBytes": 16,
+      "OutputBytes": 32
+    },
+    {
+      "Iterations": 600000,
+      "SaltBytes": 16,
+      "OutputBytes": 33
     }
   ],
   "private_expected": [
     false,
     false,
     false,
+    false,
+    true,
     false
   ]
 }

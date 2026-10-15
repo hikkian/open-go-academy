@@ -96,7 +96,7 @@
       "title": "Реализуй ApplyDiscount",
       "prompt": "Целые неотрицательные price, percent 0..100; результат price*(100-percent)/100 с усечением вниз. Сигнатура точная.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ApplyDiscount[T interface {\n\t// Реализуй контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "starter_code": "package main\n\nfunc ApplyDiscount[T interface{ ~int | ~int64 }](price, percent T) (T, error) {\n\t// Реализуй контракт из условия.\n\tvar zero T\n\treturn zero, nil\n}\n",
       "public_output": "{\"Value\":1000,\"OK\":true}\n{\"Value\":0,\"OK\":true}\n",
       "criteria": [
         "Функция имеет точную сигнатуру и компилируется.",
@@ -124,7 +124,7 @@
       "title": "Сравни generic и typed решение",
       "prompt": "Предполагаются low <= high; верни ближайшую границу или исходное значение.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc clampInt[T interface {\n\t// Реализуй контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "starter_code": "package main\n\nfunc clampInt[T interface{ ~int | ~int64 }](value, low, high T) T {\n\t// Реализуй контракт из условия.\n\treturn value\n}\n",
       "public_output": "5\n0\n",
       "criteria": [
         "Функция имеет точную сигнатуру и компилируется.",

@@ -62,7 +62,7 @@
       "title": "Отклони неполную конфигурацию",
       "prompt": "Верни true, если databaseURL разбирается как URL со схемой postgres/postgresql и непустым host; origin — абсолютный http/https origin без userinfo, path (кроме /), query и fragment. Не возвращай и не логируй исходные строки. Это синтаксическая проверка, не проверка доступности БД.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nimport \"net/url\"\nimport \"strings\"\n\nfunc ConfigValid(databaseURL, origin string) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
+      "starter_code": "package main\n\n\nfunc ConfigValid(databaseURL, origin string) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse",
       "criteria": [
         "Сигнатура и детерминированное поведение совпадают с условием.",

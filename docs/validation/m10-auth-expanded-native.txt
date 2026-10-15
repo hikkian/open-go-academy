@@ -1,0 +1,4 @@
+PASS juniorplus-15-easy 8 actual confined cases
+PASS juniorplus-15-medium 6 actual confined cases
+PASS juniorplus-15-hard 18 actual confined cases
+PASS: 3 native references, persisted evidence, idempotent XP, no earned rank; temporary DB only

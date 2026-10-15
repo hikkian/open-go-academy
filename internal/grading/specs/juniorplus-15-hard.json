@@ -13,11 +13,35 @@
       "Method": "PATCH",
       "CSRFValid": true,
       "OriginTrusted": true
+    },
+    {
+      "Method": "PUT",
+      "CSRFValid": true,
+      "OriginTrusted": true
+    },
+    {
+      "Method": "DELETE",
+      "CSRFValid": true,
+      "OriginTrusted": true
+    },
+    {
+      "Method": "PUT",
+      "CSRFValid": false,
+      "OriginTrusted": false
+    },
+    {
+      "Method": "DELETE",
+      "CSRFValid": false,
+      "OriginTrusted": false
     }
   ],
   "public_expected": [
     true,
-    true
+    true,
+    true,
+    true,
+    false,
+    false
   ],
   "private_input": [
     {
@@ -26,7 +50,22 @@
       "OriginTrusted": true
     },
     {
-      "Method": "DELETE",
+      "Method": "TRACE",
+      "CSRFValid": true,
+      "OriginTrusted": true
+    },
+    {
+      "Method": "POST",
+      "CSRFValid": false,
+      "OriginTrusted": true
+    },
+    {
+      "Method": "POST",
+      "CSRFValid": true,
+      "OriginTrusted": false
+    },
+    {
+      "Method": "PUT",
       "CSRFValid": false,
       "OriginTrusted": true
     },
@@ -36,12 +75,45 @@
       "OriginTrusted": false
     },
     {
-      "Method": "TRACE",
-      "CSRFValid": true,
+      "Method": "PATCH",
+      "CSRFValid": false,
       "OriginTrusted": true
+    },
+    {
+      "Method": "PATCH",
+      "CSRFValid": true,
+      "OriginTrusted": false
+    },
+    {
+      "Method": "DELETE",
+      "CSRFValid": false,
+      "OriginTrusted": true
+    },
+    {
+      "Method": "DELETE",
+      "CSRFValid": true,
+      "OriginTrusted": false
+    },
+    {
+      "Method": "POST",
+      "CSRFValid": false,
+      "OriginTrusted": false
+    },
+    {
+      "Method": "PATCH",
+      "CSRFValid": false,
+      "OriginTrusted": false
     }
   ],
   "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
     false,
     false,
     false,

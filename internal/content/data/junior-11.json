@@ -58,7 +58,7 @@
       "title": "Проверь запись",
       "prompt": "Item{Name string; Quantity int}; непустое после TrimSpace имя и Quantity > 0.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\ntype Item struct { Name string; Quantity int }\n\nfunc isValidItem(item Item) bool {\n\t// Реализуй контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "starter_code": "package main\n\ntype Item struct { Name string `json:\"name\"`; Quantity int `json:\"quantity\"` }\n\nfunc isValidItem(item Item) bool {\n\t// Реализуй контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse\n",
       "criteria": [
         "Функция имеет точную сигнатуру и компилируется.",
@@ -114,7 +114,7 @@
       "title": "Закодируй валидные записи",
       "prompt": "Item{Name string; Quantity int}; отклони невалидные элементы и кодируй только валидный массив через json.Encoder.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\ntype Item struct { Name string; Quantity int }\n\nfunc encodeItems(items []Item) (string, error) {\n\t// Реализуй контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "starter_code": "package main\n\ntype Item struct { Name string `json:\"name\"`; Quantity int `json:\"quantity\"` }\n\nfunc encodeItems(items []Item) (string, error) {\n\t// Реализуй контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "{\"JSON\":\"[{\\\"name\\\":\\\"pen\\\",\\\"quantity\\\":2}]\\n\",\"OK\":true}\n{\"JSON\":\"[]\\n\",\"OK\":true}\n",
       "criteria": [
         "Функция имеет точную сигнатуру и компилируется.",

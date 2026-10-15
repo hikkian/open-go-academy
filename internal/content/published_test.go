@@ -46,7 +46,7 @@ func trustedCommand(t *testing.T, files map[string]string, args []string, mode s
 		command = []string{"test", "-run=^$", "./..."}
 	}
 	binary := filepath.Join(tmp, "example-program")
-	if mode == "run" {
+	if mode == "run" || mode == "build" {
 		command = []string{"build", "-o", binary, "."}
 	}
 	cmd := exec.CommandContext(ctx, goBin, command...)
@@ -99,6 +99,13 @@ func TestEveryPublishedGoExampleAndFunctionReference(t *testing.T) {
 					if !ok {
 						t.Fatal("no grader")
 					}
+					t.Run("starter-compiles", func(t *testing.T) {
+						request, err := spec.Request(map[string]string{exercise.StarterFile: exercise.StarterCode}, false)
+						if err != nil {
+							t.Fatalf("published starter violates its source contract: %v", err)
+						}
+						trustedCommand(t, request.Files, nil, "build")
+					})
 					ref, ok := catalog.Reference(exercise.ID)
 					if !ok {
 						t.Fatal("no private reference")
