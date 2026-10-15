@@ -3,7 +3,7 @@ package learning
 
 import "academy/internal/store"
 
-const PolicyVersion = "rank-policy-0.1"
+const PolicyVersion = "rank-policy-0.2"
 
 type Rank struct {
 	Name                string   `json:"name"`
@@ -31,7 +31,7 @@ type Snapshot struct {
 
 func Build(p store.Progress) Snapshot {
 	s := Snapshot{PolicyVersion: PolicyVersion, CurrentRank: "Zero", Verified: false, ReviewExercises: []string{}, Ranks: []Rank{
-		{Name: "Zero", ContentAvailable: true, Criteria: []string{"Самостоятельно запустить и исправить простые Go-программы.", "Освоить типы, условия, циклы и функции.", "Пройти итоговую проверку Zero (ещё не реализована)."}, Skills: []string{"program", "output", "functions"}},
+		{Name: "Zero", ContentAvailable: true, AssessmentAvailable: true, Criteria: []string{"Самостоятельно запустить и исправить простые Go-программы.", "Освоить типы, условия, циклы и функции.", "Пройти экзамен Zero: все вопросы и задания по версии критериев."}, Skills: []string{"program", "output", "functions"}},
 		{Name: "Junior", Criteria: []string{"Go core: коллекции, структуры, указатели, интерфейсы, errors (ошибки), модули.", "CLI Toolkit P1 с тестами и Git-ready экспортом.", "Пройти экзамен Go core и защитить решения."}, Skills: []string{"go-core", "testing"}},
 		{Name: "Junior+", Criteria: []string{"HTTP/SQL/auth: понимать протоколы, запросы и границы доступа.", "LinkHub P2 с PostgreSQL, миграциями и integration tests (интеграционными тестами).", "Сдать проверку API и безопасности."}, Skills: []string{"http", "sql"}},
 		{Name: "Middle", Criteria: []string{"Concurrency (конкурентность), context, race (гонки), transactions (транзакции).", "TaskFlow P3: надёжность, очереди, мониторинг, CI и нагрузочные проверки.", "Защитить инженерные решения и пройти mixed assessment (смешанную проверку)."}, Skills: []string{"concurrency", "reliability"}},
@@ -77,6 +77,21 @@ func Build(p store.Progress) Snapshot {
 	for _, id := range []string{"hello", "repair", "two-lines"} {
 		if a, ok := last[id]; ok && !a.Passed {
 			s.ReviewExercises = append(s.ReviewExercises, id)
+		}
+	}
+	return s
+}
+
+// WithAwards derives verified status from immutable server awards, never from XP or profile input.
+func WithAwards(s Snapshot, awards []store.RankAward) Snapshot {
+	highest := -1
+	for _, award := range awards {
+		for i, rank := range s.Ranks {
+			if rank.Name == award.Rank && i >= highest {
+				highest = i
+				s.CurrentRank = award.Rank
+				s.Verified = true
+			}
 		}
 	}
 	return s

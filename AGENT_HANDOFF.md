@@ -1,6 +1,6 @@
 # AGENT HANDOFF — open-go-academy
 
-Обновлено **2026-10-15**. **M0–M6 DONE в local-only области**, M7–M13 NOT STARTED. Это работающая платформа с первым полным уроком Zero и P1, а не полный курс/публичный hosted продукт.
+Обновлено **2026-10-15**. **M0–M6 DONE в local-only области**, M7 VALIDATING, M8 IN PROGRESS, M9–M13 NOT STARTED. Это работающая платформа с первым полным уроком Zero и P1, а не полный курс/публичный hosted продукт.
 
 ## Готово
 
@@ -63,3 +63,11 @@ PinnedGo script uses ignored .tools/go/bin/go если есть, иначе GOTO
 ## Финальные уточнения сессии
 
 Defaultport8380 выбран после обнаружения занятого8080 чужим Pythonservice (не изменён). Native API и runner сейчас запущены, livehealth подтвердилavailable=true. Open-in-app browser requestqueued, не заявлять, чтоонфактическиоткрыт. GoMod ASCII+UnicodeTestname/controlledpanic regressions PASS; workerJSONtransport1MiB protectsvalid escapedsource; hostproxy envforwardingfalse+actualsyntheticprobePASS. Все finalmake test/build пройдены. Точные limites/evidence актуализированыVALIDATION_REPORT. Git локальный, безremote; Контрольная точка функционального кода: `7f4cca4`; последующий commit уточняет только документацию. Никакой фоновой разработки/автоматизациинеобещано.
+
+## Продолжение 2026-10-15 — M7/M8
+
+M7 реализован: immutable exam zero-core1.0.0,12вопросов+2чистыефункции/12sandboxcases; prerequisites3упражнения; CASrevision и attemptnonce, atomic claim/grade/award, отказ replay/forgedpass, реальный Zeroaward не зависит отXP. SQLite migrations3/4, inodeDBflock исключает прерывание живойпроверки вторымAPI. Ревью EXAM_REVIEW.md: обаMedium исправлены, открытыхHigh/Medium нет. Go unit/vet/race + TSbuild PASS (`.data/m7-unit.log`). Browser `ACADEMY_E2E_RUNNER=1 npm run e2e -- --grep exam`:3PASS1mobile-runtime-duplicate SKIP, nativepass1.9мин; провал/CAS/reload тоже проверены. `python3 scripts/api-lock-check.py`:PASS. Визуально найдены отсутствующие базовые стили экзамена, добавлены; полный E2E с новым CSS сейчас идёт (`.data/m7-full-e2e.log`). До его результата M7 VALIDATING.
+
+M8 параллельные файлы: internal/tutor/** gateway (m8_gateway); store/ai_usage+migration0005 (m7_store,unit/racePASS); web/src/Tutor.tsx+Tutor.css (m7_ui). Parent интегрирует API/env/settings/consent/budget. Нет настроенной локальной модели/ключа, реальные платные запросы не выполняются; тестовый provider проверяется actualHTTP httptest. Не включать AI по умолчанию.
+
+Автовозобновление существует в Codex heartbeat `open-go-academy-m13` текущегочата; расписание требует актуализации по фактическому limiting reset+1мин, не ежедневно. На07:52местного лимит41%/31%, работа разрешена. Это исправляет предыдущие утверждения об отсутствии механизма. Не обещать выполнение во время выключенного приложения.

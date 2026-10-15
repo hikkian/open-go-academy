@@ -26,16 +26,19 @@ type Executor interface {
 	Execute(context.Context, runner.Request) (runner.Result, error)
 }
 type API struct {
-	Store   *store.Store
-	Content *content.Catalog
-	Runner  Executor
-	Session string
-	Hosts   map[string]bool
-	limits  quota
+	Store         *store.Store
+	Content       *content.Catalog
+	Runner        Executor
+	Session       string
+	Hosts         map[string]bool
+	limits        quota
+	Tutor         TutorExecutor
+	TutorSettings TutorSettings
+	tutorGate     chan struct{}
 }
 
 func New(s *store.Store, c *content.Catalog, r Executor, secret string, hosts ...string) *API {
-	a := &API{Store: s, Content: c, Runner: r, Session: secret, Hosts: map[string]bool{}}
+	a := &API{Store: s, Content: c, Runner: r, Session: secret, Hosts: map[string]bool{}, tutorGate: make(chan struct{}, 1)}
 	for _, h := range hosts {
 		a.Hosts[h] = true
 	}
@@ -76,7 +79,7 @@ func fail(w http.ResponseWriter, status int, msg string) {
 }
 func decode(w http.ResponseWriter, r *http.Request, v any) error {
 	limit := int64(512 << 10)
-	if strings.HasPrefix(r.URL.Path, "/api/projects/") {
+	if strings.HasPrefix(r.URL.Path, "/api/projects/") || strings.HasPrefix(r.URL.Path, "/api/exams/") {
 		limit = 1 << 20
 	}
 	r.Body = http.MaxBytesReader(w, r.Body, limit)
@@ -94,6 +97,8 @@ func decode(w http.ResponseWriter, r *http.Request, v any) error {
 func (a *API) Handler(staticDir string) http.Handler {
 	mux := http.NewServeMux()
 	a.projectRoutes(mux)
+	a.examRoutes(mux)
+	a.tutorRoutes(mux)
 	mux.HandleFunc("GET /api/health", func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), time.Second)
 		defer cancel()
@@ -168,7 +173,12 @@ func (a *API) Handler(staticDir string) http.Handler {
 			fail(w, 500, "не удалось прочитать свидетельства прогресса")
 			return
 		}
-		write(w, 200, learning.Build(p))
+		awards, err := a.Store.RankAwards("local")
+		if err != nil {
+			fail(w, 500, "не удалось прочитать подтверждения ранга")
+			return
+		}
+		write(w, 200, learning.WithAwards(learning.Build(p), awards))
 	})
 
 	mux.HandleFunc("GET /api/progress", func(w http.ResponseWriter, r *http.Request) {
@@ -314,7 +324,7 @@ func (a *API) Handler(staticDir string) http.Handler {
 					return
 				}
 			}
-			if !a.limits.allow(strings.HasPrefix(r.URL.Path, "/api/exercises/") || strings.HasPrefix(r.URL.Path, "/api/projects/") && (strings.HasSuffix(r.URL.Path, "/run") || strings.HasSuffix(r.URL.Path, "/test") || strings.HasSuffix(r.URL.Path, "/submit"))) {
+			if !a.limits.allow(strings.HasPrefix(r.URL.Path, "/api/exams/") && strings.HasSuffix(r.URL.Path, "/submit") || strings.HasPrefix(r.URL.Path, "/api/exercises/") || strings.HasPrefix(r.URL.Path, "/api/projects/") && (strings.HasSuffix(r.URL.Path, "/run") || strings.HasSuffix(r.URL.Path, "/test") || strings.HasSuffix(r.URL.Path, "/submit"))) {
 				w.Header().Set("Retry-After", "60")
 				fail(w, 429, "слишком много запросов; повторите через минуту")
 				return

@@ -17,7 +17,19 @@ export type LearningSnapshot = {
   review_exercises: string[];
 };
 
+export type ExamSummary = { id: string; version: string; title: string; rank: string; estimated_minutes: number; description: string; eligible: boolean; missing_prerequisites: string[]; criteria: string[] };
+export type ExamQuestion = { id: string; prompt: string; options: { id: string; text: string }[] };
+export type ExamTask = { id: string; title: string; kind: 'coding' | 'debugging'; description: string; starter_code: string; public_examples: { input: string; output: string }[] };
+export type PublicExam = { id: string; version: string; title: string; rank: string; description: string; estimated_minutes: number; prerequisites: string[]; criteria: string[]; questions: ExamQuestion[]; tasks: ExamTask[] };
+export type ExamAttempt = { id: string; exam_id: string; version: string; revision: number; status: string; score?: number; passed?: boolean; checks_json?: string; answers_json?: string; codes_json?: string; created_at?: string; finished_at?: string; [key: string]: unknown };
+export type ExamCheck = { id: string; name: string; passed: boolean; detail?: string };
+export type ExamSubmitResult = { attempt: ExamAttempt; score: number; passed: boolean; checks: ExamCheck[]; rank_awarded: boolean; rank: string; trust_notice: string };
+
 let csrfToken = '';
+export class ApiError extends Error {
+  readonly status: number;
+  constructor(message: string, status: number) { super(message); this.name = 'ApiError'; this.status = status; }
+}
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers);
   if (init.body) headers.set('Content-Type', 'application/json');
@@ -30,7 +42,7 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
       const parsed: unknown = JSON.parse(detail);
       if (parsed && typeof parsed === 'object' && 'error' in parsed && typeof parsed.error === 'string') readableDetail = parsed.error;
     } catch { /* Plain-text error bodies are already readable. */ }
-    throw new Error(readableDetail || `Сервер ответил ${response.status}`);
+    throw new ApiError(readableDetail || `Сервер ответил ${response.status}`, response.status);
   }
   return response.status === 204 ? undefined as T : response.json() as Promise<T>;
 }

@@ -35,7 +35,7 @@ func TestSkillsRequireVerifiedEvidenceAndNeverRankFromXP(t *testing.T) {
 		t.Fatal(s)
 	}
 	for i, r := range s.Ranks {
-		if r.AssessmentAvailable || i > 0 && r.ContentAvailable {
+		if i > 0 && (r.AssessmentAvailable || r.ContentAvailable) {
 			t.Fatal("unpublished rank advertised ready", r)
 		}
 	}
@@ -45,5 +45,16 @@ func TestClaimedCompletionWithoutPersistedEvidenceIsNotMastery(t *testing.T) {
 	s := Build(store.Progress{Completed: []string{"hello"}, XP: 1000})
 	if s.Skills[0].Level != 0 {
 		t.Fatal("client-like claimed completion accepted")
+	}
+}
+
+func TestOnlyPersistedAwardVerifiesRank(t *testing.T) {
+	base := Build(store.Progress{XP: 999999})
+	if WithAwards(base, nil).Verified {
+		t.Fatal("XP verified rank")
+	}
+	got := WithAwards(base, []store.RankAward{{Rank: "Zero", ExamID: "zero-core", Version: "1.0.0"}})
+	if !got.Verified || got.CurrentRank != "Zero" {
+		t.Fatal("valid persisted Zeroaward ignored")
 	}
 }

@@ -2,6 +2,8 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react
 import ReactMarkdown from 'react-markdown';
 import { api, loadProfile, saveProfile, type Exercise, type Lesson, type LearningSnapshot, type Profile, type Progress } from './api';
 import ProjectWorkspace, { type ProjectSummary } from './ProjectWorkspace';
+import Exams from './Exams';
+import Tutor from './Tutor';
 const GoEditor = lazy(() => import('./GoEditor'));
 
 const ranks = ['Zero', 'Junior', 'Junior+', 'Middle', 'Middle+', 'Senior'];
@@ -10,7 +12,7 @@ type RunResult = { stdout?: string; stderr?: string; exit_code?: number; status?
 export default function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoaded, setProfileLoaded] = useState(false);
-  const [screen, setScreen] = useState<'home' | 'lesson' | 'path' | 'skills' | 'course' | 'projects' | 'project'>('home');
+  const [screen, setScreen] = useState<'home' | 'lesson' | 'path' | 'skills' | 'course' | 'projects' | 'project' | 'exams' | 'tutor'>('home');
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [selectedProject, setSelectedProject] = useState<ProjectSummary | null>(null);
   const [projectsLoading, setProjectsLoading] = useState(false);
@@ -194,6 +196,8 @@ export default function App() {
         <button className={screen === 'skills' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('skills')}>Навыки</button>
         <button className={screen === 'course' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('course')}>Курс</button>
         <button className={screen === 'projects' || screen === 'project' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('projects')}>Проекты</button>
+        <button className={screen === 'exams' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('exams')}>Экзамены</button>
+        <button className={screen === 'tutor' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('tutor')}>ИИ-наставник</button>
         <button className={screen === 'lesson' ? 'nav-link active' : 'nav-link'} onClick={() => setScreen('lesson')} disabled={!lesson}>Урок</button>
       </nav>
       <div className="top-actions"><span className="profile-chip"><span className="avatar">{profile.name.slice(0, 1).toUpperCase()}</span>{profile.name}</span><button className="icon-button" onClick={() => void changeTheme()} disabled={themeBusy} aria-label={theme === 'light' ? 'Включить тёмную тему' : 'Включить светлую тему'} title="Сменить тему">◐</button></div>
@@ -204,7 +208,7 @@ export default function App() {
       <section className="progress-strip" aria-label="Текущий прогресс"><div><span className="metric-label">Учебный ранг</span><strong>{currentRank}</strong></div><div><span className="metric-label">Опыт</span><strong>{progress.xp} <small>XP</small></strong></div><div><span className="metric-label">Завершено уроков</span><strong>{completedLessons.length} <small>/ {lessons.length}</small></strong></div><div className="rank-track" aria-label={`Уровень ${currentIndex + 1} из ${rankNames.length}`}>{rankNames.map((rank, i) => <span key={rank} className={i <= currentIndex ? 'rank-dot reached' : 'rank-dot'} title={rank} />)}</div></section>
       <div className="dashboard-grid"><section className="next-step"><div className="section-heading"><div><p className="eyebrow">ТВОЙ СЛЕДУЮЩИЙ ШАГ</p><h2>Продолжить обучение</h2></div><button className="text-button" onClick={() => setScreen('path')}>Вся карта</button></div>
         {nextLesson ? <button className="lesson-row" onClick={() => void openLesson(nextLesson.id)}><span className="lesson-icon">{nextLesson.rank === 'Zero' ? '01' : '↗'}</span><span className="lesson-info"><strong>{nextLesson.title}</strong><small>{moduleTitle(nextLesson.module)} · {nextLesson.estimated_minutes} минут</small></span><span className="lesson-rank">{nextLesson.rank}</span><span className="row-chevron">›</span></button> : lessons.length ? <p className="empty-state">Все доступные уроки завершены. Следующие материалы появятся по мере разработки курса.</p> : <p className="empty-state">Уроки не загрузились. Обнови страницу после запуска API.</p>}
-        {lessons.length > 1 && <div className="recent-lessons"><h3>Уроки курса</h3>{lessons.slice(0, 5).map(item => <button className="compact-lesson" key={item.id} onClick={() => void openLesson(item.id)}><span className={completedLessonIds.has(item.id) ? 'check-mark done' : 'check-mark'}>{completedLessonIds.has(item.id) ? '✓' : '·'}</span><span>{item.title}</span><small>{item.rank}</small></button>)}</div>}
+        {lessons.length > 0 && <div className="recent-lessons"><h3>Уроки курса</h3>{lessons.slice(0, 5).map(item => <button className="compact-lesson" key={item.id} onClick={() => void openLesson(item.id)}><span className={completedLessonIds.has(item.id) ? 'check-mark done' : 'check-mark'}>{completedLessonIds.has(item.id) ? '✓' : '·'}</span><span>{item.title}</span><small>{item.rank}</small></button>)}</div>}
         <button className="course-link" onClick={() => setScreen('course')}>Искать по всем урокам</button>
         {learning?.review_exercises.length ? <section className="review-list"><h3>К заданиям на повторение</h3><p>Сервер отметил эти задания для дополнительной практики.</p>{learning.review_exercises.map(id => { const location = exerciseLocations.get(id); return location ? <button className="review-item" key={id} onClick={() => void openLesson(location.lessonId, id)}><span>{location.title}</span><small>Открыть задание ›</small></button> : <p className="review-unknown" key={id}>Задание {id} пока недоступно в каталоге уроков.</p>; })}</section> : null}
       </section><aside className="rank-card"><p className="eyebrow">МАРШРУТ</p><h2>От Zero к Senior</h2><p>Шесть уровней. Каждый следующий открывается через практику и проверку навыков.</p><ol className="mini-roadmap">{rankNames.map((rank, i) => <li key={rank} className={i === currentIndex ? 'current' : i < currentIndex ? 'past' : ''}><span className="road-dot">{i < currentIndex ? '✓' : ''}</span><span>{rank}</span>{i > currentIndex && <small>позже</small>}</li>)}</ol><button className="outline-button" onClick={() => setScreen('path')}>Изучить маршрут</button></aside></div>
@@ -216,6 +220,8 @@ export default function App() {
 
     {screen === 'projects' && <main className="page projects-page"><div className="page-heading"><p className="eyebrow">ПРАКТИКА ЦЕЛЫХ ПРИЛОЖЕНИЙ</p><h1>Проекты</h1><p>Собирай приложение по этапам, сохраняй файлы и запускай проверки в изолированном исполнителе.</p></div>{projectsLoading ? <p className="empty-state">Загружаем каталог проектов…</p> : projects.length ? <div className="project-catalog">{projects.map(project => <button className="project-card" key={project.id} onClick={() => { setSelectedProject(project); setScreen('project'); }}><span className="project-card-rank">{project.rank}</span><strong>{project.title}</strong><span>{project.description}</span><small>Открыть рабочую область ›</small></button>)}</div> : <p className="empty-state">В каталоге пока нет опубликованных проектов.</p>}</main>}
     {screen === 'project' && selectedProject && <ProjectWorkspace key={selectedProject.id} projectId={selectedProject.id} onBack={() => setScreen('projects')} />}
+    {screen === 'exams' && <Exams onRankAwarded={refresh} />}
+    {screen === 'tutor' && <Tutor lessonId={lesson?.id} source={screen === 'tutor' && lesson ? files[activeFile] : undefined} />}
 
     {screen === 'lesson' && (lesson ? <main className="workspace" style={{ '--split': `${split}%` } as React.CSSProperties}>
       <div className="workspace-toolbar"><button className="back-link" onClick={() => setScreen('home')}>‹ Обзор</button><span className="crumb">{moduleTitle(lesson.module)}</span><span className="toolbar-spacer" /><label className="split-control">Ширина редактора <input aria-label="Ширина редактора" type="range" min="35" max="70" value={split} onChange={e => setSplit(Number(e.target.value))} /></label><button className="quiet-button" onClick={() => setFocus(!focus)}>{focus ? 'Выйти из фокуса' : 'Режим фокуса'}</button></div>

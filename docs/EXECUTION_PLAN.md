@@ -17,8 +17,8 @@
 | M4 | End-to-end interactive lesson + persistence | DONE | real Go golden-path browser PASS, XP replay/noAI/reload, network write recovery desktop/mobile PASS |
 | M5 | Roadmap, rank structure, XP and skills | DONE | six server rank criteria, verified attempt-linked skills, search/review, unit/race + E2E7 PASS1skip |
 | M6 | Project workspaces and tests | DONE | P1 starter/reference, files/snapshots/ZIP + realGoRun/Test/15cases; reference/unit/race, browser+axe, independent review resolved |
-| M7 | Exam engine, earned-rank logic, negative tests | NOT STARTED | — |
-| M8 | Optional AI Tutor, model routing, usage controls | NOT STARTED | — |
+| M7 | Exam engine, earned-rank logic, negative tests | VALIDATING | 2026-10-15: native exam browser3PASS1skip; CAS/replay/award tests + independent review; full regression running |
+| M8 | Optional AI Tutor, model routing, usage controls | IN PROGRESS | 2026-10-15: isolated gateway/usage/UI implementation; integration follows M7 gate |
 | M9 | Digital badges, certificates, verification, passport | NOT STARTED | — |
 | M10 | Full Zero/Junior/Junior+ curriculum and projects | NOT STARTED | — |
 | M11 | Full Middle/Middle+/Senior curriculum and projects | NOT STARTED | — |
