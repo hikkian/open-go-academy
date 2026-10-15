@@ -1,0 +1,37 @@
+
+> e2e
+> playwright test
+
+[WebServer] 2026/10/15 12:12:02 INFO academy local API ready address=127.0.0.1:8081
+
+Running 22 tests using 1 worker
+
+(node:151305) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/exams.spec.ts:8:5 › exam catalog shows real eligibility and local trust boundaries (817ms)
+  ✓   2 [desktop] › tests/exams.spec.ts:9:5 › exam drafts conflict safely, failure denies rank, real pass awards only Zero (1.9m)
+  ✓   3 [desktop] › tests/learning.spec.ts:8:5 › profile, roadmap, safe content, themes, drafts and responsive layout (3.4s)
+  ✓   4 [desktop] › tests/learning.spec.ts:20:5 › real Go errors, output, server grading, no AI and idempotent XP (29.5s)
+  ✓   5 [desktop] › tests/learning.spec.ts:30:5 › failed draft write has explicit recovery and preserves code (2.3s)
+  ✓   6 [desktop] › tests/learning.spec.ts:35:5 › course search and server criteria/skills reflect only verified exercises (1.5s)
+  ✓   7 [desktop] › tests/passport.spec.ts:3:5 › passport private defaults, themes and responsive accessibility (1.8s)
+  ✓   8 [desktop] › tests/projects.spec.ts:6:5 › project edits multiple files, persists, snapshots restore and ZIP exports (6.6s)
+  ✓   9 [desktop] › tests/projects.spec.ts:15:5 › P1 real run, Go tests and independent functional evaluation (3.0m)
+  ✓  10 [desktop] › tests/tutor.spec.ts:4:5 › tutor privacy and no-AI remain usable (644ms)
+  -  11 [desktop] › tests/tutor.spec.ts:5:5 › tutor actual HTTP provider, consent, fallback, failure and quota
+(node:176539) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  12 [mobile] › tests/exams.spec.ts:8:5 › exam catalog shows real eligibility and local trust boundaries (717ms)
+  -  13 [mobile] › tests/exams.spec.ts:9:5 › exam drafts conflict safely, failure denies rank, real pass awards only Zero
+  ✓  14 [mobile] › tests/learning.spec.ts:8:5 › profile, roadmap, safe content, themes, drafts and responsive layout (4.4s)
+  -  15 [mobile] › tests/learning.spec.ts:20:5 › real Go errors, output, server grading, no AI and idempotent XP
+  ✓  16 [mobile] › tests/learning.spec.ts:30:5 › failed draft write has explicit recovery and preserves code (2.2s)
+  ✓  17 [mobile] › tests/learning.spec.ts:35:5 › course search and server criteria/skills reflect only verified exercises (1.4s)
+  ✓  18 [mobile] › tests/passport.spec.ts:3:5 › passport private defaults, themes and responsive accessibility (1.7s)
+  ✓  19 [mobile] › tests/projects.spec.ts:6:5 › project edits multiple files, persists, snapshots restore and ZIP exports (6.6s)
+  -  20 [mobile] › tests/projects.spec.ts:15:5 › P1 real run, Go tests and independent functional evaluation
+  ✓  21 [mobile] › tests/tutor.spec.ts:4:5 › tutor privacy and no-AI remain usable (664ms)
+  -  22 [mobile] › tests/tutor.spec.ts:5:5 › tutor actual HTTP provider, consent, fallback, failure and quota
+
+  5 skipped
+  17 passed (6.0m)

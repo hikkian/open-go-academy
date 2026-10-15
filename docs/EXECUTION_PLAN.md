@@ -19,8 +19,8 @@
 | M6 | Project workspaces and tests | DONE | P1 starter/reference, files/snapshots/ZIP + realGoRun/Test/15cases; reference/unit/race, browser+axe, independent review resolved |
 | M7 | Exam engine, earned-rank logic, negative tests | DONE | 2026-10-15: native exam3PASS1skip; CAS/replay/award unit/race + independent review; full14PASS/5skip, stale P1 assertion corrected+target1PASS1skip |
 | M8 | Optional AI Tutor, model routing, usage controls | DONE | 2026-10-15: Go unit/vet/race+TS/build; actualHTTP test-provider browser3PASS1skip, noAI desktop/mobile, consent/fallback/quota/privacy review |
-| M9 | Digital badges, certificates, verification, passport | IN PROGRESS | 2026-10-15: Ed25519 local format, storeprivacy/revoke, PDF/PNG and API integration; visual/browser QA pending |
-| M10 | Full Zero/Junior/Junior+ curriculum and projects | NOT STARTED | — |
+| M9 | Digital badges, certificates, verification, passport | DONE | 2026-10-15: native exam→credential→verify/revoke/privacy; PDF/PNG/QR+independent crypto, actual keyrecovery; full17PASS5skip6min, graph/project/badgedates tested |
+| M10 | Full Zero/Junior/Junior+ curriculum and projects | IN PROGRESS | 2026-10-15: 40-lesson dependency syllabus, P2 source research, generic grader + substantive Zero chapters in production |
 | M11 | Full Middle/Middle+/Senior curriculum and projects | NOT STARTED | — |
 | M12 | Hardening, full E2E, performance, visual and accessibility | NOT STARTED | — |
 | M13 | Open-source release preparation and final acceptance audit | NOT STARTED | — |
@@ -388,3 +388,7 @@ APIdefault8380/Viteproxy8380 (8080 занятый чужойсервис не и
 M7: server-derived local Zero rank after immutable zero-core1.0.0, prerequisites,12objectivequestions+2coding/debuggingfunctions/12nativecases, draftCAS/replay/forgedawardguards; DBflock and recovery. M8: optional stdlibHTTP provider gateway, mode-specificRU prompts, modelrouting,3callsmax, budgetreservation4worstcasecalls, usageSQLite, explicitconsent/redaction/responseimageloadblocked, no modelauthority. Automatic freeform responsecache deliberately disabled: public deterministic glossary remains versionedcoursecontent; private AI requests/responses are not stored. Cloud/private-network restrictions and all limits documented README.
 
 Evidence: make test PASS; native exam3PASS1skip; testprovider tutor3PASS1skip; fullcore14PASS5skip1staleassertionfail (P1 expected unverified after earlierexam) -> P1 assertion now verifies before/after invariant, targeted native rerun1PASS1skip3.1min. No application failure in that P1 run; no claim fullcombinedrerunallgreen yet. Visualbaseexamstyles and completedlessonrepeat fixed. Reports EXAM_REVIEW/TUTOR_REVIEW close openHigh/Medium.
+
+### 2026-10-15 — M9 завершён
+
+Privatebydefault Ed25519 local credentials with serverRankAward guard, PDF/PNG/QR, privacy/revoke/audit, publicverify, private/publicPassport, actualbadgeeventdates/activitygraph/projectoverview. Independent Nodecrypto/jsQR + Poppler/pdftotext checks; actualmissing/different/originalkeyprocessprobes; independentreview3Mediumclosed. Full `ACADEMY_E2E_RUNNER=1 npm run e2e`17PASS5explicitSKIP6.0min after initialthemeassumptionfailure corrected+2targetPASS. Optionaltest-providerseparate3PASS1SKIP. make test,govulncheck/npm auditsPASS0. FullM10course/P2andhigherassessmentstofollow; localformatnotOB/VC/JCS/hostedissuer.

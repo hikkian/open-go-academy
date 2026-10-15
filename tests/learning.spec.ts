@@ -6,7 +6,7 @@ async function enter(page:any){await page.goto('/');await expect.poll(async()=>a
 async function open(page:any){await page.getByRole('button',{name:new RegExp(lessonTitle)}).first().click();await expect(page.getByLabel('Go-код',{exact:true})).toBeVisible();}
 async function code(page:any,source:string){const editor=page.getByLabel('Go-код',{exact:true});await editor.click();await editor.press('ControlOrMeta+a');await editor.fill(source);await expect(page.getByText('Сохранено',{exact:true})).toBeVisible();}
 test('profile, roadmap, safe content, themes, drafts and responsive layout',async({page},info)=>{
- const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await enter(page);
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await enter(page);if(await page.locator('html').getAttribute('data-theme')==='dark')await page.getByRole('button',{name:'Включить светлую тему'}).click();
  await page.getByRole('button',{name:'Путь обучения',exact:true}).click();for(const rank of ['Zero','Junior','Junior+','Middle','Middle+','Senior'])await expect(page.getByRole('heading',{name:rank,exact:true})).toBeVisible();await page.getByRole('button',{name:new RegExp(lessonTitle)}).click();await expect(page.getByLabel('Go-код',{exact:true})).toBeVisible();
  await code(page,valid);await page.reload();await open(page);await expect(page.getByLabel('Go-код',{exact:true})).toContainText('Go готов!');
  await page.getByRole('button',{name:'Показать решение'}).click();await expect(page.locator('.solution-source')).toContainText('fmt.Println');await page.getByRole('button',{name:'Скрыть решение'}).click();await expect(page.locator('.solution-source')).toHaveCount(0);
