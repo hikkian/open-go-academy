@@ -3,6 +3,8 @@ import { ApiError, api, type LearningSnapshot } from './api';
 import './Passport.css';
 
 type Achievement = { id: string; title: string; description: string; earned_at: string };
+type PassportProject = { id: string; title: string; automatic_passed: boolean; manual_review_required: boolean };
+type ActivityDay = { date: string; verified_count: number; cumulative_count: number };
 type Award = { attempt_id: string; rank: string; exam_id: string; version: string };
 type Credential = {
   id: string; rank: string; subject_name: string; created_at: string; published: boolean;
@@ -13,6 +15,8 @@ type PassportData = {
   profile: { name: string };
   learning: LearningSnapshot;
   achievements: Achievement[];
+  projects: PassportProject[];
+  activity: ActivityDay[];
   credentials: Credential[];
   awards: Award[];
   public: boolean;
@@ -76,6 +80,7 @@ export default function Passport() {
 
   const issuedAttempts = useMemo(() => new Set(data?.credentials.map(item => item.attempt_id).filter((id): id is string => Boolean(id)) ?? []), [data]);
   const availableAwards = data?.awards.filter(award => award.attempt_id && !issuedAttempts.has(award.attempt_id)) ?? [];
+  const maxDailyVerified = Math.max(0, ...(data?.activity.map(day => day.verified_count) ?? []));
 
   const runAction = async (key: string, success: string, action: () => Promise<unknown>) => {
     setBusy(key); setActionError(''); setNotice('');
@@ -150,6 +155,10 @@ export default function Passport() {
       <dl className="passport-metrics"><div><dt>Навыки</dt><dd>{data.learning.skills.length}</dd></div><div><dt>Достижения</dt><dd>{data.achievements.length}</dd></div><div><dt>Credentials</dt><dd>{data.credentials.length}</dd></div></dl>
     </section>
 
+    <section className="passport-section" aria-labelledby="passport-projects-title"><div className="passport-section-head"><div><p className="eyebrow">ДОСТУПНЫЙ КАТАЛОГ</p><h2 id="passport-projects-title">Обзор проектов</h2></div></div>
+      {data.projects.length ? <ul className="passport-project-list">{data.projects.map(project => <li key={project.id}><div><p className="eyebrow">{project.id.toUpperCase()}</p><h3>{project.title}</h3><p>{project.automatic_passed ? 'Автоматические проверки пройдены.' : 'Автоматическое прохождение пока не подтверждено.'}</p><small>{project.manual_review_required ? 'Ручное ревью обязательно; автопроверка его не заменяет.' : 'Ручное ревью не требуется.'}</small></div><span className={`passport-state ${project.automatic_passed ? 'valid' : ''}`}>{project.automatic_passed ? 'Автопроверки пройдены' : 'Не подтверждено'}</span></li>)}</ul> : <p className="passport-empty">В доступном каталоге пока нет проектов.</p>}
+    </section>
+
     <section className="passport-section" aria-labelledby="passport-skills-title"><div className="passport-section-head"><div><p className="eyebrow">ДАННЫЕ УЧЕБНОГО СЕРВЕРА</p><h2 id="passport-skills-title">Навыки и ранги</h2></div></div>
       <ol className="passport-ranks">{data.learning.ranks.map((rank, index) => <li key={rank.name} className={rank.name === data.learning.current_rank ? 'current' : ''}><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{rank.name}</strong><small>{rank.name === data.learning.current_rank ? 'Текущий ранг' : rank.assessment_available ? 'Проверка доступна' : 'Критерии курса'}</small></div></li>)}</ol>
       {data.learning.skills.length ? <ul className="passport-skill-list">{data.learning.skills.map(skill => <li key={skill.id}><span><strong>{skill.title}</strong><small>{skill.rank} · подтверждающих свидетельств: {skill.evidence.length}</small></span><span className="passport-skill-level" aria-label={`Уровень ${skill.level} из 4`}>{skill.level}<small>/4</small></span></li>)}</ul> : <p className="passport-empty">Сервер пока не зарегистрировал навыки.</p>}
@@ -157,6 +166,10 @@ export default function Passport() {
 
     <section className="passport-section" aria-labelledby="passport-achievements-title"><div className="passport-section-head"><div><p className="eyebrow">ЗАРАБОТАНО</p><h2 id="passport-achievements-title">Достижения</h2></div></div>
       {data.achievements.length ? <ul className="passport-achievements">{data.achievements.map(item => <li key={item.id}><span className="passport-achievement-mark" aria-hidden="true">✓</span><div><h3>{item.title}</h3><p>{item.description}</p><small>{dateLabel(item.earned_at)}</small></div></li>)}</ul> : <p className="passport-empty">Достижения появятся здесь после выполнения критериев курса.</p>}
+    </section>
+
+    <section className="passport-section" aria-labelledby="passport-activity-title"><div className="passport-section-head"><div><p className="eyebrow">ПОДТВЕРЖДЁННЫЕ СОБЫТИЯ</p><h2 id="passport-activity-title">Активность</h2></div></div>
+      {data.activity.length ? <ol className="passport-activity-list" aria-label="Проверенные завершения по дням">{data.activity.map(day => <li key={day.date}><time dateTime={day.date}>{dateLabel(day.date)}</time><span className="passport-activity-track" aria-hidden="true"><span style={{ width: `${Math.max(5, day.verified_count / maxDailyVerified * 100)}%` }} /></span><span className="passport-activity-count">{day.verified_count} {day.verified_count === 1 ? 'подтверждение' : 'подтверждения'}</span><small>Накопительно: {day.cumulative_count}</small></li>)}</ol> : <p className="passport-empty">Пока нет подтверждённых событий. Неудачные попытки, XP и черновики здесь не учитываются.</p>}
     </section>
 
     <section className="passport-section" aria-labelledby="passport-credentials-title"><div className="passport-section-head"><div><p className="eyebrow">СВЯЗАНЫ С ПРОЙДЕННЫМИ ЭКЗАМЕНАМИ</p><h2 id="passport-credentials-title">Credentials</h2></div></div>

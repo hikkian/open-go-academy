@@ -30,3 +30,5 @@ verified_at: 2026-10-15. Выбранные версии фиксируются 
 - golang.org/x/vuln v1.9.0 — https://proxy.golang.org/golang.org/x/vuln/@latest (2026-10-11), govulncheck выполнен; vulnerabilities не найдены.
 - GitHub Actions official latest releases fetched2026-10-15: checkout v7.0.1, setup-go v7.0.0, setup-node v7.1.0, upload-artifact v7.0.2; git ls-remote tag commit pinned в workflow, remote CI не выполнялся.
 - Rootless Podman5.8.7, bubblewrap0.12.0, Docker29.9.0 установлены; только Podman используется. Image digest runner константа в internal/runner; Go внутри фактически1.27.2.
+
+M9 additions verified2026-10-15: `github.com/gpdf-dev/gpdf v1.0.13` (upstream tag336a66e7f7ffe4a1557570e53f2a6384815ac02e), `golang.org/x/image v0.47.0` (officialproxy/pkgdocs), transitive x/text0.43.0/x/sys0.49.0 pinnedbygo.sum. Dev-only independent QR decode `jsqr1.4.0` and `pngjs7.0.0`, currentnpmregistry and primaryGitHub README checked. Research/Unicodefontprovenance: CREDENTIAL_IMPLEMENTATION.md. Actualgo+frontendtests,renderandQRdecodepassed; govulncheck/npm audits0 atthischeckpoint.

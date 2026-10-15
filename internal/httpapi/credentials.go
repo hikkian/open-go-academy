@@ -5,14 +5,17 @@ import (
 	"academy/internal/credentialrender"
 	"academy/internal/credentials"
 	"academy/internal/learning"
+	"academy/internal/projects"
 	"academy/internal/store"
 	"crypto/ed25519"
 	"crypto/rand"
+	"database/sql"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"net/http"
+	"sort"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -288,6 +291,41 @@ func (a *API) passport(w http.ResponseWriter, public bool) {
 		return
 	}
 	snapshot := learning.WithAwards(learning.Build(progress), awards)
+	verifiedTimes := map[string]time.Time{}
+	activityByDate := map[string]int{}
+	for exerciseID, attemptID := range progress.Evidence {
+		var storedExercise, createdAt string
+		var passed int
+		err := a.Store.DB().QueryRow(`SELECT exercise_id,passed,created_at FROM attempts WHERE id=?`, attemptID).Scan(&storedExercise, &passed, &createdAt)
+		if errors.Is(err, sql.ErrNoRows) {
+			continue
+		}
+		if err != nil {
+			credentialError(w, err)
+			return
+		}
+		if storedExercise != exerciseID || passed != 1 {
+			continue
+		}
+		created, parseErr := time.Parse(time.RFC3339Nano, createdAt)
+		if parseErr != nil {
+			continue
+		}
+		verifiedTimes[exerciseID] = created
+		activityByDate[created.UTC().Format("2006-01-02")]++
+	}
+	activity := make([]map[string]any, 0, len(activityByDate))
+	activityDates := make([]string, 0, len(activityByDate))
+	for day := range activityByDate {
+		activityDates = append(activityDates, day)
+	}
+	sort.Strings(activityDates)
+	cumulative := 0
+	for _, day := range activityDates {
+		count := activityByDate[day]
+		cumulative += count
+		activity = append(activity, map[string]any{"date": day, "verified_count": count, "cumulative_count": cumulative})
+	}
 	records, err := a.Store.Credentials("local")
 	if err != nil {
 		credentialError(w, err)
@@ -314,8 +352,27 @@ func (a *API) passport(w http.ResponseWriter, public bool) {
 			description = "Пройдены автоматические проверки P1; ручное ревью отдельно."
 		}
 		if title != "" {
-			earned = append(earned, map[string]any{"id": id, "title": title, "description": description, "earned_at": ""})
+			if earnedAt, ok := verifiedTimes[id]; ok {
+				earned = append(earned, map[string]any{"id": id, "title": title, "description": description, "earned_at": earnedAt})
+			}
 		}
+	}
+	catalogProject := projects.Load()
+	projectOverview := make([]map[string]any, 0, 1)
+	if catalogProject.ID != "" {
+		automaticPassed := false
+		for _, completedID := range progress.Completed {
+			if completedID == "p1:automatic" {
+				automaticPassed = true
+				break
+			}
+		}
+		projectOverview = append(projectOverview, map[string]any{
+			"id":                     catalogProject.ID,
+			"title":                  catalogProject.Title,
+			"automatic_passed":       automaticPassed,
+			"manual_review_required": true,
+		})
 	}
 	issuer := map[string]any{"name": "Open Go Academy — локальная установка", "trust_notice": credentialNotice, "key_id": "", "public_key": ""}
 	if len(a.IssuerKey) == ed25519.PrivateKeySize {
@@ -327,5 +384,5 @@ func (a *API) passport(w http.ResponseWriter, public bool) {
 		write(w, 200, map[string]any{"profile": map[string]string{"name": p.Name}, "learning": map[string]any{"current_rank": snapshot.CurrentRank, "verified": snapshot.Verified, "skills": snapshot.Skills}, "credentials": items, "issuer": issuer})
 		return
 	}
-	write(w, 200, map[string]any{"profile": map[string]string{"name": p.Name}, "learning": snapshot, "achievements": earned, "credentials": items, "awards": awards, "public": visible, "issuer": issuer})
+	write(w, 200, map[string]any{"profile": map[string]string{"name": p.Name}, "learning": snapshot, "achievements": earned, "projects": projectOverview, "activity": activity, "credentials": items, "awards": awards, "public": visible, "issuer": issuer})
 }
