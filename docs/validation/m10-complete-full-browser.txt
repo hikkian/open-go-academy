@@ -1,0 +1,51 @@
+
+> e2e
+> playwright test
+
+[WebServer] 2026/10/16 01:05:51 INFO academy local API ready address=127.0.0.1:8081
+
+Running 34 tests using 1 worker
+
+(node:705759) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/curriculum.spec.ts:5:5 › published Zero chapters and prerequisite guidance are usable (2.3s)
+  ✓   2 [desktop] › tests/curriculum.spec.ts:6:5 › native function diagnostics, private grading, replay XP and drafts (44.5s)
+  ✓   3 [desktop] › tests/curriculum.spec.ts:8:5 › Junior+ HTTP and SQL chapters render in both themes (2.8s)
+  ✓   4 [desktop] › tests/exams.spec.ts:8:5 › exam catalog shows real eligibility and local trust boundaries (866ms)
+  ✓   5 [desktop] › tests/exams.spec.ts:9:5 › exam drafts conflict safely, failure denies rank, real pass awards only Zero (2.0m)
+  ✓   6 [desktop] › tests/learning.spec.ts:8:5 › profile, roadmap, safe content, themes, drafts and responsive layout (3.6s)
+  ✓   7 [desktop] › tests/learning.spec.ts:20:5 › real Go errors, output, server grading, no AI and idempotent XP (31.2s)
+  ✓   8 [desktop] › tests/learning.spec.ts:30:5 › failed draft write has explicit recovery and preserves code (2.4s)
+  ✓   9 [desktop] › tests/learning.spec.ts:35:5 › course search and server criteria/skills reflect only verified exercises (1.6s)
+  ✓  10 [desktop] › tests/p2-workspace.spec.ts:4:5 › P2 nested workspace, locked policy, snapshots and export (4.6s)
+  ✓  11 [desktop] › tests/p2-workspace.spec.ts:19:5 › P2 real isolated API check persists evidence without assigning rank (8.1s)
+  ✓  12 [desktop] › tests/passport.spec.ts:3:5 › passport private defaults, themes and responsive accessibility (1.9s)
+  ✓  13 [desktop] › tests/projects.spec.ts:6:5 › project edits multiple files, persists, snapshots restore and ZIP exports (6.7s)
+  ✓  14 [desktop] › tests/projects.spec.ts:15:5 › P1 real run, Go tests and independent functional evaluation (3.1m)
+  ✓  15 [desktop] › tests/tutor.spec.ts:4:5 › tutor privacy and no-AI remain usable (707ms)
+  -  16 [desktop] › tests/tutor.spec.ts:5:5 › tutor actual HTTP provider, consent, fallback, failure and quota
+
+  ✓  17 [desktop] › tests/zz-exam-catalog-ui.spec.ts:10:5 › new exam selection, versioned history and cancellation use the selected catalog entry (6.2s)
+(node:778400) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  18 [mobile] › tests/curriculum.spec.ts:5:5 › published Zero chapters and prerequisite guidance are usable (1.8s)
+  -  19 [mobile] › tests/curriculum.spec.ts:6:5 › native function diagnostics, private grading, replay XP and drafts
+  ✓  20 [mobile] › tests/curriculum.spec.ts:8:5 › Junior+ HTTP and SQL chapters render in both themes (3.1s)
+  ✓  21 [mobile] › tests/exams.spec.ts:8:5 › exam catalog shows real eligibility and local trust boundaries (757ms)
+  -  22 [mobile] › tests/exams.spec.ts:9:5 › exam drafts conflict safely, failure denies rank, real pass awards only Zero
+  ✓  23 [mobile] › tests/learning.spec.ts:8:5 › profile, roadmap, safe content, themes, drafts and responsive layout (4.0s)
+  -  24 [mobile] › tests/learning.spec.ts:20:5 › real Go errors, output, server grading, no AI and idempotent XP
+  ✓  25 [mobile] › tests/learning.spec.ts:30:5 › failed draft write has explicit recovery and preserves code (2.4s)
+  ✓  26 [mobile] › tests/learning.spec.ts:35:5 › course search and server criteria/skills reflect only verified exercises (1.5s)
+  ✓  27 [mobile] › tests/p2-workspace.spec.ts:4:5 › P2 nested workspace, locked policy, snapshots and export (4.5s)
+  -  28 [mobile] › tests/p2-workspace.spec.ts:19:5 › P2 real isolated API check persists evidence without assigning rank
+  ✓  29 [mobile] › tests/passport.spec.ts:3:5 › passport private defaults, themes and responsive accessibility (1.9s)
+  ✓  30 [mobile] › tests/projects.spec.ts:6:5 › project edits multiple files, persists, snapshots restore and ZIP exports (6.7s)
+  -  31 [mobile] › tests/projects.spec.ts:15:5 › P1 real run, Go tests and independent functional evaluation
+  ✓  32 [mobile] › tests/tutor.spec.ts:4:5 › tutor privacy and no-AI remain usable (714ms)
+  -  33 [mobile] › tests/tutor.spec.ts:5:5 › tutor actual HTTP provider, consent, fallback, failure and quota
+
+  ✓  34 [mobile] › tests/zz-exam-catalog-ui.spec.ts:10:5 › new exam selection, versioned history and cancellation use the selected catalog entry (5.3s)
+
+  7 skipped
+  27 passed (7.6m)

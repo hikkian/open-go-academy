@@ -20,7 +20,7 @@
 | M7 | Exam engine, earned-rank logic, negative tests | DONE | 2026-10-15: native exam3PASS1skip; CAS/replay/award unit/race + independent review; full14PASS/5skip, stale P1 assertion corrected+target1PASS1skip |
 | M8 | Optional AI Tutor, model routing, usage controls | DONE | 2026-10-15: Go unit/vet/race+TS/build; actualHTTP test-provider browser3PASS1skip, noAI desktop/mobile, consent/fallback/quota/privacy review |
 | M9 | Digital badges, certificates, verification, passport | DONE | 2026-10-15: native exam→credential→verify/revoke/privacy; PDF/PNG/QR+independent crypto, actual keyrecovery; full17PASS5skip6min, graph/project/badgedates tested |
-| M10 | Full Zero/Junior/Junior+ curriculum and projects | VALIDATING | 2026-10-15: 40chapters/120exercises;117nativefunctionsPASS;P2native44checks/recovery;Junior→Junior+nativeawards/credentialsPASS64.3s;final34browserpending |
+| M10 | Full Zero/Junior/Junior+ curriculum and projects | DONE | 2026-10-15: 40chapters/120exercises;117nativefunctionsPASS;P2native44checks/recovery;Junior→Junior+nativeawards/credentialsPASS64.3s;full27PASS7skip7.6min;unit/vet/race/TSbuildPASS |
 | M11 | Full Middle/Middle+/Senior curriculum and projects | NOT STARTED | — |
 | M12 | Hardening, full E2E, performance, visual and accessibility | NOT STARTED | — |
 | M13 | Open-source release preparation and final acceptance audit | NOT STARTED | — |
@@ -236,9 +236,9 @@
 
 ### Gate
 
-- [ ] Ни одна обязательная глава этих рангов не состоит лишь из заголовка или TBD.
-- [ ] Референсные решения компилируются/проходят тесты.
-- [ ] Уроки доступны и корректно отмечают прогресс; все core project workflows работают.
+- [x] Ни одна обязательная глава этих рангов не состоит лишь из заголовка или TBD.
+- [x] Референсные решения компилируются/проходят тесты.
+- [x] Уроки доступны и корректно отмечают прогресс; все core project workflows работают.
 
 ---
 
@@ -404,3 +404,7 @@ Zero8 +Junior12 полных глав опубликованы manifest2026.10; 
 ### M10 checkpoint 2026-10-16 00:50 — VALIDATING
 
 Все40глав/120упражнений реализованы,117новыхrefsactualsandboxPASS(57+36+24); всеGoexamplespassed. P2native44checks+actualSQL/session/restart/cleanup+recoveryPASS. Junior/Junior+exams20questions+3tasks, allcourse/project/priorranktransactionalevidence; actualnativechain+signedcredentialsPASS64.30s. Zero1.0.0hashfrozen. Policyv1confirmsautomaticacademycriteria, manualprojectqualityNOTconfirmedandremainsseparatemilestone; Seniorhumanreviewunchanged. Independentfunction/projectrunner/assessmentreviewsnoopenHigh/Medium. Full34browserandfinaltechnicalrerunsstillpending; doNOTmarkM10DONEuntilpassed. M11codeNOTstarted; missingecosystemversionsresearchdelegatedread-only.
+
+### M10 завершён 2026-10-16 01:14 Asia/Atyrau
+
+Финальный `ACADEMY_E2E_RUNNER=1 ACADEMY_E2E_PROJECT_RUNNER=1 npm run e2e`: **27PASS7explicitSKIP0FAIL7.6min**, `docs/validation/m10-complete-full-browser.txt`. `make test` PASS unit/vet/race/TSbuild, `m10-complete-technical.txt`; all117starters+references/examples PASS48.402s; all117refs actualsandboxPASS57+36+24, improvedauth3targetednativePASS. Newnativeexamchain64.30sPASS, prerequisites/Zero explicitfixtures; P2nativeactualSQL/restart44checks+recoveryPASS. Allscopedreviewsclosed; pedagogical2chapterreviewandvariantfixesdocumented. Expectedskips: heavyduplicatemobilenative andoptionalprovider-onlyTutorcases(mockproviderpreviouslytestedM8). LocalGit checkpoints9f67b25/8947b0f plusfinaldocscheckpoint. FullMiddle→Senior/P3–P5 NOTdone; nextM11.

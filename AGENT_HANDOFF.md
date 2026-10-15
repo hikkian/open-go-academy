@@ -1,6 +1,6 @@
 # AGENT HANDOFF — open-go-academy
 
-Обновлено **2026-10-16 00:50 Asia/Atyrau**. **M0–M9 DONE в local-only области; M10 IN PROGRESS; M11–M13 NOT STARTED.** Полный курс ещё не готов. Не пересоздавать существующую платформу.
+Обновлено **2026-10-16 01:14 Asia/Atyrau**. **M0–M10 DONE в local-only области; M11–M13 NOT STARTED.** Полный курс ещё не готов. Не пересоздавать существующую платформу.
 
 ## Что действительно работает
 
@@ -25,7 +25,7 @@
 
 ## M10 current task and ownership
 
-Read docs/MASTER_SPEC.md+EXECUTION_PLAN first. New docs/curriculum/ZERO_JUNIOR_PLAN.md details40lessons: Zero8 IDs zero-01..08, Junior12 junior-01..12, Junior+20 juniorplus-01..20. It is a productionplan, not completedcontent. P2 currentprimarysources/versions/digest/security/teststrategy in docs/research/P2_LINKHUB.md (pgx5.11.0/Postgres18.6 checked; no P2implementationyet).
+Read docs/MASTER_SPEC.md+EXECUTION_PLAN first. New docs/curriculum/ZERO_JUNIOR_PLAN.md details40lessons: Zero8 IDs zero-01..08, Junior12 junior-01..12, Junior+20 juniorplus-01..20. It is a productionplan, not completedcontent. P2 currentprimarysources/versions/digest/security/teststrategy in docs/research/P2_LINKHUB.md (pgx5.11.0/Postgres18.6 checked; P2 implemented and tested).
 
 ### M10 checkpoint 2026-10-16 00:50 — финальная валидация
 
@@ -67,3 +67,13 @@ LiveAPI session97991 on8380 started19:54 with32chapterbinary; basicrunner sessio
 ## Remaining scope / limits
 
 M10fullZero/Junior/Junior+ andP2 implemented, finalbrowservalidationpending; M11Middle/Middle+/Senior/P3–P5notstarted. M12fullsecurity/performance/accessibility andM13freshrelease/crossplatform/acceptancematrix remain. Mainlicensecode/contentownerdecisionpending, no remoteCIrun/publicrelease. Localprofile/issuer is notpublicmulti-tenantauth/identityverification. Sharedkernelrisk remains, no microVMcertificate. Preserve honest tested/inferred/not-tested distinctions and updatehandoff aftereachstage.
+
+## Финальное продолжение 2026-10-16 01:14 — M10 DONE
+
+Последняя истина перекрывает interim-предупреждения выше: full34browser **27PASS7SKIP0FAIL7.6min** `.data/m10-complete-full-browser.log`; `make test` **PASS** `.data/m10-complete-technical.log`, подтверждёнexit0. Все117starter_code теперь проверяются permanentproductionRequest+GoBuild, **PASS48.402s**; найденные9missingpackage+6tag/generic/importdefects исправлены. Zero02..04 contradictoryinstructions/32bitoverflowclaims исправлены; Jr+15KDFcap/StrictvsLaxtext+full18cookiematrix+exactKDFbounds исправлены/actualnative3PASS. ScopedCURRICULUM_REVIEW closed, variantreportSTARTER_VARIANTS.
+
+NewexamUI fixture now uses **SEPARATE disposable API/DB inside .data/e2e-exam-ui**, envguard+pathboundary in seed-exam-ui.go. It does notseedmainE2EDB (previousfixturecontaminatedmobileprereqstate), acceptsconfirmdialog, fullypassesbothviewports. P2ZIPtest checksmandatoryREADMEinsteadoptionalComposeafterreferencereplacement. Fullcleanrerunabovepassed. Codecheckpoints9f67b25/8947b0f; finaldocs/statuscommitnext. ManifestM10-complete,lastverified2026-10-16.
+
+Next: M11 fulladvancedcurriculum/P3–P5+realvalidation, thenM12/M13. docs/research/M11_ECOSYSTEM.md currentverifiedversions/go directives/protoc36.2 publishedchecksum; images/downloads/integrationNOTtested. Selectsmallstack: PostgreSQLoutbox+workerpool first, RabbitMQeducationalintegration, Rediscacheoptional, gRPC/OTel pinned. Mustwrite detailedadvanceddependency/daysyllabus and separateprojects/executionADR, notclaimdonefromoutline. NoM11codeyet. Broadcourseplan recommendation: Middle40lessons(weeks9–16), deeperMiddle+/SeniorseparateselfpacedtrackswithP4/P5; exactcounts/depsmustjustifyinplan. StudentGo remainscontainer-only; externalmoduleexamplesneedtrustedlockedfixturemodules andactualrace/svcintegrationevidence. Senior requiresseparatehumanreviewworkflow, automaticJuniorpolicy doesnotrelaxthat.
+
+Beforeendingcheckactualusage(01:07primary92weekly46allowedtrue); heartbeatSAMEone-shot05:30:17local. Preserveproviderlimits, don'tbuyreset. Currentuseraskedcontinue; workwhileallowed, savecleancheckpointswhenexhausted. No backgroundpromisebeyondworkingheartbeat.

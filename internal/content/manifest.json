@@ -4,7 +4,7 @@
   "dependency_versions": {
     "stdlib": "go1.27.2"
   },
-  "last_verified_at": "2026-10-15",
+  "last_verified_at": "2026-10-16",
   "source_urls": [
     "https://go.dev/ref/spec",
     "https://go.dev/doc/go1.27",
@@ -62,5 +62,5 @@
     "Junior": 12,
     "Junior+": 20
   },
-  "status": "M10-in-progress"
+  "status": "M10-complete"
 }
