@@ -1,0 +1,15 @@
+M13 clean-source verification — 2026-10-16
+Source basis: `git archive` of commit `2f24ee3 Bind project reviews to verified key fingerprints`, extracted to `/tmp/oga-open-go-academy-m13-fresh-20261016` (no `.git`, `.tools`, `.data`, `node_modules` or `web/dist` carried over).
+
+Bootstrap and build:
+- `make bootstrap` — PASS. Downloaded Go 1.27.2 via the repo wrapper, `npm ci` root/web, Playwright Chromium fallback for Ubuntu 24.04, and the pinned Go 1.27.2 OCI base image. npm audit reported 0 vulnerabilities in both dependency trees.
+- `make build` — PASS from the archive; API and runner binaries built, Vite production build completed.
+- `GOFLAGS=-p=1 GOMAXPROCS=2 GOCACHE=/tmp/oga-open-go-academy-m13-clean-cache-20261016 make test` — PASS after the pinned Go toolchain was downloaded and verified with the default checksum database. Covers all Go tests, P1 reference tests/vet, whole-tree vet/race, frontend typecheck/build.
+- An initial attempt with `GOSUMDB=off` failed before tests: the clean system Go 1.26.9 could not verify the auto-downloaded pinned 1.27.2 toolchain. Retrying with checksum verification enabled passed. No project code change was needed.
+
+Browser and execution:
+- With a temporary runner socket and disposable DB, the corrected full `npm run e2e` run passed **34 tests, 14 expected capability/provider/duplicate-run skips, 0 failures**. It exercised the actual local Go runner for lesson diagnostics, grading, XP, and the P1 Run/Test/Submit workflow. The first run surfaced one stale P1 browser assertion (“требуют отдельного ревью”); the UI's actual copy says “Для полного подтверждения требуется отдельное ревью”. The test was corrected in the source tree and the archive copy, then the full rerun passed.
+- `make project-runtime` — PASS; pinned P2/P3/P4/P5 profiles and checker built offline from the pinned base. `make project-runner` was started under a private `0700` socket directory.
+- P2 workspace and actual isolated P2 check passed. Real P4/P5 isolated submission test passed. The first combined project suite had two P3 capability assertions fail because this specific test requires `ACADEMY_E2E_P3_RUNNER=1`; P3 was then rerun with that required flag and passed **3 tests / 1 intentional mobile runtime skip**, including real Run/Test/Submit, evidence persistence and reload. Full correct-flag combined clean-archive project matrix should be repeated at the next available test window; no conclusion of M13 completion is drawn from the partial matrix.
+
+All API/runner sockets used `/tmp/oga-open-go-academy-m13-*`; the temporary archive used its own disposable SQLite databases. The repository `.data/` and services on ports 8380/8080 were not touched. Remaining M13 work includes a fresh committed-source full project matrix, documented DB recovery demonstration, final traceability/dependency/license/secret review. The owner has not selected a project license; none was invented.

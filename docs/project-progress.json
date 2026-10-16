@@ -68,12 +68,12 @@
     {
       "id": "M12",
       "title": "Полный аудит, производительность и доступность",
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "id": "M13",
       "title": "Подготовка выпуска и приёмка",
-      "status": "not_started"
+      "status": "in_progress"
     }
   ],
   "workstreams": [
