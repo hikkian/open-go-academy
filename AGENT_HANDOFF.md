@@ -1,6 +1,6 @@
 # AGENT HANDOFF — open-go-academy
 
-Обновлено **2026-10-16 01:14 Asia/Atyrau**. **M0–M10 DONE в local-only области; M11–M13 NOT STARTED.** Полный курс ещё не готов. Не пересоздавать существующую платформу.
+Обновлено **2026-10-16 01:40 Asia/Atyrau**. **M0–M10 DONE local-only; M11 IN PROGRESS (syllabus/research), код не начат; M12–M13 NOT STARTED.** Полный курс ещё не готов. Не пересоздавать существующую платформу.
 
 ## Что действительно работает
 
@@ -27,7 +27,7 @@
 
 Read docs/MASTER_SPEC.md+EXECUTION_PLAN first. New docs/curriculum/ZERO_JUNIOR_PLAN.md details40lessons: Zero8 IDs zero-01..08, Junior12 junior-01..12, Junior+20 juniorplus-01..20. It is a productionplan, not completedcontent. P2 currentprimarysources/versions/digest/security/teststrategy in docs/research/P2_LINKHUB.md (pgx5.11.0/Postgres18.6 checked; P2 implemented and tested).
 
-### M10 checkpoint 2026-10-16 00:50 — финальная валидация
+### M10 checkpoint 2026-10-16 01:14 — финальная валидация
 
 **40полныхглав/120упражнений** в manifest2026.10:Zero8,Junior12,Junior+20. Каждыйновыйурок1200–2200слов/Goexamples/3tasks/selfcheck/glossary. AllpublishedGoexamples/multifilegroups/references productiongatePASS `.data/m10-40-promotion.log`. **Все117новыхfunctionrefs actualbasicrunnerPASS**:57Zero/Junior `.data/m10-native-functions-57.log`,36Junior+01..12 `.data/m10-native-http-sql-36.log`,24Junior+13..20 `.data/m10-native-final-24.log`; idempotentXP/persistedevidence/noRankPASS. Исходные3Zero01 проверенынативновfullbrowser. ActualSQLfences09..12PG18.6+P2referenceHTTP/ownership/transactions/MaxConns1PASS `.data/m10-sql-native.log`,6actualHTTP/OpenAPIresponsesPASS.
 
@@ -81,3 +81,9 @@ Beforeendingcheckactualusage(01:07primary92weekly46allowedtrue); heartbeatSAMEon
 ### Состояние перед сбросом лимита — 2026-10-16 01:15
 
 M10 final acceptance commit **193e32b**, предыдущие9f67b25/8947b0f. Actualusage primary99%,weekly47%,ordinaryUsageAllowedtrue; следующийreset05:29:17local, SAMEheartbeat05:30:17ACTIVE. БольшойM11код приостатке1%не запускался; primaryresearchготово. LiveAPIпересобран и реально перезапущен с40главами/новымиэкзаменами/исправленнымистартерами, session58638, healthrunner_availabletrue. ТеперьJunior/Junior+1.0.0зарегистрированы вреальнойлокальнойБД: **не меняйтеихhash/criteriapayloadбезversionbumpссохранениемстарыхверсий**. РеальнаяБДнеочищалась, пользовательскиедостижениянеподменялисьтестовымиfixtures. Gitчистыйпослеэтогодокcheckpoint; продолжатьM11послеactualusagecheck, не повторятьM10native117илиfullE2Eбезновыхпричин.
+
+### M11 старт — 2026-10-16 01:40
+
+Появилась отдельная [панель прогресса](docs/PROJECT_PROGRESS.html), источник [JSON](docs/project-progress.json), генератор `python3 scripts/render-project-progress.py`. На 2026-10-16 закрыто11/14milestone gates (79% gate-count; явно не трудоёмкость); курс40/128уроков, проекты2/5, экзаменные ранги3/6, M12/M13 0/2. Плановыйсрок полного завершения6–27ноября2026 при регулярной доступности лимитов; confidence low, дата не гарантируется. Пересчитывать после каждого крупного gate.
+
+M11 detailed syllabus [MIDDLE_SENIOR_PLAN.md](docs/curriculum/MIDDLE_SENIOR_PLAN.md): Middle40 lessons weeks9–16; Middle+24/Senior24; P3/P4/P5 criteria, times, prerequisites. Ровно88 запланированных advancedlessons — не опубликовано. Ecosystem primaryversion report [M11_ECOSYSTEM.md](docs/research/M11_ECOSYSTEM.md); Redis/RabbitMQ/gRPC/OTel modules/cross-version compatibility requireimplementation-time verification, no images pulled/no modules installed.

@@ -21,7 +21,7 @@
 | M8 | Optional AI Tutor, model routing, usage controls | DONE | 2026-10-15: Go unit/vet/race+TS/build; actualHTTP test-provider browser3PASS1skip, noAI desktop/mobile, consent/fallback/quota/privacy review |
 | M9 | Digital badges, certificates, verification, passport | DONE | 2026-10-15: native exam→credential→verify/revoke/privacy; PDF/PNG/QR+independent crypto, actual keyrecovery; full17PASS5skip6min, graph/project/badgedates tested |
 | M10 | Full Zero/Junior/Junior+ curriculum and projects | DONE | 2026-10-15: 40chapters/120exercises;117nativefunctionsPASS;P2native44checks/recovery;Junior→Junior+nativeawards/credentialsPASS64.3s;full27PASS7skip7.6min;unit/vet/race/TSbuildPASS |
-| M11 | Full Middle/Middle+/Senior curriculum and projects | NOT STARTED | — |
+| M11 | Full Middle/Middle+/Senior curriculum and projects | IN PROGRESS | 2026-10-16: 88-lesson/3-project syllabus in docs/curriculum/MIDDLE_SENIOR_PLAN.md; primary ecosystem stack in docs/research/M11_ECOSYSTEM.md. Lessons/projects unimplemented. |
 | M12 | Hardening, full E2E, performance, visual and accessibility | NOT STARTED | — |
 | M13 | Open-source release preparation and final acceptance audit | NOT STARTED | — |
 
@@ -408,3 +408,7 @@ Zero8 +Junior12 полных глав опубликованы manifest2026.10; 
 ### M10 завершён 2026-10-16 01:14 Asia/Atyrau
 
 Финальный `ACADEMY_E2E_RUNNER=1 ACADEMY_E2E_PROJECT_RUNNER=1 npm run e2e`: **27PASS7explicitSKIP0FAIL7.6min**, `docs/validation/m10-complete-full-browser.txt`. `make test` PASS unit/vet/race/TSbuild, `m10-complete-technical.txt`; all117starters+references/examples PASS48.402s; all117refs actualsandboxPASS57+36+24, improvedauth3targetednativePASS. Newnativeexamchain64.30sPASS, prerequisites/Zero explicitfixtures; P2nativeactualSQL/restart44checks+recoveryPASS. Allscopedreviewsclosed; pedagogical2chapterreviewandvariantfixesdocumented. Expectedskips: heavyduplicatemobilenative andoptionalprovider-onlyTutorcases(mockproviderpreviouslytestedM8). LocalGit checkpoints9f67b25/8947b0f plusfinaldocscheckpoint. FullMiddle→Senior/P3–P5 NOTdone; nextM11.
+
+## Прогресс и прогноз
+
+Оперативная панель: [PROJECT_PROGRESS.html](PROJECT_PROGRESS.html). Счётчик M0–M13 — доля закрытых milestone gates, не оценка объёма оставшейся работы. Отдельно видны доли опубликованного курса/проектов. Диапазон даты — плановая оценка, обновляется после завершения крупных этапов; он зависит от лимитов Codex и повторных проверок.
