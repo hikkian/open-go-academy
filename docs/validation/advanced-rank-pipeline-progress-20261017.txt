@@ -9,7 +9,7 @@ Implemented:
 
 Integration coverage:
 - `internal/httpapi/advanced_rank_pipeline_test.go` uses HTTP project submit, signed review packet/POST, exam start/submit and result endpoints for Middle, Middle+ and Senior. It proves signed rejection blocks eligibility; approve and exact quorum permit it; an objective failed attempt awards no rank; a valid retry awards exactly the expected rank; replaying a completed attempt returns conflict. Senior requires two distinct configured reviewer fingerprints.
-- The HTTP test seeds prior-rank/course progress as fixtures and supplies a deterministic project-checker stub. Trusted exam reference functions are compiled/executed using host `go run` against the real exam grader. This test does not certify project OCI isolation, project checker correctness or reviewer independence; those remain separate rootless project E2E and governance requirements.
+- The HTTP test seeds prior-rank/course progress as fixtures and supplies a deterministic project-checker stub. Trusted exam reference functions are compiled/executed using the exact Go toolchain that built the test (`runtime.GOROOT()/bin/go run`) against the real exam grader. This test does not certify project OCI isolation, project checker correctness or reviewer independence; those remain separate rootless project E2E and governance requirements.
 - `tests/manual-review-prerequisite.spec.ts` runs desktop/mobile, checks the Russian manual-review/quorum/trust notices, axe violations and horizontal overflow. Screenshots: `artifacts/desktop-manual-review-prerequisite.png` and `artifacts/mobile-manual-review-prerequisite.png`; both visually inspected.
 
 Checks:

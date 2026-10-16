@@ -1,5 +1,8 @@
 package main
 
-func RedisQueuePrerequisitesMedium(persistenceConfigured, writeAcknowledged, consumerRecovery, idempotentHandler bool) string {
-	if persistenceConfigured && writeAcknowledged && consumerRecovery && idempotentHandler { return "candidate_only" }; return "needs_review"
+func RedisQueuePrerequisitesMedium(persistenceConfigured, producerAckDefined, ownershipRecoveryDefined, idempotentHandler bool) string {
+	if persistenceConfigured && producerAckDefined && ownershipRecoveryDefined && idempotentHandler {
+		return "candidate_only"
+	}
+	return "needs_review"
 }

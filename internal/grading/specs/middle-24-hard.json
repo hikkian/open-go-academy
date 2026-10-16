@@ -1,28 +1,34 @@
 {
   "id": "middle-24-hard",
-  "signature": "func RedisQueueReviewHard(persistenceConfigured, writeAcknowledged, consumerRecovery, idempotentHandler, lossBudgetDefined bool) string",
+  "signature": "func RedisQueueReviewHard(persistenceConfigured, producerAckDefined, ownershipRecoveryDefined, idempotentHandler, failoverTestDefined, recoveryTargetDefined, lossBudgetDefined bool) string",
   "allowed_imports": [],
-  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{PersistenceConfigured bool;WriteAcknowledged bool;ConsumerRecovery bool;IdempotentHandler bool;LossBudgetDefined bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RedisQueueReviewHard(x.PersistenceConfigured,x.WriteAcknowledged,x.ConsumerRecovery,x.IdempotentHandler,x.LossBudgetDefined));e!=nil{panic(e)}}}\n",
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{PersistenceConfigured bool;ProducerAckDefined bool;OwnershipRecoveryDefined bool;IdempotentHandler bool;FailoverTestDefined bool;RecoveryTargetDefined bool;LossBudgetDefined bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RedisQueueReviewHard(x.PersistenceConfigured,x.ProducerAckDefined,x.OwnershipRecoveryDefined,x.IdempotentHandler,x.FailoverTestDefined,x.RecoveryTargetDefined,x.LossBudgetDefined));e!=nil{panic(e)}}}\n",
   "public_input": [
     {
       "PersistenceConfigured": true,
-      "WriteAcknowledged": true,
-      "ConsumerRecovery": true,
+      "ProducerAckDefined": true,
+      "OwnershipRecoveryDefined": true,
       "IdempotentHandler": true,
+      "FailoverTestDefined": true,
+      "RecoveryTargetDefined": true,
       "LossBudgetDefined": true
     },
     {
       "PersistenceConfigured": true,
-      "WriteAcknowledged": true,
-      "ConsumerRecovery": true,
+      "ProducerAckDefined": true,
+      "OwnershipRecoveryDefined": true,
       "IdempotentHandler": true,
+      "FailoverTestDefined": true,
+      "RecoveryTargetDefined": true,
       "LossBudgetDefined": false
     },
     {
       "PersistenceConfigured": true,
-      "WriteAcknowledged": true,
-      "ConsumerRecovery": false,
+      "ProducerAckDefined": true,
+      "OwnershipRecoveryDefined": false,
       "IdempotentHandler": true,
+      "FailoverTestDefined": true,
+      "RecoveryTargetDefined": true,
       "LossBudgetDefined": true
     }
   ],
@@ -34,13 +40,55 @@
   "private_input": [
     {
       "PersistenceConfigured": false,
-      "WriteAcknowledged": true,
-      "ConsumerRecovery": true,
+      "ProducerAckDefined": true,
+      "OwnershipRecoveryDefined": true,
       "IdempotentHandler": true,
+      "FailoverTestDefined": true,
+      "RecoveryTargetDefined": true,
+      "LossBudgetDefined": true
+    },
+    {
+      "PersistenceConfigured": true,
+      "ProducerAckDefined": false,
+      "OwnershipRecoveryDefined": true,
+      "IdempotentHandler": true,
+      "FailoverTestDefined": true,
+      "RecoveryTargetDefined": true,
+      "LossBudgetDefined": true
+    },
+    {
+      "PersistenceConfigured": true,
+      "ProducerAckDefined": true,
+      "OwnershipRecoveryDefined": true,
+      "IdempotentHandler": false,
+      "FailoverTestDefined": true,
+      "RecoveryTargetDefined": true,
+      "LossBudgetDefined": true
+    },
+    {
+      "PersistenceConfigured": true,
+      "ProducerAckDefined": true,
+      "OwnershipRecoveryDefined": true,
+      "IdempotentHandler": true,
+      "FailoverTestDefined": false,
+      "RecoveryTargetDefined": true,
+      "LossBudgetDefined": true
+    },
+    {
+      "PersistenceConfigured": true,
+      "ProducerAckDefined": true,
+      "OwnershipRecoveryDefined": true,
+      "IdempotentHandler": true,
+      "FailoverTestDefined": true,
+      "RecoveryTargetDefined": false,
       "LossBudgetDefined": true
     }
   ],
   "private_expected": [
+    "needs_review",
+    "needs_review",
+    "needs_review",
+    "needs_review",
     "needs_review"
   ]
 }

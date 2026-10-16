@@ -22,6 +22,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -51,7 +52,8 @@ func (advancedPipelineExamRunner) Execute(ctx context.Context, req runner.Reques
 	}
 	args := append([]string{"run"}, files...)
 	args = append(args, req.Args...)
-	cmd := exec.CommandContext(ctx, "go", args...)
+	goBinary := filepath.Join(runtime.GOROOT(), "bin", "go")
+	cmd := exec.CommandContext(ctx, goBinary, args...)
 	cmd.Dir = dir
 	cmd.Env = append(os.Environ(), "GOTOOLCHAIN=local", "GOPROXY=off", "GOSUMDB=off", "CGO_ENABLED=0")
 	var stdout, stderr bytes.Buffer

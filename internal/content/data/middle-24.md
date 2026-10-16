@@ -8,11 +8,11 @@
 
 ## Сначала определим границу
 
-Redis может быть полезным быстрым cache и может участвовать в обработке очередей, но слова «можно повторить» недостаточно, чтобы обещать очередь, которая переживёт отказ. Replayability (повторяемость чтения) описывает возможность снова увидеть данные в некотором протоколе, но не доказывает, что запись пережила сбой, consumer восстановит владение задачей, подтверждение не потеряется, а повтор обработки не создаст второй побочный эффект.
+Redis может быть полезным быстрым cache и может участвовать в обработке очередей, но слова «можно повторить» недостаточно, чтобы обещать очередь, которая переживёт отказ. Replayability (повторяемость чтения) описывает возможность снова увидеть данные в некотором протоколе, но не доказывает, что запись пережила сбой, consumer восстановит владение задачей, подтверждение не потеряется, а повтор обработки не создаст второй побочный эффект. В Redis гарантия зависит от выбранного примитива: обычная структура данных, Streams и сторонняя очередь имеют разные правила pending/claim/ack. Не переноси правила одного механизма на другой.
 
-Для проверки queue design отдельно назовите: включённую persistence (персистентность) и её целевой режим; момент и смысл write acknowledgement (подтверждения записи); replication/failover поведение; lease или visibility/recovery неуспешного потребителя; idempotency обработчика; приемлемый loss budget (допустимое окно потери); процедуру backup/restart и измеримый критерий восстановления. Конкретные свойства зависят от Redis версии, топологии, настроек и используемого примитива. Булевы поля упражнения — только заявления автора о предполагаемых предпосылках; grading не подключается к Redis и не верифицирует ни одну из них.
+Для проверки queue design отдельно назовите: выбранный persistence механизм и его окно возможной потери; что именно означает producer acknowledgement и подтверждает ли оно локальную запись или реплику; replication/failover поведение; как незавершённое сообщение становится доступным после падения consumer (lease/visibility, claim и при необходимости fencing); ack consumer только после нужного business effect; idempotency обработчика; согласованный loss budget; backup/restart процедуру и измеримую recovery target. Конкретные свойства зависят от Redis версии, топологии, настроек и используемого примитива. Булевы поля упражнения — только заявления автора о предполагаемых предпосылках; grading не подключается к Redis и не верифицирует ни одну из них.
 
-Easy теперь возвращает `needs_review` всякий раз, когда требуется durability: replayable не меняет ответ. Medium выводит `candidate_only`, если все четыре базовых требования объявлены. Hard добавляет loss budget и сохраняет нейтральный label. Даже `candidate_only` означает только «чек-лист заполнен»; это не рекомендация к production и не доказательство durable queue. Для реального решения нужны тесты на точной конфигурации: подтвердить, что запись принята, аварийно остановить узел в заданных точках, проверить восстановление сообщения, повторную доставку, дедупликацию, failover и измеренное окно потери. Если продукт не может принять эти условия, используйте специализированный брокер либо постоянное хранилище с нужной моделью подтверждений.
+Easy возвращает `needs_review`, когда продукт требует сохранности: replayable не меняет ответ. Medium требует объявить persistence с loss window, смысл producer ack, recovery владения задачей и идемпотентность эффекта. Hard добавляет декларацию failover drill, recovery target и согласованный loss budget. `candidate_only` означает только «все поля checklist объявлены». Оно не означает, что конфигурация существует, тест пройден или Redis подходит для production. Для реального решения нужны тесты на точной конфигурации: подтвердить, что запись принята, аварийно остановить узел в заданных точках, проверить восстановление сообщения, повторную доставку, дедупликацию, failover и измеренное окно потери. Если продукт не может принять эти условия, используйте специализированный брокер либо постоянное хранилище с нужной моделью подтверждений.
 
 ## Go-модель: детерминированная граница
 
@@ -39,18 +39,21 @@ func main() { fmt.Println(RedisRoleEasy(false, false)) }
 package main
 import "fmt"
 
-func RedisQueuePrerequisitesMedium(persistenceConfigured, writeAcknowledged, consumerRecovery, idempotentHandler bool) string {
-	if persistenceConfigured && writeAcknowledged && consumerRecovery && idempotentHandler { return "candidate_only" }; return "needs_review"
+func RedisQueuePrerequisitesMedium(persistenceConfigured, producerAckDefined, ownershipRecoveryDefined, idempotentHandler bool) string {
+	if persistenceConfigured && producerAckDefined && ownershipRecoveryDefined && idempotentHandler { return "candidate_only" }; return "needs_review"
 }
 
-func main() { fmt.Println(RedisQueuePrerequisitesMedium(true, true, true, true)) }
+func main() {
+	fmt.Println(RedisQueuePrerequisitesMedium(true, true, true, true)) // candidate_only: все заявления отмечены
+	fmt.Println(RedisQueuePrerequisitesMedium(true, true, false, true)) // needs_review: не описано recovery владения
+}
 ```
 
-Второй пример меняет вход так, чтобы пересечь границу контракта. Прочитайте его вместе с первым: какой именно параметр изменился и почему результат должен измениться? Эти два запуска проверяют заданное правило, но не обращаются к внешней зависимости и не доказывают её конфигурацию.
+Во втором вызове изменён только ownershipRecoveryDefined. Ожидаемые строки — `candidate_only`, затем `needs_review`. Так проверяется конкретная граница локальной функции; Redis не запускается и его конфигурация не проверяется.
 
 ## Ошибка, повтор и восстановление
 
-Не приравнивай replayability к persistence или ack. Не выдавай candidate_only за доказательство; проверь crash, failover, redelivery, recovery и допустимое окно потери на конкретной конфигурации.
+Не приравнивай replayability к persistence или ack. Producer ack и consumer ack — разные события: первое сообщает отправителю о принятии записи по конкретным правилам примитива; второе обычно сообщает, что consumer завершил обработку. Если процесс падает после эффекта, но до consumer ack, сообщение может прийти повторно. Нужны идемпотентная операция или deduplication, а также протокол возврата незавершённой работы из pending/lease состояния. В учебной модели это только заявленные входы. Проверь crash, failover, redelivery, recovery и loss window на точной конфигурации; candidate_only не является доказательством.
 
 ## Пример обработки ошибок в Go
 
@@ -60,14 +63,17 @@ func main() { fmt.Println(RedisQueuePrerequisitesMedium(true, true, true, true))
 package main
 import "fmt"
 
-func RedisQueueReviewHard(persistenceConfigured, writeAcknowledged, consumerRecovery, idempotentHandler, lossBudgetDefined bool) string {
-	if persistenceConfigured && writeAcknowledged && consumerRecovery && idempotentHandler && lossBudgetDefined { return "candidate_only" }; return "needs_review"
+func RedisQueueReviewHard(persistenceConfigured, producerAckDefined, ownershipRecoveryDefined, idempotentHandler, failoverTestDefined, recoveryTargetDefined, lossBudgetDefined bool) string {
+	if persistenceConfigured && producerAckDefined && ownershipRecoveryDefined && idempotentHandler && failoverTestDefined && recoveryTargetDefined && lossBudgetDefined { return "candidate_only" }; return "needs_review"
 }
 
-func main() { fmt.Println(RedisQueueReviewHard(true, true, true, true, true)) }
+func main() {
+	fmt.Println(RedisQueueReviewHard(true, true, true, true, true, true, true)) // candidate_only
+	fmt.Println(RedisQueueReviewHard(true, true, false, true, true, true, true)) // needs_review
+}
 ```
 
-Порядок ветвей hard-контракта для «Граница Redis: данные не являются очередью» задаёт приоритет при пересекающихся признаках. Зафиксируйте этот приоритет до реализации, а неожиданный ввод обрабатывайте отдельно от успешного результата. Тест-векторы проверяют только выбранные категории; внешний протокол требует отдельного сценария.
+Hard добавляет к medium checklist три пункта: failover drill, измеримую цель восстановления и допустимое окно потери. Ожидаемый вывод примера: сначала `candidate_only`, затем `needs_review`, потому что во втором вызове не заявлен ownership recovery. Все аргументы — обычные bool, поэтому «invalid input» здесь нет; неизвестную или непроверенную гарантию следует передавать как false.
 
 ## Типичные ошибки и диагностика
 
@@ -82,7 +88,7 @@ func main() { fmt.Println(RedisQueueReviewHard(true, true, true, true, true)) }
 
 ## Практика и самопроверка
 
-Easy отказывается делать вывод о durable queue по двум флагам. Medium и Hard оценивают только полноту явно объявленных предпосылок и всегда называют результат candidate_only, а не гарантию. Для настоящего Redis отдельно зафиксируй persistence/ack/recovery/loss budget и прогони crash/restart/failover тест на заданной конфигурации.
+Easy отказывается объявлять durable queue по паре флагов. Medium проверяет заявленные persistence/loss window, producer ack, consumer ownership recovery и idempotency. Hard требует также failover drill, recovery target и согласованный loss budget. Каждый параметр bool — ручное заявление, не чтение из Redis; тест функции подтверждает только таблицу ветвлений. Для настоящего решения зафиксируй version, topology и конкретный primitive, а затем прогони crash/restart/failover сценарий с подсчётом потерянных и повторно доставленных сообщений.
 
 ## Итог и повторение
 
