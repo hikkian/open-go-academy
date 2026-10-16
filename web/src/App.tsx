@@ -234,7 +234,7 @@ export default function App() {
     {screen === 'project' && selectedProject && <ProjectWorkspace key={selectedProject.id} projectId={selectedProject.id} onBack={() => setScreen('projects')} />}
     {screen === 'exams' && <Exams onRankAwarded={refresh} />}
     {screen === 'passport' && <Passport />}
-    {screen === 'tutor' && <Tutor lessonId={lesson?.id} source={screen === 'tutor' && lesson ? files[activeFile] : undefined} />}
+    {screen === 'tutor' && <Tutor lessonId={lesson?.id} source={screen === 'tutor' && lesson ? files[activeFile] : undefined} lastResult={result && (result.status !== undefined || result.exit_code !== undefined || result.stdout !== undefined || result.stderr !== undefined || result.checks !== undefined) ? { status: result.status, exit_code: result.exit_code, stdout: result.stdout, stderr: result.stderr, checks: { total: result.checks?.length ?? 0, passed: result.checks?.filter(check => check.passed).length ?? 0, failed: result.checks?.filter(check => !check.passed).length ?? 0 } } : null} />}
 
     {screen === 'lesson' && (lesson ? <main className="workspace" style={{ '--split': `${split}%` } as React.CSSProperties}>
       <div className="workspace-toolbar"><button className="back-link" onClick={() => setScreen('home')}>‹ Обзор</button><span className="crumb">{moduleTitle(lesson.module)}</span><span className="toolbar-spacer" /><label className="split-control">Ширина редактора <input aria-label="Ширина редактора" type="range" min="35" max="70" value={split} onChange={e => setSplit(Number(e.target.value))} /></label><button className="quiet-button" onClick={() => setFocus(!focus)}>{focus ? 'Выйти из фокуса' : 'Режим фокуса'}</button></div>

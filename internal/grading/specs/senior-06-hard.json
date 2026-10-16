@@ -1,0 +1,34 @@
+{
+  "id": "senior-06-hard",
+  "signature": "func Extraction(evidence, alternativeChecked bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Evidence bool; AlternativeChecked bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(Extraction(in.Evidence, in.AlternativeChecked)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Evidence": true,
+      "AlternativeChecked": true
+    },
+    {
+      "Evidence": true,
+      "AlternativeChecked": false
+    }
+  ],
+  "public_expected": [
+    "prototype-boundary",
+    "strengthen-module"
+  ],
+  "private_input": [
+    {
+      "Evidence": false,
+      "AlternativeChecked": true
+    },
+    {
+      "Evidence": false,
+      "AlternativeChecked": false
+    }
+  ],
+  "private_expected": [
+    "strengthen-module",
+    "strengthen-module"
+  ]
+}

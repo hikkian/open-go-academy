@@ -1,0 +1,49 @@
+{
+  "id": "middle-19-medium",
+  "signature": "func RetryActionMedium(attempt, maxAttempts int64, failed, temporary bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Attempt int64;MaxAttempts int64;Failed bool;Temporary bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RetryActionMedium(x.Attempt,x.MaxAttempts,x.Failed,x.Temporary));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Attempt": 1,
+      "MaxAttempts": 4,
+      "Failed": true,
+      "Temporary": true
+    },
+    {
+      "Attempt": 4,
+      "MaxAttempts": 4,
+      "Failed": true,
+      "Temporary": true
+    },
+    {
+      "Attempt": 1,
+      "MaxAttempts": 4,
+      "Failed": true,
+      "Temporary": false
+    }
+  ],
+  "public_expected": [
+    "retry",
+    "dead_letter",
+    "dead_letter"
+  ],
+  "private_input": [
+    {
+      "Attempt": 1,
+      "MaxAttempts": 4,
+      "Failed": false,
+      "Temporary": false
+    },
+    {
+      "Attempt": 0,
+      "MaxAttempts": 4,
+      "Failed": true,
+      "Temporary": true
+    }
+  ],
+  "private_expected": [
+    "ack",
+    "invalid"
+  ]
+}

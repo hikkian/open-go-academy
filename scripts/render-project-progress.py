@@ -3,14 +3,73 @@
 from html import escape
 import json
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs/project-progress.json"
 TARGET = ROOT / "docs/PROJECT_PROGRESS.html"
 data = json.loads(SOURCE.read_text(encoding="utf-8"))
+# Show writer output separately from reviewed/published lessons. A draft counts
+# only when all core metadata (including self-check), markdown, three specs,
+# and three reference files are present and parseable.
+manifest = json.loads((ROOT / "internal/content/manifest.json").read_text(encoding="utf-8"))
+published = set(manifest["published_lessons"])
+draft_ids = [f"middle-{n:02d}" for n in range(1, 41)] + [f"middleplus-{n:02d}" for n in range(1, 25)] + [f"senior-{n:02d}" for n in range(1, 25)]
+draft_count = 0
+for lesson_id in draft_ids:
+    if lesson_id in published:
+        continue
+    try:
+        meta = json.loads((ROOT / f"internal/content/data/{lesson_id}.json").read_text(encoding="utf-8"))
+        body = ROOT / f"internal/content/data/{lesson_id}.md"
+        exercises = meta["exercises"]
+        required = ("title", "rank", "module", "estimated_minutes", "go_version",
+                    "learning_outcomes", "glossary", "self_check", "markdown_file")
+        if (meta["id"] != lesson_id or any(not meta.get(key) for key in required) or
+                not body.is_file() or len(exercises) != 3):
+            continue
+        if all((ROOT / f"internal/grading/specs/{ex['id']}.json").is_file() and
+               (ROOT / f"internal/content/solutions/{ex['id']}/main.go").is_file() for ex in exercises):
+            draft_count += 1
+    except (OSError, ValueError, KeyError, TypeError):
+        continue
+draft_track = next(item for item in data["workstreams"] if item["title"].startswith("M11 "))
+draft_track["value"] = draft_count
+acceptance_path = ROOT / "docs/validation/m11-current-tree-acceptance-20261016.txt"
+candidate_paths = [ROOT / f"internal/content/data/{lesson_id}.{ext}"
+                   for lesson_id in draft_ids for ext in ("json", "md")]
+candidate_paths.extend(ROOT / f"internal/grading/specs/{lesson_id}-{level}.json"
+                       for lesson_id in draft_ids for level in ("easy", "medium", "hard"))
+candidate_paths.extend(ROOT / f"internal/content/solutions/{lesson_id}-{level}/main.go"
+                       for lesson_id in draft_ids for level in ("easy", "medium", "hard"))
+acceptance_passed = False
+if acceptance_path.is_file():
+    evidence = acceptance_path.read_text(encoding="utf-8")
+    newest_candidate = max((p.stat().st_mtime for p in candidate_paths if p.exists()), default=0)
+    started = re.search(r"^Started epoch: (\d+)$", evidence, re.MULTILINE)
+    acceptance_passed = ("Result: PASS" in evidence and started is not None and
+                         int(started.group(1)) >= newest_candidate)
+draft_track["title"] = "M11 автоматическая приёмка черновиков"
+draft_track["detail"] = (
+    f"{draft_count}/88 полных наборов файлов. "
+    + ("Полный aggregate gate прошёл 2026-10-16: примеры, компиляция starters и изолированные production-grader проверки. "
+       if acceptance_passed else "Для последнего состояния репозитория полный aggregate gate ещё не подтверждён. ")
+    + data.get("m11_review_detail", "")
+    + " Это автоматическая приёмка draft-кандидатов, не независимое педагогическое ревью и не публикация в manifest."
+)
+data["phase_note"] = (
+    f"Для Middle, Middle+ и Senior подготовлены {draft_count}/88 черновых глав. "
+    + ("Полный автоматический aggregate gate прошёл; главы остаются unpublished и не добавлены в каталог курса."
+       if acceptance_passed else "Полный автоматический aggregate gate для текущего состояния ещё не подтверждён.")
+    + data.get("phase_note_suffix", "")
+)
+
 assert sum(item["status"] == "done" for item in data["milestones"]) == 11
 assert len(data["milestones"]) == 14
 assert all(0 <= item["value"] <= item["max"] and item["max"] > 0 for item in data["workstreams"])
+
+# Persist the derived file-presence count as part of the reproducible snapshot.
+SOURCE.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 def e(value):
     return escape(str(value), quote=True)
@@ -51,7 +110,7 @@ section{{margin-top:22px;padding:24px;background:#fff;border:1px solid #d8e2e7;b
 .forecast{{border-left:4px solid #0d9ca3;padding-left:18px}}.forecast strong{{font-size:1.12rem}}.forecast p{{line-height:1.65;color:#425866}}footer{{padding:20px 6px;color:#5a6e79;font-size:.86rem;line-height:1.6}}
 a{{color:#075e79}}:focus-visible{{outline:3px solid #bd5500;outline-offset:3px}}
 @media(max-width:760px){{body{{padding:16px 12px 36px}}header,section{{padding:19px}}.milestone-grid{{grid-template-columns:1fr}}.track-head{{align-items:flex-start;flex-direction:column;gap:6px}}.overall{{grid-template-columns:82px 1fr;gap:14px}}.number{{width:78px;height:78px;font-size:1.2rem}}}}
-@media(prefers-color-scheme:dark){{:root{{color:#e6edf1;background:#121b22}}header{{background:linear-gradient(135deg,#17232b,#12343a);border-color:#34454e}}section{{background:#1b2830;border-color:#364750}}.milestone{{background:#24343d}}.milestone.in_progress{{background:#1d3d40}}.milestone.in_progress .badge{{color:#70d4d0}}.note,.track p,.forecast p,footer,.track-head strong span{{color:#bfccd2}}.number::after{{background:#1b2830}}.track{{border-color:#364750}}progress{{color:#3fc2c4}}}}
+@media(prefers-color-scheme:dark){{:root{{color:#e6edf1;background:#121b22}}header{{background:linear-gradient(135deg,#17232b,#12343a);border-color:#34454e}}section{{background:#1b2830;border-color:#364750}}.milestone{{background:#24343d}}.milestone.done .badge{{color:#80d6a3}}.milestone-group h3 small{{color:#bfccd2}}.milestone.in_progress{{background:#1d3d40}}.milestone.in_progress .badge{{color:#70d4d0}}.note,.track p,.forecast p,footer,.track-head strong span{{color:#bfccd2}}.number::after{{background:#1b2830}}.track{{border-color:#364750}}progress{{color:#3fc2c4}}}}
 </style>
 </head>
 <body><main>

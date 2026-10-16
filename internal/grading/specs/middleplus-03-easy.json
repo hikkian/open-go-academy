@@ -1,0 +1,45 @@
+{
+  "id": "middleplus-03-easy",
+  "signature": "func Median(values []int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Values []int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=Median(in.Values); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Values": [
+        9,
+        1,
+        5
+      ]
+    },
+    {
+      "Values": [
+        1,
+        3,
+        5,
+        7
+      ]
+    }
+  ],
+  "public_expected": [
+    5,
+    4
+  ],
+  "private_input": [
+    {
+      "Values": [
+        -3,
+        -1,
+        2
+      ]
+    },
+    {
+      "Values": [
+        1
+      ]
+    }
+  ],
+  "private_expected": [
+    -1,
+    1
+  ]
+}

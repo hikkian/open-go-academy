@@ -1,0 +1,13 @@
+2026-10-16 Asia/Atyrau
+
+Command:
+ACADEMY_ACCEPT_M11_DRAFTS=1 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v
+
+Result: PASS
+ok academy/internal/content 2479.673s
+
+Candidate catalog: all 40 published lessons + 88 M11 lessons loaded; ranks, unique orders 41–128, prerequisites, Markdown links and production grader/reference bindings passed.
+Execution: sandbox Preflight passed; all 265 trusted Go example groups executed; all 264 starters passed the production source contract and compilation; all 264 references passed production Request → isolated runner Execute → public+private Spec.Check. No starter mismatch, reference runner failure or failed grader check appeared in the log.
+
+This accepts the course content/grading candidate only. M11 projects P3–P5, Academy project-runner/checker integration, assessments/rank award for advanced tracks, full end-to-end browser tests and M12/M13 remain open. It is not publication/release acceptance.
+Raw command output is kept in the ignored local `.data/m11-aggregate-acceptance-2.log`.

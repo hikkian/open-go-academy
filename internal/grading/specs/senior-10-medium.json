@@ -1,0 +1,34 @@
+{
+  "id": "senior-10-medium",
+  "signature": "func BoundaryAction(authenticated, authorized bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Authenticated bool; Authorized bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(BoundaryAction(in.Authenticated, in.Authorized)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Authenticated": false,
+      "Authorized": true
+    },
+    {
+      "Authenticated": true,
+      "Authorized": false
+    }
+  ],
+  "public_expected": [
+    "authenticate",
+    "deny"
+  ],
+  "private_input": [
+    {
+      "Authenticated": true,
+      "Authorized": true
+    },
+    {
+      "Authenticated": false,
+      "Authorized": false
+    }
+  ],
+  "private_expected": [
+    "continue",
+    "authenticate"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "middleplus-05-medium",
+  "signature": "func ValidHeapProfile(inuseBytes, allocBytes int64) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { InuseBytes int64; AllocBytes int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ValidHeapProfile(in.InuseBytes, in.AllocBytes); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "InuseBytes": 64,
+      "AllocBytes": 128
+    },
+    {
+      "InuseBytes": 256,
+      "AllocBytes": 128
+    }
+  ],
+  "public_expected": [
+    true,
+    true
+  ],
+  "private_input": [
+    {
+      "InuseBytes": -1,
+      "AllocBytes": 128
+    },
+    {
+      "InuseBytes": 64,
+      "AllocBytes": -1
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

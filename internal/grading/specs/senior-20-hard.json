@@ -1,0 +1,24 @@
+{
+  "id": "senior-20-hard",
+  "signature": "func RollbackAction(dataCompatible, incidentOngoing bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { DataCompatible bool `json:\"dataCompatible\"`; IncidentOngoing bool `json:\"incidentOngoing\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RollbackAction(in.DataCompatible, in.IncidentOngoing)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "dataCompatible": true,
+      "incidentOngoing": true
+    }
+  ],
+  "public_expected": [
+    "rollback_code"
+  ],
+  "private_input": [
+    {
+      "dataCompatible": false,
+      "incidentOngoing": true
+    }
+  ],
+  "private_expected": [
+    "forward_fix_review"
+  ]
+}

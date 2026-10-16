@@ -1,0 +1,43 @@
+{
+  "id": "middle-01-hard",
+  "signature": "func WorkerLoads(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(WorkerLoads(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      3,
+      7
+    ],
+    [
+      4,
+      2
+    ]
+  ],
+  "public_expected": [
+    [
+      3,
+      2,
+      2
+    ],
+    [
+      1,
+      1,
+      0,
+      0
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      4
+    ],
+    [
+      -1,
+      2
+    ]
+  ],
+  "private_expected": [
+    [],
+    []
+  ]
+}

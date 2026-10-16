@@ -1,0 +1,42 @@
+{
+  "id": "middleplus-06-hard",
+  "signature": "func OptimizationEvidence(beforeFlat, afterFlat, beforeNs, afterNs int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { BeforeFlat int64; AfterFlat int64; BeforeNs int64; AfterNs int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=OptimizationEvidence(in.BeforeFlat, in.AfterFlat, in.BeforeNs, in.AfterNs); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "BeforeFlat": 60,
+      "AfterFlat": 40,
+      "BeforeNs": 100,
+      "AfterNs": 90
+    }
+  ],
+  "public_expected": [
+    "consistent_candidate"
+  ],
+  "private_input": [
+    {
+      "BeforeFlat": 60,
+      "AfterFlat": 40,
+      "BeforeNs": 110,
+      "AfterNs": 120
+    },
+    {
+      "BeforeFlat": 60,
+      "AfterFlat": 70,
+      "BeforeNs": 100,
+      "AfterNs": 90
+    },
+    {
+      "BeforeFlat": 1,
+      "AfterFlat": 1,
+      "BeforeNs": 0,
+      "AfterNs": 1
+    }
+  ],
+  "private_expected": [
+    "conflicting_signals",
+    "conflicting_signals",
+    "invalid"
+  ]
+}

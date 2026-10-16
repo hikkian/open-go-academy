@@ -1,0 +1,54 @@
+{
+  "id": "middle-19-hard",
+  "signature": "func RetryTransitionHard(attempt, maxAttempts int64, failed, temporary, acknowledged bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Attempt int64;MaxAttempts int64;Failed bool;Temporary bool;Acknowledged bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RetryTransitionHard(x.Attempt,x.MaxAttempts,x.Failed,x.Temporary,x.Acknowledged));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Attempt": 2,
+      "MaxAttempts": 5,
+      "Failed": true,
+      "Temporary": true,
+      "Acknowledged": false
+    },
+    {
+      "Attempt": 5,
+      "MaxAttempts": 5,
+      "Failed": true,
+      "Temporary": true,
+      "Acknowledged": false
+    },
+    {
+      "Attempt": 1,
+      "MaxAttempts": 5,
+      "Failed": true,
+      "Temporary": false,
+      "Acknowledged": false
+    }
+  ],
+  "public_expected": [
+    "retry",
+    "dead_letter",
+    "dead_letter"
+  ],
+  "private_input": [
+    {
+      "Attempt": 2,
+      "MaxAttempts": 5,
+      "Failed": true,
+      "Temporary": true,
+      "Acknowledged": true
+    },
+    {
+      "Attempt": 1,
+      "MaxAttempts": 5,
+      "Failed": false,
+      "Temporary": false,
+      "Acknowledged": false
+    }
+  ],
+  "private_expected": [
+    "ack",
+    "ack"
+  ]
+}

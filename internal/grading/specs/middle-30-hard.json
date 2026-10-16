@@ -1,0 +1,26 @@
+{
+  "id": "middle-30-hard",
+  "signature": "func ShutdownAction(shuttingDown bool, active int, graceExpired bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { ShuttingDown bool `json:\"shuttingDown\"`; Active int `json:\"active\"`; GraceExpired bool `json:\"graceExpired\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ShutdownAction(in.ShuttingDown, in.Active, in.GraceExpired)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "shuttingDown": true,
+      "active": 0,
+      "graceExpired": false
+    }
+  ],
+  "public_expected": [
+    "stopped"
+  ],
+  "private_input": [
+    {
+      "shuttingDown": true,
+      "active": 2,
+      "graceExpired": true
+    }
+  ],
+  "private_expected": [
+    "cancel_remaining"
+  ]
+}

@@ -20,7 +20,8 @@ test('new exam selection, versioned history and cancellation use the selected ca
   await page.goto(base);await page.getByLabel('Твоё имя').fill('Каталог экзаменов');await page.getByRole('button',{name:'Создать профиль'}).click();await expect(page.getByRole('heading',{name:'Твоя практика начинается здесь.'})).toBeVisible();
   execFileSync('sh',['scripts/go.sh','run','scripts/seed-exam-ui.go'],{env:{...process.env,ACADEMY_E2E_SEED:'1',ACADEMY_E2E_DB:database},timeout:30000});
   await page.getByRole('button',{name:'Экзамены',exact:true}).click();
-  const catalog=await(await page.request.get(base+'/api/exams')).json();expect(catalog).toHaveLength(3);
+  const catalog=await(await page.request.get(base+'/api/exams')).json();expect(catalog).toHaveLength(6);
+  for(const id of ['middle-exam','middleplus-exam','senior-exam']){const exam=catalog.find((item:any)=>item.id===id);expect(exam).toBeTruthy();expect(exam.eligible).toBe(false);expect(exam.rank_evidence.status).toBe('unavailable')}
   for(const id of ['junior-core','juniorplus-api']){
    const exam=catalog.find((item:any)=>item.id===id);expect(exam.eligible).toBe(true);
    const card=page.locator('.exam-catalog-item').filter({has:page.getByRole('heading',{name:exam.title,exact:true})});

@@ -1,0 +1,153 @@
+{
+  "id": "middle-32",
+  "title": "Метрики, traces и request context",
+  "rank": "Middle",
+  "module": "middle-taskflow",
+  "prerequisites": [
+    "middle-29",
+    "middle-30",
+    "middle-31"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Выбирать низкокардинальные labels, корректно передавать trace context, не записывать PII.",
+    "Разделять unit helper checks и интеграционные доказательства.",
+    "Сохранять воспроизводимую проверку, риски и границы вывода."
+  ],
+  "glossary": [
+    {
+      "term": "metric label",
+      "translation": "метка метрики",
+      "definition": "Измерение агрегированной серии; множество значений должно быть ограничено."
+    },
+    {
+      "term": "cardinality",
+      "translation": "кардинальность",
+      "definition": "Количество уникальных комбинаций label и, следовательно, временных рядов."
+    },
+    {
+      "term": "route template",
+      "translation": "шаблон маршрута",
+      "definition": "Нормализованный шаблон, возвращённый router, например `/v1/tasks/{taskID}`, без фактического ID."
+    },
+    {
+      "term": "trace attribute",
+      "translation": "атрибут трассировки",
+      "definition": "Пара ключ-значение, привязанная к span и подчинённая privacy policy."
+    },
+    {
+      "term": "SLI",
+      "translation": "индикатор уровня сервиса",
+      "definition": "Определённая измеримая выборка событий и её знаменатель."
+    }
+  ],
+  "markdown_file": "middle-32.md",
+  "order": 72,
+  "exercises": [
+    {
+      "id": "middle-32-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: метрики, traces и request context — базовое правило",
+      "prompt": "Реализуйте `func MetricLabelAllowed(label string) bool`. Контракт: true только для фиксированных labels operation, status_class, result; иначе false. Это проверка имени label, не instrumentation.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc MetricLabelAllowed(label string) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\ntrue\ntrue\n",
+      "criteria": [
+        "Точно выполнить контракт: true только для фиксированных labels operation, status_class, result; иначе false. Это проверка имени label, не instrumentation.",
+        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
+        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает grader?",
+          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+        }
+      ],
+      "signature": "func MetricLabelAllowed(label string) bool"
+    },
+    {
+      "id": "middle-32-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: метрики, traces и request context — граничная политика",
+      "prompt": "Реализуйте `func TraceAttributeAllowed(key, value string) bool`. Контракт: Проверять пару key/value. Разрешить только route с точным известным router-template `/v1/tasks/{taskID}` или `/v1/projects/{projectID}/tasks/{taskID}`; method — GET/POST/PATCH/DELETE; status_code — строка кода HTTP 100..599. Любой raw path, query, ID, secret или неизвестный ключ запрещён. Это проверка allowlist пар и не доказывает, что значение пришло из router.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc TraceAttributeAllowed(key, value string) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\ntrue\ntrue\ntrue\n",
+      "criteria": [
+        "Точно выполнить контракт: Проверять пару key/value. Разрешить только route с точным известным router-template `/v1/tasks/{taskID}` или `/v1/projects/{projectID}/tasks/{taskID}`; method — GET/POST/PATCH/DELETE; status_code — строка кода HTTP 100..599. Любой raw path, query, ID, secret или неизвестный ключ запрещён. Это проверка allowlist пар и не доказывает, что значение пришло из router.",
+        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
+        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает grader?",
+          "answer": "Только соответствие allowlist key-value пар. Он не доказывает, что route получен от router, и не проверяет production telemetry."
+        },
+        {
+          "question": "Почему разрешённого имени ключа недостаточно?",
+          "answer": "Значение может содержать сырой ID, путь, query string или секрет."
+        }
+      ],
+      "signature": "func TraceAttributeAllowed(key, value string) bool"
+    },
+    {
+      "id": "middle-32-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: метрики, traces и request context — helper-проверка",
+      "prompt": "Реализуйте `func SignalDecision(requests, failures int) string`. Контракт: requests<0, failures<0 или failures>requests → invalid; requests==0 → no_sample; иначе failures>0 → errors_present, иначе no_errors_observed. Это классификация счётчиков, не вычисление SLO.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc SignalDecision(requests, failures int) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"no_errors_observed\"\n\"errors_present\"\n\"no_sample\"\n",
+      "criteria": [
+        "Точно выполнить контракт: requests<0, failures<0 или failures>requests → invalid; requests==0 → no_sample; иначе failures>0 → errors_present, иначе no_errors_observed. Это классификация счётчиков, не вычисление SLO.",
+        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
+        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает grader?",
+          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+        }
+      ],
+      "signature": "func SignalDecision(requests, failures int) string"
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какое назначение у metrics, logs и traces?",
+      "answer": "Metrics агрегируют сигналы, logs фиксируют события, traces связывают этапы одной операции."
+    },
+    {
+      "question": "Почему raw user ID опасен в metric label?",
+      "answer": "Уникальные значения создают неограниченную cardinality и могут раскрыть персональные данные."
+    },
+    {
+      "question": "Что означает нулевая ошибка при пустой выборке?",
+      "answer": "Это отсутствие достаточных наблюдений, а не доказательство успешности."
+    },
+    {
+      "question": "Как проверить propagation без попадания PII в telemetry?",
+      "answer": "Пройти integration trace с контрольным контекстом и проверить, что разрешённые атрибуты сохранились, а запрещённые отсутствуют."
+    }
+  ]
+}

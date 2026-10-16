@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-07-medium",
+  "signature": "func ValidSelectivity(matches, total int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Matches int; Total int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ValidSelectivity(in.Matches, in.Total); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Matches": 1,
+      "Total": 10
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "Matches": 11,
+      "Total": 10
+    },
+    {
+      "Matches": 0,
+      "Total": 0
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

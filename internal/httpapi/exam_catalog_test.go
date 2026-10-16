@@ -124,8 +124,27 @@ func TestNewExamRankPrerequisiteAndCrossExamDraft(t *testing.T) {
 	}
 	catalogResponse := f.request("GET", "/api/exams", nil)
 	var catalog []map[string]any
-	if json.Unmarshal(catalogResponse.Body.Bytes(), &catalog) != nil || len(catalog) != 3 {
+	if json.Unmarshal(catalogResponse.Body.Bytes(), &catalog) != nil || len(catalog) != 6 {
 		t.Fatal("incomplete public exam catalog")
+	}
+	for _, id := range []string{"middle-exam", "middleplus-exam", "senior-exam"} {
+		var found bool
+		for _, entry := range catalog {
+			if entry["id"] != id {
+				continue
+			}
+			found = true
+			if entry["eligible"] != false {
+				t.Fatalf("advanced exam %s must fail closed without rank-evidence policy: %v", id, entry)
+			}
+			evidence, ok := entry["rank_evidence"].(map[string]any)
+			if !ok || evidence["status"] != "unavailable" {
+				t.Fatalf("advanced exam %s does not explain its missing server policy: %v", id, entry)
+			}
+		}
+		if !found {
+			t.Fatalf("advanced exam %s is missing from public catalog", id)
+		}
 	}
 	payload = map[string]any{"attempt_token": strings.Repeat("a", 64), "revision": 0, "answers": map[string]string{}, "codes": map[string]string{}}
 	if w := f.request("PUT", "/api/exams/attempts/"+created.ID+"/draft", payload); w.Code != 409 {
@@ -140,6 +159,33 @@ func TestNewExamRankPrerequisiteAndCrossExamDraft(t *testing.T) {
 	}
 	if w := f.request("GET", "/api/exams/junior-core?version=99", nil); w.Code != 404 {
 		t.Fatal("unknown immutable version resolved")
+	}
+}
+
+func TestAdvancedExamPublicDefinitionsHideTrustedReferenceCode(t *testing.T) {
+	f := newCatalogFixture(t, nil)
+	for id, forbidden := range map[string]string{
+		"middle-exam":     "if required < 0 { return 0 }; if passed < 0 { return 0 }",
+		"middleplus-exam": "if baselineRuns < 3 || candidateRuns < 3 { return \"insufficient\" }",
+		"senior-exam":     "score:=impact*likelihood; if score>=9 { return \"now\" }",
+	} {
+		response := f.request("GET", "/api/exams/"+id, nil)
+		if response.Code != http.StatusOK {
+			t.Fatalf("%s public definition status=%d: %s", id, response.Code, response.Body.String())
+		}
+		var exam struct {
+			Questions []assessment.Question `json:"questions"`
+			Tasks     []assessment.Task     `json:"tasks"`
+		}
+		if err := json.Unmarshal(response.Body.Bytes(), &exam); err != nil {
+			t.Fatal(err)
+		}
+		if len(exam.Questions) != 15 || len(exam.Tasks) != 3 {
+			t.Fatalf("%s objective exam incomplete: %d questions / %d tasks", id, len(exam.Questions), len(exam.Tasks))
+		}
+		if bytes.Contains(response.Body.Bytes(), []byte(forbidden)) {
+			t.Fatalf("%s response leaked trusted reference source", id)
+		}
 	}
 }
 
@@ -257,7 +303,15 @@ func TestAllExamCriteriaFitSignedCredentialFormat(t *testing.T) {
 		id := strings.Repeat("a", 32)
 		_, err := credentials.Sign(key, credentials.Payload{ID: id, IssuerName: "Open Go Academy", SubjectName: "Тест", Rank: exam.Rank, ExamID: exam.ID, CriteriaVersion: exam.Version, CriteriaHash: exam.Hash(), AttemptID: strings.Repeat("b", 32), IssuedAt: time.Now().UTC().Format(time.RFC3339Nano), VerifyURL: "http://127.0.0.1:8380/verify/" + id, Competencies: exam.Criteria})
 		if err != nil {
-			t.Fatal("published criteria cannot be signed", exam.ID, err)
+			t.Fatalf("published criteria cannot be signed for %s (criteria lengths %v): %v", exam.ID, credentialCriterionLengths(exam.Criteria), err)
 		}
 	}
+}
+
+func credentialCriterionLengths(criteria []string) []int {
+	lengths := make([]int, len(criteria))
+	for i, criterion := range criteria {
+		lengths[i] = len(criterion)
+	}
+	return lengths
 }

@@ -1,0 +1,182 @@
+M11 Middle-01..12 quality verification
+Date: 2026-10-16
+Command: `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test -overlay=.data/middle01-12-overlay.json -count=1 -timeout=20m ./internal/content -run '^TestMiddle0112QualityOverlay$' -v`
+Result: PASS, 339.345s. The focused overlay loaded all 12 draft lessons through the internal candidate-catalog path (`grading.LoadFor` and `BindReference`), then compiled all 36 starters, executed all 36 private reference requests through the isolated rootless runner, checked every public/private vector, and ran 37 grouped Go examples (Middle-03 has four groups; other lessons have three).
+Additional checks: `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go vet ./internal/content` PASS; `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test -count=1 ./internal/grading` PASS (0.159s); static JSON audit of 36 distinct contracts/public outputs PASS.
+
+Full verbose test output follows.
+
+=== RUN   TestMiddle0112QualityOverlay
+=== RUN   TestMiddle0112QualityOverlay/middle-01
+=== RUN   TestMiddle0112QualityOverlay/middle-01/example-middle-01-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-01/example-middle-01-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-01/example-middle-01-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-01/middle-01-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-01/middle-01-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-01/middle-01-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-02
+=== RUN   TestMiddle0112QualityOverlay/middle-02/example-middle-02-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-02/example-middle-02-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-02/example-middle-02-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-02/middle-02-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-02/middle-02-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-02/middle-02-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-03
+=== RUN   TestMiddle0112QualityOverlay/middle-03/example-middle-03-closed-buffer
+=== RUN   TestMiddle0112QualityOverlay/middle-03/example-middle-03-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-03/example-middle-03-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-03/example-middle-03-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-03/middle-03-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-03/middle-03-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-03/middle-03-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-04
+=== RUN   TestMiddle0112QualityOverlay/middle-04/example-middle-04-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-04/example-middle-04-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-04/example-middle-04-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-04/middle-04-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-04/middle-04-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-04/middle-04-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-05
+=== RUN   TestMiddle0112QualityOverlay/middle-05/example-middle-05-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-05/example-middle-05-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-05/example-middle-05-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-05/middle-05-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-05/middle-05-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-05/middle-05-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-06
+=== RUN   TestMiddle0112QualityOverlay/middle-06/example-middle-06-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-06/example-middle-06-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-06/example-middle-06-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-06/middle-06-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-06/middle-06-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-06/middle-06-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-07
+=== RUN   TestMiddle0112QualityOverlay/middle-07/example-middle-07-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-07/example-middle-07-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-07/example-middle-07-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-07/middle-07-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-07/middle-07-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-07/middle-07-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-08
+=== RUN   TestMiddle0112QualityOverlay/middle-08/example-middle-08-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-08/example-middle-08-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-08/example-middle-08-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-08/middle-08-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-08/middle-08-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-08/middle-08-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-09
+=== RUN   TestMiddle0112QualityOverlay/middle-09/example-middle-09-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-09/example-middle-09-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-09/example-middle-09-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-09/middle-09-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-09/middle-09-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-09/middle-09-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-10
+=== RUN   TestMiddle0112QualityOverlay/middle-10/example-middle-10-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-10/example-middle-10-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-10/example-middle-10-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-10/middle-10-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-10/middle-10-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-10/middle-10-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-11
+=== RUN   TestMiddle0112QualityOverlay/middle-11/example-middle-11-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-11/example-middle-11-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-11/example-middle-11-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-11/middle-11-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-11/middle-11-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-11/middle-11-hard
+=== RUN   TestMiddle0112QualityOverlay/middle-12
+=== RUN   TestMiddle0112QualityOverlay/middle-12/example-middle-12-example1
+=== RUN   TestMiddle0112QualityOverlay/middle-12/example-middle-12-example2
+=== RUN   TestMiddle0112QualityOverlay/middle-12/example-middle-12-example3
+=== RUN   TestMiddle0112QualityOverlay/middle-12/middle-12-easy
+=== RUN   TestMiddle0112QualityOverlay/middle-12/middle-12-medium
+=== RUN   TestMiddle0112QualityOverlay/middle-12/middle-12-hard
+--- PASS: TestMiddle0112QualityOverlay (339.34s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-01 (28.44s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-01/example-middle-01-example1 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-01/example-middle-01-example2 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-01/example-middle-01-example3 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-01/middle-01-easy (9.31s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-01/middle-01-medium (9.40s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-01/middle-01-hard (9.42s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-02 (28.24s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-02/example-middle-02-example1 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-02/example-middle-02-example2 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-02/example-middle-02-example3 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-02/middle-02-easy (9.39s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-02/middle-02-medium (9.31s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-02/middle-02-hard (9.23s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-03 (28.46s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-03/example-middle-03-closed-buffer (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-03/example-middle-03-example1 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-03/example-middle-03-example2 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-03/example-middle-03-example3 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-03/middle-03-easy (9.29s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-03/middle-03-medium (9.38s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-03/middle-03-hard (9.39s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-04 (28.31s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-04/example-middle-04-example1 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-04/example-middle-04-example2 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-04/example-middle-04-example3 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-04/middle-04-easy (9.26s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-04/middle-04-medium (9.36s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-04/middle-04-hard (9.37s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-05 (28.16s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-05/example-middle-05-example1 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-05/example-middle-05-example2 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-05/example-middle-05-example3 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-05/middle-05-easy (9.33s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-05/middle-05-medium (9.31s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-05/middle-05-hard (9.21s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-06 (28.23s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-06/example-middle-06-example1 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-06/example-middle-06-example2 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-06/example-middle-06-example3 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-06/middle-06-easy (9.33s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-06/middle-06-medium (9.30s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-06/middle-06-hard (9.28s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-07 (28.06s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-07/example-middle-07-example1 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-07/example-middle-07-example2 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-07/example-middle-07-example3 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-07/middle-07-easy (9.34s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-07/middle-07-medium (9.16s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-07/middle-07-hard (9.24s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-08 (28.31s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-08/example-middle-08-example1 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-08/example-middle-08-example2 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-08/example-middle-08-example3 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-08/middle-08-easy (9.37s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-08/middle-08-medium (9.25s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-08/middle-08-hard (9.37s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-09 (28.22s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-09/example-middle-09-example1 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-09/example-middle-09-example2 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-09/example-middle-09-example3 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-09/middle-09-easy (9.34s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-09/middle-09-medium (9.30s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-09/middle-09-hard (9.25s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-10 (28.24s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-10/example-middle-10-example1 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-10/example-middle-10-example2 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-10/example-middle-10-example3 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-10/middle-10-easy (9.31s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-10/middle-10-medium (9.39s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-10/middle-10-hard (9.23s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-11 (28.15s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-11/example-middle-11-example1 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-11/example-middle-11-example2 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-11/example-middle-11-example3 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-11/middle-11-easy (9.34s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-11/middle-11-medium (9.33s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-11/middle-11-hard (9.17s)
+    --- PASS: TestMiddle0112QualityOverlay/middle-12 (28.26s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-12/example-middle-12-example1 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-12/example-middle-12-example2 (0.10s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-12/example-middle-12-example3 (0.11s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-12/middle-12-easy (9.32s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-12/middle-12-medium (9.29s)
+        --- PASS: TestMiddle0112QualityOverlay/middle-12/middle-12-hard (9.33s)
+PASS
+ok  	academy/internal/content	339.345s

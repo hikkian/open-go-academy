@@ -1,0 +1,26 @@
+{
+  "id": "senior-13-medium",
+  "signature": "func DecisionRecord(option, evidence, revisit string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Option string `json:\"option\"`; Evidence string `json:\"evidence\"`; Revisit string `json:\"revisit\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(DecisionRecord(in.Option, in.Evidence, in.Revisit)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "option": "single-db",
+      "evidence": "load-test",
+      "revisit": "p99>300ms"
+    }
+  ],
+  "public_expected": [
+    "recorded"
+  ],
+  "private_input": [
+    {
+      "option": "single-db",
+      "evidence": "",
+      "revisit": "p99>300ms"
+    }
+  ],
+  "private_expected": [
+    "assumption"
+  ]
+}

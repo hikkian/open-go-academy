@@ -1,0 +1,111 @@
+{
+  "id": "middleplus-20-hard",
+  "signature": "func WorkerFair(arrival []int, wait []int, selected []bool, maxWait int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Arrival []int `json:\"arrival\"`; Wait []int `json:\"wait\"`; Selected []bool `json:\"selected\"`; MaxWait int `json:\"maxWait\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(WorkerFair(in.Arrival, in.Wait, in.Selected, in.MaxWait)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "arrival": [
+        0,
+        1,
+        2
+      ],
+      "wait": [
+        1,
+        7,
+        2
+      ],
+      "selected": [
+        true,
+        true,
+        true
+      ],
+      "maxWait": 5
+    },
+    {
+      "arrival": [
+        0,
+        1
+      ],
+      "wait": [
+        5,
+        0
+      ],
+      "selected": [
+        false,
+        false
+      ],
+      "maxWait": 5
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "arrival": [
+        0,
+        1,
+        2
+      ],
+      "wait": [
+        0,
+        7,
+        2
+      ],
+      "selected": [
+        true,
+        false,
+        true
+      ],
+      "maxWait": 5
+    },
+    {
+      "arrival": [
+        0,
+        1
+      ],
+      "wait": [
+        4,
+        0
+      ],
+      "selected": [
+        true,
+        false
+      ],
+      "maxWait": 5
+    },
+    {
+      "arrival": [
+        0
+      ],
+      "wait": [
+        -1
+      ],
+      "selected": [
+        true
+      ],
+      "maxWait": 5
+    },
+    {
+      "arrival": [
+        0
+      ],
+      "wait": [
+        0,
+        0
+      ],
+      "selected": [
+        true
+      ],
+      "maxWait": 5
+    }
+  ],
+  "private_expected": [
+    false,
+    true,
+    false,
+    false
+  ]
+}

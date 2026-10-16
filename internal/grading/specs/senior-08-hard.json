@@ -1,0 +1,34 @@
+{
+  "id": "senior-08-hard",
+  "signature": "func Ready(accepting, requiredStore bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Accepting bool; RequiredStore bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(Ready(in.Accepting, in.RequiredStore)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Accepting": true,
+      "RequiredStore": true
+    },
+    {
+      "Accepting": true,
+      "RequiredStore": false
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "Accepting": false,
+      "RequiredStore": true
+    },
+    {
+      "Accepting": false,
+      "RequiredStore": false
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

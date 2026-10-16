@@ -1,0 +1,50 @@
+{
+  "id": "middle-06-easy",
+  "signature": "func BoundedBalance(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(BoundedBalance(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      5,
+      2,
+      10
+    ],
+    [
+      5,
+      -8,
+      10
+    ]
+  ],
+  "public_expected": [
+    [
+      7,
+      1
+    ],
+    [
+      5,
+      0
+    ]
+  ],
+  "private_input": [
+    [
+      2,
+      -1,
+      5
+    ],
+    [
+      8,
+      1,
+      4
+    ]
+  ],
+  "private_expected": [
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      0
+    ]
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "middle-08-hard",
+  "signature": "func FindFirstRegression(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(FindFirstRegression(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      2,
+      3,
+      5,
+      4,
+      8
+    ],
+    [
+      1,
+      1,
+      2
+    ]
+  ],
+  "public_expected": [
+    [
+      3,
+      5,
+      4
+    ],
+    [
+      -1
+    ]
+  ],
+  "private_input": [
+    [
+      5,
+      4
+    ],
+    [
+      0
+    ]
+  ],
+  "private_expected": [
+    [
+      1,
+      5,
+      4
+    ],
+    [
+      -1
+    ]
+  ]
+}

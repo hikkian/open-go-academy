@@ -1,0 +1,148 @@
+{
+  "id": "senior-10",
+  "title": "Модель угроз как рабочий архитектурный инструмент",
+  "rank": "Senior",
+  "module": "senior-security-reliability",
+  "prerequisites": [
+    "senior-09"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 114,
+  "learning_outcomes": [
+    "Определять assets, principals, trust boundaries и deployment assumptions.",
+    "Разбирать abuse scenario по активу, последствию, контролю и проверке.",
+    "Связывать least privilege, validation, authorization, detection и recovery с угрозой.",
+    "Формулировать остаточный риск и ограничивать вывод security checks."
+  ],
+  "glossary": [
+    {
+      "term": "threat model",
+      "translation": "модель угроз",
+      "definition": "Сценарии угроз относительно активов, границ, противников и контролей."
+    },
+    {
+      "term": "asset",
+      "translation": "актив",
+      "definition": "Данные, полномочие или возможность, которую требуется защитить."
+    },
+    {
+      "term": "trust boundary",
+      "translation": "граница доверия",
+      "definition": "Переход, где меняется идентичность, привилегия или валидность данных."
+    },
+    {
+      "term": "residual risk",
+      "translation": "остаточный риск",
+      "definition": "Риск, сохраняющийся после принятых контролей."
+    }
+  ],
+  "markdown_file": "senior-10.md",
+  "self_check": [
+    {
+      "question": "Что проверяется здесь?",
+      "answer": "Только ограниченный детерминированный helper contract."
+    },
+    {
+      "question": "Какое доказательство требуется отдельно?",
+      "answer": "Проверка реальной авторизации, восстановления, rotation или threat boundary."
+    },
+    {
+      "question": "Как избежать неподтверждённого обещания?",
+      "answer": "Назвать допущения, scope теста и остаточный риск."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "senior-10-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "AssetClass",
+      "prompt": "Секрет → `restricted`; иначе пользовательские данные → `sensitive`; иначе → `general`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc AssetClass(secret, userData bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"restricted\"\n\"sensitive\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    },
+    {
+      "id": "senior-10-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "BoundaryAction",
+      "prompt": "Без аутентификации → `authenticate`; иначе без разрешения → `deny`; в остальных случаях → `continue`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc BoundaryAction(authenticated, authorized bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"authenticate\"\n\"deny\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    },
+    {
+      "id": "senior-10-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "RiskAction",
+      "prompt": "Высокое влияние и непроверенный контроль → `mitigate-first`; иначе непроверенный → `verify-control`; иначе → `review-residual`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RiskAction(highImpact, controlTested bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"mitigate-first\"\n\"verify-control\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    }
+  ]
+}

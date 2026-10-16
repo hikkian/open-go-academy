@@ -1,0 +1,151 @@
+{
+  "id": "middleplus-16",
+  "title": "Retries, backoff и общий retry budget",
+  "rank": "Middle+",
+  "module": "middleplus-scalelab",
+  "prerequisites": [
+    "middleplus-15"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 96,
+  "learning_outcomes": [
+    "Различать временную и постоянную ошибку и ограничивать попытки на запрос.",
+    "Вычислять capped exponential backoff без целочисленного переполнения.",
+    "Принимать retry decision с учетом per-request limit, оставшегося общего бюджета и deadline."
+  ],
+  "glossary": [
+    {
+      "term": "capacity",
+      "translation": "ёмкость",
+      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+    },
+    {
+      "term": "backpressure",
+      "translation": "обратное давление",
+      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+    },
+    {
+      "term": "queue depth",
+      "translation": "глубина очереди",
+      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+    },
+    {
+      "term": "retry budget",
+      "translation": "бюджет повторов",
+      "definition": "Верхняя граница попыток в заданном контексте."
+    },
+    {
+      "term": "outbox",
+      "translation": "исходящий журнал",
+      "definition": "Устойчивая запись о намерении опубликовать событие."
+    },
+    {
+      "term": "SLI/SLO",
+      "translation": "индикатор/цель уровня сервиса",
+      "definition": "Измеренный сигнал и явно заданная цель по окну."
+    },
+    {
+      "term": "baseline",
+      "translation": "исходный уровень",
+      "definition": "Закреплённое сравнимое состояние до изменения."
+    }
+  ],
+  "markdown_file": "middleplus-16.md",
+  "exercises": [
+    {
+      "id": "middleplus-16-easy",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: разрешение retry",
+      "prompt": "Реализуйте чистую функцию `func RetryAction(attempt int, maxAttempts int, transient bool) string`. Контракт: attempt<0 или maxAttempts<=0 => \"invalid\"; permanent error (transient=false) => \"stop\"; attempt>=maxAttempts => \"exhausted\"; иначе \"retry\". attempt — число уже выполненных попыток.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Все времена заданы в миллисекундах; это детерминированное решение, не scheduler.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RetryAction(attempt int, maxAttempts int, transient bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"retry\"\n",
+      "criteria": [
+        "Разрешать только transient error в пределах maxAttempts; attempt — уже выполненные попытки.",
+        "Проверить permanent error, точный лимит и invalid."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Все времена заданы в миллисекундах; это детерминированное решение, не scheduler."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-16-medium",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: capped exponential backoff",
+      "prompt": "Реализуйте чистую функцию `func RetryDelay(attempt int, baseMillis int, capMillis int) int`. Контракт: Отрицательный аргумент => 0. Иначе верните min(baseMillis*2^attempt, capMillis), не переполняя int. При attempt=0 задержка равна baseMillis, затем удваивается до capMillis. Нулевая база остаётся нулевой.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Все времена заданы в миллисекундах; это детерминированное решение, не scheduler.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RetryDelay(attempt int, baseMillis int, capMillis int) int {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "10\n",
+      "criteria": [
+        "Рассчитать exponential delay с верхним cap без overflow; каждое удвоение ограничено.",
+        "Проверить cap, нулевую базу, большую попытку и invalid."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Все времена заданы в миллисекундах; это детерминированное решение, не scheduler."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-16-hard",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: retry budget и deadline",
+      "prompt": "Реализуйте чистую функцию `func RetryDecision(attempt int, maxAttempts int, budgetRemaining int, delayMillis int, deadlineRemainingMillis int, transient bool) string`. Контракт: Сначала отрицательные счётчики/время или maxAttempts<=0 => \"invalid\". Затем permanent error => \"stop\"; attempt>=maxAttempts => \"exhausted\"; budgetRemaining<=0 => \"budget_exhausted\"; deadlineRemainingMillis<=0 или delayMillis>=deadlineRemainingMillis => \"deadline\"; иначе \"retry\". Значения attempt/budget — уже использованные попытки и остаток общего бюджета; функция не резервирует конкурентный бюджет и не ждёт.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Все времена заданы в миллисекундах; это детерминированное решение, не scheduler.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RetryDecision(attempt int, maxAttempts int, budgetRemaining int, delayMillis int, deadlineRemainingMillis int, transient bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"retry\"\n",
+      "criteria": [
+        "Сопоставить transient, per-request maxAttempts, общий остаток бюджета и deadline. Retry разрешён только если delay строго меньше оставшегося времени.",
+        "Функция не резервирует общий конкурентный бюджет и не ждёт; вывод не обещает delivery."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Все времена заданы в миллисекундах; это детерминированное решение, не scheduler."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Когда retry допустим?",
+      "answer": "Когда ошибка временная, осталось время до deadline и повтор не дублирует побочный эффект."
+    },
+    {
+      "question": "Как backoff без jitter может ухудшить инцидент?",
+      "answer": "Синхронные клиенты повторяют вместе и создают новый всплеск нагрузки."
+    },
+    {
+      "question": "Зачем общий retry budget при локальном max attempts?",
+      "answer": "Он ограничивает суммарное усиление от множества запросов и процессов."
+    },
+    {
+      "question": "Что надо фиксировать для воспроизводимого retry policy test?",
+      "answer": "Класс ошибки, часы/seed, deadline, попытки и суммарные вызовы downstream."
+    }
+  ]
+}

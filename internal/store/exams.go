@@ -13,11 +13,12 @@ import (
 )
 
 var (
-	ErrExamNotFound        = errors.New("exam not found")
-	ErrExamAttemptNotFound = errors.New("exam attempt not found")
-	ErrExamAttemptConflict = errors.New("exam attempt state conflict")
-	ErrExamPrerequisites   = errors.New("exam prerequisites are not verified")
-	ErrExamToken           = errors.New("invalid exam attempt token")
+	ErrExamNotFound         = errors.New("exam not found")
+	ErrExamAttemptNotFound  = errors.New("exam attempt not found")
+	ErrExamAttemptConflict  = errors.New("exam attempt state conflict")
+	ErrExamPrerequisites    = errors.New("exam prerequisites are not verified")
+	ErrRankEvidenceRequired = errors.New("rank requires project and assessment evidence")
+	ErrExamToken            = errors.New("invalid exam attempt token")
 )
 
 const MaxExamPayloadBytes = 1024 * 1024
@@ -41,6 +42,14 @@ type ExamAttempt struct {
 	EvidenceJSON string     `json:"evidence_json"`
 }
 
+type examEvidenceSnapshot struct {
+	VerifiedProgress  map[string]int64                       `json:"verified_progress"`
+	RankAwards        map[string]rankAwardEvidence           `json:"rank_awards"`
+	RankPolicyVersion int                                    `json:"rank_policy_version,omitempty"`
+	RankPolicyHash    string                                 `json:"rank_policy_hash,omitempty"`
+	ProjectEvidence   map[string]examProjectEvidenceSnapshot `json:"project_evidence,omitempty"`
+}
+
 type RankAward struct {
 	ProfileID string    `json:"profile_id"`
 	ExamID    string    `json:"exam_id"`
@@ -57,6 +66,18 @@ func validRank(rank string) bool {
 		return true
 	}
 	return false
+}
+
+// automaticExamRank is intentionally limited to the three currently supported
+// course-only rank policies. Advanced rank exams must use a separate persisted
+// project-evidence policy before they can create an award.
+func automaticExamRank(rank string) bool {
+	switch rank {
+	case "Zero", "Junior", "Junior+":
+		return true
+	default:
+		return false
+	}
 }
 
 // RegisterExam records immutable criteria for a particular exam version.
@@ -127,14 +148,40 @@ func (s *Store) StartExam(profileID, examID, version, tokenHash string, prerequi
 	if !validExamText(examID) || !validExamText(version) || !validExamText(tokenHash) {
 		return ExamAttempt{}, errors.New("invalid exam attempt request")
 	}
+	var policy *RankPolicy
+	registeredPolicy, policyErr := s.RankPolicyForExam(examID, version)
+	if policyErr == nil {
+		policy = &registeredPolicy
+	} else if !errors.Is(policyErr, ErrRankPolicyNotFound) {
+		return ExamAttempt{}, policyErr
+	}
 	rankEvidence := make(map[string]rankAwardEvidence, len(requiredRanks))
+	requiredRankSet := make(map[string]bool, len(requiredRanks))
 	for _, required := range requiredRanks {
 		if !validRank(required) {
 			return ExamAttempt{}, fmt.Errorf("%w: unknown rank %q", ErrExamPrerequisites, required)
 		}
-		if _, duplicate := rankEvidence[required]; duplicate {
+		if requiredRankSet[required] {
 			return ExamAttempt{}, fmt.Errorf("%w: duplicate rank %q", ErrExamPrerequisites, required)
 		}
+		requiredRankSet[required] = true
+	}
+	requiredCourseSet := make(map[string]bool, len(prerequisites))
+	for _, exerciseID := range prerequisites {
+		requiredCourseSet[exerciseID] = true
+	}
+	if policy != nil {
+		if policy.ExamID != examID || policy.ExamVersion != version {
+			return ExamAttempt{}, errors.New("rank policy exam binding mismatch")
+		}
+		for _, rank := range policy.RequiredPriorRanks {
+			requiredRankSet[rank] = true
+		}
+		for _, exerciseID := range policy.RequiredCourseExerciseIDs {
+			requiredCourseSet[exerciseID] = true
+		}
+	}
+	for required := range requiredRankSet {
 		rankEvidence[required] = rankAwardEvidence{}
 	}
 	tx, err := s.db.Begin()
@@ -154,8 +201,8 @@ func (s *Store) StartExam(profileID, examID, version, tokenHash string, prerequi
 	} else if err != nil {
 		return ExamAttempt{}, err
 	}
-	verified := make(map[string]int64, len(prerequisites))
-	for _, prereq := range prerequisites {
+	verified := make(map[string]int64, len(requiredCourseSet))
+	for prereq := range requiredCourseSet {
 		var attemptID int64
 		if err = tx.QueryRow(`SELECT attempt_id FROM verified_progress WHERE exercise_id=?`, prereq).Scan(&attemptID); err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return ExamAttempt{}, err
@@ -176,18 +223,40 @@ func (s *Store) StartExam(profileID, examID, version, tokenHash string, prerequi
 		}
 		rankEvidence[required] = proof
 	}
+	projectEvidence := map[string]examProjectEvidenceSnapshot(nil)
+	if policy != nil {
+		if rank != policy.Rank || hash != policy.CriteriaHash {
+			return ExamAttempt{}, errors.New("rank policy does not match registered exam")
+		}
+		projectEvidence, err = resolveProjectEvidenceTx(tx, profileID, *policy)
+		if err != nil {
+			return ExamAttempt{}, err
+		}
+	}
 	id, err := newExamAttemptID()
 	if err != nil {
 		return ExamAttempt{}, err
 	}
 	now := time.Now().UTC()
-	evidence, _ := json.Marshal(map[string]any{"verified_progress": verified, "rank_awards": rankEvidence})
+	snapshot := examEvidenceSnapshot{VerifiedProgress: verified, RankAwards: rankEvidence, ProjectEvidence: projectEvidence}
+	if policy != nil {
+		snapshot.RankPolicyVersion, snapshot.RankPolicyHash = policy.PolicyVersion, policy.PolicyHash
+	}
+	evidence, err := json.Marshal(snapshot)
+	if err != nil {
+		return ExamAttempt{}, err
+	}
 	_, err = tx.Exec(`INSERT INTO exam_attempts(id,profile_id,exam_id,version,rank,criteria_hash,token_hash,status,created_at,evidence_json) VALUES(?,?,?,?,?,?,?,'active',?,?)`, id, profileID, examID, version, rank, hash, tokenHash, now.Format(time.RFC3339Nano), string(evidence))
 	if err != nil {
 		if isConstraint(err) {
 			return ExamAttempt{}, ErrExamAttemptConflict
 		}
 		return ExamAttempt{}, err
+	}
+	if policy != nil {
+		if err = insertProjectEvidenceTx(tx, id, profileID, *policy, projectEvidence, now); err != nil {
+			return ExamAttempt{}, err
+		}
 	}
 	if err = tx.Commit(); err != nil {
 		return ExamAttempt{}, err
@@ -212,9 +281,9 @@ func (s *Store) ClaimExamAttempt(profileID, examID, attemptID, tokenHash string,
 		return ExamAttempt{}, err
 	}
 	defer tx.Rollback()
-	var storedToken, storedExam, status, evidenceJSON string
+	var storedToken, storedExam, storedVersion, storedRank, storedCriteriaHash, status, evidenceJSON string
 	var revision int64
-	err = tx.QueryRow(`SELECT token_hash,exam_id,status,revision,evidence_json FROM exam_attempts WHERE profile_id=? AND id=?`, profileID, attemptID).Scan(&storedToken, &storedExam, &status, &revision, &evidenceJSON)
+	err = tx.QueryRow(`SELECT token_hash,exam_id,version,rank,criteria_hash,status,revision,evidence_json FROM exam_attempts WHERE profile_id=? AND id=?`, profileID, attemptID).Scan(&storedToken, &storedExam, &storedVersion, &storedRank, &storedCriteriaHash, &status, &revision, &evidenceJSON)
 	if errors.Is(err, sql.ErrNoRows) {
 		return ExamAttempt{}, ErrExamAttemptNotFound
 	}
@@ -227,7 +296,7 @@ func (s *Store) ClaimExamAttempt(profileID, examID, attemptID, tokenHash string,
 	if storedExam != examID || status != "active" || revision != expectedRevision {
 		return ExamAttempt{}, ErrExamAttemptConflict
 	}
-	if err = validateExamEvidenceTx(tx, profileID, evidenceJSON); err != nil {
+	if err = validateExamEvidenceTx(tx, profileID, attemptID, storedExam, storedVersion, storedRank, storedCriteriaHash, evidenceJSON); err != nil {
 		return ExamAttempt{}, err
 	}
 	r, err := tx.Exec(`UPDATE exam_attempts SET status='grading',answers_json=?,codes_json=?,revision=revision+1 WHERE id=? AND profile_id=? AND status='active' AND revision=?`, answers, codes, attemptID, profileID, expectedRevision)
@@ -309,7 +378,10 @@ func (s *Store) FinishExamAttempt(profileID, attemptID string, score int, passed
 		return ExamAttempt{}, errors.New("exam criteria snapshot mismatch")
 	}
 	if passed {
-		if err = validateExamEvidenceTx(tx, profileID, a.EvidenceJSON); err != nil {
+		if !automaticExamRank(a.Rank) {
+			return ExamAttempt{}, ErrRankEvidenceRequired
+		}
+		if err = validateExamEvidenceTx(tx, profileID, a.ID, a.ExamID, a.Version, a.Rank, a.CriteriaHash, a.EvidenceJSON); err != nil {
 			return ExamAttempt{}, err
 		}
 	}
@@ -355,11 +427,8 @@ func updateProfileRankTx(tx *sql.Tx, profileID, rank string) error {
 	return nil
 }
 
-func validateExamEvidenceTx(tx *sql.Tx, profileID, evidenceJSON string) error {
-	var evidence struct {
-		VerifiedProgress map[string]int64             `json:"verified_progress"`
-		RankAwards       map[string]rankAwardEvidence `json:"rank_awards"`
-	}
+func validateExamEvidenceTx(tx *sql.Tx, profileID, attemptID, examID, examVersion, rank, criteriaHash, evidenceJSON string) error {
+	var evidence examEvidenceSnapshot
 	if err := json.Unmarshal([]byte(evidenceJSON), &evidence); err != nil {
 		return fmt.Errorf("invalid exam evidence: %w", err)
 	}
@@ -381,7 +450,7 @@ func validateExamEvidenceTx(tx *sql.Tx, profileID, evidenceJSON string) error {
 			return errors.New("exam rank prerequisite evidence changed")
 		}
 	}
-	return nil
+	return validateProjectEvidenceSnapshotTx(tx, profileID, attemptID, examID, examVersion, rank, criteriaHash, evidence)
 }
 
 type rankAwardEvidence struct {
@@ -394,7 +463,8 @@ func pruneExamAttemptsTx(tx *sql.Tx, profileID string) error {
 	_, err := tx.Exec(`DELETE FROM exam_attempts
 		WHERE profile_id=? AND status IN ('completed','interrupted','cancelled')
 		AND id NOT IN (SELECT id FROM exam_attempts WHERE profile_id=? AND status IN ('completed','interrupted','cancelled') ORDER BY created_at DESC,id DESC LIMIT 100)
-		AND id NOT IN (SELECT attempt_id FROM rank_awards)`, profileID, profileID)
+		AND id NOT IN (SELECT attempt_id FROM rank_awards)
+		AND id NOT IN (SELECT attempt_id FROM exam_project_evidence)`, profileID, profileID)
 	return err
 }
 

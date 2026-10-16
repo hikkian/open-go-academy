@@ -1,0 +1,11 @@
+2026-10-16 Asia/Atyrau
+Senior-02 easy/medium/hard starter typo `strin` -> `string` corrected to match each trusted function specification.
+
+Pinned Go: `.tools/go/bin/go version` = go version go1.27.2 linux/amd64.
+
+Each starter compiled with `go test -run=^$ .` in a fresh temporary Go 1.27.2 module, with GOTOOLCHAIN=local, GOPROXY=off, GOSUMDB=off.
+PASS senior-02-easy
+PASS senior-02-medium
+PASS senior-02-hard
+
+A previous full M11 aggregate run had compiled its embedded file snapshot before this correction and reported these three mismatch errors. A fresh full run is in progress from the corrected source.

@@ -1,0 +1,135 @@
+{
+  "id": "middleplus-09",
+  "title": "Партиционирование и маршрутизация данных",
+  "rank": "Middle+",
+  "module": "middleplus-data",
+  "prerequisites": [
+    "middleplus-08"
+  ],
+  "estimated_minutes": 210,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 89,
+  "learning_outcomes": [
+    "Определять, когда разбиение данных решает конкретную проблему обслуживания или pruning.",
+    "Ключ и границы влияют на локальность, уникальность, pruning и операционную сложность.",
+    "Ограничить вывод рамками наблюдений и назвать следующий проверочный эксперимент."
+  ],
+  "glossary": [
+    {
+      "term": "partition pruning",
+      "translation": "отсечение partitions",
+      "definition": "Исключение разделов, чьи границы несовместимы с предикатом запроса."
+    },
+    {
+      "term": "partition key",
+      "translation": "ключ разделения",
+      "definition": "Колонка или выражение, по которому строки направляются в partitions."
+    },
+    {
+      "term": "range bound",
+      "translation": "граница диапазона",
+      "definition": "Значение, задающее интервал строк конкретного раздела."
+    }
+  ],
+  "markdown_file": "middleplus-09.md",
+  "exercises": [
+    {
+      "id": "middleplus-09-easy",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: маршрутизируй день в учебный shard",
+      "prompt": "Маршрутизируйте day 1–10 в p1, 11–20 в p2, 21–31 в p3; остальное — invalid. Это условная схема, не реальная календарная дата.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc PartitionRoute(day int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"p1\"\n\"p2\"\n\"p3\"\n",
+      "criteria": [
+        "Интервалы включают указанные границы.",
+        "Не трактовать day без месяца как календарный partition key."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Partition routing зависит от реального ключа и границ partitions."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-09-medium",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: проверь диапазон partition key",
+      "prompt": "Проверьте включительный учебный диапазон 1..31, где start≤end. Это только валидация диапазона, не SQL pruning.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ValidPartitionRange(startDay, endDay int) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Оба конца внутри границ.",
+        "Отклонить перевёрнутый интервал."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Планировщик pruning требует предиката над ключом и знает реальные границы partitions."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-09-hard",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: проверь пересечение диапазонов",
+      "prompt": "Верните true, когда включительные query и partition ranges не пересекаются (то есть partition можно исключить в этой одномерной модели). Некорректные перевёрнутые интервалы возвращают false.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc PartitionPrunes(queryStart, queryEnd, partStart, partEnd int) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Учесть границу равенства как пересечение.",
+        "Не пересекающиеся диапазоны можно исключить только при корректных bounds."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Это иллюстрация pruning по одному упорядоченному ключу, не полноценная модель PostgreSQL partition pruning."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Когда partition pruning может сократить работу?",
+      "answer": "Когда предикат запроса ограничивает partition key так, что движок может исключить partitions по их границам."
+    },
+    {
+      "question": "Какой риск у большого числа мелких partitions?",
+      "answer": "Растут metadata и стоимость планирования и обслуживания, поэтому увеличение числа partitions не всегда улучшает запрос."
+    },
+    {
+      "question": "Почему выбор ключа влияет на продуктовые запросы?",
+      "answer": "Запросы, не фильтрующие partition key, могут посетить много сегментов и не получить ожидаемое сокращение чтения."
+    },
+    {
+      "question": "Что важно в границах range partitions?",
+      "answer": "Нужно точно проверить включающую нижнюю и исключающую верхнюю границу, чтобы записи не терялись и не дублировались."
+    },
+    {
+      "question": "Почему partitioning влияет на уникальность?",
+      "answer": "Ограничение уникальности для partitioned table зависит от включения partition key; глобальную уникальность может потребоваться обеспечить иначе."
+    }
+  ]
+}

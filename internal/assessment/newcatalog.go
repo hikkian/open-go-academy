@@ -36,7 +36,9 @@ func CanAccessResource(ownerID, actorID int, role string) bool {
 }
 
 // All returns the immutable assessment versions in learner-path order.
-func All() []*Exam { return []*Exam{Load(), loadJunior(), loadJuniorPlus()} }
+func All() []*Exam {
+	return []*Exam{Load(), loadJunior(), loadJuniorPlus(), loadMiddle(), loadMiddlePlus(), loadSenior()}
+}
 
 // Find resolves an exact immutable version, or the current version when empty.
 func Find(id, version string) (*Exam, bool) {

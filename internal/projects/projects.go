@@ -2,7 +2,9 @@
 package projects
 
 import (
+	"crypto/sha256"
 	"embed"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -15,6 +17,7 @@ import (
 // Project is the content contract consumed by the project workspace.
 type Project struct {
 	ID             string            `json:"id"`
+	Version        string            `json:"version"`
 	Title          string            `json:"title"`
 	Rank           string            `json:"rank"`
 	Description    string            `json:"description"`
@@ -46,6 +49,7 @@ func Load() Project {
 	if err := json.Unmarshal(b, &p); err != nil {
 		panic("invalid embedded P1 project: " + err.Error())
 	}
+	p.Version = "p1-cli-toolkit-v1"
 	p.StarterFiles = map[string]string{"go.mod": "module cli-toolkit\n\ngo 1.27.2\n"}
 	entries, _ := fs.ReadDir(bundled, "p1/starter_files")
 	for _, entry := range entries {
@@ -53,6 +57,32 @@ func Load() Project {
 		p.StarterFiles[entry.Name()] = string(b)
 	}
 	return p
+}
+
+// CriteriaHash returns a stable digest of server-authored project requirements.
+// It intentionally excludes learner files and runtime-specific checker identity.
+func CriteriaHash(id string) (string, bool) {
+	project, ok := Find(id)
+	if !ok || project.Version == "" {
+		return "", false
+	}
+	criteria := struct {
+		ID             string            `json:"id"`
+		Version        string            `json:"version"`
+		Title          string            `json:"title"`
+		Rank           string            `json:"rank"`
+		Description    string            `json:"description"`
+		Requirements   []string          `json:"requirements"`
+		Milestones     []Milestone       `json:"milestones"`
+		StarterFiles   map[string]string `json:"starter_files"`
+		PublicExamples []Example         `json:"public_examples"`
+	}{project.ID, project.Version, project.Title, project.Rank, project.Description, project.Requirements, project.Milestones, project.StarterFiles, project.PublicExamples}
+	data, err := json.Marshal(criteria)
+	if err != nil {
+		return "", false
+	}
+	sum := sha256.Sum256(data)
+	return "sha256:" + hex.EncodeToString(sum[:]), true
 }
 
 const maxFiles = 16

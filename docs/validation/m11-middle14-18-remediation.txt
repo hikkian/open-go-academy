@@ -1,0 +1,15 @@
+2026-10-16 Asia/Atyrau — pedagogical remediation: Middle-14…18
+
+Changed the five draft lessons from repeated Easy/Medium/Hard classifier contracts to topic-specific progressive policies and explanatory material:
+- Middle-14: pool acquisition, waiter bound, deadline and cancellation.
+- Middle-15: idempotency insert/conflict/in-progress/completed response behavior.
+- Middle-16: publication/handler commit/ack delivery window.
+- Middle-17: outbox commit/publish/row-mark crash window and duplicate delivery.
+- Middle-18: transient/permanent failure, retry limit, acknowledgement and dead-letter behavior.
+
+Metadata, Russian Markdown, examples, starter files, grader specs, vectors and references are synchronized. Exercises explicitly test bounded pure policy functions; they do not claim actual pool, database or broker guarantees.
+
+Scoped command:
+`ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middle-14,middle-15,middle-16,middle-17,middle-18 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-m11-middle14-18-20261016 .tools/go/bin/go test -count=1 -timeout=45m ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+
+Result: PASS, `ok academy/internal/content 186.890s`. All 15 lesson exercises passed examples, starter compilation and isolated public/private production-grader checks. Drafts remain unpublished; this does not replace review of Middle-19…40 or the full-tree aggregate.

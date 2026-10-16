@@ -1,0 +1,95 @@
+{
+  "id": "middle-14-hard",
+  "signature": "func PoolAcquireHard(inUse int64, maximum int64, waiters int64, maxWaiters int64, remainingMs int64, canceled bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{InUse int64; Maximum int64; Waiters int64; MaxWaiters int64; RemainingMs int64; Canceled bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(PoolAcquireHard(x.InUse, x.Maximum, x.Waiters, x.MaxWaiters, x.RemainingMs, x.Canceled));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "InUse": 7,
+      "Maximum": 8,
+      "Waiters": 4,
+      "MaxWaiters": 4,
+      "RemainingMs": 0,
+      "Canceled": true
+    },
+    {
+      "InUse": 7,
+      "Maximum": 8,
+      "Waiters": 4,
+      "MaxWaiters": 4,
+      "RemainingMs": 500,
+      "Canceled": false
+    },
+    {
+      "InUse": 8,
+      "Maximum": 8,
+      "Waiters": 4,
+      "MaxWaiters": 4,
+      "RemainingMs": 500,
+      "Canceled": false
+    },
+    {
+      "InUse": 8,
+      "Maximum": 8,
+      "Waiters": 1,
+      "MaxWaiters": 4,
+      "RemainingMs": 500,
+      "Canceled": false
+    },
+    {
+      "InUse": 8,
+      "Maximum": 8,
+      "Waiters": 0,
+      "MaxWaiters": 4,
+      "RemainingMs": 0,
+      "Canceled": false
+    }
+  ],
+  "public_expected": [
+    "canceled",
+    "acquire",
+    "reject",
+    "wait",
+    "timeout"
+  ],
+  "private_input": [
+    {
+      "InUse": -1,
+      "Maximum": 8,
+      "Waiters": 0,
+      "MaxWaiters": 4,
+      "RemainingMs": 1,
+      "Canceled": false
+    },
+    {
+      "InUse": 8,
+      "Maximum": 8,
+      "Waiters": 0,
+      "MaxWaiters": 4,
+      "RemainingMs": -1,
+      "Canceled": false
+    },
+    {
+      "InUse": 9,
+      "Maximum": 8,
+      "Waiters": 0,
+      "MaxWaiters": 4,
+      "RemainingMs": 1,
+      "Canceled": false
+    },
+    {
+      "InUse": 7,
+      "Maximum": 8,
+      "Waiters": 4,
+      "MaxWaiters": 4,
+      "RemainingMs": 0,
+      "Canceled": true
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid",
+    "invalid",
+    "canceled"
+  ]
+}

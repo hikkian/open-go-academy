@@ -1,0 +1,62 @@
+{
+  "id": "middle-18-medium",
+  "signature": "func MessageAckMedium(transient bool, attempts int64, handlerCommitted bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Transient bool; Attempts int64; HandlerCommitted bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(MessageAckMedium(x.Transient, x.Attempts, x.HandlerCommitted));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Transient": false,
+      "Attempts": 0,
+      "HandlerCommitted": true
+    },
+    {
+      "Transient": true,
+      "Attempts": 1,
+      "HandlerCommitted": true
+    },
+    {
+      "Transient": false,
+      "Attempts": 0,
+      "HandlerCommitted": false
+    },
+    {
+      "Transient": true,
+      "Attempts": 2,
+      "HandlerCommitted": false
+    },
+    {
+      "Transient": true,
+      "Attempts": 3,
+      "HandlerCommitted": false
+    }
+  ],
+  "public_expected": [
+    "ack",
+    "ack",
+    "reject",
+    "retry",
+    "dead_letter"
+  ],
+  "private_input": [
+    {
+      "Transient": true,
+      "Attempts": -1,
+      "HandlerCommitted": false
+    },
+    {
+      "Transient": true,
+      "Attempts": 3,
+      "HandlerCommitted": true
+    },
+    {
+      "Transient": true,
+      "Attempts": 0,
+      "HandlerCommitted": false
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "ack",
+    "retry"
+  ]
+}

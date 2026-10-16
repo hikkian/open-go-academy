@@ -1,0 +1,44 @@
+{
+  "id": "middle-04-medium",
+  "signature": "func BufferLatest(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(BufferLatest(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      2,
+      4,
+      5,
+      6,
+      7
+    ],
+    [
+      4,
+      1,
+      2
+    ]
+  ],
+  "public_expected": [
+    [
+      6,
+      7
+    ],
+    [
+      1,
+      2
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      1
+    ],
+    [
+      -1,
+      2
+    ]
+  ],
+  "private_expected": [
+    [],
+    []
+  ]
+}

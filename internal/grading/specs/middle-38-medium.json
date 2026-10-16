@@ -1,0 +1,70 @@
+{
+  "id": "middle-38-medium",
+  "signature": "func WorkerDisposition(attempt, maxAttempts int, transient, effectApplied bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Attempt int `json:\"attempt\"`; MaxAttempts int `json:\"maxAttempts\"`; Transient bool `json:\"transient\"`; EffectApplied bool `json:\"effectApplied\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(WorkerDisposition(in.Attempt, in.MaxAttempts, in.Transient, in.EffectApplied)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "attempt": 1,
+      "maxAttempts": 5,
+      "transient": true,
+      "effectApplied": false
+    }
+  ],
+  "public_expected": [
+    "retry"
+  ],
+  "private_input": [
+    {
+      "attempt": -1,
+      "maxAttempts": 5,
+      "transient": true,
+      "effectApplied": false
+    },
+    {
+      "attempt": 1,
+      "maxAttempts": 0,
+      "transient": true,
+      "effectApplied": false
+    },
+    {
+      "attempt": 1,
+      "maxAttempts": 5,
+      "transient": true,
+      "effectApplied": true
+    },
+    {
+      "attempt": 1,
+      "maxAttempts": 5,
+      "transient": false,
+      "effectApplied": false
+    },
+    {
+      "attempt": 5,
+      "maxAttempts": 5,
+      "transient": true,
+      "effectApplied": false
+    },
+    {
+      "attempt": 4,
+      "maxAttempts": 5,
+      "transient": true,
+      "effectApplied": false
+    },
+    {
+      "attempt": 5,
+      "maxAttempts": 5,
+      "transient": false,
+      "effectApplied": true
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid",
+    "ack",
+    "dead_letter",
+    "dead_letter",
+    "retry",
+    "ack"
+  ]
+}

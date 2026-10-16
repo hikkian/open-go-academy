@@ -1,0 +1,50 @@
+{
+  "id": "middle-02-medium",
+  "signature": "func JoinCompleted(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(JoinCompleted(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      7,
+      1,
+      8,
+      0,
+      9,
+      1
+    ],
+    [
+      3,
+      -1
+    ]
+  ],
+  "public_expected": [
+    [
+      7,
+      9
+    ],
+    []
+  ],
+  "private_input": [
+    [
+      4,
+      1,
+      5,
+      1
+    ],
+    [
+      1,
+      0,
+      2,
+      1
+    ]
+  ],
+  "private_expected": [
+    [
+      4,
+      5
+    ],
+    [
+      2
+    ]
+  ]
+}

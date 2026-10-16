@@ -1,0 +1,24 @@
+{
+  "id": "senior-16-easy",
+  "signature": "func ScaleOption(stateful, coordinationAvailable bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Stateful bool `json:\"stateful\"`; CoordinationAvailable bool `json:\"coordinationAvailable\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ScaleOption(in.Stateful, in.CoordinationAvailable)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "stateful": false,
+      "coordinationAvailable": false
+    }
+  ],
+  "public_expected": [
+    "replicas_candidate"
+  ],
+  "private_input": [
+    {
+      "stateful": true,
+      "coordinationAvailable": true
+    }
+  ],
+  "private_expected": [
+    "partition_candidate"
+  ]
+}

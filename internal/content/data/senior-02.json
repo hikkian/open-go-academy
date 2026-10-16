@@ -1,0 +1,148 @@
+{
+  "id": "senior-02",
+  "title": "Атрибуты качества: превратить приоритеты в проверяемые границы",
+  "rank": "Senior",
+  "module": "senior-systems-discovery",
+  "prerequisites": [
+    "senior-01"
+  ],
+  "estimated_minutes": 240,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 106,
+  "learning_outcomes": [
+    "Описывать quality scenario с источником стимула, условиями, ответом и свидетельством.",
+    "Различать оптимизируемый атрибут, обязательное ограничение и veto при конфликте.",
+    "Формулировать ограниченную политику деградации с учётом свежести, доступности и безопасности.",
+    "Соотносить силу вывода с методом проверки и явно называть остаточный риск."
+  ],
+  "glossary": [
+    {
+      "term": "quality attribute",
+      "translation": "атрибут качества",
+      "definition": "Характеристика поведения системы, важная для конкретного пользователя или оператора."
+    },
+    {
+      "term": "quality scenario",
+      "translation": "сценарий качества",
+      "definition": "Формализованный источник, стимул, условия, затронутый компонент, ожидаемый ответ и способ измерения."
+    },
+    {
+      "term": "SLO",
+      "translation": "целевой уровень обслуживания",
+      "definition": "Измеримая цель по пользовательскому событию и окну наблюдения."
+    },
+    {
+      "term": "error budget",
+      "translation": "бюджет ошибок",
+      "definition": "Допустимая доля нарушения заданного SLO в определённом окне."
+    }
+  ],
+  "markdown_file": "senior-02.md",
+  "self_check": [
+    {
+      "question": "Что конкретизирует расплывчатое «быстро»?",
+      "answer": "Операцию, условия, пользователя, распределение/окно измерения, источник данных и владельца порога."
+    },
+    {
+      "question": "Что делать с несовместимыми атрибутами?",
+      "answer": "Явно назвать veto-ограничения, приоритет, цену каждого ответа и подтверждающий сценарий."
+    },
+    {
+      "question": "Что доказывает grader?",
+      "answer": "Только ограниченную таблицу ветвления, не реальную доступность, производительность или выбранный SLO."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "senior-02-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "reliability",
+        "observability"
+      ],
+      "difficulty": "easy",
+      "title": "Валидность окна",
+      "prompt": "Неположительное окно или отрицательные samples → \"invalid\"; ноль samples → \"no-data\"; иначе → \"review\".",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc WindowState(windowSeconds, samples int64) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"review\"\n\"invalid\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Проверить невалидные, пустые и граничные входы.",
+        "Не называть результат SLO, измерением или production-гарантией."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяется?",
+          "answer": "Только ограниченная детерминированная функция на зафиксированных JSON-входах."
+        },
+        {
+          "question": "Какое системное свойство не доказывается?",
+          "answer": "Реальная задержка, доступность, свежесть данных или production-поведение."
+        }
+      ]
+    },
+    {
+      "id": "senior-02-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "reliability",
+        "observability"
+      ],
+      "difficulty": "medium",
+      "title": "Классификация входа доли ошибок",
+      "prompt": "Если total ≤ 0, failures < 0 или failures > total → \"invalid\"; ноль failures → \"clean-sample\"; иначе → \"observed-errors\". Не вычисляйте SLO.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ErrorClass(total, failures int64) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"observed-errors\"\n\"clean-sample\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Проверить невалидные, пустые и граничные входы.",
+        "Не называть результат SLO, измерением или production-гарантией."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяется?",
+          "answer": "Только ограниченная детерминированная функция на зафиксированных JSON-входах."
+        },
+        {
+          "question": "Какое системное свойство не доказывается?",
+          "answer": "Реальная задержка, доступность, свежесть данных или production-поведение."
+        }
+      ]
+    },
+    {
+      "id": "senior-02-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "reliability",
+        "observability"
+      ],
+      "difficulty": "hard",
+      "title": "Политика чтения при конфликте",
+      "prompt": "Доступная зависимость → \"read-authority\"; иначе обязательная свежесть → \"fail-closed\"; иначе → \"stale-with-label\". Контракт только про чтение.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc Response(freshnessRequired, dependencyAvailable bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"fail-closed\"\n\"stale-with-label\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Проверить невалидные, пустые и граничные входы.",
+        "Не называть результат SLO, измерением или production-гарантией."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяется?",
+          "answer": "Только ограниченная детерминированная функция на зафиксированных JSON-входах."
+        },
+        {
+          "question": "Какое системное свойство не доказывается?",
+          "answer": "Реальная задержка, доступность, свежесть данных или production-поведение."
+        }
+      ]
+    }
+  ]
+}

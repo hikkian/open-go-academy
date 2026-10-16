@@ -1,0 +1,34 @@
+{
+  "id": "senior-07-easy",
+  "signature": "func ReadDecision(required, visible int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Required int64; Visible int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(ReadDecision(in.Required, in.Visible)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Required": 8,
+      "Visible": 8
+    },
+    {
+      "Required": 9,
+      "Visible": 7
+    }
+  ],
+  "public_expected": [
+    "serve",
+    "wait-or-route"
+  ],
+  "private_input": [
+    {
+      "Required": 0,
+      "Visible": 0
+    },
+    {
+      "Required": -1,
+      "Visible": 0
+    }
+  ],
+  "private_expected": [
+    "serve",
+    "invalid"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "id": "middleplus-20-easy",
+  "signature": "func WorkerTurn(arrivalA int, arrivalB int, waitA int, waitB int, maxWait int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { ArrivalA int `json:\"arrivalA\"`; ArrivalB int `json:\"arrivalB\"`; WaitA int `json:\"waitA\"`; WaitB int `json:\"waitB\"`; MaxWait int `json:\"maxWait\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(WorkerTurn(in.ArrivalA, in.ArrivalB, in.WaitA, in.WaitB, in.MaxWait)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "arrivalA": 1,
+      "arrivalB": 2,
+      "waitA": 0,
+      "waitB": 0,
+      "maxWait": 5
+    },
+    {
+      "arrivalA": 2,
+      "arrivalB": 1,
+      "waitA": 5,
+      "waitB": 0,
+      "maxWait": 5
+    }
+  ],
+  "public_expected": [
+    "A",
+    "A"
+  ],
+  "private_input": [
+    {
+      "arrivalA": 1,
+      "arrivalB": 2,
+      "waitA": 0,
+      "waitB": 5,
+      "maxWait": 5
+    },
+    {
+      "arrivalA": 2,
+      "arrivalB": 1,
+      "waitA": 5,
+      "waitB": 5,
+      "maxWait": 5
+    },
+    {
+      "arrivalA": 1,
+      "arrivalB": 2,
+      "waitA": 0,
+      "waitB": 0,
+      "maxWait": 0
+    },
+    {
+      "arrivalA": -1,
+      "arrivalB": 2,
+      "waitA": 0,
+      "waitB": 0,
+      "maxWait": 5
+    },
+    {
+      "arrivalA": 1,
+      "arrivalB": 2,
+      "waitA": 9,
+      "waitB": 0,
+      "maxWait": 5
+    }
+  ],
+  "private_expected": [
+    "B",
+    "A",
+    "A",
+    "invalid",
+    "A"
+  ]
+}

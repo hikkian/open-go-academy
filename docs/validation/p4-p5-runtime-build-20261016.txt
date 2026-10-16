@@ -1,0 +1,39 @@
+ok  	academy/internal/projects	0.005s
+ok  	academy/internal/projectrunner	0.514s
+ok  	academy/internal/projectrunner/checker	0.023s
+STEP 1/6: FROM docker.io/library/golang@sha256:3b15ba438c60ab8fabe5fee3b11025c0049e358b31feff384648f11fc8e335f8
+STEP 2/6: ENV GOMODCACHE=/opt/academy/gomod GOCACHE=/opt/academy/gocache GOTOOLCHAIN=local CGO_ENABLED=0
+--> Using cache b3a953bc6dffdd72b9ddba724f9813f32a7c6a9437369bcc98cf26c2de12ce8e
+--> b3a953bc6dff
+STEP 3/6: WORKDIR /opt/academy/warm
+--> Using cache f66aa0d93b95bf1a9dc1ea8678477656e90d2632a16cbca0cf9e11f55812318c
+--> f66aa0d93b95
+STEP 4/6: COPY go.mod go.sum warm.go ./
+--> Using cache 6edaf2afe5cca45c064477ace5a643007ab2f978ac49b32741035627e4d9dc29
+--> 6edaf2afe5cc
+STEP 5/6: RUN go mod download && go build -mod=readonly -o /tmp/warm . && rm -f /tmp/warm && chmod -R a+rX /opt/academy
+--> Using cache 9c15330bd13498e707db4b3d3206b295a9f63c14ee5d780d9a051ba0ccbc81b3
+--> 9c15330bd134
+STEP 6/6: WORKDIR /work
+--> Using cache 41c5de684b821f1eef3f142200f21d517487cd680e0d56f5d7eb9d3ad89d1bba
+COMMIT localhost/academy-p2-go:local
+--> 41c5de684b82
+Successfully tagged localhost/academy-p2-go:local
+41c5de684b821f1eef3f142200f21d517487cd680e0d56f5d7eb9d3ad89d1bba
+STEP 1/5: FROM docker.io/library/golang@sha256:3b15ba438c60ab8fabe5fee3b11025c0049e358b31feff384648f11fc8e335f8
+STEP 2/5: LABEL academy.checker.p3="taskflow-v1"       academy.checker.p4="scalelab-deterministic-v1"       academy.checker.p5="capstone-deterministic-v1"
+--> Using cache 9a6256b22c9ba91b7906e7582e5bb89d050e4085c92aedf2eafc40c3da5666ba
+--> 9a6256b22c9b
+STEP 3/5: COPY checker /opt/academy/checker
+--> Using cache 6895b3ede0e90f54e5d18daf58fcc7ffb5b8836c50e46af6a1c53bd462d3a2aa
+--> 6895b3ede0e9
+STEP 4/5: USER 65532:65532
+--> Using cache bccb7ce688dcd8f4c18aaeda8cbebff606ef47f758b0a213a6c3c43f21465028
+--> bccb7ce688dc
+STEP 5/5: ENTRYPOINT ["/opt/academy/checker"]
+--> Using cache dfb2d774c18a789b9bf3a92c884d60fe7f7f92db33b26de21e87c2022ff4c98a
+COMMIT localhost/academy-p2-checker:local
+--> dfb2d774c18a
+Successfully tagged localhost/academy-p2-checker:local
+dfb2d774c18a789b9bf3a92c884d60fe7f7f92db33b26de21e87c2022ff4c98a
+PASS: immutable offline P2/P3/P4/P5 Go profile and trusted checker identities built; IDs and policy saved to .data/p2-runtime

@@ -1,0 +1,148 @@
+{
+  "id": "senior-04",
+  "title": "Владение данными и согласованность",
+  "rank": "Senior",
+  "module": "senior-systems-design",
+  "prerequisites": [
+    "senior-03"
+  ],
+  "estimated_minutes": 240,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 108,
+  "learning_outcomes": [
+    "Определять owner данных, источник истины и инварианты жизненного цикла.",
+    "Выбирать подтверждение и consistency по конкретной операции, не обещая абстрактную exactly-once доставку.",
+    "Обрабатывать повтор команды, конкурентное изменение и отставшую проекцию.",
+    "Планировать совместимую миграцию с ограниченным backfill и реальным восстановлением."
+  ],
+  "glossary": [
+    {
+      "term": "data ownership",
+      "translation": "владение данными",
+      "definition": "Ответственность за жизненный цикл и авторитетное состояние факта."
+    },
+    {
+      "term": "consistency model",
+      "translation": "модель согласованности",
+      "definition": "Допустимые отношения наблюдений после изменений и между копиями."
+    },
+    {
+      "term": "idempotency key",
+      "translation": "ключ идемпотентности",
+      "definition": "Стабильный идентификатор для распознавания повтора конкретного действия."
+    },
+    {
+      "term": "backfill",
+      "translation": "заполнение истории",
+      "definition": "Ограниченное и проверяемое преобразование уже сохранённых записей."
+    }
+  ],
+  "markdown_file": "senior-04.md",
+  "self_check": [
+    {
+      "question": "Почему две проекции не являются двумя владельцами?",
+      "answer": "Одна должна иметь явный authority; проекции восстанавливаются из неё по определённому контракту."
+    },
+    {
+      "question": "Что требуется помимо повторного event delivery?",
+      "answer": "Идемпотентный consumer, устойчивый event identity и проверка порядка, когда он важен."
+    },
+    {
+      "question": "Что доказывает helper?",
+      "answer": "Только строковое/версионное решение на перечисленных векторах, не транзакцию или replication guarantee."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "senior-04-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "data-integrity",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Распознать повтор",
+      "prompt": "Пустой key → `missing-key`; совпадает с предыдущим → `replay`; иначе `new`. Здесь не реализуется постоянное хранилище идемпотентности.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CommandState(key, previous string) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"replay\"\n\"new\"\n",
+      "criteria": [
+        "Соблюдать точные статусы и приоритеты контракта.",
+        "Проверить невалидные значения и обе стороны сравнения.",
+        "Не выдавать pure helper за транзакцию, replication protocol или guarantee."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяет grader?",
+          "answer": "Ограниченную функцию на синтетических векторах."
+        },
+        {
+          "question": "Какое системное доказательство нужно отдельно?",
+          "answer": "Реальную atomic conditional write, replay/recovery либо измерение lag."
+        }
+      ]
+    },
+    {
+      "id": "senior-04-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "data-integrity",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Обнаружить конфликт версии",
+      "prompt": "Отрицательная version → `invalid`; несовпадение → `conflict`; равенство → `apply`. Реальное хранилище должно атомарно выполнить условное обновление.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc VersionState(expected, current int64) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"apply\"\n\"conflict\"\n",
+      "criteria": [
+        "Соблюдать точные статусы и приоритеты контракта.",
+        "Проверить невалидные значения и обе стороны сравнения.",
+        "Не выдавать pure helper за транзакцию, replication protocol или guarantee."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяет grader?",
+          "answer": "Ограниченную функцию на синтетических векторах."
+        },
+        {
+          "question": "Какое системное доказательство нужно отдельно?",
+          "answer": "Реальную atomic conditional write, replay/recovery либо измерение lag."
+        }
+      ]
+    },
+    {
+      "id": "senior-04-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "data-integrity",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Состояние проекции",
+      "prompt": "Отрицательное значение → `invalid`; равенство → `caught-up`; source > view → `lagging`; view > source → `unexpected-ahead`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ProjectionState(source, view int64) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"caught-up\"\n\"lagging\"\n",
+      "criteria": [
+        "Соблюдать точные статусы и приоритеты контракта.",
+        "Проверить невалидные значения и обе стороны сравнения.",
+        "Не выдавать pure helper за транзакцию, replication protocol или guarantee."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяет grader?",
+          "answer": "Ограниченную функцию на синтетических векторах."
+        },
+        {
+          "question": "Какое системное доказательство нужно отдельно?",
+          "answer": "Реальную atomic conditional write, replay/recovery либо измерение lag."
+        }
+      ]
+    }
+  ]
+}

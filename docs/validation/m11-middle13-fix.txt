@@ -1,0 +1,13 @@
+2026-10-16 Asia/Atyrau
+Middle-13 correction: 3 distinct contracts, actual bounded EXPLAIN/ANALYZE teaching example, corrected branch explanation, overflow-safe integer threshold, MaxInt64/boundary vectors.
+
+Scoped production overlay command (overlay file created in /tmp and removed after):
+go test -count=1 -overlay=<temporary-overlay.json> ./internal/grading -run '^TestMiddle13ProductionValidation$' -v
+
+Result: PASS — middle-13-easy 10.39s, medium 11.99s, hard 11.90s; total 34.288s. Exercised LoadFor → BindReference → Request(private=true) → isolated runner Execute → Check for all three IDs.
+
+Independent package baseline after removal of the confirmed out-of-scope generated middleplus-25 artifacts:
+GOTOOLCHAIN=local GOPROXY=off .tools/go/bin/go test -count=1 ./internal/grading
+PASS (0.208s before the scoped overlay).
+
+All three Markdown examples also compiled/run. Markdown word count 1,958; order53 and prerequisite juniorplus-10 preserved.

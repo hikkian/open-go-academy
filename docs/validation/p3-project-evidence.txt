@@ -1,0 +1,23 @@
+Open Go Academy — P3 immutable project-evidence acceptance
+Date: 2026-10-16 Asia/Atyrau
+
+## Persisted evidence model
+
+- Migration `internal/store/migrations/0007_project_evidence.sql` adds `project_submissions` and `project_evaluations`. Rows link to the local profile; evaluation has a composite foreign key to the exact submission; foreign-key restrict and SQLite update/delete triggers keep both evidence records immutable.
+- Project metadata now has versioned server-authored criteria. `projects.CriteriaHash` hashes canonical JSON of project version, rank, description, requirements, milestones, starter files, and public examples.
+- `RecordProjectSubmission` validates P3 files, stores the complete accepted package and the exact files sent to the runner, and computes separate SHA-256 hashes. Canonical hash input is domain-separated and length-prefixed; path order does not affect the hash, while project version, path, or any source byte does.
+- The isolated runner returns its evaluation profile with the same execution response: TaskFlow checker version and SHA-256 image digest, project/criteria version, runtime policy hash, and automatic rubric version/hash. The API does not accept these values from the learner. `GET /capabilities` reports P3 only when this immutable profile is available.
+- After the synchronous runner response, `RecordProjectSubmission` persists the exact accepted package and the exact source subset sent to that job. `RecordProjectEvaluation` persists evaluation status, exit code, pass/fail, checks JSON/hash and the trusted profile. Same artifact + same evaluation replay returns existing IDs; changed checks conflict. `failed`/`error` evaluations are stored distinctly; a transport/runner error without a terminal result creates no evaluation row. `p3:automatic` remains a compatibility/skill event, not the source of rank eligibility.
+- Submit response returns `project_evidence` with submission/evaluation IDs, status, exit code, artifact/executed-source/checks hashes, checker digest, runtime policy and rubric versions/hashes. UI shows this under a collapsed details disclosure. It explicitly says automatic evidence does not complete human review or grant a rank.
+
+## Validation
+
+- `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test -count=1 ./internal/projects ./internal/projectrunner ./internal/store ./internal/httpapi` — PASS.
+- Store tests verify artifact hash determinism over 300 generated file maps with shuffled insertion order, changed bytes/paths/project versions, export-only-file separation, same-submission/evaluation replay, conflicting replay rejection, failed/error results, digest/version binding, and immutable update/delete rejection.
+- `internal/httpapi/TestP3SubmitPersistsImmutableArtifactAndTrustedEvaluation` verifies 45 passing checker checks, exact P3 project evidence, full artifact hash differing from executed-source hash when Docker/Compose/env export fixtures are present, identical retry IDs, and zero rank awards.
+- Full `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-current-fullmake-20261016 make test` — PASS after the migration and API/UI changes: all Go tests, P1 reference tests/vet, whole-tree vet/race, TypeScript and Vite build.
+- Isolated P3 desktop Playwright — 2/2 PASS with 45/45 checks, evidence disclosure, stable IDs/hashes on identical retry, no rank change, and reload/snapshot restore. Mobile workspace and axe/no-overflow PASS. Temporary database and runner only; test runner stopped and zero containers remained. Evidence: `docs/validation/p3-browser-acceptance.txt`.
+
+## Trust boundary and remaining work
+
+This creates durable, server-owned automatic project evidence, but it is not yet consumed by an advanced exam/rank eligibility transaction. Advanced ranks remain fail-closed by `ErrRankEvidenceRequired`; a future versioned rank policy must bind exact submission/evaluation IDs and hashes through exam start/claim/finish and award. P3 human-review labels are not persisted approvals. This local single-profile application cannot claim independent reviewer identity or public credential trust. Evidence is committed after the synchronous runner response; a process crash before that commit requires a resubmission. There is no durable in-flight job/recovery claim.

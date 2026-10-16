@@ -1,0 +1,136 @@
+{
+  "id": "middleplus-08",
+  "title": "Составные и частичные индексы",
+  "rank": "Middle+",
+  "module": "middleplus-data",
+  "prerequisites": [
+    "middleplus-07"
+  ],
+  "estimated_minutes": 210,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 88,
+  "learning_outcomes": [
+    "Подбирать порядок ключей по предикатам, сортировке и реальным запросам.",
+    "Разобрать левый префикс, покрытие, условие partial index и цену записи.",
+    "Ограничить вывод рамками наблюдений и назвать следующий проверочный эксперимент."
+  ],
+  "glossary": [
+    {
+      "term": "composite index",
+      "translation": "составной индекс",
+      "definition": "Индекс, упорядоченный по нескольким колонкам."
+    },
+    {
+      "term": "leading column",
+      "translation": "ведущая колонка",
+      "definition": "Первая колонка ключа индекса, влияющая на доступ по префиксу."
+    },
+    {
+      "term": "partial index",
+      "translation": "частичный индекс",
+      "definition": "Индекс, включающий только строки, удовлетворяющие predicate."
+    }
+  ],
+  "markdown_file": "middleplus-08.md",
+  "exercises": [
+    {
+      "id": "middleplus-08-easy",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: составь порядок колонок B-tree",
+      "prompt": "Классифицируйте форму составного B-tree: equality columns перед sort columns, только фильтр, только сортировка или invalid. Это правило схемы для заданной формы запроса, не гарантия выбора planner.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc IndexOrder(equalityColumns, sortColumns int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"equality_then_sort\"\n",
+      "criteria": [
+        "Учесть нулевые количества и отрицательные значения.",
+        "Разделить equality prefix и sort suffix."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "B-tree часто эффективен с equality по ведущим колонкам и затем order; детали зависят от операторов и плана."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-08-medium",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: проверь непустую форму индекса",
+      "prompt": "Проверьте, что counts неотрицательны и задают хотя бы одну колонку. Подходит ли конкретный тип/operator class, здесь не проверяется.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ValidIndexShape(equalityColumns, sortColumns int) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Не принимать пустой index shape.",
+        "Не подменять структурную проверку доказательством полезности."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Частичный индекс дополнительно требует, чтобы предикат запроса логически влек predicate индекса."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-08-hard",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: проверь equality prefix и порядок index",
+      "prompt": "В учебной модели запрос подходит, если задан непустой ключ индекса, число сортируемых колонок запроса не превосходит числа sort columns индекса, а predicate частичного индекса совпадает. Функция не моделирует направления сортировки/operator classes и не предсказывает решение planner.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc IndexSupportsQuery(equalityPrefix, indexSortColumns, querySortColumns int, partialPredicateMatches bool) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Сравнить число требуемых sort columns с фактическими index sort columns.",
+        "Не считать partial index применимым без совпадения predicate.",
+        "Указать предел упрощённой модели."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "PostgreSQL B-tree использует ведущие equality columns и следующие ключи для порядка; реальная пригодность зависит от predicate, операторов, направлений и плана."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Почему важен порядок колонок составного индекса?",
+      "answer": "B-tree упорядочивает ключи последовательно; левый префикс и порядок предикатов влияют на доступ и сортировку."
+    },
+    {
+      "question": "Что обычно даёт порядок equality затем range?",
+      "answer": "Он часто соответствует запросу с равенством по первым полям и диапазоном по следующему, но должен быть подтверждён конкретным workload и планом."
+    },
+    {
+      "question": "Как работает INCLUDE?",
+      "answer": "Он добавляет payload-колонки в индекс, но не превращает их в ключ сортировки; index-only scan также зависит от visibility map."
+    },
+    {
+      "question": "Для чего подходит partial index?",
+      "answer": "Для подмножества строк, заданного условием индекса; запрос должен позволить оптимизатору доказать соответствие своего WHERE этому условию."
+    },
+    {
+      "question": "Какова цена дополнительного индекса?",
+      "answer": "Он занимает место и добавляет работу на insert, delete и изменение ключевых полей, плюс стоимость обслуживания."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+# Advanced exam grader correction — 2026-10-16
+
+An independent review found that the first Middle/Middle+/Senior exam references used a few outputs that disagreed with the course grading specifications, while their test vectors checked a separate hand-written table. Those vectors could pass even though a learner submitting the reference would fail the actual grader.
+
+The advanced exams now use nine exam-only grading specs under `internal/grading/specs/`, separate from the mandatory final-lesson exercise specs. They cover retry/backoff/commit conditions (Middle), benchmark samples with independent medians, SLO budget and fault gates (Middle+), and risk prioritization, complete decision-review state combinations, and release gates (Senior). Each has public and hidden cases. `internal/assessment/advanced_test.go` now compiles each trusted reference with the actual grader driver, sends its public+private inputs, and asserts `grading.Spec.Check` passes.
+
+## Verification
+
+- `go test ./internal/grading ./internal/assessment -count=1` — PASS; includes all nine actual trusted-reference/hidden-vector executions.
+- `go vet ./internal/grading ./internal/assessment` — PASS.
+- Focused API/store/learning tests and full `make test` — PASS; see `m11-advanced-exams-final-technical-20261016.txt`.
+- `npx playwright test tests/exams.spec.ts tests/zz-exam-catalog-ui.spec.ts` — 4 PASS, 2 expected runner-dependent skips across desktop/mobile; six exams appear, advanced ones are unavailable without rank policy. See `advanced-exam-browser-20261016.txt`.
+
+These are objective exam definitions only. Middle/Middle+/Senior rank policies are not registered, the server's advanced-award guard remains closed, and no independent authenticated project-review record is implemented. No advanced rank is awarded by these exams.

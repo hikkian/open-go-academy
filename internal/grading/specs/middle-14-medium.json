@@ -1,0 +1,78 @@
+{
+  "id": "middle-14-medium",
+  "signature": "func PoolAcquireMedium(inUse int64, maximum int64, waiters int64, maxWaiters int64, remainingMs int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{InUse int64; Maximum int64; Waiters int64; MaxWaiters int64; RemainingMs int64; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(PoolAcquireMedium(x.InUse, x.Maximum, x.Waiters, x.MaxWaiters, x.RemainingMs));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "InUse": 7,
+      "Maximum": 8,
+      "Waiters": 0,
+      "MaxWaiters": 4,
+      "RemainingMs": 500
+    },
+    {
+      "InUse": 8,
+      "Maximum": 8,
+      "Waiters": 0,
+      "MaxWaiters": 4,
+      "RemainingMs": 500
+    },
+    {
+      "InUse": 8,
+      "Maximum": 8,
+      "Waiters": 4,
+      "MaxWaiters": 4,
+      "RemainingMs": 500
+    },
+    {
+      "InUse": 8,
+      "Maximum": 8,
+      "Waiters": 1,
+      "MaxWaiters": 4,
+      "RemainingMs": 0
+    }
+  ],
+  "public_expected": [
+    "acquire",
+    "wait",
+    "reject",
+    "timeout"
+  ],
+  "private_input": [
+    {
+      "InUse": -1,
+      "Maximum": 8,
+      "Waiters": 0,
+      "MaxWaiters": 4,
+      "RemainingMs": 1
+    },
+    {
+      "InUse": 9,
+      "Maximum": 8,
+      "Waiters": 0,
+      "MaxWaiters": 4,
+      "RemainingMs": 1
+    },
+    {
+      "InUse": 8,
+      "Maximum": 8,
+      "Waiters": 0,
+      "MaxWaiters": 4,
+      "RemainingMs": -1
+    },
+    {
+      "InUse": 8,
+      "Maximum": 8,
+      "Waiters": 0,
+      "MaxWaiters": 4,
+      "RemainingMs": 1
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid",
+    "invalid",
+    "wait"
+  ]
+}

@@ -1,0 +1,7 @@
+2026-10-16 Asia/Atyrau
+Command: Python parse of all planned IDs Middle 01–40, Middle+ 01–24, Senior 01–24; assert order = 41–80, 81–104, 105–128, unique and contiguous.
+Result: PASS: all 88 draft IDs have unique contiguous orders 41–128.
+
+Default opt-in gate compile/skip check:
+GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test -count=1 ./internal/content -run '^TestM11DraftCatalogAcceptance$'
+Result: ok academy/internal/content 0.003s; acceptance skipped because ACADEMY_ACCEPT_M11_DRAFTS was unset.

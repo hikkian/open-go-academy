@@ -1,0 +1,142 @@
+{
+  "id": "middle-25",
+  "title": "Handler, service, repository и DI",
+  "rank": "Middle",
+  "module": "middle-architecture",
+  "prerequisites": [
+    "juniorplus-13"
+  ],
+  "estimated_minutes": 150,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Отделять протокол от правила продукта",
+    "Передавать узкую зависимость конструктору",
+    "Не полагаться на глобальное изменяемое хранилище"
+  ],
+  "glossary": [
+    {
+      "term": "handler",
+      "translation": "обработчик",
+      "definition": "Преобразует HTTP вход и результат use case"
+    },
+    {
+      "term": "service",
+      "translation": "служба приложения",
+      "definition": "Координирует сценарий и доменные правила"
+    },
+    {
+      "term": "repository",
+      "translation": "репозиторий",
+      "definition": "Изолирует операции хранения"
+    }
+  ],
+  "markdown_file": "middle-25.md",
+  "order": 65,
+  "exercises": [
+    {
+      "id": "middle-25-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Responsibility boundary — локальное правило",
+      "prompt": "Контракт `func LayerForOperationEasy(layer, operation string) string`: handler decodes/encodes transport; service enforces domain rule; repository performs SQL; all cross-layer responsibilities => misplaced. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc LayerForOperationEasy(layer, operation string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"allow\"\n\"allow\"\n\"allow\"\n",
+      "criteria": [
+        "Контракт responsibility boundary выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-25-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Dependency wiring — ветви политики",
+      "prompt": "Контракт `func ServiceWiringMedium(repositoryBound, clockBound bool) string`: both explicit dependencies bound => ready; neither => missing_repository_and_clock; report the specific missing dependency otherwise. This models composition-root wiring, not runtime health. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ServiceWiringMedium(repositoryBound, clockBound bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"ready\"\n\"missing_repository\"\n\"missing_clock\"\n",
+      "criteria": [
+        "Контракт dependency wiring выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-25-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Complete request wiring — отказ и граница гарантии",
+      "prompt": "Контракт `func RequestPathReadyHard(handlerBound, serviceBound, repositoryBound bool) bool`: true only if composition root wires the complete handler -> service -> repository path; no network or database health is implied. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RequestPathReadyHard(handlerBound, serviceBound, repositoryBound bool) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\nfalse\n",
+      "criteria": [
+        "Контракт complete request wiring выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какую гарантию дает данный учебный пример?",
+      "answer": "Только соответствие описанному детерминированному контракту на заданных входах."
+    },
+    {
+      "question": "Что следует проверять отдельно в работающей системе?",
+      "answer": "Транзакции, ограничения хранения, повторные запросы, отказ и восстановление реальных зависимостей."
+    },
+    {
+      "question": "Можно ли сделать универсальный вывод по EXPLAIN/кешу/брокеру?",
+      "answer": "Нет. Нужны фактический движок, конфигурация и измеренный workload."
+    }
+  ]
+}

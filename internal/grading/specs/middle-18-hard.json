@@ -1,0 +1,77 @@
+{
+  "id": "middle-18-hard",
+  "signature": "func MessageAckHard(transient bool, attempts int64, handlerCommitted bool, maxAttempts int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Transient bool; Attempts int64; HandlerCommitted bool; MaxAttempts int64; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(MessageAckHard(x.Transient, x.Attempts, x.HandlerCommitted, x.MaxAttempts));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Transient": false,
+      "Attempts": 0,
+      "HandlerCommitted": true,
+      "MaxAttempts": 3
+    },
+    {
+      "Transient": true,
+      "Attempts": 2,
+      "HandlerCommitted": false,
+      "MaxAttempts": 3
+    },
+    {
+      "Transient": true,
+      "Attempts": 3,
+      "HandlerCommitted": false,
+      "MaxAttempts": 3
+    },
+    {
+      "Transient": true,
+      "Attempts": 3,
+      "HandlerCommitted": true,
+      "MaxAttempts": 3
+    },
+    {
+      "Transient": false,
+      "Attempts": 0,
+      "HandlerCommitted": false,
+      "MaxAttempts": 1
+    }
+  ],
+  "public_expected": [
+    "ack",
+    "retry",
+    "dead_letter",
+    "ack",
+    "reject"
+  ],
+  "private_input": [
+    {
+      "Transient": true,
+      "Attempts": -1,
+      "HandlerCommitted": false,
+      "MaxAttempts": 3
+    },
+    {
+      "Transient": true,
+      "Attempts": 0,
+      "HandlerCommitted": false,
+      "MaxAttempts": 0
+    },
+    {
+      "Transient": true,
+      "Attempts": 4,
+      "HandlerCommitted": false,
+      "MaxAttempts": 3
+    },
+    {
+      "Transient": true,
+      "Attempts": 0,
+      "HandlerCommitted": true,
+      "MaxAttempts": 3
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid",
+    "dead_letter",
+    "ack"
+  ]
+}

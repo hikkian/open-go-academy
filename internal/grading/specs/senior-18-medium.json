@@ -1,0 +1,22 @@
+{
+  "id": "senior-18-medium",
+  "signature": "func AttributeAllowed(key string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Key string `json:\"key\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(AttributeAllowed(in.Key)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "key": "route_template"
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "key": "user_email"
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

@@ -1,0 +1,20 @@
+2026-10-16 Asia/Atyrau — local and cloud Tutor provider acceptance
+
+Backend and full repository
+- `GOCACHE=/tmp/oga-tutor-revision-cache .tools/go/bin/go test -count=1 ./internal/httpapi ./internal/tutor` — PASS after provider revision, stale-consent, missing config-parent, and persistence transition fixes.
+- Regression cases `TestTutorStaleProviderConsentRejectedBeforeBudgetAndCall` and `TestTutorCloudSwitchFailureRestoresPreviousSecretAndRuntime` confirm a stale tab cannot reserve/call and a rejected provider switch retains the previous model/key on disk.
+- `GOCACHE=/tmp/oga-tutor-final-full-cache-20261016 make test` — PASS: all Go tests, P1 reference test/vet, whole-tree Go vet/race, TypeScript typecheck, production build.
+- `git diff --check` and `sh -n scripts/e2e-server.sh` — PASS.
+
+Browser / visual
+- Playwright Tutor privacy/no-AI, local config save/delete, cloud config save/delete, key not returned by GET, provider switch and stale-revision rejection — 6/6 PASS across desktop and mobile projects.
+- Both provider settings used temporary disposable databases. Cloud test uses `https://8.8.8.8/v1` and a synthetic test key; it never sends a request to that host. The key is absent from `/api/tutor` response. A stale provider revision returns 409 and leaves Tutor request count at zero.
+- Axe checks in Tutor screens passed; cloud settings screen and tutor page screenshot: `artifacts/desktop-tutor-cloud.png`, visually inspected.
+- Settings save/delete does not call an LLM. No user model, real API key, or external model call was used.
+- 2026-10-16 model-picker follow-up: `cd web && npm run typecheck` — PASS; `cd web && npm run build` — PASS; `ACADEMY_DB=/tmp/open-go-academy-tutor-models-20261016-final/academy.db npm run e2e -- tests/tutor.spec.ts --project=desktop --project=mobile` — 6 passed, 2 explicit provider-runtime skips. Tests assert the current OpenAI suggestions and datalist; the desktop/cloud screenshot was visually inspected. Current IDs and positioning follow the official [OpenAI API model catalog](https://developers.openai.com/api/docs/models) (checked 2026-10-16). No real API call was made.
+
+Runtime semantics
+- Local provider accepts only loopback HTTP and no API key; `/v1` normalizes to `/v1/chat/completions`.
+- Cloud provider accepts HTTPS public hosts; key is stored server-side in a mode-0600 config, omitted from API responses, and is never submitted until normal request consent.
+- Every GET returns an opaque provider revision. POST includes that revision; a provider change invalidates prior consent and is rejected before budget reservation/model call. Provider runtime publication follows the persistence transition; deletion of an absent optional config path is a no-op.
+- API usage is billed independently of ChatGPT/Codex; see official links in README.

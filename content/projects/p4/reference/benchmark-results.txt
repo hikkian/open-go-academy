@@ -1,0 +1,22 @@
+go version go1.27.2 linux/amd64
+goos: linux
+goarch: amd64
+pkg: open-go-academy/p4-scalelab/reference
+cpu: AMD Ryzen 5 5600 6-Core Processor
+kernel: Linux 7.2.10-200.fc44.x86_64
+command: go test -run '^$' -bench 'BenchmarkAggregate' -benchmem -count=5 ./...
+date: 2026-10-16 Asia/Atyrau
+
+BenchmarkAggregateBaseline-12        1551       741201 ns/op   389941 B/op   12310 allocs/op
+BenchmarkAggregateBaseline-12        1635       733020 ns/op   389941 B/op   12310 allocs/op
+BenchmarkAggregateBaseline-12        1620       723475 ns/op   389937 B/op   12310 allocs/op
+BenchmarkAggregateBaseline-12        1600       728589 ns/op   389937 B/op   12310 allocs/op
+BenchmarkAggregateBaseline-12        1641       725176 ns/op   389939 B/op   12310 allocs/op
+BenchmarkAggregateOptimized-12       2748       444019 ns/op   337646 B/op    3013 allocs/op
+BenchmarkAggregateOptimized-12       2616       432768 ns/op   337646 B/op    3013 allocs/op
+BenchmarkAggregateOptimized-12       2634       433202 ns/op   337645 B/op    3013 allocs/op
+BenchmarkAggregateOptimized-12       2503       440141 ns/op   337647 B/op    3013 allocs/op
+BenchmarkAggregateOptimized-12       2510       447839 ns/op   337644 B/op    3013 allocs/op
+
+PASS
+ok   open-go-academy/p4-scalelab/reference 12.261s

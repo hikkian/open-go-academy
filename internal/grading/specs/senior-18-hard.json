@@ -1,0 +1,24 @@
+{
+  "id": "senior-18-hard",
+  "signature": "func IncidentSignal(samples, failed int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Samples int `json:\"samples\"`; Failed int `json:\"failed\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(IncidentSignal(in.Samples, in.Failed)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "samples": 10,
+      "failed": 1
+    }
+  ],
+  "public_expected": [
+    "observed_failure"
+  ],
+  "private_input": [
+    {
+      "samples": 0,
+      "failed": 0
+    }
+  ],
+  "private_expected": [
+    "unknown"
+  ]
+}

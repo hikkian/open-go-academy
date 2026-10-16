@@ -357,6 +357,15 @@ func (s *Store) SaveProjectFiles(projectID string, files map[string]string) erro
 		if err := validateProjectFilesWithLimits(files, projects.P2MaxFiles, projects.P2MaxBytes); err != nil {
 			return err
 		}
+	} else if projectID == "p3" || projectID == "p4" || projectID == "p5" {
+		if err := projects.ValidateFor(projectID, files); err != nil {
+			return err
+		}
+		// Managed projects use the catalog's bounded workspace quotas (P4 has
+		// a stricter 24-file cap); legacy P1 keeps its smaller historical limit.
+		if err := validateProjectFilesWithLimits(files, projects.P2MaxFiles, projects.P2MaxBytes); err != nil {
+			return err
+		}
 	} else if err := validateProjectFiles(files); err != nil {
 		return err
 	}

@@ -1,0 +1,62 @@
+{
+  "id": "middleplus-21-medium",
+  "signature": "func SLOMeets(total int, failed int, maxErrorPercent int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Total int `json:\"total\"`; Failed int `json:\"failed\"`; Maxerrorpercent int `json:\"maxErrorPercent\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { out:=SLOMeets(in.Total, in.Failed, in.Maxerrorpercent); if err:=enc.Encode(out); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "total": 100,
+      "failed": 1,
+      "maxErrorPercent": 1
+    },
+    {
+      "total": 100,
+      "failed": 2,
+      "maxErrorPercent": 1
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "total": -1,
+      "failed": 1,
+      "maxErrorPercent": 2
+    },
+    {
+      "total": 9223372036854775807,
+      "failed": 9223372036854775807,
+      "maxErrorPercent": 0
+    },
+    {
+      "total": 9223372036854775807,
+      "failed": 9223372036854775807,
+      "maxErrorPercent": 100
+    },
+    {
+      "total": 100,
+      "failed": 1,
+      "maxErrorPercent": 1
+    },
+    {
+      "total": 100,
+      "failed": 2,
+      "maxErrorPercent": 1
+    },
+    {
+      "total": 1,
+      "failed": 0,
+      "maxErrorPercent": 0
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    true,
+    true,
+    false,
+    true
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "middle-32-hard",
+  "signature": "func SignalDecision(requests, failures int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Requests int `json:\"requests\"`; Failures int `json:\"failures\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(SignalDecision(in.Requests, in.Failures)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "requests": 10,
+      "failures": 0
+    },
+    {
+      "requests": 10,
+      "failures": 1
+    },
+    {
+      "requests": 0,
+      "failures": 0
+    }
+  ],
+  "public_expected": [
+    "no_errors_observed",
+    "errors_present",
+    "no_sample"
+  ],
+  "private_input": [
+    {
+      "requests": 0,
+      "failures": 1
+    },
+    {
+      "requests": 10,
+      "failures": 11
+    },
+    {
+      "requests": -1,
+      "failures": 0
+    },
+    {
+      "requests": 10,
+      "failures": -1
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid",
+    "invalid",
+    "invalid"
+  ]
+}

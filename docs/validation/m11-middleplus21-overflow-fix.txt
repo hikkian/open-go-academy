@@ -1,0 +1,12 @@
+2026-10-16 Asia/Atyrau — Middle+21 SLO overflow repair
+
+Finding: the prior `failed*100 <= total*percent` calculation could overflow signed `int`, including MaxInt failures at 0% returning true.
+
+Fix: `SLOMeets` and `BudgetRemaining` now validate the full input range and compare to an overflow-safe `floor(total*percent/100)` threshold computed from quotient and remainder. Prompts, starter hints, examples, references and specs agree. Vectors include MaxInt at 0% and 100%, exact budget boundary and one above it.
+
+Checks reported by the scoped builder:
+- M11 acceptance for `middleplus-21` with fresh GOCACHE and offline Go modules — PASS (examples, starters and isolated production reference grading).
+- `go test ... ./internal/grading ./internal/content -run '^(TestLoadCatalog|TestCatalogAndReferenceSolutions)$'` — PASS.
+- Changed JSON parse and `git diff --check` — PASS.
+
+This is scoped evidence only. The current unfiltered M11 aggregate must be rerun after the other active curriculum repairs; no draft was published.

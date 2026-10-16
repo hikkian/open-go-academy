@@ -1,0 +1,24 @@
+{
+  "id": "senior-22-easy",
+  "signature": "func ReviewPriority(severity int, dataBoundary bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Severity int `json:\"severity\"`; DataBoundary bool `json:\"dataBoundary\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ReviewPriority(in.Severity, in.DataBoundary)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "severity": 1,
+      "dataBoundary": true
+    }
+  ],
+  "public_expected": [
+    "blocking"
+  ],
+  "private_input": [
+    {
+      "severity": 2,
+      "dataBoundary": false
+    }
+  ],
+  "private_expected": [
+    "normal"
+  ]
+}

@@ -1,0 +1,27 @@
+2026-10-16 Asia/Atyrau — Middle+13…17 policy/transition remediation
+
+The first audit repairs replaced the generic paragraph and expanded vectors. A second remediation replaced the scalar contracts with bounded, topic-specific policies:
+- Middle+13: overflow-safe reserve/capacity budget and decision.
+- Middle+14: wait, deadline, shed, reject and cancellation policy.
+- Middle+15: queue depth/age and paused-priority decision.
+- Middle+16: capped exponential backoff and retry-budget/deadline decision.
+- Middle+17: outbox state, retry limit, crash recovery and deduplication action.
+
+Metadata, Russian lesson text, examples, starter signatures, specs/drivers/vectors and references are synchronized. The local functions model declared policies and do not claim production integrations.
+
+Current scoped command:
+`ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middleplus-13,middleplus-14,middleplus-15,middleplus-16,middleplus-17 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-mplus13-17-final-20261016 .tools/go/bin/go test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+
+Result: PASS, `ok academy/internal/content 157.231s`: 15 examples, 15 starter builds, 15 isolated reference/grader checks. Direct compile/run checks also passed for the 15 references and 15 Markdown examples. JSON/vector/prompt/signature-size checks passed.
+
+M+18…23 has separate active repairs, including a cross-group catalog blocker; this evidence is scoped and does not make the old full aggregate current. Drafts remain unpublished.
+
+Final shared-catalog verification after Middle+19 neighboring changes:
+`ACADEMY_M11_LESSON_IDS=middleplus-13,middleplus-14,middleplus-15,middleplus-16,middleplus-17 ACADEMY_ACCEPT_M11_DRAFTS=1 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-mplus13-17-finalcatalog-20261016 .tools/go/bin/go test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+
+Result: PASS, 168.671s (15 examples, starter builds and isolated reference checks).
+
+Final rerun after the Middle+18…23 remediation batch:
+`ACADEMY_M11_LESSON_IDS=middleplus-13,middleplus-14,middleplus-15,middleplus-16,middleplus-17 ACADEMY_ACCEPT_M11_DRAFTS=1 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-mplus13-17-after-neighbor-final-20261016 .tools/go/bin/go test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+
+Result: PASS on 2026-10-16, 191.067s; all 15 examples, starter builds, and isolated reference/grader checks passed. The suite selected only Middle+13…17. This does not replace the current-tree unfiltered M11 gate; candidate lessons remain drafts.

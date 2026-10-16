@@ -1,0 +1,222 @@
+openapi: 3.1.0
+info:
+  title: TaskFlow classroom API
+  version: 1.0.0
+  description: Local learning API. It is not a public production service or security certification.
+servers:
+  - url: http://127.0.0.1:8098
+security:
+  - SessionCookie: []
+paths:
+  /livez:
+    get:
+      security: []
+      responses:
+        '200': {description: Process liveness only; dependencies are not checked}
+  /readyz:
+    get:
+      security: []
+      responses:
+        '200': {description: PostgreSQL is reachable and the worker is accepting work}
+        '503': {description: PostgreSQL unavailable or worker stopped/draining}
+  /api/v1/users:
+    post:
+      security: []
+      summary: Register a user and create their first workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: {type: string, minLength: 3, maxLength: 254}
+                password: {type: string, minLength: 12, maxLength: 256, writeOnly: true}
+      responses:
+        '201': {description: Registered; sets an HttpOnly session cookie}
+        '400': {description: Invalid request}
+        '429': {description: Client request limit exceeded}
+  /api/v1/sessions:
+    post:
+      security: []
+      summary: Create a server-side session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: {type: string}
+                password: {type: string, writeOnly: true}
+      responses:
+        '200': {description: Authenticated; sets an HttpOnly session cookie}
+        '401': {description: Authentication failed}
+  /api/v1/sessions/current:
+    delete:
+      responses:
+        '204': {description: Session revoked}
+        '503': {description: Server-side revocation failed; retry because clearing a browser cookie does not revoke the bearer token}
+  /api/v1/workspaces:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/WorkspaceName'}
+      responses:
+        '201': {description: Created workspace with caller as owner}
+        '401': {description: No valid session}
+    get:
+      parameters:
+        - {$ref: '#/components/parameters/After'}
+      responses:
+        '200': {description: Caller-visible workspaces, up to 100 per UUID keyset page}
+  /api/v1/workspaces/{workspace}/projects:
+    parameters:
+      - {$ref: '#/components/parameters/WorkspaceID'}
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ProjectName'}
+      responses:
+        '201': {description: Created for an owner/editor member}
+        '404': {description: Workspace is unavailable to caller}
+    get:
+      parameters:
+        - {$ref: '#/components/parameters/After'}
+      responses:
+        '200': {description: Caller-visible projects, up to 100 per UUID keyset page}
+  /api/v1/workspaces/{workspace}/members/{email}:
+    parameters:
+      - {$ref: '#/components/parameters/WorkspaceID'}
+      - name: email
+        in: path
+        required: true
+        schema: {type: string, minLength: 3, maxLength: 254}
+    put:
+      description: Workspace owners may assign editor or viewer to an existing registered user; owner roles cannot be granted or removed here.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role: {type: string, enum: [editor, viewer]}
+      responses:
+        '200': {description: Membership role updated}
+        '404': {description: Workspace or target user is unavailable to caller}
+  /api/v1/projects/{project}/tasks:
+    parameters:
+      - {$ref: '#/components/parameters/ProjectID'}
+    get:
+      parameters:
+        - {$ref: '#/components/parameters/After'}
+      summary: List up to 100 tasks in a workspace-visible project using the after UUID cursor
+      responses:
+        '200': {description: Bounded task list}
+        '401': {description: No valid session}
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, idempotency_key]
+              properties:
+                title: {type: string, minLength: 1, maxLength: 200}
+                description: {type: string, maxLength: 4000}
+                idempotency_key: {type: string, minLength: 1, maxLength: 128}
+      responses:
+        '201': {description: New task and outbox row committed together}
+        '200': {description: Authorized replay returned original task}
+        '404': {description: Project is unavailable to caller}
+  /api/v1/tasks/{task}:
+    parameters:
+      - {$ref: '#/components/parameters/TaskID'}
+    patch:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [state, version]
+              properties:
+                state: {type: string, enum: [open, doing, done]}
+                version: {type: integer, minimum: 1}
+      responses:
+        '200': {description: Task updated with incremented version}
+        '404': {description: Task is unavailable or version is stale}
+    delete:
+      description: Owner only.
+      responses:
+        '204': {description: Task deleted}
+        '404': {description: Task is unavailable to caller}
+  /api/v1/tasks/{task}/comments:
+    parameters:
+      - {$ref: '#/components/parameters/TaskID'}
+    get:
+      parameters:
+        - {$ref: '#/components/parameters/After'}
+      responses:
+        '200': {description: Up to 100 comments for a visible task using the after UUID cursor}
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [body]
+              properties:
+                body: {type: string, minLength: 1, maxLength: 2000}
+      responses:
+        '201': {description: Comment added by the server-authenticated user}
+        '404': {description: Task is unavailable to caller}
+components:
+  securitySchemes:
+    SessionCookie:
+      type: apiKey
+      in: cookie
+      name: taskflow_session
+  parameters:
+    WorkspaceID:
+      name: workspace
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    ProjectID:
+      name: project
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    TaskID:
+      name: task
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    After:
+      name: after
+      in: query
+      required: false
+      description: UUID cursor from the previous page's next_cursor.
+      schema: {type: string, format: uuid}
+  schemas:
+    WorkspaceName:
+      type: object
+      required: [name]
+      properties:
+        name: {type: string, minLength: 1, maxLength: 100}
+    ProjectName:
+      type: object
+      required: [name]
+      properties:
+        name: {type: string, minLength: 1, maxLength: 120}

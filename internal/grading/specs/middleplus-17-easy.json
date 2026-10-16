@@ -1,0 +1,54 @@
+{
+  "id": "middleplus-17-easy",
+  "signature": "func OutboxTransition(state string, event string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { State string `json:\"state\"`; Event string `json:\"event\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(OutboxTransition(in.State,in.Event)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "state": "absent",
+      "event": "persist"
+    }
+  ],
+  "public_expected": [
+    "pending"
+  ],
+  "private_input": [
+    {
+      "state": "absent",
+      "event": "rollback"
+    },
+    {
+      "state": "pending",
+      "event": "publish"
+    },
+    {
+      "state": "pending",
+      "event": "crash"
+    },
+    {
+      "state": "delivered",
+      "event": "ack"
+    },
+    {
+      "state": "delivered",
+      "event": "crash"
+    },
+    {
+      "state": "acked",
+      "event": "publish"
+    },
+    {
+      "state": "unknown",
+      "event": "publish"
+    }
+  ],
+  "private_expected": [
+    "absent",
+    "delivered",
+    "pending",
+    "acked",
+    "pending",
+    "acked",
+    "invalid"
+  ]
+}

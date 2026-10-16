@@ -1,0 +1,31 @@
+Middle+24 ScaleLab contract alignment
+Date: 2026-10-16
+Status: targeted authoring validation; not publication or proof of a real benchmark.
+
+Finding and correction
+The three existing function signatures receive only run counts (and, for Medium/Hard, a bool). Prompts previously claimed these values also proved a Go version, dataset hash, same input, or the execution of an actual fault test. Those claims were removed. Contracts now describe only what the signatures can inspect:
+- Easy: either non-positive run count -> incomplete; otherwise compare.
+- Medium: either count below three -> repeat; otherwise false faultTested -> fault_test, true -> review.
+- Hard: true iff both counts are at least three and faultTested is true.
+The lesson now says Go version, input identity/hash, raw results, and a fault-test artifact must be recorded separately. The helper cannot inspect them and does not promise reproducibility across machines or an SLA. The existing references implement the corrected rules; signatures stayed unchanged.
+
+Changed paths
+- internal/content/data/middleplus-24.json
+- internal/content/data/middleplus-24.md
+- internal/grading/specs/middleplus-24-easy.json
+- internal/grading/specs/middleplus-24-medium.json
+- internal/grading/specs/middleplus-24-hard.json
+
+Trusted references remain at internal/content/solutions/middleplus-24-{easy,medium,hard}/main.go and were not changed.
+
+Checks (Go 1.27.2 linux/amd64)
+1. Production grader chain for all three exercises:
+   GOTOOLCHAIN=local .tools/go/bin/go test -count=1 -timeout=3m -overlay=/tmp/middleplus24_prod_overlay.json ./internal/grading -run '^TestMiddleplus24ProductionContractsOverlay$'
+   Result: PASS, ok academy/internal/grading 27.899s. The temporary overlay test called LoadFor -> BindReference -> Request(private=true) -> runner.Preflight/Execute -> Check for each trusted reference; every public/private case passed. Overlay source and mapping were kept in /tmp, not the repository.
+2. Markdown examples and vector/public-output audit:
+   python3 /tmp/middleplus24_check_examples.py
+   Result: PASS on all 3 examples; stdout was compare, fault_test, true. Public/private vector lengths matched expected outputs: Easy 2/4, Medium 4/3, Hard 3/4. The JSON public_output lines matched public_expected.
+3. Lesson word count: 2,158 whitespace-delimited words (within the 1,800–2,200 target).
+
+Limitations
+The three functions are deterministic gates over provided values. They do not run benchmarks or fault injection, compare dataset hashes, verify Go/toolchain metadata, or establish a production SLI/SLO. Those claims require separately retained experiment artifacts and review.

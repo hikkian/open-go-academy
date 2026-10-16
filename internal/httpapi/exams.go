@@ -68,6 +68,8 @@ func examStoreError(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, store.ErrExamPrerequisites):
 		fail(w, 409, "сначала подтвердите выполнение обязательных упражнений")
+	case errors.Is(err, store.ErrRankEvidenceRequired):
+		fail(w, 409, "для этого ранга обязательны проверенные проектные и аттестационные evidence; автоматическая выдача пока не настроена")
 	case errors.Is(err, store.ErrExamAttemptNotFound), errors.Is(err, store.ErrProfileNotFound), errors.Is(err, store.ErrExamNotFound):
 		fail(w, 404, "попытка или экзамен не найдены")
 	case errors.Is(err, store.ErrExamToken):
@@ -110,7 +112,25 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 			if e.RequiredRank != "" && !ranks[e.RequiredRank] {
 				missing = append(missing, "rank:"+e.RequiredRank)
 			}
-			catalog = append(catalog, map[string]any{"id": e.ID, "version": e.Version, "title": e.Title, "rank": e.Rank, "description": e.Description, "estimated_minutes": e.EstimatedMinutes, "criteria": e.Criteria, "eligible": len(missing) == 0, "missing_prerequisites": missing})
+			entry := map[string]any{"id": e.ID, "version": e.Version, "title": e.Title, "rank": e.Rank, "description": e.Description, "estimated_minutes": e.EstimatedMinutes, "criteria": e.Criteria}
+			policyStatus, policyErr := a.Store.RankPolicyEligibility("local", e.ID, e.Version)
+			if policyErr == nil {
+				entry["rank_evidence"] = policyStatus
+				for _, requirement := range policyStatus.Requirements {
+					if requirement.Status != "verified" {
+						missing = append(missing, "evidence:"+requirement.RequirementID)
+					}
+				}
+			} else if errors.Is(policyErr, store.ErrRankPolicyNotFound) && advancedRank(e.Rank) {
+				entry["rank_evidence"] = map[string]any{"status": "unavailable", "reason": "rank_evidence_policy_unconfigured"}
+				missing = append(missing, "rank_evidence_policy")
+			} else if !errors.Is(policyErr, store.ErrRankPolicyNotFound) {
+				examStoreError(w, policyErr)
+				return
+			}
+			entry["eligible"] = len(missing) == 0
+			entry["missing_prerequisites"] = missing
+			catalog = append(catalog, entry)
 		}
 		write(w, 200, catalog)
 	})
@@ -142,6 +162,21 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 		requiredRanks := []string{}
 		if e.RequiredRank != "" {
 			requiredRanks = append(requiredRanks, e.RequiredRank)
+		}
+		if advancedRank(e.Rank) {
+			eligibility, eligibilityErr := a.Store.RankPolicyEligibility("local", e.ID, e.Version)
+			if errors.Is(eligibilityErr, store.ErrRankPolicyNotFound) {
+				examStoreError(w, store.ErrRankEvidenceRequired)
+				return
+			}
+			if eligibilityErr != nil {
+				examStoreError(w, eligibilityErr)
+				return
+			}
+			if !eligibility.Eligible {
+				examStoreError(w, store.ErrExamPrerequisites)
+				return
+			}
 		}
 		attempt, err := a.Store.StartExam("local", e.ID, e.Version, tokenHash(token), e.Prerequisites, requiredRanks...)
 		if err != nil {
@@ -344,6 +379,15 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 		finalized = true
 		write(w, 200, map[string]any{"attempt": completed, "score": score, "passed": passed, "checks": checks, "rank_awarded": passed, "rank": e.Rank, "trust_notice": examTrustNotice})
 	})
+}
+
+func advancedRank(rank string) bool {
+	switch rank {
+	case "Middle", "Middle+", "Senior":
+		return true
+	default:
+		return false
+	}
 }
 
 func boundedExamDetail(s string) string {

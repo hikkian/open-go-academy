@@ -1,0 +1,26 @@
+{
+  "id": "senior-24-medium",
+  "signature": "func DecisionReview(triggerObserved, evidenceUpdated, ownerAssigned bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { TriggerObserved bool `json:\"triggerObserved\"`; EvidenceUpdated bool `json:\"evidenceUpdated\"`; OwnerAssigned bool `json:\"ownerAssigned\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(DecisionReview(in.TriggerObserved, in.EvidenceUpdated, in.OwnerAssigned)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "triggerObserved": true,
+      "evidenceUpdated": true,
+      "ownerAssigned": true
+    }
+  ],
+  "public_expected": [
+    "revisit_decision"
+  ],
+  "private_input": [
+    {
+      "triggerObserved": true,
+      "evidenceUpdated": false,
+      "ownerAssigned": true
+    }
+  ],
+  "private_expected": [
+    "gather_evidence"
+  ]
+}

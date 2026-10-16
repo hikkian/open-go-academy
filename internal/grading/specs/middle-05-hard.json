@@ -1,0 +1,50 @@
+{
+  "id": "middle-05-hard",
+  "signature": "func DeadlineChain(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(DeadlineChain(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      800,
+      500,
+      700,
+      100
+    ],
+    [
+      50,
+      60
+    ]
+  ],
+  "public_expected": [
+    [
+      800,
+      500,
+      500,
+      100
+    ],
+    [
+      50,
+      50
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      10
+    ],
+    [
+      -1,
+      4
+    ]
+  ],
+  "private_expected": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ]
+}

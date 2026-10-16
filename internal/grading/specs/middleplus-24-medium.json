@@ -1,0 +1,56 @@
+{
+  "id": "middleplus-24-medium",
+  "signature": "func ScaleLabGate(baselineRuns int, candidateRuns int, faultTested bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Baselineruns int `json:\"baselineRuns\"`; Candidateruns int `json:\"candidateRuns\"`; Faulttested bool `json:\"faultTested\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { out:=ScaleLabGate(in.Baselineruns, in.Candidateruns, in.Faulttested); if err:=enc.Encode(out); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "baselineRuns": 3,
+      "candidateRuns": 3,
+      "faultTested": true
+    },
+    {
+      "baselineRuns": 2,
+      "candidateRuns": 4,
+      "faultTested": true
+    },
+    {
+      "baselineRuns": 4,
+      "candidateRuns": 2,
+      "faultTested": true
+    },
+    {
+      "baselineRuns": 3,
+      "candidateRuns": 3,
+      "faultTested": false
+    }
+  ],
+  "public_expected": [
+    "review",
+    "repeat",
+    "repeat",
+    "fault_test"
+  ],
+  "private_input": [
+    {
+      "baselineRuns": 0,
+      "candidateRuns": 0,
+      "faultTested": false
+    },
+    {
+      "baselineRuns": -1,
+      "candidateRuns": 3,
+      "faultTested": true
+    },
+    {
+      "baselineRuns": 3,
+      "candidateRuns": -1,
+      "faultTested": true
+    }
+  ],
+  "private_expected": [
+    "repeat",
+    "repeat",
+    "repeat"
+  ]
+}

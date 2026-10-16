@@ -1,0 +1,30 @@
+{
+  "id": "senior-08-easy",
+  "signature": "func DeadlineState(remainingMillis int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { RemainingMillis int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(DeadlineState(in.RemainingMillis)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "RemainingMillis": 20
+    },
+    {
+      "RemainingMillis": 0
+    }
+  ],
+  "public_expected": [
+    "continue",
+    "expired"
+  ],
+  "private_input": [
+    {
+      "RemainingMillis": -1
+    },
+    {
+      "RemainingMillis": 1
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "continue"
+  ]
+}

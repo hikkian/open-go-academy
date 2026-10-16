@@ -1,0 +1,44 @@
+{
+  "id": "middle-28-hard",
+  "signature": "func CanStart(dbConfigured, repositoryWired, handlerWired bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { DbConfigured bool `json:\"dbConfigured\"`; RepositoryWired bool `json:\"repositoryWired\"`; HandlerWired bool `json:\"handlerWired\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CanStart(in.DbConfigured, in.RepositoryWired, in.HandlerWired)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "dbConfigured": true,
+      "repositoryWired": true,
+      "handlerWired": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "dbConfigured": false,
+      "repositoryWired": true,
+      "handlerWired": true
+    },
+    {
+      "dbConfigured": true,
+      "repositoryWired": false,
+      "handlerWired": true
+    },
+    {
+      "dbConfigured": true,
+      "repositoryWired": true,
+      "handlerWired": false
+    },
+    {
+      "dbConfigured": false,
+      "repositoryWired": false,
+      "handlerWired": false
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false
+  ]
+}

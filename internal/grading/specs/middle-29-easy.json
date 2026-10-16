@@ -1,0 +1,44 @@
+{
+  "id": "middle-29-easy",
+  "signature": "func BodyAllowed(bodyBytes, maxBytes int64) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { BodyBytes int64 `json:\"bodyBytes\"`; MaxBytes int64 `json:\"maxBytes\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(BodyAllowed(in.BodyBytes, in.MaxBytes)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "bodyBytes": 0,
+      "maxBytes": 1
+    },
+    {
+      "bodyBytes": 16,
+      "maxBytes": 16
+    }
+  ],
+  "public_expected": [
+    true,
+    true
+  ],
+  "private_input": [
+    {
+      "bodyBytes": 17,
+      "maxBytes": 16
+    },
+    {
+      "bodyBytes": -1,
+      "maxBytes": 16
+    },
+    {
+      "bodyBytes": 0,
+      "maxBytes": 0
+    },
+    {
+      "bodyBytes": 0,
+      "maxBytes": -1
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "senior-03-medium",
+  "signature": "func Spare(capacity, demand int64) (margin int64, valid bool)",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Capacity int64; Demand int64 }\ntype output struct { Margin int64; Valid bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { margin,valid:=Spare(in.Capacity, in.Demand); if e:=enc.Encode(output{Margin:margin, Valid:valid}); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Capacity": 120,
+      "Demand": 80
+    },
+    {
+      "Capacity": 50,
+      "Demand": 70
+    }
+  ],
+  "public_expected": [
+    {
+      "Margin": 40,
+      "Valid": true
+    },
+    {
+      "Margin": -20,
+      "Valid": true
+    }
+  ],
+  "private_input": [
+    {
+      "Capacity": 0,
+      "Demand": 1
+    },
+    {
+      "Capacity": -1,
+      "Demand": 1
+    }
+  ],
+  "private_expected": [
+    {
+      "Margin": -1,
+      "Valid": true
+    },
+    {
+      "Margin": 0,
+      "Valid": false
+    }
+  ]
+}

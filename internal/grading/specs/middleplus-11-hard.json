@@ -1,0 +1,38 @@
+{
+  "id": "middleplus-11-hard",
+  "signature": "func ConsistencySource(wrote, needsLatest, replicaFresh bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Wrote bool; NeedsLatest bool; ReplicaFresh bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ConsistencySource(in.Wrote, in.NeedsLatest, in.ReplicaFresh); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Wrote": false,
+      "NeedsLatest": false,
+      "ReplicaFresh": true
+    }
+  ],
+  "public_expected": [
+    "replica"
+  ],
+  "private_input": [
+    {
+      "Wrote": true,
+      "NeedsLatest": false,
+      "ReplicaFresh": true
+    },
+    {
+      "Wrote": false,
+      "NeedsLatest": true,
+      "ReplicaFresh": true
+    },
+    {
+      "Wrote": false,
+      "NeedsLatest": false,
+      "ReplicaFresh": false
+    }
+  ],
+  "private_expected": [
+    "primary",
+    "primary",
+    "primary"
+  ]
+}

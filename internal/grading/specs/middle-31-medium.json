@@ -1,0 +1,50 @@
+{
+  "id": "middle-31-medium",
+  "signature": "func LogFieldAllowed(key string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Key string `json:\"key\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(LogFieldAllowed(in.Key)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "key": "request_id"
+    },
+    {
+      "key": "route"
+    },
+    {
+      "key": "status"
+    },
+    {
+      "key": "duration_ms"
+    }
+  ],
+  "public_expected": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "private_input": [
+    {
+      "key": "authorization"
+    },
+    {
+      "key": ""
+    },
+    {
+      "key": "Route"
+    },
+    {
+      "key": "request_body"
+    },
+    {
+      "key": "duration"
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

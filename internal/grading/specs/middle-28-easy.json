@@ -1,0 +1,34 @@
+{
+  "id": "middle-28-easy",
+  "signature": "func ConfigStatus(dbURL string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { DbURL string `json:\"dbURL\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ConfigStatus(in.DbURL)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "dbURL": "postgres://local"
+    },
+    {
+      "dbURL": "abcdefgh"
+    }
+  ],
+  "public_expected": [
+    "configured",
+    "configured"
+  ],
+  "private_input": [
+    {
+      "dbURL": ""
+    },
+    {
+      "dbURL": "postgres"
+    },
+    {
+      "dbURL": "x"
+    }
+  ],
+  "private_expected": [
+    "missing_database",
+    "configured",
+    "invalid_database"
+  ]
+}

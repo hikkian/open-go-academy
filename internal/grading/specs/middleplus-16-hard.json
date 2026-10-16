@@ -1,0 +1,86 @@
+{
+  "id": "middleplus-16-hard",
+  "signature": "func RetryDecision(attempt int, maxAttempts int, budgetRemaining int, delayMillis int, deadlineRemainingMillis int, transient bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Attempt int `json:\"attempt\"`; MaxAttempts int `json:\"maxAttempts\"`; BudgetRemaining int `json:\"budgetRemaining\"`; DelayMillis int `json:\"delayMillis\"`; DeadlineRemainingMillis int `json:\"deadlineRemainingMillis\"`; Transient bool `json:\"transient\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(RetryDecision(in.Attempt,in.MaxAttempts,in.BudgetRemaining,in.DelayMillis,in.DeadlineRemainingMillis,in.Transient)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "attempt": 0,
+      "maxAttempts": 3,
+      "budgetRemaining": 2,
+      "delayMillis": 10,
+      "deadlineRemainingMillis": 20,
+      "transient": true
+    }
+  ],
+  "public_expected": [
+    "retry"
+  ],
+  "private_input": [
+    {
+      "attempt": 3,
+      "maxAttempts": 3,
+      "budgetRemaining": 2,
+      "delayMillis": 1,
+      "deadlineRemainingMillis": 20,
+      "transient": true
+    },
+    {
+      "attempt": 0,
+      "maxAttempts": 3,
+      "budgetRemaining": 0,
+      "delayMillis": 1,
+      "deadlineRemainingMillis": 20,
+      "transient": true
+    },
+    {
+      "attempt": 0,
+      "maxAttempts": 3,
+      "budgetRemaining": 2,
+      "delayMillis": 20,
+      "deadlineRemainingMillis": 20,
+      "transient": true
+    },
+    {
+      "attempt": 0,
+      "maxAttempts": 3,
+      "budgetRemaining": 2,
+      "delayMillis": 0,
+      "deadlineRemainingMillis": 0,
+      "transient": true
+    },
+    {
+      "attempt": 0,
+      "maxAttempts": 3,
+      "budgetRemaining": 2,
+      "delayMillis": 1,
+      "deadlineRemainingMillis": 20,
+      "transient": false
+    },
+    {
+      "attempt": -1,
+      "maxAttempts": 3,
+      "budgetRemaining": 2,
+      "delayMillis": 1,
+      "deadlineRemainingMillis": 20,
+      "transient": true
+    },
+    {
+      "attempt": 0,
+      "maxAttempts": 0,
+      "budgetRemaining": 2,
+      "delayMillis": 1,
+      "deadlineRemainingMillis": 20,
+      "transient": true
+    }
+  ],
+  "private_expected": [
+    "exhausted",
+    "budget_exhausted",
+    "deadline",
+    "deadline",
+    "stop",
+    "invalid",
+    "invalid"
+  ]
+}

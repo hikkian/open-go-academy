@@ -1,0 +1,34 @@
+{
+  "id": "middleplus-03-medium",
+  "signature": "func ValidBenchmarkSample(values []int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Values []int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ValidBenchmarkSample(in.Values); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Values": [
+        12,
+        14,
+        13
+      ]
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "Values": []
+    },
+    {
+      "Values": [
+        12,
+        -1,
+        13
+      ]
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "senior-15-easy",
+  "signature": "func ContractVersion(version int, supported int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Version int `json:\"version\"`; Supported int `json:\"supported\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ContractVersion(in.Version, in.Supported)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "version": 2,
+      "supported": 3
+    }
+  ],
+  "public_expected": [
+    "accepted"
+  ],
+  "private_input": [
+    {
+      "version": 4,
+      "supported": 3
+    }
+  ],
+  "private_expected": [
+    "unsupported"
+  ]
+}

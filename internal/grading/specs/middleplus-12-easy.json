@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-12-easy",
+  "signature": "func CacheAction(writeSucceeded, invalidationSucceeded bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { WriteSucceeded bool; InvalidationSucceeded bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=CacheAction(in.WriteSucceeded, in.InvalidationSucceeded); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "WriteSucceeded": true,
+      "InvalidationSucceeded": true
+    }
+  ],
+  "public_expected": [
+    "cache_consistent"
+  ],
+  "private_input": [
+    {
+      "WriteSucceeded": true,
+      "InvalidationSucceeded": false
+    },
+    {
+      "WriteSucceeded": false,
+      "InvalidationSucceeded": true
+    }
+  ],
+  "private_expected": [
+    "bypass_or_retry",
+    "no_write"
+  ]
+}

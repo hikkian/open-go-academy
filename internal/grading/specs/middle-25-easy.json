@@ -1,0 +1,39 @@
+{
+  "id": "middle-25-easy",
+  "signature": "func LayerForOperationEasy(layer, operation string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Layer string;Operation string}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(LayerForOperationEasy(x.Layer,x.Operation));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Layer": "handler",
+      "Operation": "decode"
+    },
+    {
+      "Layer": "service",
+      "Operation": "domain_rule"
+    },
+    {
+      "Layer": "repository",
+      "Operation": "sql_write"
+    }
+  ],
+  "public_expected": [
+    "allow",
+    "allow",
+    "allow"
+  ],
+  "private_input": [
+    {
+      "Layer": "handler",
+      "Operation": "sql_write"
+    },
+    {
+      "Layer": "",
+      "Operation": "decode"
+    }
+  ],
+  "private_expected": [
+    "misplaced",
+    "misplaced"
+  ]
+}

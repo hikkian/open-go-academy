@@ -1,0 +1,142 @@
+{
+  "id": "middle-23",
+  "title": "Инвалидация кеша и устаревшее чтение",
+  "rank": "Middle",
+  "module": "middle-cache",
+  "prerequisites": [
+    "middle-11"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Находить окно рассогласования после commit",
+    "Использовать версию для сравнения свежести",
+    "Учитывать позднюю запись старого ответа"
+  ],
+  "glossary": [
+    {
+      "term": "invalidation",
+      "translation": "инвалидация",
+      "definition": "Удаление или признание значения кеша устаревшим"
+    },
+    {
+      "term": "stale read",
+      "translation": "устаревшее чтение",
+      "definition": "Результат, который отстаёт от подтверждённой записи"
+    },
+    {
+      "term": "version",
+      "translation": "версия",
+      "definition": "Монотонный номер для упорядочивания изменений"
+    }
+  ],
+  "markdown_file": "middle-23.md",
+  "order": 63,
+  "exercises": [
+    {
+      "id": "middle-23-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Version ordering — локальное правило",
+      "prompt": "Контракт `func CacheVersionActionEasy(current, incoming int64) string`: versions must be non-negative; incoming strictly newer => apply; equal or older => ignore. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CacheVersionActionEasy(current, incoming int64) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"apply\"\n\"ignore\"\n\"ignore\"\n",
+      "criteria": [
+        "Контракт version ordering выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-23-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Ordered event policy — ветви политики",
+      "prompt": "Контракт `func CacheEventActionMedium(current, incoming int64, deleted bool) string`: invalid negative versions => invalid; reject older/equal event; a newer delete => invalidate; a newer upsert => refresh. This models ordering, not cache IO. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CacheEventActionMedium(current, incoming int64, deleted bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"refresh\"\n\"invalidate\"\n\"ignore\"\n",
+      "criteria": [
+        "Контракт ordered event policy выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-23-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Projection transition — отказ и граница гарантии",
+      "prompt": "Контракт `func ProjectionEventActionHard(current, incoming int64, deleted, alreadyApplied bool) string`: invalid negative versions => invalid; alreadyApplied event => duplicate; an older event => ignore; for newer events delete => invalidate and upsert => refresh. Idempotency key tracking and atomic version writes must be implemented separately. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ProjectionEventActionHard(current, incoming int64, deleted, alreadyApplied bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"refresh\"\n\"invalidate\"\n\"ignore\"\n",
+      "criteria": [
+        "Контракт projection transition выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какую гарантию дает данный учебный пример?",
+      "answer": "Только соответствие описанному детерминированному контракту на заданных входах."
+    },
+    {
+      "question": "Что следует проверять отдельно в работающей системе?",
+      "answer": "Транзакции, ограничения хранения, повторные запросы, отказ и восстановление реальных зависимостей."
+    },
+    {
+      "question": "Можно ли сделать универсальный вывод по EXPLAIN/кешу/брокеру?",
+      "answer": "Нет. Нужны фактический движок, конфигурация и измеренный workload."
+    }
+  ]
+}

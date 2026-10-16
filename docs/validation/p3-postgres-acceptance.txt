@@ -1,0 +1,14 @@
+2026-10-16 Asia/Atyrau — P3 TaskFlow PostgreSQL acceptance
+
+Runtime: rootless Podman 5.8.7, disposable PostgreSQL 18.6-bookworm image pinned by digest, bound only to 127.0.0.1:55435. The database used a generated temporary password and a tmpfs data directory; the container was removed automatically after the command. No student Compose stack or persistent volume was used.
+
+Command (temporary password intentionally redacted):
+TASKFLOW_TEST_DATABASE_URL='postgres://taskflow:<ephemeral>@127.0.0.1:55435/taskflow_test?sslmode=disable' GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go -C content/projects/p3/reference test -count=1 -timeout=3m -run '^TestPostgresTaskOutboxAndTenantIsolation$' -v
+
+Result: PASS, 0.313 s. The integration test covered migrations, tenant isolation, project-scoped idempotency, role-revocation serialization, auth/session/logout flows, keyset pagination, transaction rollback, worker delivery, stale lease fencing/retries and terminalization of an expired final-attempt job.
+
+The first correct-module run found that the pagination assertion expected 8 remaining records although the scenario creates 9. The fixture assertion was corrected; the second run passed. No production SQL/runtime defect was found by this test.
+
+Additional no-database checks after the correction (environment: `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off`): `go -C content/projects/p3/reference test -count=1 ./...`, `go -C content/projects/p3/reference vet ./...`, and `go -C content/projects/p3/reference test -race -count=1 ./...` all passed. The PostgreSQL integration test is intentionally skipped when no explicit disposable database URL is set.
+
+P3 starter module alignment: the student starter now includes the server-approved `github.com/jackc/pgx/v5 v5.11.0` and the same dependency checksums used by the cached Go build image. Offline checks passed with `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off`: `go -C content/projects/p3/starter test ./...`, `vet ./...`, `build ./...`, `mod verify`, and `list -m all` (pgx/v5 resolves to 5.11.0). No module download or network access was needed.

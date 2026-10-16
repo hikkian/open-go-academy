@@ -1,0 +1,77 @@
+{
+  "id": "middle-34-hard",
+  "signature": "func CircuitAction(state string, deadlineLeftMillis, active, limit int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { State string `json:\"state\"`; DeadlineLeftMillis int `json:\"deadlineLeftMillis\"`; Active int `json:\"active\"`; Limit int `json:\"limit\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CircuitAction(in.State, in.DeadlineLeftMillis, in.Active, in.Limit)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "state": "closed",
+      "deadlineLeftMillis": 500,
+      "active": 1,
+      "limit": 4
+    }
+  ],
+  "public_expected": [
+    "call"
+  ],
+  "private_input": [
+    {
+      "state": "closed",
+      "deadlineLeftMillis": 0,
+      "active": -1,
+      "limit": 0
+    },
+    {
+      "state": "closed",
+      "deadlineLeftMillis": 1,
+      "active": -1,
+      "limit": 4
+    },
+    {
+      "state": "closed",
+      "deadlineLeftMillis": 1,
+      "active": 0,
+      "limit": 0
+    },
+    {
+      "state": "closed",
+      "deadlineLeftMillis": 1,
+      "active": 4,
+      "limit": 4
+    },
+    {
+      "state": "open",
+      "deadlineLeftMillis": 1,
+      "active": 0,
+      "limit": 4
+    },
+    {
+      "state": "half_open",
+      "deadlineLeftMillis": 1,
+      "active": 0,
+      "limit": 4
+    },
+    {
+      "state": "closed",
+      "deadlineLeftMillis": 1,
+      "active": 0,
+      "limit": 4
+    },
+    {
+      "state": "unknown",
+      "deadlineLeftMillis": 1,
+      "active": 0,
+      "limit": 4
+    }
+  ],
+  "private_expected": [
+    "timeout",
+    "invalid",
+    "invalid",
+    "bulkhead_full",
+    "reject_open",
+    "probe",
+    "call",
+    "invalid_state"
+  ]
+}

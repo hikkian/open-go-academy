@@ -17,6 +17,14 @@ import (
 
 type examExecutor struct{ calls int }
 
+func TestAdvancedRankEvidenceErrorIsAConflict(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	examStoreError(recorder, store.ErrRankEvidenceRequired)
+	if recorder.Code != http.StatusConflict || !strings.Contains(recorder.Body.String(), "проектн") {
+		t.Fatalf("advanced evidence boundary response = %d %q", recorder.Code, recorder.Body.String())
+	}
+}
+
 func (*examExecutor) Available(context.Context) bool { return true }
 func (e *examExecutor) Execute(_ context.Context, q runner.Request) (runner.Result, error) {
 	e.calls++

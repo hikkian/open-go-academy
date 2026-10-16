@@ -1,0 +1,70 @@
+{
+  "id": "middleplus-19-medium",
+  "signature": "func RecoveryStep(stage string, committed bool, observed bool, recovered bool, retryable bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Stage string `json:\"stage\"`; Committed bool `json:\"committed\"`; Observed bool `json:\"observed\"`; Recovered bool `json:\"recovered\"`; Retryable bool `json:\"retryable\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RecoveryStep(in.Stage, in.Committed, in.Observed, in.Recovered, in.Retryable)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "stage": "before_commit",
+      "committed": false,
+      "observed": false,
+      "recovered": false,
+      "retryable": true
+    },
+    {
+      "stage": "publish",
+      "committed": true,
+      "observed": true,
+      "recovered": false,
+      "retryable": true
+    }
+  ],
+  "public_expected": [
+    "rollback",
+    "retry"
+  ],
+  "private_input": [
+    {
+      "stage": "publish",
+      "committed": true,
+      "observed": true,
+      "recovered": false,
+      "retryable": false
+    },
+    {
+      "stage": "publish",
+      "committed": true,
+      "observed": false,
+      "recovered": false,
+      "retryable": true
+    },
+    {
+      "stage": "after_commit",
+      "committed": true,
+      "observed": false,
+      "recovered": false,
+      "retryable": true
+    },
+    {
+      "stage": "after_commit",
+      "committed": false,
+      "observed": true,
+      "recovered": false,
+      "retryable": true
+    },
+    {
+      "stage": "publish",
+      "committed": true,
+      "observed": true,
+      "recovered": true,
+      "retryable": false
+    }
+  ],
+  "private_expected": [
+    "dead_letter",
+    "reconcile",
+    "reconcile",
+    "inspect",
+    "done"
+  ]
+}

@@ -1,0 +1,10 @@
+2026-10-16 Asia/Atyrau — pedagogical remediation: Middle-19…26
+
+Audit findings repaired across the eight draft lessons: Easy/Medium/Hard contracts were repeated classifiers; prose/examples did not teach the advertised backend topics; vectors missed important branches; Middle-24 inferred a durable-queue role from only two boolean flags. The group now has distinct progressive bounded decision contracts, topic-specific explanations/examples, branch vectors, synchronized starter/spec/reference files, and clear statements that local helpers do not prove external backend guarantees. Middle-24 returns `candidate_only` under its declared assumptions instead of claiming Redis is a durable queue.
+
+Scoped command:
+`ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middle-19,middle-20,middle-21,middle-22,middle-23,middle-24,middle-25,middle-26 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-middle19-26-cache-20261016 .tools/go/bin/go test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+
+Result: PASS, 252.864s. All 24 examples, 24 starters and 24 isolated production-reference grading checks passed; global catalog validation passed. JSON, paired vectors, starter signatures, lesson length checks and `git diff --check` passed.
+
+This is scoped content acceptance, not full-tree acceptance or publication. The M11 aggregate must be rerun after all current repairs.

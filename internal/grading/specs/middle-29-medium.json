@@ -1,0 +1,49 @@
+{
+  "id": "middle-29-medium",
+  "signature": "func EffectiveTimeout(parentMillis, handlerMillis int64) int64",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { ParentMillis int64 `json:\"parentMillis\"`; HandlerMillis int64 `json:\"handlerMillis\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(EffectiveTimeout(in.ParentMillis, in.HandlerMillis)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "parentMillis": 3000,
+      "handlerMillis": 5000
+    },
+    {
+      "parentMillis": 1200,
+      "handlerMillis": 5000
+    },
+    {
+      "parentMillis": 1000,
+      "handlerMillis": 1000
+    }
+  ],
+  "public_expected": [
+    3000,
+    1200,
+    1000
+  ],
+  "private_input": [
+    {
+      "parentMillis": 0,
+      "handlerMillis": 10
+    },
+    {
+      "parentMillis": 10,
+      "handlerMillis": 0
+    },
+    {
+      "parentMillis": -1,
+      "handlerMillis": 10
+    },
+    {
+      "parentMillis": 10,
+      "handlerMillis": -1
+    }
+  ],
+  "private_expected": [
+    0,
+    0,
+    0,
+    0
+  ]
+}

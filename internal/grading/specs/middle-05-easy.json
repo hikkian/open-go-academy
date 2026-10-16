@@ -1,0 +1,42 @@
+{
+  "id": "middle-05-easy",
+  "signature": "func MinDeadline(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(MinDeadline(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      900,
+      300
+    ],
+    [
+      250,
+      700
+    ]
+  ],
+  "public_expected": [
+    [
+      300
+    ],
+    [
+      250
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      4
+    ],
+    [
+      -1,
+      5
+    ]
+  ],
+  "private_expected": [
+    [
+      0
+    ],
+    [
+      0
+    ]
+  ]
+}

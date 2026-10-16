@@ -1,0 +1,24 @@
+{
+  "id": "senior-14-medium",
+  "signature": "func RetentionPolicy(classification, required string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Classification string `json:\"classification\"`; Required string `json:\"required\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RetentionPolicy(in.Classification, in.Required)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "classification": "public",
+      "required": "durable"
+    }
+  ],
+  "public_expected": [
+    "retain_by_policy"
+  ],
+  "private_input": [
+    {
+      "classification": "regulated",
+      "required": "durable"
+    }
+  ],
+  "private_expected": [
+    "review_retention"
+  ]
+}

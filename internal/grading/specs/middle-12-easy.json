@@ -1,0 +1,41 @@
+{
+  "id": "middle-12-easy",
+  "signature": "func VersionMatch(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(VersionMatch(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      4,
+      4
+    ],
+    [
+      4,
+      5
+    ]
+  ],
+  "public_expected": [
+    [
+      1
+    ],
+    [
+      0
+    ]
+  ],
+  "private_input": [
+    [
+      1
+    ],
+    [
+      1,
+      2
+    ]
+  ],
+  "private_expected": [
+    [
+      0
+    ],
+    [
+      0
+    ]
+  ]
+}

@@ -3,6 +3,7 @@ package httpapi
 import (
 	"academy/internal/content"
 	"academy/internal/learning"
+	"academy/internal/projectreview"
 	"academy/internal/projectrunner"
 	"academy/internal/runner"
 	"academy/internal/store"
@@ -18,7 +19,9 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 	"unicode/utf8"
 )
@@ -32,22 +35,49 @@ type ProjectExecutor interface {
 	Execute(context.Context, projectrunner.Request) (runner.Result, error)
 }
 type API struct {
-	ProjectRunner ProjectExecutor
-	Store         *store.Store
-	Content       *content.Catalog
-	Runner        Executor
-	Session       string
-	Hosts         map[string]bool
-	limits        quota
-	Tutor         TutorExecutor
-	TutorSettings TutorSettings
-	tutorGate     chan struct{}
-	IssuerKey     ed25519.PrivateKey
-	VerifyOrigin  string
+	ProjectRunner    ProjectExecutor
+	ProjectReviewers *projectreview.Registry
+	Store            *store.Store
+	Content          *content.Catalog
+	Runner           Executor
+	Session          string
+	Hosts            map[string]bool
+	limits           quota
+	Tutor            TutorExecutor
+	TutorSettings    TutorSettings
+	tutorMu          sync.RWMutex
+	tutorRevision    string
+	tutorLocal       *tutorLocalRuntime
+	tutorGate        chan struct{}
+	IssuerKey        ed25519.PrivateKey
+	VerifyOrigin     string
+}
+
+// TutorSnapshot is the synchronized runtime read used by Tutor handlers.
+func (a *API) TutorSnapshot() (TutorExecutor, TutorSettings, string) {
+	a.tutorMu.RLock()
+	defer a.tutorMu.RUnlock()
+	return a.Tutor, a.TutorSettings, a.tutorRevision
+}
+
+func newTutorRevision() string {
+	var revision [24]byte
+	if _, err := rand.Read(revision[:]); err == nil {
+		return hex.EncodeToString(revision[:])
+	}
+	return "fallback-" + strconv.FormatInt(time.Now().UnixNano(), 16)
+}
+
+// SetTutorRuntime atomically replaces the active provider and its public settings.
+func (a *API) SetTutorRuntime(executor TutorExecutor, settings TutorSettings) {
+	a.tutorMu.Lock()
+	defer a.tutorMu.Unlock()
+	a.Tutor, a.TutorSettings = executor, settings
+	a.tutorRevision = newTutorRevision()
 }
 
 func New(s *store.Store, c *content.Catalog, r Executor, secret string, hosts ...string) *API {
-	a := &API{Store: s, Content: c, Runner: r, Session: secret, Hosts: map[string]bool{}, tutorGate: make(chan struct{}, 1)}
+	a := &API{Store: s, Content: c, Runner: r, Session: secret, Hosts: map[string]bool{}, tutorGate: make(chan struct{}, 1), tutorRevision: newTutorRevision()}
 	for _, h := range hosts {
 		a.Hosts[h] = true
 		if a.VerifyOrigin == "" {
@@ -353,7 +383,7 @@ func (a *API) Handler(staticDir string) http.Handler {
 					return
 				}
 			}
-			if !a.limits.allow(strings.HasPrefix(r.URL.Path, "/api/exams/") && strings.HasSuffix(r.URL.Path, "/submit") || strings.HasPrefix(r.URL.Path, "/api/exercises/") || strings.HasPrefix(r.URL.Path, "/api/projects/") && (strings.HasSuffix(r.URL.Path, "/run") || strings.HasSuffix(r.URL.Path, "/test") || strings.HasSuffix(r.URL.Path, "/submit"))) {
+			if !a.limits.allow(strings.HasPrefix(r.URL.Path, "/api/exams/") && strings.HasSuffix(r.URL.Path, "/submit") || strings.HasPrefix(r.URL.Path, "/api/exercises/") || strings.HasPrefix(r.URL.Path, "/api/projects/") && (strings.HasSuffix(r.URL.Path, "/run") || strings.HasSuffix(r.URL.Path, "/test") || strings.HasSuffix(r.URL.Path, "/submit") || strings.HasSuffix(r.URL.Path, "/reviews"))) {
 				w.Header().Set("Retry-After", "60")
 				fail(w, 429, "слишком много запросов; повторите через минуту")
 				return

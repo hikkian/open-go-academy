@@ -28,6 +28,47 @@ func (s *Service) Handler() http.Handler {
 		w.WriteHeader(200)
 		_, _ = io.WriteString(w, "ok")
 	})
+	m.HandleFunc("GET /capabilities", func(w http.ResponseWriter, r *http.Request) {
+		// Capabilities are immutable for this worker process. Health is checked
+		// separately by the API before it consumes this metadata.
+		projects := []string{"p2"}
+		profiles := map[string]EvaluationProfile{}
+		if capability, ok := s.engine.(interface{ SupportsProject(string) bool }); ok && capability.SupportsProject("p3") {
+			if provider, ok := s.engine.(interface {
+				ProjectProfile(string) (EvaluationProfile, bool)
+			}); ok {
+				if profile, profileOK := provider.ProjectProfile("p3"); profileOK {
+					projects = append(projects, "p3")
+					profiles["p3"] = profile
+				}
+			}
+		}
+		if capability, ok := s.engine.(interface{ SupportsProject(string) bool }); ok && capability.SupportsProject("p4") {
+			if provider, ok := s.engine.(interface {
+				ProjectProfile(string) (EvaluationProfile, bool)
+			}); ok {
+				if profile, profileOK := provider.ProjectProfile("p4"); profileOK {
+					projects = append(projects, "p4")
+					profiles["p4"] = profile
+				}
+			}
+		}
+		if capability, ok := s.engine.(interface{ SupportsProject(string) bool }); ok && capability.SupportsProject("p5") {
+			if provider, ok := s.engine.(interface {
+				ProjectProfile(string) (EvaluationProfile, bool)
+			}); ok {
+				if profile, profileOK := provider.ProjectProfile("p5"); profileOK {
+					projects = append(projects, "p5")
+					profiles["p5"] = profile
+				}
+			}
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(struct {
+			Projects []string                     `json:"projects"`
+			Profiles map[string]EvaluationProfile `json:"profiles"`
+		}{Projects: projects, Profiles: profiles})
+	})
 	m.HandleFunc("POST /execute", func(w http.ResponseWriter, r *http.Request) {
 		if !s.engine.Available(r.Context()) {
 			http.Error(w, "unavailable", 503)
@@ -58,7 +99,18 @@ func (s *Service) Handler() http.Handler {
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(result)
+		response := struct {
+			runner.Result
+			Profile *EvaluationProfile `json:"evaluation_profile,omitempty"`
+		}{Result: result}
+		if provider, ok := s.engine.(interface {
+			ProjectProfile(string) (EvaluationProfile, bool)
+		}); ok {
+			if profile, profileOK := provider.ProjectProfile(q.ProjectID); profileOK {
+				response.Profile = &profile
+			}
+		}
+		_ = json.NewEncoder(w).Encode(response)
 	})
 	return m
 }
@@ -148,37 +200,122 @@ func (c *Client) Available(ctx context.Context) bool {
 	defer resp.Body.Close()
 	return resp.StatusCode == 200
 }
-func (c *Client) Execute(ctx context.Context, q Request) (runner.Result, error) {
-	b, err := json.Marshal(q)
-	if err != nil {
-		return runner.Result{}, err
+func (c *Client) SupportsProject(ctx context.Context, projectID string) bool {
+	if projectID != "p2" && projectID != "p3" && projectID != "p4" && projectID != "p5" {
+		return false
 	}
-	req, err := http.NewRequestWithContext(ctx, "POST", "http://project-runner/execute", bytes.NewReader(b))
+	capabilities, ok := c.projectCapabilities(ctx)
+	if !ok {
+		return false
+	}
+	for _, supported := range capabilities.Projects {
+		if supported == projectID {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *Client) ProjectProfile(ctx context.Context, projectID string) (EvaluationProfile, bool) {
+	if projectID != "p3" && projectID != "p4" && projectID != "p5" {
+		return EvaluationProfile{}, false
+	}
+	capabilities, ok := c.projectCapabilities(ctx)
+	if !ok {
+		return EvaluationProfile{}, false
+	}
+	profile, ok := capabilities.Profiles[projectID]
+	return profile, ok
+}
+
+type capabilityResponse struct {
+	Projects []string                     `json:"projects"`
+	Profiles map[string]EvaluationProfile `json:"profiles"`
+}
+
+func (c *Client) projectCapabilities(ctx context.Context) (capabilityResponse, bool) {
+	req, err := http.NewRequestWithContext(ctx, "GET", "http://project-runner/capabilities", nil)
 	if err != nil {
-		return runner.Result{}, err
+		return capabilityResponse{}, false
 	}
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return runner.Result{}, errors.New("project runner unavailable")
+		return capabilityResponse{}, false
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return capabilityResponse{}, false
+	}
+	const maxResponse = 4096
+	body, err := io.ReadAll(io.LimitReader(resp.Body, maxResponse+1))
+	if err != nil || len(body) > maxResponse {
+		return capabilityResponse{}, false
+	}
+	var capabilities capabilityResponse
+	decoder := json.NewDecoder(bytes.NewReader(body))
+	decoder.DisallowUnknownFields()
+	if err = decoder.Decode(&capabilities); err != nil {
+		return capabilityResponse{}, false
+	}
+	var extra any
+	if err = decoder.Decode(&extra); !errors.Is(err, io.EOF) {
+		return capabilityResponse{}, false
+	}
+	if capabilities.Projects == nil || capabilities.Profiles == nil {
+		return capabilityResponse{}, false
+	}
+	return capabilities, true
+}
+func (c *Client) Execute(ctx context.Context, q Request) (runner.Result, error) {
+	result, _, err := c.executeWithProfile(ctx, q)
+	return result, err
+}
+
+func (c *Client) ExecuteWithProfile(ctx context.Context, q Request) (runner.Result, EvaluationProfile, error) {
+	result, profile, err := c.executeWithProfile(ctx, q)
+	if err != nil {
+		return runner.Result{}, EvaluationProfile{}, err
+	}
+	if profile == nil {
+		return runner.Result{}, EvaluationProfile{}, errors.New("project runner omitted trusted evaluation profile")
+	}
+	return result, *profile, nil
+}
+
+func (c *Client) executeWithProfile(ctx context.Context, q Request) (runner.Result, *EvaluationProfile, error) {
+	b, err := json.Marshal(q)
+	if err != nil {
+		return runner.Result{}, nil, err
+	}
+	req, err := http.NewRequestWithContext(ctx, "POST", "http://project-runner/execute", bytes.NewReader(b))
+	if err != nil {
+		return runner.Result{}, nil, err
+	}
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return runner.Result{}, nil, errors.New("project runner unavailable")
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return runner.Result{}, errors.New("project runner rejected request")
+		return runner.Result{}, nil, errors.New("project runner rejected request")
 	}
 	const maxResponse = 1 << 20
 	body, err := io.ReadAll(io.LimitReader(resp.Body, maxResponse+1))
 	if err != nil || len(body) > maxResponse {
-		return runner.Result{}, errors.New("invalid project runner response")
+		return runner.Result{}, nil, errors.New("invalid project runner response")
 	}
-	var out runner.Result
+	var out struct {
+		runner.Result
+		Profile *EvaluationProfile `json:"evaluation_profile,omitempty"`
+	}
 	d := json.NewDecoder(bytes.NewReader(body))
 	d.DisallowUnknownFields()
 	if err = d.Decode(&out); err != nil {
-		return runner.Result{}, err
+		return runner.Result{}, nil, err
 	}
 	var extra any
 	if err = d.Decode(&extra); !errors.Is(err, io.EOF) {
-		return runner.Result{}, errors.New("invalid project runner response")
+		return runner.Result{}, nil, errors.New("invalid project runner response")
 	}
-	return out, nil
+	return out.Result, out.Profile, nil
 }

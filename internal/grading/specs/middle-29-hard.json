@@ -1,0 +1,62 @@
+{
+  "id": "middle-29-hard",
+  "signature": "func RequestDecision(bodyBytes, maxBytes int64, canceled bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { BodyBytes int64 `json:\"bodyBytes\"`; MaxBytes int64 `json:\"maxBytes\"`; Canceled bool `json:\"canceled\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RequestDecision(in.BodyBytes, in.MaxBytes, in.Canceled)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "bodyBytes": 12,
+      "maxBytes": 16,
+      "canceled": false
+    },
+    {
+      "bodyBytes": 16,
+      "maxBytes": 16,
+      "canceled": false
+    },
+    {
+      "bodyBytes": 99,
+      "maxBytes": 16,
+      "canceled": true
+    }
+  ],
+  "public_expected": [
+    "continue",
+    "continue",
+    "canceled"
+  ],
+  "private_input": [
+    {
+      "bodyBytes": 17,
+      "maxBytes": 16,
+      "canceled": false
+    },
+    {
+      "bodyBytes": -1,
+      "maxBytes": 16,
+      "canceled": false
+    },
+    {
+      "bodyBytes": 12,
+      "maxBytes": 0,
+      "canceled": false
+    },
+    {
+      "bodyBytes": 99,
+      "maxBytes": 16,
+      "canceled": false
+    },
+    {
+      "bodyBytes": -1,
+      "maxBytes": 0,
+      "canceled": true
+    }
+  ],
+  "private_expected": [
+    "too_large",
+    "invalid",
+    "invalid",
+    "too_large",
+    "canceled"
+  ]
+}

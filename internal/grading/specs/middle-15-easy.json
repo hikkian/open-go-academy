@@ -1,0 +1,44 @@
+{
+  "id": "middle-15-easy",
+  "signature": "func IdempotencyOutcomeEasy(seen bool, samePayload bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Seen bool; SamePayload bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(IdempotencyOutcomeEasy(x.Seen, x.SamePayload));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Seen": false,
+      "SamePayload": false
+    },
+    {
+      "Seen": false,
+      "SamePayload": true
+    },
+    {
+      "Seen": true,
+      "SamePayload": true
+    },
+    {
+      "Seen": true,
+      "SamePayload": false
+    }
+  ],
+  "public_expected": [
+    "new",
+    "new",
+    "replay",
+    "conflict"
+  ],
+  "private_input": [
+    {
+      "Seen": false,
+      "SamePayload": true
+    },
+    {
+      "Seen": true,
+      "SamePayload": false
+    }
+  ],
+  "private_expected": [
+    "new",
+    "conflict"
+  ]
+}

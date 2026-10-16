@@ -1,0 +1,19 @@
+2026-10-16 Asia/Atyrau
+Commands:
+python3 scripts/render-project-progress.py
+npm run test:progress
+
+Results:
+Generated docs/PROJECT_PROGRESS.html: 11/14 gates (79%), date 2026-10-16
+PASS desktop (light): 6 workstreams, no overflow, axe clean
+PASS mobile (dark): 6 workstreams, no overflow, axe clean
+
+Source evidence:
+- `docs/validation/m11-aggregate-acceptance.txt`: the earlier full-tree snapshot passed for 88 candidates + 40 published lessons; 265 Go examples, 264 starter compiles, 264 isolated references. Subsequent M11 edits make this evidence stale for the exact current tree; the dashboard intentionally shows the current aggregate as unconfirmed.
+- `docs/validation/p3-runtime-acceptance.txt`: P3 Test/Submit pass (45/45), P2 regression pass on both image profiles (44/44), isolated rootless container limits and cleanup checked.
+- Independent pedagogical audits found material P1/P2 issues in Middle-14…26 and Middle+13…23; separate content repairs are active and require fresh scoped gates. `docs/research/M11_AUDIT_MIDDLE13_26.md`, `docs/research/M11_AUDIT_MIDDLEPLUS13_23.md`.
+- Senior-01…12 audit found that helper tasks do not establish senior rank evidence, plus a sentinel ambiguity and English-only exercise prompts. Rank evidence must remain tied to P5 and human review; see `docs/research/M11_AUDIT_SENIOR01_12.md`.
+- Middle-14…18, Middle-19…26, Middle+21, final Middle+13…17 shared-catalog verification and Middle+18/19/20/22/23 scoped gates pass at their stated snapshots. Senior-01/03/09/11/12 selected scoped gate passes. The older 88-candidate aggregate is stale until all changes finish and a new full gate passes.
+- New read-only audit: Middle-27…40 found P1 SLO overflow in Middle-33 and P2 arithmetic/vector/prose/assessment gaps; Senior-13…24 found P1 lack of P5 artifact inputs for all 36 helper exercises. P5 evidence and human review must be part of rank-award gating. Reports: `docs/research/M11_AUDIT_MIDDLE27_40.md`, `docs/research/M11_AUDIT_SENIOR13_24.md`.
+- Middle-30 deadline-sum overflow is also P1; fixes for Middle-30/33 and Middle-27…32 assessment gaps are in progress. Senior automatic rank must remain unawardable until P5 artifacts are consumed by a versioned evidence gate and human review.
+- Progress figures do not claim that draft curriculum is published or that P3 is fully browser-integrated. Pedagogical review, P3 UI/Run and assessments, P4/P5, M12/M13 remain open.

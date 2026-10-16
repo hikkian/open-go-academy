@@ -1,0 +1,34 @@
+{
+  "id": "senior-02-hard",
+  "signature": "func Response(freshnessRequired, dependencyAvailable bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { FreshnessRequired bool; DependencyAvailable bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(Response(in.FreshnessRequired, in.DependencyAvailable)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "FreshnessRequired": true,
+      "DependencyAvailable": false
+    },
+    {
+      "FreshnessRequired": false,
+      "DependencyAvailable": false
+    }
+  ],
+  "public_expected": [
+    "fail-closed",
+    "stale-with-label"
+  ],
+  "private_input": [
+    {
+      "FreshnessRequired": true,
+      "DependencyAvailable": true
+    },
+    {
+      "FreshnessRequired": false,
+      "DependencyAvailable": true
+    }
+  ],
+  "private_expected": [
+    "read-authority",
+    "read-authority"
+  ]
+}

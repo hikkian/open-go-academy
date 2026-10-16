@@ -1,0 +1,68 @@
+{
+  "id": "middle-40-medium",
+  "signature": "func AcceptanceStatus(required, passed int, openCriticalRisk bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Required int `json:\"required\"`; Passed int `json:\"passed\"`; OpenCriticalRisk bool `json:\"openCriticalRisk\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(AcceptanceStatus(in.Required, in.Passed, in.OpenCriticalRisk)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "required": 8,
+      "passed": 8,
+      "openCriticalRisk": false
+    }
+  ],
+  "public_expected": [
+    "ready_for_review"
+  ],
+  "private_input": [
+    {
+      "required": 0,
+      "passed": 0,
+      "openCriticalRisk": false
+    },
+    {
+      "required": -1,
+      "passed": 0,
+      "openCriticalRisk": false
+    },
+    {
+      "required": 8,
+      "passed": -1,
+      "openCriticalRisk": false
+    },
+    {
+      "required": 8,
+      "passed": 9,
+      "openCriticalRisk": false
+    },
+    {
+      "required": 8,
+      "passed": 8,
+      "openCriticalRisk": true
+    },
+    {
+      "required": 8,
+      "passed": 7,
+      "openCriticalRisk": true
+    },
+    {
+      "required": 8,
+      "passed": 7,
+      "openCriticalRisk": false
+    },
+    {
+      "required": 8,
+      "passed": 8,
+      "openCriticalRisk": false
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid",
+    "invalid",
+    "invalid",
+    "hold_risk",
+    "hold_risk",
+    "incomplete",
+    "ready_for_review"
+  ]
+}

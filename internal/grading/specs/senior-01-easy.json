@@ -1,0 +1,30 @@
+{
+  "id": "senior-01-easy",
+  "signature": "func RequirementKind(answer string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Answer string }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(RequirementKind(in.Answer)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Answer": ""
+    },
+    {
+      "Answer": "confirmed"
+    }
+  ],
+  "public_expected": [
+    "clarify",
+    "evidence"
+  ],
+  "private_input": [
+    {
+      "Answer": "uncertain"
+    },
+    {
+      "Answer": "Confirmed"
+    }
+  ],
+  "private_expected": [
+    "assumption",
+    "assumption"
+  ]
+}

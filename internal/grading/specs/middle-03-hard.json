@@ -1,0 +1,52 @@
+{
+  "id": "middle-03-hard",
+  "signature": "func InterleaveProducers(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(InterleaveProducers(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      2,
+      3,
+      10,
+      11,
+      12,
+      20,
+      21,
+      22
+    ],
+    [
+      3,
+      1,
+      4,
+      5
+    ]
+  ],
+  "public_expected": [
+    [
+      10,
+      20,
+      11,
+      21,
+      12,
+      22
+    ],
+    [
+      4,
+      5
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      2
+    ],
+    [
+      2,
+      -1
+    ]
+  ],
+  "private_expected": [
+    [],
+    []
+  ]
+}

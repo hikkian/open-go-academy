@@ -1,0 +1,34 @@
+{
+  "id": "senior-11-easy",
+  "signature": "func SameTenantScope(principalTenant, resourceTenant string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { PrincipalTenant string; ResourceTenant string }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(SameTenantScope(in.PrincipalTenant, in.ResourceTenant)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "PrincipalTenant": "tenant-a",
+      "ResourceTenant": "tenant-a"
+    },
+    {
+      "PrincipalTenant": "tenant-a",
+      "ResourceTenant": "tenant-b"
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "PrincipalTenant": "",
+      "ResourceTenant": "tenant-a"
+    },
+    {
+      "PrincipalTenant": "",
+      "ResourceTenant": ""
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

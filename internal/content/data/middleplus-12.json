@@ -1,0 +1,135 @@
+{
+  "id": "middleplus-12",
+  "title": "Кеш-корректность и инвалидация",
+  "rank": "Middle+",
+  "module": "middleplus-data",
+  "prerequisites": [
+    "middleplus-11"
+  ],
+  "estimated_minutes": 210,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 92,
+  "learning_outcomes": [
+    "Строить ключи и версии кеша вокруг владельца истины и инвариантов данных.",
+    "TTL ограничивает время хранения, но сам по себе не обеспечивает корректную инвалидацию или согласованность.",
+    "Ограничить вывод рамками наблюдений и назвать следующий проверочный эксперимент."
+  ],
+  "glossary": [
+    {
+      "term": "cache invalidation",
+      "translation": "инвалидация кеша",
+      "definition": "Удаление или пометка устаревшей записи после изменения источника."
+    },
+    {
+      "term": "TTL",
+      "translation": "срок жизни",
+      "definition": "Временная граница, после которой запись считается просроченной."
+    },
+    {
+      "term": "stale entry",
+      "translation": "устаревшая запись",
+      "definition": "Значение кеша, которое отстаёт от авторитетного источника."
+    }
+  ],
+  "markdown_file": "middleplus-12.md",
+  "exercises": [
+    {
+      "id": "middleplus-12-easy",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: классифицируй результат invalidation",
+      "prompt": "Классифицируйте результат записи и инвалидации: no_write / bypass_or_retry / cache_consistent. Последнее означает только, что оба флага true в fixture; не доказывает отсутствие гонок.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CacheAction(writeSucceeded, invalidationSucceeded bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"cache_consistent\"\n",
+      "criteria": [
+        "Не объявлять cache consistent при неуспешной invalidation.",
+        "Не путать успешный write с успешным cache update."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Инвалидация и запись могут гоняться с concurrent reads; простой boolean не подтверждает протокол."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-12-medium",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: проверь TTL и версию cache entry",
+      "prompt": "Запись допустима, если age неотрицателен, age<ttl, ttl положителен и версия совпадает. Это локальная проверка metadata, не гарантия отсутствия stale read.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CacheEntryValid(ageSeconds, ttlSeconds int64, versionMatches bool) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "TTL граница строгая: age==ttl уже expired.",
+        "Версия должна совпадать."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Clock skew, invalidation race и порядок конкурентных операций не покрыты данной функцией."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-12-hard",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: выбери безопасный источник после write/invalidation",
+      "prompt": "Разрешайте cache read только если write/invalidation завершились успешно и версия совпадает; иначе читайте authoritative source. Это консервативная модель, не реализация атомарного протокола.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CacheReadPolicy(writeSucceeded, invalidationSucceeded, versionMatches bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"cache\"\n",
+      "criteria": [
+        "Любой неуспешный сигнал ведёт к source.",
+        "Не называть boolean policy доказательством согласованности."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Для гарантии нужен корректный порядок commit/invalidate/read и тестирование конкурентных interleavings."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Что означает cache-aside?",
+      "answer": "Приложение читает кеш, при miss читает источник истины и заполняет кеш; при изменениях оно отдельно инвалидирует или обновляет ключ."
+    },
+    {
+      "question": "Как возникает stale-fill гонка?",
+      "answer": "Запрос читает старое значение; другой запрос фиксирует новое и удаляет ключ; первый затем записывает старое значение обратно в пустой кеш."
+    },
+    {
+      "question": "Почему TTL сам по себе не гарантирует корректность?",
+      "answer": "TTL ограничивает время хранения ключа, но не обеспечивает немедленную инвалидацию и не говорит, допустима ли устаревшая выдача."
+    },
+    {
+      "question": "Что должно входить в cache key?",
+      "answer": "Все параметры, от которых зависит результат: например tenant, locale, фильтры, pagination и версия схемы."
+    },
+    {
+      "question": "Какие последствия нужно оценить при отказе кеша?",
+      "answer": "Bypass может перегрузить источник; stale-while-revalidate ослабляет свежесть; controlled error меняет доступность. Политика зависит от инварианта операции."
+    }
+  ]
+}

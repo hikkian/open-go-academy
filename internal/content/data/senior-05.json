@@ -1,0 +1,148 @@
+{
+  "id": "senior-05",
+  "title": "Границы системы и ответственность компонентов",
+  "rank": "Senior",
+  "module": "senior-systems-design",
+  "prerequisites": [
+    "senior-04"
+  ],
+  "estimated_minutes": 240,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 109,
+  "learning_outcomes": [
+    "Определять capability и границу по доменным инвариантам и причинам изменения.",
+    "Сравнивать модульный монолит и отдельный процесс по реальному давлению и failure modes.",
+    "Проектировать контракт с ошибками, deadline, versioning и минимальными правами.",
+    "Выбирать обратимый прототип, операционного owner-а и условие пересмотра архитектуры."
+  ],
+  "glossary": [
+    {
+      "term": "capability",
+      "translation": "способность продукта",
+      "definition": "Самостоятельно значимое действие или ответственность продукта."
+    },
+    {
+      "term": "bounded context",
+      "translation": "ограниченный контекст",
+      "definition": "Область, в которой понятия и правила имеют согласованный смысл."
+    },
+    {
+      "term": "blast radius",
+      "translation": "масштаб последствий",
+      "definition": "Область ресурсов и пользователей, затронутая отказом компонента."
+    },
+    {
+      "term": "contract test",
+      "translation": "контрактный тест",
+      "definition": "Проверка совместимого поведения поставщика интерфейса и его потребителя."
+    }
+  ],
+  "markdown_file": "senior-05.md",
+  "self_check": [
+    {
+      "question": "Что доказывает полезную service boundary?",
+      "answer": "Независимую ответственность и контракт при известных данных, ресурсах и отказах, а не число процессов."
+    },
+    {
+      "question": "Почему timeout не означает отказ?",
+      "answer": "Downstream мог применить изменение, хотя ответ потерялся; повтор требует reconciliation/idempotency."
+    },
+    {
+      "question": "Кто нужен до выделения сервиса?",
+      "answer": "Владелец контракта, эксплуатации, прав, данных и безопасного возврата."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "senior-05-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Модуль или сервис-кандидат",
+      "prompt": "Если оба условия истинны, верните `service-candidate`; иначе — `module-first`. Чистая функция не принимает архитектурное решение.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc Boundary(independentRelease, networkNeeded bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"service-candidate\"\n\"module-first\"\n",
+      "criteria": [
+        "Следовать точному контракту и приоритету условий.",
+        "Покрыть все ветви и незнакомый/некорректный ввод.",
+        "Не выдавать helper за реальную service boundary, безопасность или contract compatibility."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только pure function на определённых входах."
+        },
+        {
+          "question": "Какое proof нужен отдельно?",
+          "answer": "Реальный consumer/transport contract, права, lifecycle и failure behavior."
+        }
+      ]
+    },
+    {
+      "id": "senior-05-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Классификация ошибки контракта",
+      "prompt": "0 → `ok`; 1 → `invalid`; 2 → `temporary`; другое значение → `unknown`. Неизвестный исход нельзя автоматически повторять без оценки безопасности.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ErrorClass(code int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"ok\"\n\"invalid\"\n",
+      "criteria": [
+        "Следовать точному контракту и приоритету условий.",
+        "Покрыть все ветви и незнакомый/некорректный ввод.",
+        "Не выдавать helper за реальную service boundary, безопасность или contract compatibility."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только pure function на определённых входах."
+        },
+        {
+          "question": "Какое proof нужен отдельно?",
+          "answer": "Реальный consumer/transport contract, права, lifecycle и failure behavior."
+        }
+      ]
+    },
+    {
+      "id": "senior-05-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Политика неизвестной версии",
+      "prompt": "Известное значение → `process`; неизвестное при критичном инварианте → `quarantine`; иначе → `review`. Для рабочей карантинной очереди нужны ограничение ёмкости и ответственный.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc VersionPolicy(known, invariantCritical bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"process\"\n\"quarantine\"\n",
+      "criteria": [
+        "Следовать точному контракту и приоритету условий.",
+        "Покрыть все ветви и незнакомый/некорректный ввод.",
+        "Не выдавать helper за реальную service boundary, безопасность или contract compatibility."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только pure function на определённых входах."
+        },
+        {
+          "question": "Какое proof нужен отдельно?",
+          "answer": "Реальный consumer/transport contract, права, lifecycle и failure behavior."
+        }
+      ]
+    }
+  ]
+}

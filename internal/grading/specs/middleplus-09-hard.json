@@ -1,0 +1,35 @@
+{
+  "id": "middleplus-09-hard",
+  "signature": "func PartitionPrunes(queryStart, queryEnd, partStart, partEnd int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { QueryStart int; QueryEnd int; PartStart int; PartEnd int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=PartitionPrunes(in.QueryStart, in.QueryEnd, in.PartStart, in.PartEnd); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "QueryStart": 1,
+      "QueryEnd": 10,
+      "PartStart": 11,
+      "PartEnd": 20
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "QueryStart": 8,
+      "QueryEnd": 12,
+      "PartStart": 10,
+      "PartEnd": 20
+    },
+    {
+      "QueryStart": 1,
+      "QueryEnd": 3,
+      "PartStart": 0,
+      "PartEnd": 5
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

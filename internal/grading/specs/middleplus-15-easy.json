@@ -1,0 +1,39 @@
+{
+  "id": "middleplus-15-easy",
+  "signature": "func QueueBand(depth int, capacity int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Depth int `json:\"depth\"`; Capacity int `json:\"capacity\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(QueueBand(in.Depth,in.Capacity)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "depth": 0,
+      "capacity": 4
+    }
+  ],
+  "public_expected": [
+    "empty"
+  ],
+  "private_input": [
+    {
+      "depth": 1,
+      "capacity": 4
+    },
+    {
+      "depth": 4,
+      "capacity": 4
+    },
+    {
+      "depth": -1,
+      "capacity": 4
+    },
+    {
+      "depth": 0,
+      "capacity": 0
+    }
+  ],
+  "private_expected": [
+    "queued",
+    "full",
+    "invalid",
+    "invalid"
+  ]
+}

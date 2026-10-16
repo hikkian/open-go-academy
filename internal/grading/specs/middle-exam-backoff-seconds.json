@@ -1,0 +1,80 @@
+{
+  "id": "middle-exam-backoff-seconds",
+  "signature": "func BackoffSeconds(baseSeconds, attempt, maxSeconds int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { BaseSeconds int `json:\"baseSeconds\"`; Attempt int `json:\"attempt\"`; MaxSeconds int `json:\"maxSeconds\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(BackoffSeconds(in.BaseSeconds, in.Attempt, in.MaxSeconds)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "baseSeconds": 3,
+      "attempt": 1,
+      "maxSeconds": 30
+    },
+    {
+      "baseSeconds": 3,
+      "attempt": 3,
+      "maxSeconds": 30
+    }
+  ],
+  "public_expected": [
+    3,
+    12
+  ],
+  "private_input": [
+    {
+      "baseSeconds": 0,
+      "attempt": 1,
+      "maxSeconds": 30
+    },
+    {
+      "baseSeconds": -2,
+      "attempt": 2,
+      "maxSeconds": 30
+    },
+    {
+      "baseSeconds": 3,
+      "attempt": 0,
+      "maxSeconds": 30
+    },
+    {
+      "baseSeconds": 3,
+      "attempt": 1,
+      "maxSeconds": 0
+    },
+    {
+      "baseSeconds": 3,
+      "attempt": 1,
+      "maxSeconds": -1
+    },
+    {
+      "baseSeconds": 9,
+      "attempt": 1,
+      "maxSeconds": 5
+    },
+    {
+      "baseSeconds": 3,
+      "attempt": 4,
+      "maxSeconds": 20
+    },
+    {
+      "baseSeconds": 3,
+      "attempt": 30,
+      "maxSeconds": 50
+    },
+    {
+      "baseSeconds": 3,
+      "attempt": 31,
+      "maxSeconds": 50
+    }
+  ],
+  "private_expected": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    5,
+    20,
+    50,
+    50
+  ]
+}

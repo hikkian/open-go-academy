@@ -1,0 +1,39 @@
+{
+  "id": "senior-09-medium",
+  "signature": "func LossState(lossSeconds, allowedSeconds int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { LossSeconds int64; AllowedSeconds int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(LossState(in.LossSeconds, in.AllowedSeconds)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "LossSeconds": 30,
+      "AllowedSeconds": 60
+    },
+    {
+      "LossSeconds": 90,
+      "AllowedSeconds": 60
+    }
+  ],
+  "public_expected": [
+    "within-target",
+    "exceeds-target"
+  ],
+  "private_input": [
+    {
+      "LossSeconds": 60,
+      "AllowedSeconds": 60
+    },
+    {
+      "LossSeconds": -1,
+      "AllowedSeconds": 60
+    },
+    {
+      "LossSeconds": 0,
+      "AllowedSeconds": -1
+    }
+  ],
+  "private_expected": [
+    "within-target",
+    "invalid",
+    "invalid"
+  ]
+}

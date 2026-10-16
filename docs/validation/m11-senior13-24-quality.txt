@@ -1,0 +1,10 @@
+M11 Senior 13–24 capstone exercise quality uplift
+Date: 2026-10-16
+
+Scope: senior-13..24 lesson JSON/Markdown; each of the 36 exercise prompts and criteria now ties its fixed helper signature to a concrete architecture review artifact (decision table, API compatibility matrix, migration/cutover note, observability contract, incident handoff, release review, capacity/cost note, code review, defense or retrospective). Easy asks for a bounded working record, Medium compares/records a decision, Hard asks for a review package with evidence and limits. Every prompt states that the production grader checks only the helper and the accompanying artifact is separate; helpers are not presented as production evidence.
+
+Validation command (focused; not the full M11 aggregate gate):
+  .tools/go/bin/go test -count=1 -timeout=30m ./internal/content -run '^TestSenior13To24QualityGate$' -v
+Result: PASS, TestSenior13To24QualityGate in 353.16s. The focused gate loaded the candidate catalog, ran the 36 Senior-13..24 Markdown Go example groups, and checked all 36 trusted references with the production grader through a uniquely scoped rootless runner. No failures.
+
+Test harness output retained temporarily at .data/senior13-24-quality-run.log (ignored). The temporary focused test harness is internal/content/zz_senior13_24_quality_test.go and should be removed after concurrent scoped M11 acceptance runs finish.

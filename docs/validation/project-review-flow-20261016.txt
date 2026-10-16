@@ -1,0 +1,25 @@
+Open Go Academy — signed project review flow
+Date: 2026-10-16
+Scope: local single-user P3/P4/P5 manual-review evidence; this does not enable rank awards.
+
+Implemented:
+- Offline Ed25519 reviewer key generation, strict registry loading, canonical signing and signature verification.
+- Server review packet bound to the exact current project version, submission, passing evaluation, submitted files, artifact hash and versioned manual rubric. The packet contains an unsigned attestation template whose artifact/rubric hashes are directly consumable by the signer.
+- POST persistence is append-only and replay-idempotent; GET history returns persisted decisions without the raw signature.
+- Workspace exports a packet, imports signed JSON, restores only an untrusted submission/evaluation pointer from localStorage and revalidates it against the server before showing review controls/history.
+- Reviewer signatures prove only possession of an operator-pinned key. The local system does not prove real-world identity or reviewer independence. Manual decisions do not award rank; the advanced-rank guard remains closed.
+- Canonical Base64 verification closes alternate-encoding replay; project evidence-linked exam attempts are protected from retention pruning.
+
+Verification:
+- `GOFLAGS=-p=1 GOMAXPROCS=2 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-project-review-fullmake-20261016 make test` — **PASS** on the current tree, including all Go unit tests, P1 reference tests/vet, whole-tree vet/race and frontend typecheck/build.
+- `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-project-review-integration .tools/go/bin/go test ./internal/httpapi ./internal/store ./internal/projectreview ./cmd/api ./cmd/project-review-sign ./cmd/project-review-keygen -count=1` — PASS.
+- `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-project-review-integration .tools/go/bin/go test -race ./internal/httpapi ./internal/store ./internal/projectreview ./cmd/project-review-keygen -run 'ProjectReview|ExamAttemptRetentionPreservesProjectEvidenceLinks|TestRun' -count=1` — PASS.
+- Same scoped packages with `go vet` — PASS.
+- From `web/`: `npm run typecheck` — PASS; `npm run build` — PASS.
+- `npx playwright test tests/project-review.spec.ts` — 2/2 PASS (desktop/mobile), full-page axe after reload, no horizontal overflow. Screenshots: `artifacts/desktop-project-review-flow.png`, `artifacts/mobile-project-review-flow.png`, `artifacts/desktop-project-review-reload.png`, `artifacts/mobile-project-review-reload.png`.
+- `git diff --check` — PASS.
+
+Open:
+- No manual review requirement is yet represented in an advanced rank policy or transactionally snapshotted into an exam. Do not award Middle/Middle+/Senior from these records.
+- The single local profile and operator-owned allowlist cannot prove reviewer independence or identity. A separate trust policy is required before public/independent certification claims.
+- The 88 M11 curriculum drafts still need pedagogical review; M11, M12 and M13 are incomplete.

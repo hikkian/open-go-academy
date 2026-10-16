@@ -1,0 +1,148 @@
+{
+  "id": "senior-09",
+  "title": "Аварийное восстановление: доказать возврат сервиса",
+  "rank": "Senior",
+  "module": "senior-security-reliability",
+  "prerequisites": [
+    "senior-08"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 113,
+  "learning_outcomes": [
+    "Различать backup, replica, restore и восстановление проекций.",
+    "Определять пользовательские RPO/RTO, их владельцев и зависимые предпосылки.",
+    "Планировать restore drill с проверкой данных, schema, keys, fencing и доступа.",
+    "Различать подтверждённый результат учения и непроверенную процедуру."
+  ],
+  "glossary": [
+    {
+      "term": "backup",
+      "translation": "резервная копия",
+      "definition": "Сохранённое состояние для последующего восстановления."
+    },
+    {
+      "term": "restore drill",
+      "translation": "учение по восстановлению",
+      "definition": "Практическое упражнение с восстановлением и проверкой инвариантов."
+    },
+    {
+      "term": "RPO",
+      "translation": "допустимая точка потери",
+      "definition": "Цель по объёму/возрасту потерянных данных для сценария."
+    },
+    {
+      "term": "RTO",
+      "translation": "цель времени восстановления",
+      "definition": "Срок до возврата оговорённой функции."
+    }
+  ],
+  "markdown_file": "senior-09.md",
+  "self_check": [
+    {
+      "question": "Что проверяется здесь?",
+      "answer": "Только ограниченный детерминированный helper contract."
+    },
+    {
+      "question": "Какое доказательство требуется отдельно?",
+      "answer": "Проверка реальной авторизации, восстановления, rotation или threat boundary."
+    },
+    {
+      "question": "Как избежать неподтверждённого обещания?",
+      "answer": "Назвать допущения, scope теста и остаточный риск."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "senior-09-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "BackupState",
+      "prompt": "Отсутствует → `missing`; не проверена → `unverified`; иначе → `candidate`. Статус candidate не означает, что сервис восстановлен.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc BackupState(exists, verified bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"missing\"\n\"unverified\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    },
+    {
+      "id": "senior-09-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "LossState",
+      "prompt": "Отрицательное значение → `invalid`; loss <= allowed → `within-target`; иначе → `exceeds-target`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc LossState(lossSeconds, allowedSeconds int64) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"within-target\"\n\"exceeds-target\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    },
+    {
+      "id": "senior-09-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Cutover",
+      "prompt": "Верните `eligible`, только если restoreVerified и oldWriterFenced истинны; иначе — `hold`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc Cutover(restoreVerified, oldWriterFenced bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"eligible\"\n\"hold\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "middleplus-01-hard",
+  "signature": "func BaselineDecision(before, after, minImprovement int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Before int64; After int64; MinImprovement int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=BaselineDecision(in.Before, in.After, in.MinImprovement); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Before": 100,
+      "After": 90,
+      "MinImprovement": 5
+    }
+  ],
+  "public_expected": [
+    "candidate_improved"
+  ],
+  "private_input": [
+    {
+      "Before": 100,
+      "After": 98,
+      "MinImprovement": 5
+    },
+    {
+      "Before": 100,
+      "After": 110,
+      "MinImprovement": 5
+    },
+    {
+      "Before": 100,
+      "After": 90,
+      "MinImprovement": -1
+    }
+  ],
+  "private_expected": [
+    "below_threshold",
+    "regression",
+    "invalid"
+  ]
+}

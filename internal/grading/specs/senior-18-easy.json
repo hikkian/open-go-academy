@@ -1,0 +1,26 @@
+{
+  "id": "senior-18-easy",
+  "signature": "func SignalCoverage(question, source, window string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Question string `json:\"question\"`; Source string `json:\"source\"`; Window string `json:\"window\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(SignalCoverage(in.Question, in.Source, in.Window)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "question": "latency",
+      "source": "histogram",
+      "window": "5m"
+    }
+  ],
+  "public_expected": [
+    "defined"
+  ],
+  "private_input": [
+    {
+      "question": "latency",
+      "source": "histogram",
+      "window": ""
+    }
+  ],
+  "private_expected": [
+    "missing_window"
+  ]
+}

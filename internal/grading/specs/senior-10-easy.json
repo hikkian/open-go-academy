@@ -1,0 +1,34 @@
+{
+  "id": "senior-10-easy",
+  "signature": "func AssetClass(secret, userData bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Secret bool; UserData bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(AssetClass(in.Secret, in.UserData)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Secret": true,
+      "UserData": true
+    },
+    {
+      "Secret": false,
+      "UserData": true
+    }
+  ],
+  "public_expected": [
+    "restricted",
+    "sensitive"
+  ],
+  "private_input": [
+    {
+      "Secret": false,
+      "UserData": false
+    },
+    {
+      "Secret": true,
+      "UserData": false
+    }
+  ],
+  "private_expected": [
+    "general",
+    "restricted"
+  ]
+}

@@ -1,4 +1,4 @@
-// Package projectrunner runs the P2 LinkHub project in a local, rootless OCI worker.
+// Package projectrunner runs approved P2/P3 student projects in a local, rootless OCI worker.
 package projectrunner
 
 import (
@@ -13,6 +13,7 @@ import (
 	"strings"
 	"unicode"
 
+	"academy/internal/projects"
 	"academy/internal/runner"
 )
 
@@ -29,6 +30,18 @@ type Request struct {
 	ProjectID string            `json:"project_id"`
 	Action    string            `json:"action"`
 	Files     map[string]string `json:"files"`
+}
+
+// EvaluationProfile identifies the immutable project/checker/runtime policy that
+// produced an automatic evaluation. It is served only by the local trusted runner.
+type EvaluationProfile struct {
+	ProjectVersion    string `json:"project_version"`
+	CriteriaHash      string `json:"criteria_hash"`
+	CheckerVersion    string `json:"checker_version"`
+	CheckerDigest     string `json:"checker_digest"`
+	RuntimePolicyHash string `json:"runtime_policy_hash"`
+	RubricVersion     string `json:"rubric_version"`
+	RubricHash        string `json:"rubric_hash"`
 }
 
 type Config struct {
@@ -92,17 +105,31 @@ func isGenuineTestSource(name, source string) (bool, bool) {
 }
 
 func validate(req Request, cfg Config) error {
-	if req.ProjectID != "p2" {
+	if req.ProjectID != "p2" && req.ProjectID != "p3" && req.ProjectID != "p4" && req.ProjectID != "p5" {
 		return errors.New("unsupported project")
 	}
 	if req.Action != "run" && req.Action != "test" && req.Action != "submit" {
 		return errors.New("unsupported action")
+	}
+	if (req.ProjectID == "p4" || req.ProjectID == "p5") && (req.Action == "test" || req.Action == "submit") {
+		if err := ValidateAssessmentProcessHooks(req.Files); err != nil {
+			return err
+		}
 	}
 	if len(req.Files) == 0 || len(req.Files) > MaxFiles {
 		return errors.New("invalid file count")
 	}
 	var total, goBytes int
 	hasTest := false
+	hasSource, hasReadme := false, false
+	modPolicy, sumPolicy := cfg.ExpectedGoMod, cfg.ExpectedGoSum
+	if req.ProjectID == "p3" || req.ProjectID == "p4" || req.ProjectID == "p5" {
+		var ok bool
+		modPolicy, sumPolicy, ok = projects.ModulePolicy(req.ProjectID)
+		if !ok {
+			return errors.New("project module policy unavailable")
+		}
+	}
 	for name, content := range req.Files {
 		if name == "" || strings.ContainsAny(name, "\\\x00") || path.IsAbs(name) || strings.Contains(name, "//") {
 			return errors.New("invalid file path")
@@ -119,14 +146,20 @@ func validate(req Request, cfg Config) error {
 		ext := path.Ext(name)
 		allowed := ext == ".go" || ext == ".json" || ext == ".sql" || ext == ".md" || ext == ".yaml" || ext == ".yml" || name == "go.mod" || name == "go.sum" || name == "Dockerfile" || name == ".env.example" || name == ".gitignore"
 		base := path.Base(name)
-		if base == "Dockerfile" || base == "compose.yaml" || base == "docker-compose.yml" || strings.HasSuffix(base, ".env") {
+		if base == "Dockerfile" || base == "Containerfile" || base == "compose.yaml" || base == "compose.yml" || base == "docker-compose.yml" || base == "docker-compose.yaml" || strings.HasSuffix(base, ".env") {
 			return errors.New("runtime configuration files are not accepted")
 		}
 		if !allowed {
 			return fmt.Errorf("unsupported file type")
 		}
-		if (name == "go.mod" && content != cfg.ExpectedGoMod) || (name == "go.sum" && content != cfg.ExpectedGoSum) {
+		if (name == "go.mod" && content != modPolicy) || (name == "go.sum" && content != sumPolicy) {
 			return errors.New("module lock files are immutable")
+		}
+		if name == "README.md" && strings.TrimSpace(content) == "" {
+			return errors.New("README.md must not be empty")
+		}
+		if name == "README.md" {
+			hasReadme = true
 		}
 		if len(content) > MaxOther {
 			return errors.New("file too large")
@@ -136,6 +169,9 @@ func validate(req Request, cfg Config) error {
 				return errors.New("Go source too large")
 			}
 			goBytes += len(content)
+			if !strings.HasSuffix(name, "_test.go") {
+				hasSource = true
+			}
 			if strings.HasSuffix(name, "_test.go") {
 				genuine, hasTestMain := isGenuineTestSource(name, content)
 				hasTest = hasTest || genuine
@@ -149,14 +185,101 @@ func validate(req Request, cfg Config) error {
 	if _, ok := req.Files["go.mod"]; !ok {
 		return errors.New("go.mod required")
 	}
-	if _, ok := req.Files["go.sum"]; !ok {
+	if _, ok := req.Files["go.sum"]; !ok && req.ProjectID != "p4" && req.ProjectID != "p5" {
 		return errors.New("go.sum required")
+	}
+	if req.ProjectID == "p3" && (!hasSource || !hasReadme) {
+		return errors.New("TaskFlow requires a non-test Go source and README.md")
 	}
 	if goBytes > MaxGo || total > MaxTotal {
 		return errors.New("project files too large")
 	}
-	if req.Action == "test" && !hasTest {
+	if (req.Action == "test" || req.ProjectID == "p3" && req.Action == "submit") && !hasTest {
 		return errors.New("test action requires a genuine TestX function")
+	}
+	if req.ProjectID == "p4" {
+		if !hasSource || !hasReadme {
+			return errors.New("ScaleLab requires non-test Go source and README.md")
+		}
+		if req.Action == "test" && !hasTest {
+			return errors.New("test action requires a genuine TestX function")
+		}
+		if err := projects.ValidateFor("p4", req.Files); err != nil {
+			return err
+		}
+		for _, required := range []string{"go.mod", "README.md", "docs/project.md", "docs/rubric.md", "main.go", "aggregate.go"} {
+			if strings.TrimSpace(req.Files[required]) == "" {
+				return fmt.Errorf("ScaleLab required project file missing or empty: %s", required)
+			}
+		}
+	}
+	if req.ProjectID == "p5" {
+		if !hasSource || !hasReadme {
+			return errors.New("Capstone requires non-test Go source and README.md")
+		}
+		if req.Action == "test" && !hasTest {
+			return errors.New("test action requires a genuine TestX function")
+		}
+		if err := projects.ValidateFor("p5", req.Files); err != nil {
+			return err
+		}
+		for _, required := range []string{"go.mod", "README.md", "main.go", "queue.go", "docs/project.md", "docs/rubric.md", "docs/threat-model.md", "design/requirements.md", "design/architecture-template.md", "design/operations-template.md", "design/postmortem-template.md", "design/threat-template.md", "design/adr-template.md"} {
+			if strings.TrimSpace(req.Files[required]) == "" {
+				return fmt.Errorf("Capstone required project file missing or empty: %s", required)
+			}
+		}
+	}
+	return nil
+}
+
+// The P4/P5 trusted acceptance overlay is executed by `go test` in the
+// isolated project container. Package init functions run before the test
+// harness and test code can call os.Exit/Goexit, so either could falsely make
+// the Go command exit successfully without running the trusted checks. These
+// projects do not require package initialization or process control in tests;
+// reject those hooks on machine-assessed actions while leaving normal `run`
+// behavior available.
+// ValidateAssessmentProcessHooks rejects Go test-runner process hooks that
+// could skip trusted P4/P5 acceptance tests before they execute.
+func ValidateAssessmentProcessHooks(files map[string]string) error {
+	for name, source := range files {
+		if !strings.HasSuffix(name, ".go") {
+			continue
+		}
+		file, err := parser.ParseFile(token.NewFileSet(), name, source, 0)
+		if err != nil {
+			return fmt.Errorf("invalid Go source %s", name)
+		}
+		allowedMainExit := map[ast.Node]bool{}
+		for _, decl := range file.Decls {
+			fn, ok := decl.(*ast.FuncDecl)
+			if ok && (fn.Name.Name == "init" || fn.Name.Name == "TestMain") {
+				return fmt.Errorf("%s не может определять init или TestMain в проверяемом проекте", name)
+			}
+			if ok && fn.Name.Name == "main" && fn.Body != nil {
+				ast.Inspect(fn.Body, func(node ast.Node) bool {
+					if selector, ok := node.(*ast.SelectorExpr); ok && (selector.Sel.Name == "Exit" || selector.Sel.Name == "Goexit") {
+						allowedMainExit[selector] = true
+					}
+					return true
+				})
+			}
+		}
+		var processExit bool
+		ast.Inspect(file, func(node ast.Node) bool {
+			selector, ok := node.(*ast.SelectorExpr)
+			if !ok {
+				return true
+			}
+			if (selector.Sel.Name == "Exit" || selector.Sel.Name == "Goexit") &&
+				(strings.HasSuffix(name, "_test.go") || !allowedMainExit[selector]) {
+				processExit = true
+			}
+			return true
+		})
+		if processExit {
+			return fmt.Errorf("%s не может завершать процесс из пользовательских тестов", name)
+		}
 	}
 	return nil
 }

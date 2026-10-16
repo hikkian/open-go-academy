@@ -1,0 +1,35 @@
+{
+  "id": "middleplus-08-hard",
+  "signature": "func IndexSupportsQuery(equalityPrefix, indexSortColumns, querySortColumns int, partialPredicateMatches bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { EqualityPrefix int; IndexSortColumns int; QuerySortColumns int; PartialPredicateMatches bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=IndexSupportsQuery(in.EqualityPrefix, in.IndexSortColumns, in.QuerySortColumns, in.PartialPredicateMatches); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "EqualityPrefix": 2,
+      "IndexSortColumns": 2,
+      "QuerySortColumns": 1,
+      "PartialPredicateMatches": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "EqualityPrefix": 1,
+      "IndexSortColumns": 1,
+      "QuerySortColumns": 2,
+      "PartialPredicateMatches": true
+    },
+    {
+      "EqualityPrefix": 2,
+      "IndexSortColumns": 1,
+      "QuerySortColumns": 1,
+      "PartialPredicateMatches": false
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

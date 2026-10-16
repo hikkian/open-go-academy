@@ -1,0 +1,47 @@
+{
+  "id": "middle-01-medium",
+  "signature": "func AssignWorkers(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(AssignWorkers(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      3,
+      7
+    ],
+    [
+      2,
+      4
+    ]
+  ],
+  "public_expected": [
+    [
+      0,
+      1,
+      2,
+      0,
+      1,
+      2,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      1
+    ]
+  ],
+  "private_input": [
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      3
+    ]
+  ],
+  "private_expected": [
+    [],
+    []
+  ]
+}

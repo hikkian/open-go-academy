@@ -1,0 +1,38 @@
+{
+  "id": "middleplus-05-hard",
+  "signature": "func HeapChange(before, after int64, gcCompleted bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Before int64; After int64; GCCompleted bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=HeapChange(in.Before, in.After, in.GCCompleted); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Before": 100,
+      "After": 80,
+      "GCCompleted": true
+    }
+  ],
+  "public_expected": [
+    "lower_after_gc"
+  ],
+  "private_input": [
+    {
+      "Before": 100,
+      "After": 120,
+      "GCCompleted": true
+    },
+    {
+      "Before": 100,
+      "After": 80,
+      "GCCompleted": false
+    },
+    {
+      "Before": -1,
+      "After": 0,
+      "GCCompleted": true
+    }
+  ],
+  "private_expected": [
+    "higher_after_gc",
+    "gc_not_completed",
+    "invalid"
+  ]
+}

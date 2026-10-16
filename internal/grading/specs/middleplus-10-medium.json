@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-10-medium",
+  "signature": "func ValidReplicaLag(lagSeconds, maxLag int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { LagSeconds int; MaxLag int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ValidReplicaLag(in.LagSeconds, in.MaxLag); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "LagSeconds": 0,
+      "MaxLag": 5
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "LagSeconds": 6,
+      "MaxLag": 5
+    },
+    {
+      "LagSeconds": 1,
+      "MaxLag": -1
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

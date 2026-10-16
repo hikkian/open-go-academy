@@ -1,0 +1,39 @@
+{
+  "id": "middle-38-easy",
+  "signature": "func OutboxAction(committed, published bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Committed bool `json:\"committed\"`; Published bool `json:\"published\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(OutboxAction(in.Committed, in.Published)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "committed": true,
+      "published": false
+    }
+  ],
+  "public_expected": [
+    "publish"
+  ],
+  "private_input": [
+    {
+      "committed": false,
+      "published": false
+    },
+    {
+      "committed": false,
+      "published": true
+    },
+    {
+      "committed": true,
+      "published": false
+    },
+    {
+      "committed": true,
+      "published": true
+    }
+  ],
+  "private_expected": [
+    "not_committed",
+    "not_committed",
+    "publish",
+    "ack"
+  ]
+}

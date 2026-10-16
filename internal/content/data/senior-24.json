@@ -1,0 +1,159 @@
+{
+  "id": "senior-24",
+  "title": "P5 retrospective и изменение архитектуры",
+  "rank": "Senior",
+  "module": "senior-p5-architecture",
+  "prerequisites": [
+    "senior-23"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Свести результаты P5, зафиксировать пересмотр решения, ownership действий и ограничения выводов.",
+    "Сохранять alternatives, assumptions, risk, evidence и пересмотр в ADR/design doc.",
+    "Ограничивать вывод фактической проверкой и обозначать неизвестное."
+  ],
+  "glossary": [
+    {
+      "term": "quality attribute",
+      "translation": "атрибут качества",
+      "definition": "Измеримое свойство в конкретном сценарии."
+    },
+    {
+      "term": "ADR",
+      "translation": "запись архитектурного решения",
+      "definition": "Контекст, варианты, последствия, доказательства и триггер пересмотра."
+    },
+    {
+      "term": "trade-off",
+      "translation": "компромисс",
+      "definition": "Обмен одного свойства на другое."
+    },
+    {
+      "term": "rollback",
+      "translation": "откат",
+      "definition": "Возврат состояния при совместимости бинарника и данных."
+    },
+    {
+      "term": "human review",
+      "translation": "человеческое рецензирование",
+      "definition": "Оценка конкретной версии и артефакта в ограниченном scope."
+    }
+  ],
+  "markdown_file": "senior-24.md",
+  "order": 128,
+  "exercises": [
+    {
+      "id": "senior-24-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: P5 retrospective и изменение архитектуры — рабочая запись",
+      "prompt": "Реализуйте `func ActionPriority(impact, likelihood int) string`. Для retrospective backlog: отрицательные оценки → invalid; impact≥3 и likelihood≥3 → now; иначе одна оценка≥2 → schedule; иначе track. Составьте короткую матрицу impact×likelihood и укажите владельца следующего шага. Баллы — учебные метки, не калиброванная вероятность. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ActionPriority(impact, likelihood int) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"now\"\n",
+      "criteria": [
+        "Точно реализовать контракт `ActionPriority` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-24-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: P5 retrospective и изменение архитектуры — decision artifact",
+      "prompt": "Реализуйте `func DecisionReview(triggerObserved, evidenceUpdated, ownerAssigned bool) string`. Для ADR review: нет записанного trigger → keep_watch; trigger с новым evidence не проверенным → gather_evidence; evidence обновлено без owner → assign_owner; всё есть → revisit_decision. В отдельной записи приложите версию ADR, новое наблюдение и срок; helper не пересматривает архитектуру. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc DecisionReview(triggerObserved, evidenceUpdated, ownerAssigned bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"revisit_decision\"\n",
+      "criteria": [
+        "Точно реализовать контракт `DecisionReview` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-24-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: P5 retrospective и изменение архитектуры — review пакет",
+      "prompt": "Реализуйте `func RetrospectiveComplete(factsSeparated, actionsOwned, limitsRecorded bool) bool`. Подготовьте ретроспективу с разделёнными фактами/интерпретациями, проверяемыми action+owner+сроком и ограничениями выводов. Helper true только если все три категории отмечены. Добавьте пример одной причинной гипотезы и тест, способный её опровергнуть; флаги не доказывают качество анализа. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RetrospectiveComplete(factsSeparated, actionsOwned, limitsRecorded bool) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Точно реализовать контракт `RetrospectiveComplete` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Что ретроспектива сравнивает?",
+      "answer": "Исходную гипотезу, наблюдения и последствия, разделяя факты и интерпретации."
+    },
+    {
+      "question": "Как сформулировать задачу после P5 retrospective?",
+      "answer": "Назвать ограниченное изменение, ответственного, срок и проверяемое свидетельство."
+    },
+    {
+      "question": "Почему нельзя придумывать production postmortem для учебного сценария?",
+      "answer": "Это выдаёт симуляцию за реальный опыт; сценарий нужно так и обозначить."
+    },
+    {
+      "question": "Когда следует пересмотреть архитектурное решение?",
+      "answer": "Когда наблюдение пересекло записанный trigger или изменилось важное исходное предположение."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "senior-21-hard",
+  "signature": "func CostDecision(estimateValid, workloadMeasured, budgetOwner bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { EstimateValid bool `json:\"estimateValid\"`; WorkloadMeasured bool `json:\"workloadMeasured\"`; BudgetOwner bool `json:\"budgetOwner\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CostDecision(in.EstimateValid, in.WorkloadMeasured, in.BudgetOwner)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "estimateValid": true,
+      "workloadMeasured": true,
+      "budgetOwner": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "estimateValid": true,
+      "workloadMeasured": false,
+      "budgetOwner": true
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "id": "middle-03-easy",
+  "signature": "func TakeChannelPrefix(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(TakeChannelPrefix(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    [
+      8,
+      9
+    ]
+  ],
+  "public_expected": [
+    [
+      4,
+      5,
+      6
+    ],
+    [
+      9
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      2,
+      3
+    ],
+    [
+      -1,
+      2
+    ]
+  ],
+  "private_expected": [
+    [],
+    []
+  ]
+}

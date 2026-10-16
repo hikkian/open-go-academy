@@ -5,12 +5,14 @@ import (
 	"academy/internal/content"
 	"academy/internal/credentials"
 	"academy/internal/httpapi"
+	"academy/internal/projectreview"
 	"academy/internal/projectrunner"
 	"academy/internal/runner"
 	"academy/internal/store"
 	"academy/internal/tutor"
 	"context"
 	"crypto/ed25519"
+	"errors"
 	"log/slog"
 	"net"
 	"net/http"
@@ -74,6 +76,12 @@ func main() {
 	_, port, _ := net.SplitHostPort(addr)
 	a := httpapi.New(s, catalog, runner.NewClient(env("ACADEMY_RUNNER_SOCKET", ".data/runner.sock")), secret, addr, "localhost:"+port, "127.0.0.1:5173", "localhost:5173")
 	a.ProjectRunner = projectrunner.NewClient(env("ACADEMY_PROJECT_RUNNER_SOCKET", ".data/project-runner.sock"))
+	projectReviewers, err := loadProjectReviewers(env("ACADEMY_PROJECT_REVIEWERS_FILE", ""))
+	if err != nil {
+		slog.Error("project reviewer registry rejected", "error", err)
+		os.Exit(1)
+	}
+	a.ProjectReviewers = projectReviewers
 	issuerPath := env("ACADEMY_ISSUER_KEY", filepath.Join(filepath.Dir(dbPath), "issuer.key"))
 	var credentialCount int
 	if err = s.DB().QueryRow(`SELECT COUNT(*) FROM credentials`).Scan(&credentialCount); err != nil {
@@ -111,13 +119,22 @@ func main() {
 		os.Exit(1)
 	}
 	a.TutorSettings = httpapi.TutorSettings{DailyBudget: budget, MaxOutputTokens: maxOutput}
+	location := strings.ToLower(strings.TrimSpace(os.Getenv("ACADEMY_AI_PROVIDER_LOCATION")))
+	if location != "local" && location != "cloud" {
+		location = "unknown"
+	}
+	a.TutorSettings.ProviderLocation = location
 	if gateway.Enabled() {
 		a.Tutor = gateway
 		u, _ := url.Parse(cfg.Endpoint)
-		a.TutorSettings.Cloud = u.Scheme == "https"
+		a.TutorSettings.Cloud = location == "cloud"
 		a.TutorSettings.ProviderLabel = u.Hostname()
 		a.TutorSettings.EconomyModel = cfg.EconomyModel
 		a.TutorSettings.AdvancedModel = cfg.AdvancedModel
+	}
+	if err := a.ConfigureLocalTutor(cfg, env("ACADEMY_TUTOR_PROVIDER_CONFIG", ".data/tutor-provider.json")); err != nil {
+		slog.Error("persisted local Tutor configuration rejected", "error", err)
+		os.Exit(1)
 	}
 	srv := &http.Server{Addr: addr, Handler: a.Handler(env("ACADEMY_WEB", "web/dist")), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 230 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 << 10}
 	stop := make(chan os.Signal, 1)
@@ -133,4 +150,30 @@ func main() {
 		slog.Error("server", "error", err)
 		os.Exit(1)
 	}
+}
+
+// loadProjectReviewers accepts only an operator-owned private registry file.
+// The registry contains public keys, but mode 0600 keeps local policy edits
+// under explicit operator control and avoids accidental publication.
+func loadProjectReviewers(path string) (*projectreview.Registry, error) {
+	if path == "" {
+		return nil, nil
+	}
+	before, err := os.Lstat(path)
+	if err != nil {
+		return nil, err
+	}
+	if before.Mode()&os.ModeSymlink != 0 || !before.Mode().IsRegular() || before.Mode().Perm() != 0600 {
+		return nil, errors.New("reviewer registry must be a regular non-symlink file with mode 0600")
+	}
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	after, err := file.Stat()
+	if err != nil || !os.SameFile(before, after) || after.Mode().Perm() != 0600 {
+		return nil, errors.New("reviewer registry changed while being opened")
+	}
+	return projectreview.LoadRegistry(file)
 }

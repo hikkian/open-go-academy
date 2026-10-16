@@ -1,0 +1,159 @@
+{
+  "id": "senior-22",
+  "title": "Code review и развитие инженеров",
+  "rank": "Senior",
+  "module": "senior-p5-architecture",
+  "prerequisites": [
+    "senior-21"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Проводить review по рискам и контрактам, давать конкретную обратную связь без оценки личности.",
+    "Сохранять alternatives, assumptions, risk, evidence и пересмотр в ADR/design doc.",
+    "Ограничивать вывод фактической проверкой и обозначать неизвестное."
+  ],
+  "glossary": [
+    {
+      "term": "quality attribute",
+      "translation": "атрибут качества",
+      "definition": "Измеримое свойство в конкретном сценарии."
+    },
+    {
+      "term": "ADR",
+      "translation": "запись архитектурного решения",
+      "definition": "Контекст, варианты, последствия, доказательства и триггер пересмотра."
+    },
+    {
+      "term": "trade-off",
+      "translation": "компромисс",
+      "definition": "Обмен одного свойства на другое."
+    },
+    {
+      "term": "rollback",
+      "translation": "откат",
+      "definition": "Возврат состояния при совместимости бинарника и данных."
+    },
+    {
+      "term": "human review",
+      "translation": "человеческое рецензирование",
+      "definition": "Оценка конкретной версии и артефакта в ограниченном scope."
+    }
+  ],
+  "markdown_file": "senior-22.md",
+  "order": 126,
+  "exercises": [
+    {
+      "id": "senior-22-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: Code review и развитие инженеров — рабочая запись",
+      "prompt": "Реализуйте `func ReviewPriority(severity int, dataBoundary bool) string`. Для конкретного code-review finding: severity<0 → invalid; нарушение data/security boundary → blocking; иначе severity≥3 → high; иначе normal. В отдельной карточке дайте минимальный reproduction и ожидаемый тест; helper не ранжирует произвольный код самостоятельно. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ReviewPriority(severity int, dataBoundary bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"blocking\"\n",
+      "criteria": [
+        "Точно реализовать контракт `ReviewPriority` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-22-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: Code review и развитие инженеров — decision artifact",
+      "prompt": "Реализуйте `func FeedbackKind(actionable, evidence bool) string`. Классифицируйте review-комментарий: не actionable → question; actionable без evidence → needs_evidence; actionable с evidence → suggestion. Добавьте к артефакту конкретное наблюдение и небольшой следующий шаг; helper не оценивает тон, контекст и согласие автора. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc FeedbackKind(actionable, evidence bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"suggestion\"\n",
+      "criteria": [
+        "Точно реализовать контракт `FeedbackKind` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-22-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: Code review и развитие инженеров — review пакет",
+      "prompt": "Реализуйте `func MergeReady(blockers, testsGreen, ownerApproved int) bool`. Для учебного merge gate true только если blockers=0 и testsGreen=ownerApproved=1; все прочие значения false. Подготовьте review checklist с test run/commit и unresolved-risk disposition. helper проверяет точные маркеры, а не доказывает качество review или самого изменения. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc MergeReady(blockers, testsGreen, ownerApproved int) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Точно реализовать контракт `MergeReady` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Чем полезный review comment отличается от личной оценки?",
+      "answer": "Он указывает риск, evidence и конкретное действие по diff."
+    },
+    {
+      "question": "Как отделить blocker от предложения?",
+      "answer": "Явно пометить severity и последствие; автор отвечает, reviewer проверяет исправление."
+    },
+    {
+      "question": "Почему reviewer всё равно нужен после зелёных тестов?",
+      "answer": "Тесты не покрывают автоматически архитектурные предпосылки и смысл изменения."
+    },
+    {
+      "question": "Как помогает наставнический вопрос?",
+      "answer": "Он направляет автора к инварианту и тесту, сохраняя за ним понимание решения."
+    }
+  ]
+}

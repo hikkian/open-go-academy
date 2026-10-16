@@ -1,0 +1,218 @@
+package httpapi
+
+import (
+	"academy/internal/projectreview"
+	"academy/internal/projects"
+	"academy/internal/store"
+	"encoding/json"
+	"errors"
+	"net/http"
+	"strings"
+	"time"
+)
+
+type manualReviewRubric struct {
+	Version      string               `json:"version"`
+	Hash         string               `json:"hash"`
+	ProjectID    string               `json:"project_id"`
+	Project      string               `json:"project"`
+	Requirements []string             `json:"requirements"`
+	Milestones   []projects.Milestone `json:"milestones"`
+	RubricFiles  map[string]string    `json:"rubric_files,omitempty"`
+}
+
+func buildManualReviewRubric(project projects.Project) manualReviewRubric {
+	files := map[string]string{}
+	for _, name := range []string{"docs/project.md", "docs/rubric.md", "docs/threat-model.md"} {
+		if body := project.StarterFiles[name]; body != "" {
+			files[name] = body
+		}
+	}
+	result := manualReviewRubric{
+		Version:      project.Version + "-manual-review-v1",
+		ProjectID:    project.ID,
+		Project:      project.Title,
+		Requirements: append([]string(nil), project.Requirements...),
+		Milestones:   append([]projects.Milestone(nil), project.Milestones...),
+		RubricFiles:  files,
+	}
+	canonical, _ := json.Marshal(struct {
+		Version      string
+		ProjectID    string
+		Project      string
+		Requirements []string
+		Milestones   []projects.Milestone
+		RubricFiles  map[string]string
+	}{result.Version, result.ProjectID, result.Project, result.Requirements, result.Milestones, result.RubricFiles})
+	result.Hash = projectreview.Hash(canonical)
+	return result
+}
+
+func (a *API) projectReviewRoutes(mux *http.ServeMux) {
+	mux.HandleFunc("GET /api/projects/{id}/submissions/{submissionID}/review-packet", func(w http.ResponseWriter, r *http.Request) {
+		projectID, submissionID := r.PathValue("id"), r.PathValue("submissionID")
+		project, ok := projects.Find(projectID)
+		if !ok || !isManagedProject(projectID) {
+			fail(w, http.StatusNotFound, "проект не найден")
+			return
+		}
+		submission, err := a.Store.ProjectSubmission("local", submissionID)
+		if errors.Is(err, store.ErrProjectEvidenceNotFound) || err == nil && submission.ProjectID != projectID {
+			fail(w, http.StatusNotFound, "доказательство проекта не найдено")
+			return
+		}
+		if err != nil {
+			fail(w, http.StatusInternalServerError, "не удалось прочитать доказательство проекта")
+			return
+		}
+		criteriaHash, criteriaOK := projects.CriteriaHash(projectID)
+		if submission.ProjectVersion != project.Version || !criteriaOK || submission.CriteriaHash != criteriaHash {
+			fail(w, http.StatusConflict, "submission использует устаревшую версию проекта; текущая rubric к нему не применяется")
+			return
+		}
+		evaluationID := r.URL.Query().Get("evaluation_id")
+		if evaluationID == "" {
+			if err = a.Store.DB().QueryRow(`SELECT id FROM project_evaluations
+				WHERE profile_id=? AND project_id=? AND submission_id=? ORDER BY created_at DESC,id DESC LIMIT 1`,
+				"local", projectID, submissionID).Scan(&evaluationID); err != nil {
+				fail(w, http.StatusNotFound, "оценка проекта не найдена")
+				return
+			}
+		}
+		evaluation, err := a.Store.ProjectEvaluation("local", evaluationID)
+		if errors.Is(err, store.ErrProjectEvidenceNotFound) || err == nil && (evaluation.ProjectID != projectID || evaluation.SubmissionID != submissionID) {
+			fail(w, http.StatusNotFound, "оценка проекта не найдена")
+			return
+		}
+		if err != nil {
+			fail(w, http.StatusInternalServerError, "не удалось прочитать оценку проекта")
+			return
+		}
+		if !evaluation.Passed || evaluation.EvaluationStatus != "automatic_pass" || evaluation.ExitCode != 0 {
+			fail(w, http.StatusConflict, "для ручного review требуется успешная неизменяемая автоматическая оценка")
+			return
+		}
+		rubric := buildManualReviewRubric(project)
+		write(w, http.StatusOK, map[string]any{
+			"submission_id": submission.ID, "evaluation_id": evaluation.ID,
+			"project_id": project.ID, "project_version": submission.ProjectVersion,
+			"criteria_hash": submission.CriteriaHash, "artifact_schema_version": submission.ArtifactSchema,
+			"artifact_hash": strings.TrimPrefix(submission.ArtifactHash, "sha256:"), "executed_source_hash": submission.ExecutedSourceHash,
+			"evaluation_status": evaluation.EvaluationStatus, "checks_hash": evaluation.ChecksHash,
+			"checker_version": evaluation.CheckerVersion, "checker_digest": evaluation.CheckerDigest,
+			"rubric": rubric, "files": submission.Files,
+			"attestation_template": projectreview.Attestation{
+				Version: projectreview.Version, ReviewerID: "replace-with-allowlisted-reviewer-id",
+				SubmissionID: submission.ID, EvaluationID: evaluation.ID, ProjectID: project.ID,
+				ProjectVersion: submission.ProjectVersion, ArtifactHash: strings.TrimPrefix(submission.ArtifactHash, "sha256:"),
+				RubricVersion: rubric.Version, RubricHash: rubric.Hash,
+				Decision: "", Comments: "", IssuedAt: time.Now().UTC().Format(time.RFC3339), Signature: "",
+			},
+		})
+	})
+
+	mux.HandleFunc("GET /api/projects/{id}/submissions/{submissionID}/reviews", func(w http.ResponseWriter, r *http.Request) {
+		projectID, submissionID := r.PathValue("id"), r.PathValue("submissionID")
+		if !isManagedProject(projectID) {
+			fail(w, http.StatusNotFound, "проект не найден")
+			return
+		}
+		submission, err := a.Store.ProjectSubmission("local", submissionID)
+		if errors.Is(err, store.ErrProjectEvidenceNotFound) || err == nil && submission.ProjectID != projectID {
+			fail(w, http.StatusNotFound, "доказательство проекта не найдено")
+			return
+		}
+		if err != nil {
+			fail(w, http.StatusInternalServerError, "не удалось прочитать доказательство проекта")
+			return
+		}
+		reviews, err := a.Store.ProjectReviews("local", submissionID)
+		if err != nil {
+			fail(w, http.StatusInternalServerError, "не удалось прочитать project reviews")
+			return
+		}
+		type reviewResponse struct {
+			ID                string    `json:"id"`
+			ReviewerID        string    `json:"reviewer_id"`
+			Decision          string    `json:"decision"`
+			Comments          string    `json:"comments"`
+			ArtifactHash      string    `json:"artifact_hash"`
+			RubricVersion     string    `json:"rubric_version"`
+			RubricHash        string    `json:"rubric_hash"`
+			AttestationDigest string    `json:"attestation_digest"`
+			CreatedAt         time.Time `json:"created_at"`
+		}
+		result := make([]reviewResponse, 0, len(reviews))
+		for _, review := range reviews {
+			result = append(result, reviewResponse{review.ID, review.Attestation.ReviewerID, review.Attestation.Decision,
+				review.Attestation.Comments, review.Attestation.ArtifactHash, review.Attestation.RubricVersion,
+				review.Attestation.RubricHash, review.AttestationDigest, review.CreatedAt})
+		}
+		write(w, http.StatusOK, map[string]any{"reviews": result})
+	})
+
+	mux.HandleFunc("POST /api/projects/{id}/submissions/{submissionID}/reviews", func(w http.ResponseWriter, r *http.Request) {
+		projectID, submissionID := r.PathValue("id"), r.PathValue("submissionID")
+		if !isManagedProject(projectID) {
+			fail(w, http.StatusNotFound, "проект не найден")
+			return
+		}
+		if a.ProjectReviewers == nil {
+			fail(w, http.StatusServiceUnavailable, "операторский allowlist project-review keys не настроен")
+			return
+		}
+		var attestation projectreview.Attestation
+		if decode(w, r, &attestation) != nil {
+			fail(w, http.StatusBadRequest, "подписанное решение reviewer имеет неверный формат")
+			return
+		}
+		if attestation.ProjectID != projectID || attestation.SubmissionID != submissionID {
+			fail(w, http.StatusUnprocessableEntity, "review должен быть привязан к этому проекту и submission ID")
+			return
+		}
+		project, ok := projects.Find(projectID)
+		if !ok {
+			fail(w, http.StatusNotFound, "проект не найден")
+			return
+		}
+		submission, err := a.Store.ProjectSubmission("local", submissionID)
+		if errors.Is(err, store.ErrProjectEvidenceNotFound) {
+			fail(w, http.StatusNotFound, "доказательство проекта не найдено")
+			return
+		}
+		if err != nil {
+			fail(w, http.StatusInternalServerError, "не удалось прочитать доказательство проекта")
+			return
+		}
+		criteriaHash, criteriaOK := projects.CriteriaHash(projectID)
+		if !criteriaOK || submission.ProjectVersion != project.Version || submission.CriteriaHash != criteriaHash {
+			fail(w, http.StatusConflict, "submission использует устаревшую версию проекта; текущая rubric к нему не применяется")
+			return
+		}
+		rubric := buildManualReviewRubric(project)
+		if attestation.ProjectVersion != project.Version || attestation.RubricVersion != rubric.Version || attestation.RubricHash != rubric.Hash {
+			fail(w, http.StatusUnprocessableEntity, "review использует неизвестную версию rubric или hash")
+			return
+		}
+		if err := projectreview.Verify(a.ProjectReviewers, attestation); err != nil {
+			fail(w, http.StatusUnprocessableEntity, "подпись reviewer не прошла проверку доверенного allowlist")
+			return
+		}
+		review, err := a.Store.RecordProjectReview("local", attestation)
+		if errors.Is(err, store.ErrProjectEvidenceNotFound) {
+			fail(w, http.StatusNotFound, "submission или оценка проекта не найдены")
+			return
+		}
+		if err != nil {
+			fail(w, http.StatusConflict, "review не соответствует неизменяемому submission/evaluation")
+			return
+		}
+		write(w, http.StatusCreated, map[string]any{
+			"review_id": review.ID, "reviewer_id": review.Attestation.ReviewerID,
+			"decision": review.Attestation.Decision, "artifact_hash": review.Attestation.ArtifactHash,
+			"rubric_version": review.Attestation.RubricVersion, "rubric_hash": review.Attestation.RubricHash,
+			"attestation_digest": review.AttestationDigest, "created_at": review.CreatedAt,
+			"rank_awarded": false,
+		})
+	})
+}

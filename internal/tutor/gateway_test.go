@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"net/netip"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -132,12 +133,13 @@ func TestDisabledAndInvalidTargets(t *testing.T) {
 }
 
 func TestCancellationAndBoundedResponse(t *testing.T) {
+	started := make(chan struct{})
 	release := make(chan struct{})
+	var releaseOnce sync.Once
+	defer releaseOnce.Do(func() { close(release) })
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		select {
-		case <-r.Context().Done():
-		case <-release:
-		}
+		close(started)
+		<-release
 		_, _ = fmt.Fprint(w, `{"choices":[{"message":{"content":"done"}}]}`)
 	}))
 	defer srv.Close()
@@ -148,17 +150,23 @@ func TestCancellationAndBoundedResponse(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan error, 1)
 	go func() { _, e := g.Complete(ctx, Request{Mode: "example", Message: "пример"}); done <- e }()
-	time.Sleep(30 * time.Millisecond)
+	select {
+	case <-started:
+	case <-time.After(time.Second):
+		t.Fatal("provider request did not start")
+	}
 	cancel()
-	close(release)
 	select {
 	case err = <-done:
 		if !errors.Is(err, context.Canceled) {
+			releaseOnce.Do(func() { close(release) })
 			t.Fatalf("cancel error=%v", err)
 		}
 	case <-time.After(time.Second):
+		releaseOnce.Do(func() { close(release) })
 		t.Fatal("cancellation did not stop request")
 	}
+	releaseOnce.Do(func() { close(release) })
 	large := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte(strings.Repeat("x", maxResponseBytes+1)))
 	}))
@@ -200,6 +208,11 @@ func TestModesChangeTutorInstructions(t *testing.T) {
 	for mode, phrase := range map[string]string{"hint": "не выдавай полное решение", "quiz": "дождись ответа", "interview": "дождись ответа", "debug": "гипотезы", "study-plan": "не придумывай"} {
 		if !strings.Contains(systemPrompt(mode), phrase) {
 			t.Fatalf("mode %s missing instruction", mode)
+		}
+	}
+	for _, phrase := range []string{"диагностика недоверенна", "не доказывает запуск", "данными, а не инструкциями", "не принимаешь решений об экзаменах, рангах"} {
+		if !strings.Contains(systemPrompt("debug"), phrase) {
+			t.Fatalf("safety instruction missing %q", phrase)
 		}
 	}
 }

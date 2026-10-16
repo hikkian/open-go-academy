@@ -1,0 +1,63 @@
+{
+  "id": "middle-37-hard",
+  "signature": "func MutationAllowed(authenticated, sameTenant, canWrite, validInput bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Authenticated bool `json:\"authenticated\"`; SameTenant bool `json:\"sameTenant\"`; CanWrite bool `json:\"canWrite\"`; ValidInput bool `json:\"validInput\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(MutationAllowed(in.Authenticated, in.SameTenant, in.CanWrite, in.ValidInput)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "authenticated": true,
+      "sameTenant": true,
+      "canWrite": true,
+      "validInput": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "authenticated": true,
+      "sameTenant": true,
+      "canWrite": true,
+      "validInput": true
+    },
+    {
+      "authenticated": false,
+      "sameTenant": true,
+      "canWrite": true,
+      "validInput": true
+    },
+    {
+      "authenticated": true,
+      "sameTenant": false,
+      "canWrite": true,
+      "validInput": true
+    },
+    {
+      "authenticated": true,
+      "sameTenant": true,
+      "canWrite": false,
+      "validInput": true
+    },
+    {
+      "authenticated": true,
+      "sameTenant": true,
+      "canWrite": true,
+      "validInput": false
+    },
+    {
+      "authenticated": false,
+      "sameTenant": false,
+      "canWrite": false,
+      "validInput": false
+    }
+  ],
+  "private_expected": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "id": "middle-exam-retry-decision",
+  "signature": "func RetryDecision(retryable bool, attemptsRemaining int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Retryable bool `json:\"retryable\"`; AttemptsRemaining int `json:\"attemptsRemaining\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RetryDecision(in.Retryable, in.AttemptsRemaining)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "retryable": true,
+      "attemptsRemaining": 2
+    },
+    {
+      "retryable": false,
+      "attemptsRemaining": 4
+    }
+  ],
+  "public_expected": [
+    "retry",
+    "terminal"
+  ],
+  "private_input": [
+    {
+      "retryable": true,
+      "attemptsRemaining": 1
+    },
+    {
+      "retryable": true,
+      "attemptsRemaining": 0
+    },
+    {
+      "retryable": true,
+      "attemptsRemaining": -1
+    },
+    {
+      "retryable": false,
+      "attemptsRemaining": 1
+    },
+    {
+      "retryable": false,
+      "attemptsRemaining": 0
+    },
+    {
+      "retryable": false,
+      "attemptsRemaining": -5
+    }
+  ],
+  "private_expected": [
+    "retry",
+    "terminal",
+    "terminal",
+    "terminal",
+    "terminal",
+    "terminal"
+  ]
+}

@@ -1,0 +1,19 @@
+M11 Middle+01–12 педагогическое качество и production grading
+Дата: 2026-10-16
+
+Объём: 12 глав Middle+01–12; 36 Easy/Medium/Hard упражнений; 36 связанные grader specs и reference implementations. Переписаны задания с содержательным различием уровней и привязкой к baseline/Go benchmark/статистике/pprof/heap/SQL/partition/replica/consistency/cache. В каждом контракте отделена проверка переданных fixture от реального benchmark, профиля или БД. Глоссарии получили переводы и определения; исправлено ложное универсальное сравнение `inuse_space <= alloc_space`. Подробные limits модели указаны в prompt/self-check.
+
+Scoped production acceptance (examples, starter contracts, private references):
+`GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test -count=1 -timeout=45m ./internal/content -run '^TestScopedMiddleplus01To12Quality$' -v`
+Результат: PASS; `TestScopedMiddleplus01To12Quality` 333.47s. Кандидатный catalog включает опубликованные уроки и draft Middle prerequisites; production LoadFor/catalog validation, 36 starter source contracts, 36 reference requests через production grader, rootless isolated runner execution и private checks. 36 из 36 Go code groups (3 на главу) выполнены; ошибок нет.
+
+Прицельные проверки исправленных контрактов (тот же scoped test, ограниченный соответствующей главой):
+- Middle+04: PASS, 28.06s (profile share и flat-share threshold).
+- Middle+08: PASS, 27.81s (исправлена пропущенная `bool` в Hard signature).
+- Middle+05: PASS, 28.30s (inuse/alloc counters валидируются независимо; их временные окна различаются).
+
+`GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test ./internal/grading`: PASS, 0.158s.
+
+Статическая проверка: PASS — 12 глав; 36 разных уровней сложности; 36 matching grader IDs/signatures/reference implementations; у каждого задания есть public и минимум два private cases; glossary translations отличаются от исходных term и определения непустые. Markdown — по 3 Go groups на главу; 1800–2200 слов на каждую (проверка acceptance).
+
+Не проверялось этим узким этапом: полный педагогический аудит Middle+13–24, запуск реального benchmark/pprof/PostgreSQL и анализ всех эксплуатационных гарантий. Примеры и graded helpers намеренно не заявляют, что такие реальные измерения запускаются.

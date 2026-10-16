@@ -1,0 +1,24 @@
+{
+  "id": "senior-22-medium",
+  "signature": "func FeedbackKind(actionable, evidence bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Actionable bool `json:\"actionable\"`; Evidence bool `json:\"evidence\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(FeedbackKind(in.Actionable, in.Evidence)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "actionable": true,
+      "evidence": true
+    }
+  ],
+  "public_expected": [
+    "suggestion"
+  ],
+  "private_input": [
+    {
+      "actionable": true,
+      "evidence": false
+    }
+  ],
+  "private_expected": [
+    "needs_evidence"
+  ]
+}

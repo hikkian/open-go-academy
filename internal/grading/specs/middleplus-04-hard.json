@@ -1,0 +1,35 @@
+{
+  "id": "middleplus-04-hard",
+  "signature": "func HotPathCandidate(flat, cumulative, total, minPercent int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Flat int; Cumulative int; Total int; MinPercent int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=HotPathCandidate(in.Flat, in.Cumulative, in.Total, in.MinPercent); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Flat": 60,
+      "Cumulative": 70,
+      "Total": 100,
+      "MinPercent": 50
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "Flat": 5,
+      "Cumulative": 20,
+      "Total": 100,
+      "MinPercent": 50
+    },
+    {
+      "Flat": 20,
+      "Cumulative": 60,
+      "Total": 100,
+      "MinPercent": 50
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

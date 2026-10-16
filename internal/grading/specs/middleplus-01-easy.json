@@ -1,0 +1,34 @@
+{
+  "id": "middleplus-01-easy",
+  "signature": "func BenchmarkDelta(before, after int64) int64",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Before int64; After int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=BenchmarkDelta(in.Before, in.After); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Before": 100,
+      "After": 90
+    },
+    {
+      "Before": 100,
+      "After": 110
+    }
+  ],
+  "public_expected": [
+    10,
+    -10
+  ],
+  "private_input": [
+    {
+      "Before": 0,
+      "After": 0
+    },
+    {
+      "Before": 1,
+      "After": 0
+    }
+  ],
+  "private_expected": [
+    0,
+    1
+  ]
+}

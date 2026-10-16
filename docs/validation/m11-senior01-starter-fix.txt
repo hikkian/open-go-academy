@@ -1,0 +1,9 @@
+2026-10-16 Asia/Atyrau
+Senior-01 easy/medium/hard starter return type typo `strin` -> `string` was corrected.
+
+Pinned Go: `.tools/go/bin/go version` (go1.27.2)
+Validation: each starter compiled with `go test -run=^$ .` in a fresh temporary module using GOTOOLCHAIN=local, GOPROXY=off, GOSUMDB=off.
+
+PASS: senior-01-easy
+PASS: senior-01-medium
+PASS: senior-01-hard

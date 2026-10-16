@@ -1,0 +1,142 @@
+{
+  "id": "middle-21",
+  "title": "Redis и кешируемая проекция",
+  "rank": "Middle",
+  "module": "middle-cache",
+  "prerequisites": [
+    "middle-13"
+  ],
+  "estimated_minutes": 150,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Выбирать пересчитываемые данные для кеша",
+    "Задавать TTL и fallback",
+    "Оценивать стоимость промаха и устаревания"
+  ],
+  "glossary": [
+    {
+      "term": "cache",
+      "translation": "кеш",
+      "definition": "Быстрое временное представление данных"
+    },
+    {
+      "term": "TTL",
+      "translation": "срок жизни",
+      "definition": "Время до автоматического истечения ключа"
+    },
+    {
+      "term": "cache miss",
+      "translation": "промах кеша",
+      "definition": "Отсутствие пригодного значения в кеше"
+    }
+  ],
+  "markdown_file": "middle-21.md",
+  "order": 61,
+  "exercises": [
+    {
+      "id": "middle-21-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Ttl clamp — локальное правило",
+      "prompt": "Контракт `func CacheTTLEasy(seconds int64) int64`: non-positive TTL => 0 (do not cache); positive TTL is capped at one hour. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CacheTTLEasy(seconds int64) int64 {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "30\n3600\n3600\n",
+      "criteria": [
+        "Контракт TTL clamp выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-21-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Stale read policy — ветви политики",
+      "prompt": "Контракт `func CacheReadPolicyMedium(fresh, staleAllowed, backendAvailable bool) string`: fresh cached value => serve; otherwise, a stale value is served only when staleAllowed; if no usable cache value and backend is available => load; otherwise => unavailable. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CacheReadPolicyMedium(fresh, staleAllowed, backendAvailable bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"serve_fresh\"\n\"serve_stale\"\n\"load\"\n",
+      "criteria": [
+        "Контракт stale read policy выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-21-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Cache outage policy — отказ и граница гарантии",
+      "prompt": "Контракт `func CacheFailurePolicyHard(fresh, staleAllowed, backendAvailable, staleData bool) string`: fresh data wins; otherwise stale data can be served only if policy allows it; when backend is available load authoritative data; if neither route is safe return unavailable. No cache/database is accessed. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CacheFailurePolicyHard(fresh, staleAllowed, backendAvailable, staleData bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"serve_fresh\"\n\"serve_stale\"\n\"load\"\n",
+      "criteria": [
+        "Контракт cache outage policy выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какую гарантию дает данный учебный пример?",
+      "answer": "Только соответствие описанному детерминированному контракту на заданных входах."
+    },
+    {
+      "question": "Что следует проверять отдельно в работающей системе?",
+      "answer": "Транзакции, ограничения хранения, повторные запросы, отказ и восстановление реальных зависимостей."
+    },
+    {
+      "question": "Можно ли сделать универсальный вывод по EXPLAIN/кешу/брокеру?",
+      "answer": "Нет. Нужны фактический движок, конфигурация и измеренный workload."
+    }
+  ]
+}

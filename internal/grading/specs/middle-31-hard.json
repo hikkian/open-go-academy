@@ -1,0 +1,49 @@
+{
+  "id": "middle-31-hard",
+  "signature": "func PublicError(status int, hasInternalDetail bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Status int `json:\"status\"`; HasInternalDetail bool `json:\"hasInternalDetail\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(PublicError(in.Status, in.HasInternalDetail)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "status": 500,
+      "hasInternalDetail": true
+    },
+    {
+      "status": 400,
+      "hasInternalDetail": false
+    },
+    {
+      "status": 599,
+      "hasInternalDetail": false
+    }
+  ],
+  "public_expected": [
+    "generic_error",
+    "safe_error",
+    "safe_error"
+  ],
+  "private_input": [
+    {
+      "status": 399,
+      "hasInternalDetail": false
+    },
+    {
+      "status": 600,
+      "hasInternalDetail": true
+    },
+    {
+      "status": 404,
+      "hasInternalDetail": true
+    },
+    {
+      "status": 400,
+      "hasInternalDetail": true
+    }
+  ],
+  "private_expected": [
+    "invalid_status",
+    "invalid_status",
+    "generic_error",
+    "generic_error"
+  ]
+}

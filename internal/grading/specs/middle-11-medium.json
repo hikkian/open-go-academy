@@ -1,0 +1,42 @@
+{
+  "id": "middle-11-medium",
+  "signature": "func ReadCommittedReads(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(ReadCommittedReads(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      10,
+      11,
+      3,
+      4
+    ],
+    [
+      5,
+      5
+    ]
+  ],
+  "public_expected": [
+    [
+      11,
+      4
+    ],
+    [
+      5
+    ]
+  ],
+  "private_input": [
+    [
+      1,
+      2
+    ],
+    [
+      7
+    ]
+  ],
+  "private_expected": [
+    [
+      2
+    ],
+    []
+  ]
+}

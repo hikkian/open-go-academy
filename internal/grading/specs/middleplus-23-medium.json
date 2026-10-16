@@ -1,0 +1,86 @@
+{
+  "id": "middleplus-23-medium",
+  "signature": "func IncidentAction(impact int, ongoing bool, mitigationReady bool, evidenceCount int, ownerAssigned bool, dueDay int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Impact int `json:\"impact\"`; Ongoing bool `json:\"ongoing\"`; MitigationReady bool `json:\"mitigationReady\"`; EvidenceCount int `json:\"evidenceCount\"`; OwnerAssigned bool `json:\"ownerAssigned\"`; DueDay int `json:\"dueDay\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(IncidentAction(in.Impact, in.Ongoing, in.MitigationReady, in.EvidenceCount, in.OwnerAssigned, in.DueDay)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "impact": 2,
+      "ongoing": true,
+      "mitigationReady": false,
+      "evidenceCount": 2,
+      "ownerAssigned": true,
+      "dueDay": 4
+    },
+    {
+      "impact": 2,
+      "ongoing": false,
+      "mitigationReady": true,
+      "evidenceCount": 2,
+      "ownerAssigned": true,
+      "dueDay": 4
+    }
+  ],
+  "public_expected": [
+    "mitigate",
+    "verify"
+  ],
+  "private_input": [
+    {
+      "impact": 2,
+      "ongoing": false,
+      "mitigationReady": false,
+      "evidenceCount": 1,
+      "ownerAssigned": false,
+      "dueDay": 0
+    },
+    {
+      "impact": 2,
+      "ongoing": false,
+      "mitigationReady": false,
+      "evidenceCount": 2,
+      "ownerAssigned": true,
+      "dueDay": 4
+    },
+    {
+      "impact": 2,
+      "ongoing": false,
+      "mitigationReady": false,
+      "evidenceCount": 2,
+      "ownerAssigned": false,
+      "dueDay": 0
+    },
+    {
+      "impact": 2,
+      "ongoing": false,
+      "mitigationReady": true,
+      "evidenceCount": 1,
+      "ownerAssigned": true,
+      "dueDay": 4
+    },
+    {
+      "impact": 2,
+      "ongoing": false,
+      "mitigationReady": false,
+      "evidenceCount": 2,
+      "ownerAssigned": true,
+      "dueDay": 0
+    },
+    {
+      "impact": 2,
+      "ongoing": true,
+      "mitigationReady": false,
+      "evidenceCount": 2,
+      "ownerAssigned": true,
+      "dueDay": 4
+    }
+  ],
+  "private_expected": [
+    "collect_evidence",
+    "track_action",
+    "assign_action",
+    "collect_evidence",
+    "assign_action",
+    "mitigate"
+  ]
+}

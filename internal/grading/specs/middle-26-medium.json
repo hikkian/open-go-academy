@@ -1,0 +1,34 @@
+{
+  "id": "middle-26-medium",
+  "signature": "func HTTPStatusForDomainErrorMedium(code string) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Code string}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(HTTPStatusForDomainErrorMedium(x.Code));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Code": "invalid"
+    },
+    {
+      "Code": "conflict"
+    },
+    {
+      "Code": "not_found"
+    }
+  ],
+  "public_expected": [
+    400,
+    409,
+    404
+  ],
+  "private_input": [
+    {
+      "Code": "internal"
+    },
+    {
+      "Code": "driver: duplicate key"
+    }
+  ],
+  "private_expected": [
+    500,
+    500
+  ]
+}

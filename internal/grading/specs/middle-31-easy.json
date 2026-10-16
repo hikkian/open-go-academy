@@ -1,0 +1,34 @@
+{
+  "id": "middle-31-easy",
+  "signature": "func ProbeStatus(started, dependenciesReady bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Started bool `json:\"started\"`; DependenciesReady bool `json:\"dependenciesReady\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ProbeStatus(in.Started, in.DependenciesReady)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "started": true,
+      "dependenciesReady": true
+    }
+  ],
+  "public_expected": [
+    "ready"
+  ],
+  "private_input": [
+    {
+      "started": false,
+      "dependenciesReady": false
+    },
+    {
+      "started": false,
+      "dependenciesReady": true
+    },
+    {
+      "started": true,
+      "dependenciesReady": false
+    }
+  ],
+  "private_expected": [
+    "starting",
+    "starting",
+    "not_ready"
+  ]
+}

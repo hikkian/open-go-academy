@@ -1,0 +1,32 @@
+{
+  "id": "middleplus-04-medium",
+  "signature": "func ValidProfileCounts(flat, cumulative, total int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Flat int; Cumulative int; Total int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ValidProfileCounts(in.Flat, in.Cumulative, in.Total); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Flat": 10,
+      "Cumulative": 40,
+      "Total": 100
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "Flat": 50,
+      "Cumulative": 40,
+      "Total": 100
+    },
+    {
+      "Flat": 1,
+      "Cumulative": 1,
+      "Total": 0
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

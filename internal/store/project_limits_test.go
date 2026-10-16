@@ -52,3 +52,29 @@ func TestP2MoreThanBaselineFilesAndP1SameSetRejected(t *testing.T) {
 		t.Fatalf("reopened snapshots=%v err=%v", snaps, err)
 	}
 }
+
+func TestP5WorkspaceUsesManagedProjectQuotaAboveLegacyP1Limit(t *testing.T) {
+	s, err := Open(":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	project, ok := projects.Find("p5")
+	if !ok {
+		t.Fatal("P5 catalog entry missing")
+	}
+	files := cloneFiles(project.StarterFiles)
+	for i := 1; len(files) <= 16; i++ {
+		files["design/extra/evidence-"+strings.Repeat("x", i)+".md"] = "# Evidence\n"
+	}
+	if len(files) <= MaxProjectFiles {
+		t.Fatalf("test fixture must exceed legacy P1 cap %d", MaxProjectFiles)
+	}
+	if err := s.SaveProjectFiles("p5", files); err != nil {
+		t.Fatalf("P5 managed workspace quota rejected a valid artifact: %v", err)
+	}
+	stored, err := s.ProjectFiles("p5")
+	if err != nil || len(stored) != len(files) {
+		t.Fatalf("stored P5 files=%d want=%d err=%v", len(stored), len(files), err)
+	}
+}

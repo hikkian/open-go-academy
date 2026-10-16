@@ -1,0 +1,124 @@
+{
+  "id": "middle-27-hard",
+  "signature": "func AuthorizeTask(authenticated bool, role, operation, principalTenant, taskTenant, principalID, ownerID string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Authenticated bool `json:\"authenticated\"`; Role string `json:\"role\"`; Operation string `json:\"operation\"`; PrincipalTenant string `json:\"principalTenant\"`; TaskTenant string `json:\"taskTenant\"`; PrincipalID string `json:\"principalID\"`; OwnerID string `json:\"ownerID\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(AuthorizeTask(in.Authenticated, in.Role, in.Operation, in.PrincipalTenant, in.TaskTenant, in.PrincipalID, in.OwnerID)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "authenticated": true,
+      "role": "owner",
+      "operation": "read",
+      "principalTenant": "t1",
+      "taskTenant": "t1",
+      "principalID": "u1",
+      "ownerID": "u1"
+    },
+    {
+      "authenticated": true,
+      "role": "owner",
+      "operation": "write",
+      "principalTenant": "t1",
+      "taskTenant": "t1",
+      "principalID": "u1",
+      "ownerID": "u1"
+    },
+    {
+      "authenticated": true,
+      "role": "editor",
+      "operation": "write",
+      "principalTenant": "t1",
+      "taskTenant": "t1",
+      "principalID": "u2",
+      "ownerID": "u2"
+    },
+    {
+      "authenticated": true,
+      "role": "viewer",
+      "operation": "read",
+      "principalTenant": "t1",
+      "taskTenant": "t1",
+      "principalID": "u3",
+      "ownerID": "u3"
+    }
+  ],
+  "public_expected": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "private_input": [
+    {
+      "authenticated": true,
+      "role": "viewer",
+      "operation": "write",
+      "principalTenant": "t1",
+      "taskTenant": "t1",
+      "principalID": "u3",
+      "ownerID": "u3"
+    },
+    {
+      "authenticated": true,
+      "role": "owner",
+      "operation": "delete",
+      "principalTenant": "t1",
+      "taskTenant": "t1",
+      "principalID": "u1",
+      "ownerID": "u1"
+    },
+    {
+      "authenticated": true,
+      "role": "admin",
+      "operation": "read",
+      "principalTenant": "t1",
+      "taskTenant": "t1",
+      "principalID": "u1",
+      "ownerID": "u1"
+    },
+    {
+      "authenticated": true,
+      "role": "owner",
+      "operation": "read",
+      "principalTenant": "t1",
+      "taskTenant": "t2",
+      "principalID": "u1",
+      "ownerID": "u1"
+    },
+    {
+      "authenticated": true,
+      "role": "editor",
+      "operation": "write",
+      "principalTenant": "t1",
+      "taskTenant": "t1",
+      "principalID": "u1",
+      "ownerID": "u2"
+    },
+    {
+      "authenticated": false,
+      "role": "owner",
+      "operation": "write",
+      "principalTenant": "t1",
+      "taskTenant": "t1",
+      "principalID": "u1",
+      "ownerID": "u1"
+    },
+    {
+      "authenticated": true,
+      "role": "owner",
+      "operation": "read",
+      "principalTenant": "",
+      "taskTenant": "",
+      "principalID": "u1",
+      "ownerID": "u1"
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

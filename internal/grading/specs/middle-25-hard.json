@@ -1,0 +1,38 @@
+{
+  "id": "middle-25-hard",
+  "signature": "func RequestPathReadyHard(handlerBound, serviceBound, repositoryBound bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{HandlerBound bool;ServiceBound bool;RepositoryBound bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RequestPathReadyHard(x.HandlerBound,x.ServiceBound,x.RepositoryBound));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "HandlerBound": true,
+      "ServiceBound": true,
+      "RepositoryBound": true
+    },
+    {
+      "HandlerBound": true,
+      "ServiceBound": false,
+      "RepositoryBound": true
+    },
+    {
+      "HandlerBound": false,
+      "ServiceBound": true,
+      "RepositoryBound": true
+    }
+  ],
+  "public_expected": [
+    true,
+    false,
+    false
+  ],
+  "private_input": [
+    {
+      "HandlerBound": true,
+      "ServiceBound": true,
+      "RepositoryBound": false
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

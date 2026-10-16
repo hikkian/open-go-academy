@@ -1,0 +1,19 @@
+[WebServer] 2026/10/16 18:25:59 INFO academy local API ready address=127.0.0.1:8081
+
+Running 6 tests using 1 worker
+
+(node:3633031) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/exams.spec.ts:8:5 › exam catalog shows real eligibility and local trust boundaries (1.3s)
+  -  2 [desktop] › tests/exams.spec.ts:9:5 › exam drafts conflict safely, failure denies rank, real pass awards only Zero
+
+  ✓  3 [desktop] › tests/zz-exam-catalog-ui.spec.ts:10:5 › new exam selection, versioned history and cancellation use the selected catalog entry (7.5s)
+(node:3633394) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile] › tests/exams.spec.ts:8:5 › exam catalog shows real eligibility and local trust boundaries (972ms)
+  -  5 [mobile] › tests/exams.spec.ts:9:5 › exam drafts conflict safely, failure denies rank, real pass awards only Zero
+
+  ✓  6 [mobile] › tests/zz-exam-catalog-ui.spec.ts:10:5 › new exam selection, versioned history and cancellation use the selected catalog entry (5.9s)
+
+  2 skipped
+  4 passed (17.9s)

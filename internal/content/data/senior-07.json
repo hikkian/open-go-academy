@@ -1,0 +1,148 @@
+{
+  "id": "senior-07",
+  "title": "Согласованность распределённых операций",
+  "rank": "Senior",
+  "module": "senior-distributed-systems",
+  "prerequisites": [
+    "senior-06"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 111,
+  "learning_outcomes": [
+    "Формулировать consistency через операции и допустимые истории.",
+    "Различать causal, sequential и linearizable требования без unsupported claims.",
+    "Проектировать retry/idempotency и статусы accepted, committed, published.",
+    "Планировать fault test для duplicate, reorder, lost ack и recovery."
+  ],
+  "glossary": [
+    {
+      "term": "linearizability",
+      "translation": "линеаризуемость",
+      "definition": "История операций эквивалентна атомарному real-time порядку."
+    },
+    {
+      "term": "causal consistency",
+      "translation": "причинная согласованность",
+      "definition": "Наблюдения сохраняют причинный порядок событий."
+    },
+    {
+      "term": "watermark",
+      "translation": "водяной знак версии",
+      "definition": "Подтверждённая позиция, до которой применено состояние."
+    },
+    {
+      "term": "saga",
+      "translation": "сага",
+      "definition": "Длительная последовательность локальных транзакций и компенсаций."
+    }
+  ],
+  "markdown_file": "senior-07.md",
+  "self_check": [
+    {
+      "question": "Что проверяет grader?",
+      "answer": "Только функцию на синтетических входах, не реальную архитектуру или distributed failure."
+    },
+    {
+      "question": "Что следует назвать явно?",
+      "answer": "Предположение, владельца, условие пересмотра и границу доказательств."
+    },
+    {
+      "question": "Почему нужен негативный сценарий?",
+      "answer": "Он проверяет поведение при конфликте, деградации или неизвестном статусе."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "senior-07-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "distributed-systems",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "ReadDecision",
+      "prompt": "Отрицательное значение → `invalid`; ноль → `expired`; положительное → `continue`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ReadDecision(required, visible int64) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"serve\"\n\"wait-or-route\"\n",
+      "criteria": [
+        "Соблюдать приоритет ветвей и точные выходы.",
+        "Проверить граничные комбинации и невалидные состояния.",
+        "Не приписывать helper системную гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждают vectors?",
+          "answer": "Только зафиксированную таблицу pure function."
+        },
+        {
+          "question": "Что надо проверить дополнительно?",
+          "answer": "Реальную границу, configuration, failure mode и recovery."
+        }
+      ]
+    },
+    {
+      "id": "senior-07-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "distributed-systems",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Delivery",
+      "prompt": "Неверный event ID → `quarantine`; уже встречался → `duplicate`; иначе → `apply`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc Delivery(seen, validID bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"apply\"\n\"duplicate\"\n",
+      "criteria": [
+        "Соблюдать приоритет ветвей и точные выходы.",
+        "Проверить граничные комбинации и невалидные состояния.",
+        "Не приписывать helper системную гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждают vectors?",
+          "answer": "Только зафиксированную таблицу pure function."
+        },
+        {
+          "question": "Что надо проверить дополнительно?",
+          "answer": "Реальную границу, configuration, failure mode и recovery."
+        }
+      ]
+    },
+    {
+      "id": "senior-07-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "distributed-systems",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "OperationState",
+      "prompt": "Не зафиксировано → `pending`; зафиксировано, но не опубликовано → `committed-unpublished`; иначе → `published`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc OperationState(committed, published bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"pending\"\n\"committed-unpublished\"\n",
+      "criteria": [
+        "Соблюдать приоритет ветвей и точные выходы.",
+        "Проверить граничные комбинации и невалидные состояния.",
+        "Не приписывать helper системную гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждают vectors?",
+          "answer": "Только зафиксированную таблицу pure function."
+        },
+        {
+          "question": "Что надо проверить дополнительно?",
+          "answer": "Реальную границу, configuration, failure mode и recovery."
+        }
+      ]
+    }
+  ]
+}

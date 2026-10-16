@@ -1,0 +1,26 @@
+{
+  "id": "senior-19-hard",
+  "signature": "func HandoffReady(timeline, currentImpact, nextAction bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Timeline bool `json:\"timeline\"`; CurrentImpact bool `json:\"currentImpact\"`; NextAction bool `json:\"nextAction\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(HandoffReady(in.Timeline, in.CurrentImpact, in.NextAction)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "timeline": true,
+      "currentImpact": true,
+      "nextAction": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "timeline": true,
+      "currentImpact": false,
+      "nextAction": true
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

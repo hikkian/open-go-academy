@@ -1,6 +1,6 @@
 GO := sh scripts/go.sh
 IMAGE := docker.io/library/golang@sha256:3b15ba438c60ab8fabe5fee3b11025c0049e358b31feff384648f11fc8e335f8
-.PHONY: bootstrap build dev runner test sandbox-test e2e check
+.PHONY: bootstrap build dev runner project-runtime project-runner test sandbox-test e2e check
 bootstrap:
 	$(GO) mod download
 	npm ci

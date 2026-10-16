@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-04-easy",
+  "signature": "func ProfileShare(sample, total int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Sample int; Total int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ProfileShare(in.Sample, in.Total); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Sample": 25,
+      "Total": 100
+    }
+  ],
+  "public_expected": [
+    25
+  ],
+  "private_input": [
+    {
+      "Sample": 0,
+      "Total": 10
+    },
+    {
+      "Sample": 11,
+      "Total": 10
+    }
+  ],
+  "private_expected": [
+    0,
+    -1
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "id": "middle-35-medium",
+  "signature": "func IncidentAction(ongoing bool, impact int, mitigationReady bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Ongoing bool `json:\"ongoing\"`; Impact int `json:\"impact\"`; MitigationReady bool `json:\"mitigationReady\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(IncidentAction(in.Ongoing, in.Impact, in.MitigationReady)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "ongoing": true,
+      "impact": 2,
+      "mitigationReady": false
+    }
+  ],
+  "public_expected": [
+    "mitigate"
+  ],
+  "private_input": [
+    {
+      "ongoing": false,
+      "impact": -1,
+      "mitigationReady": false
+    },
+    {
+      "ongoing": true,
+      "impact": 2,
+      "mitigationReady": false
+    },
+    {
+      "ongoing": true,
+      "impact": 0,
+      "mitigationReady": true
+    },
+    {
+      "ongoing": false,
+      "impact": 2,
+      "mitigationReady": false
+    },
+    {
+      "ongoing": false,
+      "impact": 2,
+      "mitigationReady": true
+    },
+    {
+      "ongoing": false,
+      "impact": 0,
+      "mitigationReady": true
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "mitigate",
+    "mitigate",
+    "assign_action",
+    "verify",
+    "verify"
+  ]
+}

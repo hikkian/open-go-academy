@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-10-easy",
+  "signature": "func ReadSource(lagSeconds, maxLag int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { LagSeconds int; MaxLag int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ReadSource(in.LagSeconds, in.MaxLag); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "LagSeconds": 1,
+      "MaxLag": 3
+    }
+  ],
+  "public_expected": [
+    "replica"
+  ],
+  "private_input": [
+    {
+      "LagSeconds": 5,
+      "MaxLag": 3
+    },
+    {
+      "LagSeconds": -1,
+      "MaxLag": 3
+    }
+  ],
+  "private_expected": [
+    "primary",
+    "invalid"
+  ]
+}

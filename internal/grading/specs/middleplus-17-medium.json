@@ -1,0 +1,70 @@
+{
+  "id": "middleplus-17-medium",
+  "signature": "func OutboxAttempt(state string, event string, attempts int, maxAttempts int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { State string `json:\"state\"`; Event string `json:\"event\"`; Attempts int `json:\"attempts\"`; MaxAttempts int `json:\"maxAttempts\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(OutboxAttempt(in.State,in.Event,in.Attempts,in.MaxAttempts)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "state": "pending",
+      "event": "publish",
+      "attempts": 0,
+      "maxAttempts": 3
+    }
+  ],
+  "public_expected": [
+    "delivered"
+  ],
+  "private_input": [
+    {
+      "state": "pending",
+      "event": "retry",
+      "attempts": 2,
+      "maxAttempts": 3
+    },
+    {
+      "state": "pending",
+      "event": "retry",
+      "attempts": 3,
+      "maxAttempts": 3
+    },
+    {
+      "state": "delivered",
+      "event": "ack",
+      "attempts": 1,
+      "maxAttempts": 3
+    },
+    {
+      "state": "delivered",
+      "event": "crash",
+      "attempts": 3,
+      "maxAttempts": 3
+    },
+    {
+      "state": "absent",
+      "event": "rollback",
+      "attempts": 0,
+      "maxAttempts": 3
+    },
+    {
+      "state": "pending",
+      "event": "retry",
+      "attempts": -1,
+      "maxAttempts": 3
+    },
+    {
+      "state": "pending",
+      "event": "publish",
+      "attempts": 0,
+      "maxAttempts": 0
+    }
+  ],
+  "private_expected": [
+    "pending",
+    "dead_letter",
+    "acked",
+    "dead_letter",
+    "absent",
+    "invalid",
+    "invalid"
+  ]
+}

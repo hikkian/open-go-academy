@@ -1,0 +1,24 @@
+{
+  "id": "senior-16-medium",
+  "signature": "func CapacityHeadroom(capacity, demand int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Capacity int `json:\"capacity\"`; Demand int `json:\"demand\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CapacityHeadroom(in.Capacity, in.Demand)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "capacity": 100,
+      "demand": 50
+    }
+  ],
+  "public_expected": [
+    "headroom"
+  ],
+  "private_input": [
+    {
+      "capacity": 100,
+      "demand": 90
+    }
+  ],
+  "private_expected": [
+    "low_headroom"
+  ]
+}

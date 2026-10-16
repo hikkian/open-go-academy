@@ -1,0 +1,26 @@
+{
+  "id": "senior-23-medium",
+  "signature": "func TradeoffRecorded(benefit, cost, revisitTrigger string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Benefit string `json:\"benefit\"`; Cost string `json:\"cost\"`; RevisitTrigger string `json:\"revisitTrigger\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(TradeoffRecorded(in.Benefit, in.Cost, in.RevisitTrigger)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "benefit": "lower latency",
+      "cost": "more writes",
+      "revisitTrigger": "p99>250ms"
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "benefit": "lower latency",
+      "cost": "more writes",
+      "revisitTrigger": ""
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

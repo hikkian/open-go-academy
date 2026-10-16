@@ -1,0 +1,39 @@
+{
+  "id": "middle-30-medium",
+  "signature": "func DrainDeadline(nowMillis, graceMillis int64) int64",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { NowMillis int64 `json:\"nowMillis\"`; GraceMillis int64 `json:\"graceMillis\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(DrainDeadline(in.NowMillis, in.GraceMillis)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "nowMillis": 1000,
+      "graceMillis": 500
+    }
+  ],
+  "public_expected": [
+    1500
+  ],
+  "private_input": [
+    {
+      "nowMillis": 1000,
+      "graceMillis": -1
+    },
+    {
+      "nowMillis": 9223372036854775806,
+      "graceMillis": 1
+    },
+    {
+      "nowMillis": 9223372036854775807,
+      "graceMillis": 1
+    },
+    {
+      "nowMillis": 9223372036854775807,
+      "graceMillis": 0
+    }
+  ],
+  "private_expected": [
+    -1,
+    9223372036854775807,
+    -1,
+    9223372036854775807
+  ]
+}

@@ -112,6 +112,56 @@ func TestExamPrerequisiteProfileAndFailDoNotAward(t *testing.T) {
 	}
 }
 
+func TestAdvancedExamCannotAwardWithoutProjectEvidencePolicy(t *testing.T) {
+	s, _ := newExamStore(t)
+	for _, rank := range []string{"Middle", "Middle+", "Senior"} {
+		t.Run(rank, func(t *testing.T) {
+			examID := strings.ToLower(strings.ReplaceAll(rank, "+", "plus")) + "-final"
+			token := examID + "-token"
+			if err := s.RegisterExam(examID, "1", rank, examID+"-hash"); err != nil {
+				t.Fatal(err)
+			}
+			attempt, err := s.StartExam("local", examID, "1", token, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			claimed, err := s.ClaimExamAttempt("local", examID, attempt.ID, token, attempt.Revision, `{"answer":"a"}`, `{"main.go":"package main"}`)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err = s.FinishExamAttempt("local", attempt.ID, 100, true, `[{"passed":true}]`); !errors.Is(err, ErrRankEvidenceRequired) {
+				t.Fatalf("advanced exam auto-award err=%v, want project evidence gate", err)
+			}
+			pending, err := s.ExamAttempt("local", attempt.ID)
+			if err != nil || pending.Status != "grading" || pending.Score != 0 || pending.Passed || pending.ChecksJSON != claimed.ChecksJSON || pending.AnswersJSON != claimed.AnswersJSON || pending.CodesJSON != claimed.CodesJSON {
+				t.Fatalf("rejected advanced result mutated the attempt: %+v err=%v", pending, err)
+			}
+			if err = s.InterruptExamAttempt("local", attempt.ID); err != nil {
+				t.Fatal(err)
+			}
+			recovered, err := s.ExamAttempt("local", attempt.ID)
+			if err != nil || recovered.Status != "interrupted" || recovered.Score != 0 || recovered.Passed || recovered.AnswersJSON != claimed.AnswersJSON || recovered.CodesJSON != claimed.CodesJSON {
+				t.Fatalf("interrupted advanced attempt did not preserve retry input: %+v err=%v", recovered, err)
+			}
+			retry, err := s.StartExam("local", examID, "1", token+"-retry", nil)
+			if err != nil {
+				t.Fatalf("new attempt denied after interrupted advanced pass: %v", err)
+			}
+			if err = s.CancelExamAttempt("local", retry.ID); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+	awards, err := s.RankAwards("local")
+	if err != nil || len(awards) != 0 {
+		t.Fatalf("advanced exam created award without project evidence: %v %v", awards, err)
+	}
+	profile, err := s.Profile()
+	if err != nil || profile.Rank != "Zero" {
+		t.Fatalf("advanced exam changed rank without evidence: %+v %v", profile, err)
+	}
+}
+
 func TestExamRankPrerequisiteRequiresPersistedSameProfileAward(t *testing.T) {
 	s, _ := newExamStore(t) // Includes XP and verified course progress, but no rank award.
 	if err := s.RegisterExam("junior-final", "1", "Junior", "junior-hash"); err != nil {

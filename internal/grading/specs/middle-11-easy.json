@@ -1,0 +1,41 @@
+{
+  "id": "middle-11-easy",
+  "signature": "func SnapshotRead(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(SnapshotRead(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      10,
+      11
+    ],
+    [
+      4,
+      4
+    ]
+  ],
+  "public_expected": [
+    [
+      10
+    ],
+    [
+      4
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      7
+    ],
+    [
+      8
+    ]
+  ],
+  "private_expected": [
+    [
+      0
+    ],
+    [
+      8
+    ]
+  ]
+}

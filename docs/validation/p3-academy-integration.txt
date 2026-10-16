@@ -1,0 +1,15 @@
+2026-10-16 Asia/Atyrau — P3 Academy code integration (non-Podman checks only)
+
+P3 is now conditionally wired into the project catalog/workspace and a dedicated TaskFlow runner/checker profile. The catalog exposes P3 only when the trusted checker image has the immutable `academy.checker.p3=taskflow-v1` capability label. Server-owned `go.mod`/`go.sum` locks match the checked-in student starter and reference. The static runner-policy validator accepts a legacy P2-only cache and leaves P3 disabled; an actual P2 runtime regression is still pending. Student Compose, Dockerfile, and env files are export-only and are removed before execution.
+
+Validation commands/results reported from the current source tree:
+
+- `python3 scripts/project-runner.py --self-test` — PASS for legacy P2-only and combined P2/P3 module-policy manifests.
+- `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test ./...` — PASS.
+- `... go vet ./...` — PASS.
+- `... go test -race ./internal/projects ./internal/projectrunner/... ./internal/httpapi` — PASS.
+- `... go build ./internal/projects ./internal/projectrunner ./internal/projectrunner/checker ./internal/httpapi` — PASS.
+- Runner Python syntax, gofmt and `git diff --check` — PASS.
+- P3 student starter `go test`, `vet`, `build`, `mod verify`, and `list -m all` with network disabled — PASS; pgx/v5 resolves to 5.11.0.
+
+**Not run yet:** Podman image build, new runner process, database-backed P3 submission, P2 regression through old/new live profiles, browser E2E, network/cleanup/resource-limit acceptance. Therefore P3 remains 0/3 in the project counter and is not accepted/published. The current local cached image profile is P2-only; `make project-runtime` must rebuild the immutable trusted image before P3 appears. Full acceptance commands and cleanup risks are owned by the root agent after the running M11 gate completes.

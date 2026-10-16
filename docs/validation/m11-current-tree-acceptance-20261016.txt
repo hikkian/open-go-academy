@@ -1,0 +1,11 @@
+M11 current-tree automatic draft acceptance — 2026-10-16 Asia/Atyrau
+
+Started: 2026-10-16 15:08:17 Asia/Atyrau
+Started epoch: 1792145297
+
+Command:
+`ACADEMY_ACCEPT_M11_DRAFTS=1 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-m11-current-final-20261016 .tools/go/bin/go test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+
+Result: PASS (2925.611 seconds, exit code 0). The fresh invocation completed on the content tree after Middle-34…40 and Senior changes; the catalog was not edited during the run. The verbose log contains 530 passing draft acceptance subtests and no failing subtest. Full terminal log: `.data/m11-current-final-acceptance-20261016.log` (local ignored runtime data; preserve it on this workstation).
+
+This closes only the automatic current-tree content compilation/reference/hidden-check acceptance gate. It does not publish any of the 88 drafts, prove independent pedagogical review, complete P3–P5 rank evidence policies, create P4/P5, approve Senior human review, or close M11 as a whole. Older aggregate logs remain stale and are not used for this result.

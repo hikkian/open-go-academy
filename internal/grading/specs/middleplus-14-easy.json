@@ -1,0 +1,34 @@
+{
+  "id": "middleplus-14-easy",
+  "signature": "func Admission(depth int, limit int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Depth int `json:\"depth\"`; Limit int `json:\"limit\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(Admission(in.Depth,in.Limit)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "depth": 0,
+      "limit": 1
+    }
+  ],
+  "public_expected": [
+    "admit"
+  ],
+  "private_input": [
+    {
+      "depth": 1,
+      "limit": 1
+    },
+    {
+      "depth": -1,
+      "limit": 1
+    },
+    {
+      "depth": 0,
+      "limit": 0
+    }
+  ],
+  "private_expected": [
+    "full",
+    "invalid",
+    "invalid"
+  ]
+}

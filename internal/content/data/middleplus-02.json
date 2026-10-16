@@ -1,0 +1,136 @@
+{
+  "id": "middleplus-02",
+  "title": "Go benchmarks и стоимость операции",
+  "rank": "Middle+",
+  "module": "middleplus-measurement",
+  "prerequisites": [
+    "middleplus-01"
+  ],
+  "estimated_minutes": 210,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 82,
+  "learning_outcomes": [
+    "Проектировать benchmark функции так, чтобы compiler не удалял работу и setup не загрязнял измерение.",
+    "Сравнивать одинаковую операцию, проверять результат вне таймера, различать ns/op, B/op и allocs/op.",
+    "Ограничить вывод рамками наблюдений и назвать следующий проверочный эксперимент."
+  ],
+  "glossary": [
+    {
+      "term": "benchmark harness",
+      "translation": "обвязка benchmark",
+      "definition": "Код и инструменты, которые многократно запускают benchmark и собирают метрики."
+    },
+    {
+      "term": "ns/op",
+      "translation": "наносекунд на операцию",
+      "definition": "Среднее время одной операции в выводе Go benchmark."
+    },
+    {
+      "term": "allocs/op",
+      "translation": "аллокаций на операцию",
+      "definition": "Число выделений памяти на одну операцию в benchmark."
+    }
+  ],
+  "markdown_file": "middleplus-02.md",
+  "exercises": [
+    {
+      "id": "middleplus-02-easy",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: сопоставь имя метрики Go benchmark",
+      "prompt": "Преобразуйте имена `time`, `bytes`, `allocs` в `ns_per_op`, `bytes_per_op`, `allocs_per_op`; неизвестную строку — в `unknown`. Это только подпись, не запуск benchmark.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc MetricLabel(metric string) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"ns_per_op\"\n\"bytes_per_op\"\n\"allocs_per_op\"\n",
+      "criteria": [
+        "Поддержать все три известные метрики и неизвестный ввод.",
+        "Не смешивать `B/op` и `allocs/op`."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Go benchmark выводит разные единицы ns/op, B/op и allocs/op; labels здесь фиксированы задачей."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-02-medium",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: проверь диапазоны показателей benchmark",
+      "prompt": "Проверьте формальные диапазоны одного результата: `ns/op > 0`, `B/op >= 0`, `allocs/op >= 0`. Успех означает только непротиворечивые числа, не корректность измерительного harness.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ValidBenchmarkResult(nsPerOp, bytesPerOp, allocsPerOp int64) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Требовать положительное время и неотрицательные счётчики.",
+        "Не интерпретировать меньшие аллокации как автоматически меньшую задержку."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Метрики независимы: меньше аллокаций не гарантирует меньшее время."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-02-hard",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: сравни время и аллокации без подмены метрик",
+      "prompt": "Сравните baseline и candidate по `ns/op` и `allocs/op`: классифицируйте invalid, улучшение времени без роста allocations, отсутствие улучшения обеих метрик или trade-off. Это решает только по паре агрегатов и не учитывает разброс.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc BenchmarkComparison(baseNs, candidateNs, baseAllocs, candidateAllocs int64) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"faster_no_allocation_regression\"\n",
+      "criteria": [
+        "Проверить диапазоны всех четырёх чисел.",
+        "Не считать снижение одной метрики безусловным улучшением.",
+        "Не делать вывода о статистической значимости."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Четыре числа не содержат распределение повторов; классификация не заменяет статистическое сравнение."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Что задаёт параметр b.N в Go benchmark?",
+      "answer": "Harness выбирает число итераций, достаточное для выполнения выбранного benchmark режима; тест не должен предполагать фиксированное N."
+    },
+    {
+      "question": "Когда использовать b.ResetTimer?",
+      "answer": "После setup, который сознательно не должен входить в измеряемый интервал; подготовку нужно явно отделять от стоимости операции."
+    },
+    {
+      "question": "Чем отличаются ns/op, B/op и allocs/op?",
+      "answer": "Это нормированное время, байты выделений и количество выделений на операцию; уменьшение одного показателя не гарантирует улучшение остальных."
+    },
+    {
+      "question": "Зачем результат операции должен оставаться наблюдаемым?",
+      "answer": "Иначе оптимизатор может удалить вычисление, которое не влияет на программу; sink сохраняет наблюдаемость, но должен быть безопасным для конкурентного запуска."
+    },
+    {
+      "question": "Чем benchmark отличается от функционального теста?",
+      "answer": "Benchmark оценивает стоимость выбранного пути и не подтверждает полноту корректности endpoint, БД или очереди; семантику сначала проверяют тестами."
+    }
+  ]
+}

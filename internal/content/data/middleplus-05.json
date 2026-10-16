@@ -1,0 +1,135 @@
+{
+  "id": "middleplus-05",
+  "title": "Heap profile и жизненный цикл памяти",
+  "rank": "Middle+",
+  "module": "middleplus-measurement",
+  "prerequisites": [
+    "middleplus-04"
+  ],
+  "estimated_minutes": 210,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 85,
+  "learning_outcomes": [
+    "Различать выделенный объём, удерживаемую память и профиль в конкретном моменте.",
+    "Искать retaining path, различать alloc_space и inuse_space, учитывать GC и окно снимка.",
+    "Ограничить вывод рамками наблюдений и назвать следующий проверочный эксперимент."
+  ],
+  "glossary": [
+    {
+      "term": "inuse_space",
+      "translation": "занятая память",
+      "definition": "Объём объектов, остающихся живыми на момент снимка."
+    },
+    {
+      "term": "alloc_space",
+      "translation": "выделенная память",
+      "definition": "Накопленный объём аллокаций за выбранный период."
+    },
+    {
+      "term": "retaining path",
+      "translation": "путь удержания",
+      "definition": "Цепочка ссылок, из-за которой объект остаётся достижимым."
+    }
+  ],
+  "markdown_file": "middleplus-05.md",
+  "exercises": [
+    {
+      "id": "middleplus-05-easy",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: проверь memory budget",
+      "prompt": "Верните true при неотрицательном used, положительном limit и `used<=limit`. Эти значения — фиктивные счётчики; функция ничего не читает из runtime/pprof.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc MemoryBudget(used, limit int64) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Обработать нулевой лимит и превышение.",
+        "Не путать heap in-use и cumulative allocations."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Проверка лимита на паре значений не измеряет память приложения."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-05-medium",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: проверь heap counters без смешения метрик",
+      "prompt": "Проверьте только, что `inuse_space` и `alloc_space` неотрицательны. Не требуйте `inuse<=alloc`: in-use может включать объекты, выделенные до окна накопления alloc_space. Функция не читает runtime profile.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ValidHeapProfile(inuseBytes, allocBytes int64) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\ntrue\n",
+      "criteria": [
+        "Неотрицательность каждой метрики проверяется отдельно.",
+        "Не сравнивать in-use snapshot с cumulative allocations как универсальное неравенство."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "`alloc_space` cumulative за период и `inuse_space` live на момент снимка имеют разные временные границы; между ними нет общего универсального порядка."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-05-hard",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: классифицируй retained heap после GC",
+      "prompt": "Сравните неотрицательные in-use fixture только если GC завершён: lower_after_gc / higher_after_gc / unchanged; иначе gc_not_completed. Не выводите leak из одного снимка.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc HeapChange(before, after int64, gcCompleted bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"lower_after_gc\"\n",
+      "criteria": [
+        "Проверять завершение GC и диапазоны до сравнения.",
+        "Снижение/рост — наблюдение, не диагноз утечки."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Retaining path и повторные снимки нужны для проверки причины удержания памяти."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Чем alloc_space отличается от inuse_space?",
+      "answer": "Первое показывает накопленные выделения, второе приближает живую память на момент snapshot; один и тот же объект может давать разные картины."
+    },
+    {
+      "question": "Какой вопрос задают allocs/op и heap profile соответственно?",
+      "answer": "allocs/op и B/op показывают цену выделений на операцию; heap profile помогает искать накопленные выделения или удержание объектов."
+    },
+    {
+      "question": "Почему важен момент получения heap snapshot?",
+      "answer": "Снимок зависит от GC, прогрева и жизненного цикла; сравнивать снимки нужно при сопоставимых условиях и с записанным режимом сбора."
+    },
+    {
+      "question": "Почему sync.Pool не является постоянным хранилищем?",
+      "answer": "Pool предназначен для повторного использования временных объектов, а его содержимое может очищаться сборщиком мусора."
+    },
+    {
+      "question": "Что проверить при большом retained heap?",
+      "answer": "Найти retaining path от корня к объекту, проверить ссылки в backing arrays, globals, maps и долгоживущих goroutine; отдельно оценить жизненный цикл."
+    }
+  ]
+}

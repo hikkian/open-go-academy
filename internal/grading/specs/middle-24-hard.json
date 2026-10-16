@@ -1,0 +1,46 @@
+{
+  "id": "middle-24-hard",
+  "signature": "func RedisQueueReviewHard(persistenceConfigured, writeAcknowledged, consumerRecovery, idempotentHandler, lossBudgetDefined bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{PersistenceConfigured bool;WriteAcknowledged bool;ConsumerRecovery bool;IdempotentHandler bool;LossBudgetDefined bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RedisQueueReviewHard(x.PersistenceConfigured,x.WriteAcknowledged,x.ConsumerRecovery,x.IdempotentHandler,x.LossBudgetDefined));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "PersistenceConfigured": true,
+      "WriteAcknowledged": true,
+      "ConsumerRecovery": true,
+      "IdempotentHandler": true,
+      "LossBudgetDefined": true
+    },
+    {
+      "PersistenceConfigured": true,
+      "WriteAcknowledged": true,
+      "ConsumerRecovery": true,
+      "IdempotentHandler": true,
+      "LossBudgetDefined": false
+    },
+    {
+      "PersistenceConfigured": true,
+      "WriteAcknowledged": true,
+      "ConsumerRecovery": false,
+      "IdempotentHandler": true,
+      "LossBudgetDefined": true
+    }
+  ],
+  "public_expected": [
+    "candidate_only",
+    "needs_review",
+    "needs_review"
+  ],
+  "private_input": [
+    {
+      "PersistenceConfigured": false,
+      "WriteAcknowledged": true,
+      "ConsumerRecovery": true,
+      "IdempotentHandler": true,
+      "LossBudgetDefined": true
+    }
+  ],
+  "private_expected": [
+    "needs_review"
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "id": "middleplus-23-easy",
+  "signature": "func IncidentPriority(impact int, ongoing bool, eventTimes []int, observed []bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Impact int `json:\"impact\"`; Ongoing bool `json:\"ongoing\"`; EventTimes []int `json:\"eventTimes\"`; Observed []bool `json:\"observed\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(IncidentPriority(in.Impact, in.Ongoing, in.EventTimes, in.Observed)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "impact": 2,
+      "ongoing": true,
+      "eventTimes": [
+        0,
+        5
+      ],
+      "observed": [
+        true,
+        true
+      ]
+    },
+    {
+      "impact": 2,
+      "ongoing": false,
+      "eventTimes": [
+        0,
+        5
+      ],
+      "observed": [
+        true,
+        true
+      ]
+    }
+  ],
+  "public_expected": [
+    "respond",
+    "review"
+  ],
+  "private_input": [
+    {
+      "impact": 2,
+      "ongoing": false,
+      "eventTimes": [
+        0,
+        5
+      ],
+      "observed": [
+        true,
+        false
+      ]
+    },
+    {
+      "impact": 2,
+      "ongoing": true,
+      "eventTimes": [
+        0,
+        5
+      ],
+      "observed": [
+        true,
+        false
+      ]
+    },
+    {
+      "impact": -1,
+      "ongoing": false,
+      "eventTimes": [
+        0
+      ],
+      "observed": [
+        true
+      ]
+    },
+    {
+      "impact": 2,
+      "ongoing": false,
+      "eventTimes": [
+        5,
+        4
+      ],
+      "observed": [
+        true,
+        true
+      ]
+    },
+    {
+      "impact": 2,
+      "ongoing": false,
+      "eventTimes": [
+        0
+      ],
+      "observed": []
+    }
+  ],
+  "private_expected": [
+    "review_gaps",
+    "respond",
+    "invalid",
+    "invalid",
+    "invalid"
+  ]
+}

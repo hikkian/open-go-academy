@@ -1,0 +1,59 @@
+{
+  "id": "middleplus-13-medium",
+  "signature": "func CapacityBudget(workers int, reservePercent int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Workers int `json:\"workers\"`; ReservePercent int `json:\"reservePercent\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(CapacityBudget(in.Workers,in.ReservePercent)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "workers": 100,
+      "reservePercent": 0
+    }
+  ],
+  "public_expected": [
+    100
+  ],
+  "private_input": [
+    {
+      "workers": 100,
+      "reservePercent": 1
+    },
+    {
+      "workers": 101,
+      "reservePercent": 1
+    },
+    {
+      "workers": 100,
+      "reservePercent": 99
+    },
+    {
+      "workers": 100,
+      "reservePercent": 100
+    },
+    {
+      "workers": 9223372036854775807,
+      "reservePercent": 0
+    },
+    {
+      "workers": 9223372036854775807,
+      "reservePercent": 1
+    },
+    {
+      "workers": 0,
+      "reservePercent": 0
+    },
+    {
+      "workers": 10,
+      "reservePercent": 101
+    }
+  ],
+  "private_expected": [
+    99,
+    99,
+    1,
+    0,
+    9223372036854775807,
+    9131138316486228048,
+    -1,
+    -1
+  ]
+}

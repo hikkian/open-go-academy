@@ -1,0 +1,24 @@
+{
+  "id": "senior-13-easy",
+  "signature": "func RequirementStatus(source, measurable string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Source string `json:\"source\"`; Measurable string `json:\"measurable\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RequirementStatus(in.Source, in.Measurable)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "source": "customer",
+      "measurable": "p99_ms"
+    }
+  ],
+  "public_expected": [
+    "testable"
+  ],
+  "private_input": [
+    {
+      "source": "",
+      "measurable": "p99_ms"
+    }
+  ],
+  "private_expected": [
+    "unknown_source"
+  ]
+}

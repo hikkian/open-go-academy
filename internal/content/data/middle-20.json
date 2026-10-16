@@ -1,0 +1,142 @@
+{
+  "id": "middle-20",
+  "title": "RabbitMQ: exchange, queue и binding",
+  "rank": "Middle",
+  "module": "middle-messaging",
+  "prerequisites": [
+    "middle-17"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Различать exchange, queue и binding",
+    "Понимать маршрутизацию до хранения",
+    "Очищать только изолированную тестовую область"
+  ],
+  "glossary": [
+    {
+      "term": "exchange",
+      "translation": "обменник",
+      "definition": "Получает сообщение и выбирает маршрут"
+    },
+    {
+      "term": "queue",
+      "translation": "очередь",
+      "definition": "Хранит сообщения до выдачи потребителю"
+    },
+    {
+      "term": "binding",
+      "translation": "связь маршрутизации",
+      "definition": "Правило связи exchange с queue"
+    }
+  ],
+  "markdown_file": "middle-20.md",
+  "order": 60,
+  "exercises": [
+    {
+      "id": "middle-20-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Topology readiness — локальное правило",
+      "prompt": "Контракт `func TopologyReadyEasy(exchange, queue, binding bool) bool`: ready only if the exchange, destination queue and binding all exist in the intended isolated test vhost; this does not contact RabbitMQ. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc TopologyReadyEasy(exchange, queue, binding bool) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\nfalse\n",
+      "criteria": [
+        "Контракт topology readiness выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-20-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Direct routing — ветви политики",
+      "prompt": "Контракт `func DirectRouteMedium(exchange, routingKey, bindingKey string) string`: empty routing key or binding key => invalid; exact key match => route; otherwise unrouted. This models only direct-exchange key equality. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc DirectRouteMedium(exchange, routingKey, bindingKey string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"route\"\n\"unrouted\"\n\"invalid\"\n",
+      "criteria": [
+        "Контракт direct routing выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-20-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Publisher outcome — отказ и граница гарантии",
+      "prompt": "Контракт `func PublishOutcomeHard(mandatory, brokerConfirm, returned bool) string`: a returned unroutable message is unrouted; without publisher confirm the outcome is unknown and must not be reported as delivered; only confirmed and not returned is confirmed. This policy label does not implement a channel or retry. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc PublishOutcomeHard(mandatory, brokerConfirm, returned bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"confirmed\"\n\"unrouted\"\n\"unknown\"\n",
+      "criteria": [
+        "Контракт publisher outcome выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какую гарантию дает данный учебный пример?",
+      "answer": "Только соответствие описанному детерминированному контракту на заданных входах."
+    },
+    {
+      "question": "Что следует проверять отдельно в работающей системе?",
+      "answer": "Транзакции, ограничения хранения, повторные запросы, отказ и восстановление реальных зависимостей."
+    },
+    {
+      "question": "Можно ли сделать универсальный вывод по EXPLAIN/кешу/брокеру?",
+      "answer": "Нет. Нужны фактический движок, конфигурация и измеренный workload."
+    }
+  ]
+}

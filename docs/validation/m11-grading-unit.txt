@@ -1,0 +1,5 @@
+2026-10-16 Asia/Atyrau
+GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test -count=1 ./internal/grading
+PASS: ok academy/internal/grading 0.194s
+
+All planned draft grading specs load after removal of the accidental out-of-scope middleplus-25 generator artifacts. This unit suite is not the isolated 264-reference M11 acceptance gate.

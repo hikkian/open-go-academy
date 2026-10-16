@@ -1,0 +1,154 @@
+{
+  "id": "middleplus-20",
+  "title": "Worker pool, concurrency limit и fairness",
+  "rank": "Middle+",
+  "module": "middleplus-scalelab",
+  "prerequisites": [
+    "middleplus-19"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 100,
+  "learning_outcomes": [
+    "Построить и проверить ограниченную детерминированную policy/state transition для темы главы 20.",
+    "Различать валидные пороги, сигналы, состояния и недопустимые комбинации.",
+    "Описывать, какие гарантии требуют интеграционных данных или независимого human review."
+  ],
+  "glossary": [
+    {
+      "term": "capacity",
+      "translation": "ёмкость",
+      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+    },
+    {
+      "term": "backpressure",
+      "translation": "обратное давление",
+      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+    },
+    {
+      "term": "queue depth",
+      "translation": "глубина очереди",
+      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+    },
+    {
+      "term": "retry budget",
+      "translation": "бюджет повторов",
+      "definition": "Верхняя граница попыток в заданном контексте."
+    },
+    {
+      "term": "outbox",
+      "translation": "исходящий журнал",
+      "definition": "Устойчивая запись о намерении опубликовать событие."
+    },
+    {
+      "term": "SLI/SLO",
+      "translation": "индикатор/цель уровня сервиса",
+      "definition": "Измеренный сигнал и явно заданная цель по окну."
+    },
+    {
+      "term": "baseline",
+      "translation": "исходный уровень",
+      "definition": "Закреплённое сравнимое состояние до изменения."
+    }
+  ],
+  "markdown_file": "middleplus-20.md",
+  "exercises": [
+    {
+      "id": "middleplus-20-easy",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: worker pool, concurrency limit и fairness — классификация",
+      "prompt": "Реализуйте чистую функцию `func WorkerTurn(arrivalA int, arrivalB int, waitA int, waitB int, maxWait int) string`. Контракт: Некорректны отрицательные arrival/wait/maxWait. Если достигнут maxWait только одним заданием, выберите его; если обоими — большее wait (при равенстве A); иначе более ранний arrival (равенство arrival отдаёт A).\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc WorkerTurn(arrivalA int, arrivalB int, waitA int, waitB int, maxWait int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"A\"\n\"A\"\n",
+      "criteria": [
+        "Точно соблюдать контракт функции `func WorkerTurn(arrivalA int, arrivalB int, waitA int, waitB int, maxWait int) string` и заданный приоритет ветвей.",
+        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
+        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает прохождение векторов?",
+          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-20-medium",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: worker pool, concurrency limit и fairness — политика",
+      "prompt": "Реализуйте чистую функцию `func WorkerBatch(arrival []int, wait []int, workers int, maxWait int) string`. Контракт: Требуются непустые arrival и wait одинаковой длины; все arrival/wait неотрицательны, workers/maxWait неотрицательны. Выберите до workers индексов: сначала максимальный wait среди заданий с wait>=maxWait, равенство решает ранний arrival; оставшиеся места заполните в FIFO arrival order. Верните индексы через запятую; workers обрезается до числа заданий.\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc WorkerBatch(arrival []int, wait []int, workers int, maxWait int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"1,0\"\n\"1,2\"\n",
+      "criteria": [
+        "Точно соблюдать контракт функции `func WorkerBatch(arrival []int, wait []int, workers int, maxWait int) string` и заданный приоритет ветвей.",
+        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
+        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает прохождение векторов?",
+          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-20-hard",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: worker pool, concurrency limit и fairness — проверка инварианта",
+      "prompt": "Реализуйте чистую функцию `func WorkerFair(arrival []int, wait []int, selected []bool, maxWait int) bool`. Контракт: Верните true только для непустых массивов одинаковой длины, неотрицательных arrival/wait и maxWait>=0, если каждое невыбранное задание имеет wait<maxWait. Любое задание, достигшее starvation threshold, обязано быть выбранным.\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc WorkerFair(arrival []int, wait []int, selected []bool, maxWait int) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\n",
+      "criteria": [
+        "Точно соблюдать контракт функции `func WorkerFair(arrival []int, wait []int, selected []bool, maxWait int) bool` и заданный приоритет ветвей.",
+        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
+        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает прохождение векторов?",
+          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Как worker cap влияет на ресурсы?",
+      "answer": "Он ограничивает параллельную работу и защищает соединения/память, но может увеличить ожидание очереди."
+    },
+    {
+      "question": "Почему больше workers не гарантируют больше throughput?",
+      "answer": "Общий downstream может быть bottleneck, а конкуренция за него повышает latency."
+    },
+    {
+      "question": "Что нужно проверить для fairness?",
+      "answer": "Сравнить время ожидания и долю обслуживания по классам задач, а не только общий завершённый count."
+    },
+    {
+      "question": "Как подтвердить верхний предел concurrency?",
+      "answer": "Измерить одновременно активные handler в тесте и проверить поведение при насыщении и закрытии очереди."
+    }
+  ]
+}

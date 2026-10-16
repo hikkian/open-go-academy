@@ -73,8 +73,15 @@ func Load() (*Catalog, error) {
 	if err != nil {
 		return nil, err
 	}
-	entries := make([]string, 0, len(manifest.Published))
-	for _, id := range manifest.Published {
+	return loadLessons(manifest.Published)
+}
+
+// loadLessons builds and validates a catalog from explicit versioned lesson
+// IDs. Production uses the published manifest; acceptance tests can validate
+// a candidate catalog before changing that manifest.
+func loadLessons(ids []string) (*Catalog, error) {
+	entries := make([]string, 0, len(ids))
+	for _, id := range ids {
 		if id == "" || strings.Contains(id, "/") || strings.Contains(id, "..") || path.Clean(id) != id {
 			return nil, errors.New("unsafe manifest lesson id")
 		}
@@ -170,10 +177,10 @@ func Load() (*Catalog, error) {
 	if len(c.Lessons) == 0 {
 		return nil, errors.New("no lessons found")
 	}
-	if len(manifest.Published) != len(c.Lessons) {
-		return nil, errors.New("curriculum manifest differs from published lessons")
+	if len(ids) != len(c.Lessons) {
+		return nil, errors.New("curriculum list differs from loaded lessons")
 	}
-	for _, id := range manifest.Published {
+	for _, id := range ids {
 		if !seen[id] {
 			return nil, fmt.Errorf("manifest lesson %s is missing", id)
 		}

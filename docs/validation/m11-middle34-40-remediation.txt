@@ -1,0 +1,21 @@
+Open Go Academy — M11 scoped remediation: Middle-34…40
+Date: 2026-10-16
+
+Scope
+- Updated Middle-34…40 lesson Markdown/JSON, all 21 grading specs, and the Middle-34 Medium reference implementation.
+- Focused lesson glossaries/outcomes and replaced the repeated generic theory block with chapter-specific instruction (retry/circuit policy; safe fault experiments/postmortems; schema and transitions; scoped authorization; durable outbox workers; race/shutdown/load; acceptance evidence and rollback).
+- Expanded hidden test vectors for all 21 contracts to cover each branch, precedence collisions, boundary/invalid values, and unknown inputs where applicable.
+- Made the Middle-36 title limit explicitly 120 UTF-8 bytes, matching Go len(string), with 120-byte and 122-byte Cyrillic test cases.
+- Relabelled the Hard scalar helpers as helper-only practice, not security invariants/rank evidence. Added explicit notes that actual project and assessment evidence is separate.
+- Fixed BackoffMillis to return immediately for zero base/cap. This avoids looping up to a caller-supplied huge attempt count when the result is necessarily zero.
+
+Validation
+Pinned toolchain: go version go1.27.2 linux/amd64 (.tools/go/bin/go).
+Offline scoped production acceptance command:
+GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middle-34,middle-35,middle-36,middle-37,middle-38,middle-39,middle-40 GOCACHE=/tmp/oga-m34-40-cache-20261016 .tools/go/bin/go test -count=1 -timeout=30m ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v
+Result: PASS, 260.841 s. All seven chapters passed catalog and 1,800–2,200 lexical-word bounds; all 21 documentation example groups compiled/ran; all 21 starter packages compiled; all 21 checked-in references passed the production grader against the expanded public/private vectors in the isolated runner.
+
+Earlier toolchain discovery attempt used `go` from PATH (go1.26.9, incompatible with go.mod's go1.27.2). GOTOOLCHAIN=auto fetched/selected Go 1.27.2 and a preliminary scoped run passed in 256.721 s. Final evidence above uses the repository-pinned local toolchain with module proxy and checksum DB disabled.
+
+Residual assessment limitation
+The Hard tasks remain pure scalar/helper exercises. Better vectors and clearer labels do not make them evidence of retry scheduling, durable outbox behavior, real fault recovery, race/shutdown performance, or independent review. Rank/competency assessment must be gated by the actual P3 project artifact and its deterministic integration evidence plus a versioned human-review record where required; this remediation does not implement that cross-platform rank gate. No real service security, SLO, or production-readiness claim was tested.

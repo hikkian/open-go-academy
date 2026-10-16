@@ -1,0 +1,25 @@
+2026-10-16 — immutable policy and project-evidence binding foundation (not a rank award)
+
+Implemented in this working tree:
+- Migration 0008 stores immutable advanced-rank policies bound to exact exam version, rank and criteria hash. Definition bytes use a domain-separated SHA-256 hash; registration is idempotent for identical policy and rejects conflicting content.
+- Migration 0009 stores exact project submission/evaluation references on exam attempts with foreign keys to the immutable policy version, attempt, submission and evaluation. Attempt rows cannot be pruned while linked evidence exists; evidence links reject update/delete.
+- `StartExam` merges server policy course/prior-rank requirements with its existing catalog prerequisites, selects the latest exact matching passing evaluation for each project requirement, records IDs and hashes into attempt evidence, and writes FK-backed links in the same transaction.
+- Claim and passing finish revalidate policy hash/version, exact evidence set, course and prior-rank proof, immutable link values, and backing project hashes/checker/runtime/rubric/evaluation. A missing or mismatched proof fails closed.
+- The advanced award allowlist is unchanged: a passing Middle/Middle+/Senior attempt still returns `ErrRankEvidenceRequired`. These rows prove eligibility inputs only; they do not issue a rank or credential.
+- Added read-only `GET /api/projects/{id}/submissions/{submissionID}` with a whitelist projection of persisted metadata. It accepts no profile or hashes from the learner and does not expose project files or checker JSON.
+
+Verification:
+- `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-rank-evidence-fixed-20261016 .tools/go/bin/go test ./internal/store ./internal/httpapi -count=1` — PASS.
+- `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-rank-evidence-fixed-20261016 .tools/go/bin/go vet ./internal/store ./internal/httpapi` — PASS.
+- `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-rank-evidence-race-20261016 .tools/go/bin/go test -race -count=1 ./internal/store -run 'Test(StartExamSnapshotsAndLinksRequiredProjectEvidence|AdvancedExamCannotStartWithoutExactPassingProjectEvidence)'` — PASS.
+- Full `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-rank-evidence-fullmake-20261016 make test` — PASS, including all-package unit tests/vet/race and frontend typecheck/production build.
+- `npm run test:progress` — PASS for desktop/light and mobile/dark; no overflow or axe violations.
+- Store tests include exact P3 policy binding, missing-version rejection, stable relational IDs, immutable link deletion rejection, and continued refusal to award Middle from project+exam evidence alone.
+- HTTP evidence lookup test and `go vet ./internal/httpapi` were independently run by the bounded browser/API builder and passed.
+- After selecting the latest immutable evaluation deterministically when a submission has multiple evaluator versions, the focused lookup regression was rerun: `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-rank-evidence-fullmake-20261016 .tools/go/bin/go test ./internal/httpapi -run 'TestProjectEvidenceLookupIsScopedAndReadOnly' -count=1` — PASS.
+
+Still open:
+- No actual Middle/Middle+/Senior exam catalog currently registers these policies. No advanced rank is awardable.
+- `GET /api/exams` still needs policy-derived per-requirement eligibility/pending states once advanced exams enter the catalog.
+- P4/P5 and persisted Senior human-review authority do not exist. AI/self-review cannot satisfy that requirement.
+- The current unfiltered M11 draft acceptance is a separate live gate; it is not implied by these store tests.

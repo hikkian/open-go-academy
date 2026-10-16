@@ -1,0 +1,110 @@
+{
+  "id": "middleplus-17-hard",
+  "signature": "func OutboxRecovery(state string, event string, attempts int, maxAttempts int, effectApplied bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { State string `json:\"state\"`; Event string `json:\"event\"`; Attempts int `json:\"attempts\"`; MaxAttempts int `json:\"maxAttempts\"`; EffectApplied bool `json:\"effectApplied\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(OutboxRecovery(in.State,in.Event,in.Attempts,in.MaxAttempts,in.EffectApplied)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "state": "absent",
+      "event": "persist",
+      "attempts": 0,
+      "maxAttempts": 3,
+      "effectApplied": false
+    }
+  ],
+  "public_expected": [
+    "pending"
+  ],
+  "private_input": [
+    {
+      "state": "absent",
+      "event": "rollback",
+      "attempts": 0,
+      "maxAttempts": 3,
+      "effectApplied": false
+    },
+    {
+      "state": "pending",
+      "event": "publish",
+      "attempts": 0,
+      "maxAttempts": 3,
+      "effectApplied": false
+    },
+    {
+      "state": "pending",
+      "event": "retry",
+      "attempts": 2,
+      "maxAttempts": 3,
+      "effectApplied": false
+    },
+    {
+      "state": "pending",
+      "event": "retry",
+      "attempts": 3,
+      "maxAttempts": 3,
+      "effectApplied": false
+    },
+    {
+      "state": "delivered",
+      "event": "ack",
+      "attempts": 1,
+      "maxAttempts": 3,
+      "effectApplied": true
+    },
+    {
+      "state": "delivered",
+      "event": "crash",
+      "attempts": 1,
+      "maxAttempts": 3,
+      "effectApplied": false
+    },
+    {
+      "state": "delivered",
+      "event": "crash",
+      "attempts": 1,
+      "maxAttempts": 3,
+      "effectApplied": true
+    },
+    {
+      "state": "delivered",
+      "event": "crash",
+      "attempts": 3,
+      "maxAttempts": 3,
+      "effectApplied": false
+    },
+    {
+      "state": "acked",
+      "event": "publish",
+      "attempts": 3,
+      "maxAttempts": 3,
+      "effectApplied": true
+    },
+    {
+      "state": "pending",
+      "event": "retry",
+      "attempts": -1,
+      "maxAttempts": 3,
+      "effectApplied": false
+    },
+    {
+      "state": "unknown",
+      "event": "publish",
+      "attempts": 0,
+      "maxAttempts": 3,
+      "effectApplied": false
+    }
+  ],
+  "private_expected": [
+    "absent",
+    "delivered",
+    "pending",
+    "dead_letter",
+    "acked",
+    "retry_publish",
+    "deduplicate",
+    "dead_letter",
+    "deduplicate",
+    "invalid",
+    "invalid"
+  ]
+}

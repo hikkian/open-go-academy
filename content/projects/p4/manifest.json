@@ -1,0 +1,13 @@
+{
+  "project": "P4 ScaleLab",
+  "curriculum_version": "2026.10",
+  "rank": "middleplus",
+  "go_version": "1.27.2",
+  "dependency_versions": {},
+  "last_verified_at": "2026-10-16",
+  "compatibility_notes": [
+    "Starter and reference use only the Go standard library.",
+    "Benchmark results are environment-specific observations, not performance guarantees.",
+    "Manual SLO, capacity, profile and incident interpretations are not deterministically certified."
+  ]
+}

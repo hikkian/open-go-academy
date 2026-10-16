@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-11-easy",
+  "signature": "func ReadPolicy(wrote, replicaFresh bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Wrote bool; ReplicaFresh bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ReadPolicy(in.Wrote, in.ReplicaFresh); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Wrote": true,
+      "ReplicaFresh": false
+    }
+  ],
+  "public_expected": [
+    "primary"
+  ],
+  "private_input": [
+    {
+      "Wrote": false,
+      "ReplicaFresh": true
+    },
+    {
+      "Wrote": false,
+      "ReplicaFresh": false
+    }
+  ],
+  "private_expected": [
+    "replica",
+    "primary"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "middleplus-01-medium",
+  "signature": "func ComparableBaseline(validWorkload, sameUnit, sameEnvironment bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { ValidWorkload bool; SameUnit bool; SameEnvironment bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ComparableBaseline(in.ValidWorkload, in.SameUnit, in.SameEnvironment); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "ValidWorkload": true,
+      "SameUnit": true,
+      "SameEnvironment": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "ValidWorkload": true,
+      "SameUnit": false,
+      "SameEnvironment": true
+    },
+    {
+      "ValidWorkload": false,
+      "SameUnit": true,
+      "SameEnvironment": true
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "middleplus-22-hard",
+  "signature": "func ContinueRollout(errorPercent int, threshold int, sampleCount int, minimumSample int, evidenceReady bool, rollbackReady bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { ErrorPercent int `json:\"errorPercent\"`; Threshold int `json:\"threshold\"`; SampleCount int `json:\"sampleCount\"`; MinimumSample int `json:\"minimumSample\"`; EvidenceReady bool `json:\"evidenceReady\"`; RollbackReady bool `json:\"rollbackReady\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ContinueRollout(in.ErrorPercent, in.Threshold, in.SampleCount, in.MinimumSample, in.EvidenceReady, in.RollbackReady)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "errorPercent": 1,
+      "threshold": 5,
+      "sampleCount": 120,
+      "minimumSample": 100,
+      "evidenceReady": true,
+      "rollbackReady": true
+    },
+    {
+      "errorPercent": 5,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": true,
+      "rollbackReady": false
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "errorPercent": 6,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": true,
+      "rollbackReady": true
+    },
+    {
+      "errorPercent": 1,
+      "threshold": 5,
+      "sampleCount": 99,
+      "minimumSample": 100,
+      "evidenceReady": true,
+      "rollbackReady": true
+    },
+    {
+      "errorPercent": 1,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": false,
+      "rollbackReady": true
+    },
+    {
+      "errorPercent": 1,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": true,
+      "rollbackReady": false
+    },
+    {
+      "errorPercent": -1,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": true,
+      "rollbackReady": true
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

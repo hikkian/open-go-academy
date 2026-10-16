@@ -64,7 +64,13 @@ func WithCatalog(snapshot Snapshot, p store.Progress, c *content.Catalog) Snapsh
 			addEvidence(ex.ID, ex.Skills)
 		}
 	}
-	for id, skills := range map[string][]string{"p1:automatic": {"go-core", "testing"}, "p2:automatic": {"http", "sql"}} {
+	for id, skills := range map[string][]string{
+		"p1:automatic": {"go-core", "testing"},
+		"p2:automatic": {"http", "sql"},
+		"p3:automatic": {"concurrency", "reliability"},
+		"p4:automatic": {"performance", "distributed"},
+		"p5:automatic": {"architecture", "communication"},
+	} {
 		addEvidence(id, skills)
 	}
 	for _, exam := range assessment.All() {

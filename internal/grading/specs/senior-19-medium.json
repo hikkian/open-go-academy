@@ -1,0 +1,24 @@
+{
+  "id": "senior-19-medium",
+  "signature": "func CommandAction(commanderAssigned, mitigationKnown bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { CommanderAssigned bool `json:\"commanderAssigned\"`; MitigationKnown bool `json:\"mitigationKnown\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CommandAction(in.CommanderAssigned, in.MitigationKnown)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "commanderAssigned": true,
+      "mitigationKnown": true
+    }
+  ],
+  "public_expected": [
+    "execute_mitigation"
+  ],
+  "private_input": [
+    {
+      "commanderAssigned": false,
+      "mitigationKnown": true
+    }
+  ],
+  "private_expected": [
+    "assign_commander"
+  ]
+}

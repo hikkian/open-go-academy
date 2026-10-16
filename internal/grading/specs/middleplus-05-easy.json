@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-05-easy",
+  "signature": "func MemoryBudget(used, limit int64) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Used int64; Limit int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=MemoryBudget(in.Used, in.Limit); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Used": 80,
+      "Limit": 100
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "Used": 101,
+      "Limit": 100
+    },
+    {
+      "Used": 0,
+      "Limit": 0
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

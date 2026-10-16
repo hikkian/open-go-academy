@@ -1,0 +1,32 @@
+{
+  "id": "middleplus-07-hard",
+  "signature": "func IndexCandidate(matches, total, estimatedRows int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Matches int; Total int; EstimatedRows int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=IndexCandidate(in.Matches, in.Total, in.EstimatedRows); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Matches": 5,
+      "Total": 100,
+      "EstimatedRows": 8
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "Matches": 5,
+      "Total": 100,
+      "EstimatedRows": 80
+    },
+    {
+      "Matches": 5,
+      "Total": 0,
+      "EstimatedRows": 1
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

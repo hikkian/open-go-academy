@@ -1,0 +1,64 @@
+{
+  "id": "middle-13-medium",
+  "signature": "func IndexScanCandidate(matches, total int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Matches int64; Total int64 }\nfunc main() {\n var cases []input\n if err := json.Unmarshal([]byte(os.Args[1]), &cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases {\n  if err := enc.Encode(IndexScanCandidate(in.Matches, in.Total)); err != nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Matches": 24,
+      "Total": 100
+    },
+    {
+      "Matches": 25,
+      "Total": 100
+    },
+    {
+      "Matches": 0,
+      "Total": 1
+    }
+  ],
+  "public_expected": [
+    "index_candidate",
+    "sequential",
+    "index_candidate"
+  ],
+  "private_input": [
+    {
+      "Matches": 0,
+      "Total": 0
+    },
+    {
+      "Matches": 0,
+      "Total": 9223372036854775807
+    },
+    {
+      "Matches": 2305843009213693951,
+      "Total": 9223372036854775807
+    },
+    {
+      "Matches": 2305843009213693952,
+      "Total": 9223372036854775807
+    },
+    {
+      "Matches": 9223372036854775807,
+      "Total": 9223372036854775807
+    },
+    {
+      "Matches": -1,
+      "Total": 100
+    },
+    {
+      "Matches": 101,
+      "Total": 100
+    }
+  ],
+  "private_expected": [
+    "no_rows",
+    "index_candidate",
+    "index_candidate",
+    "sequential",
+    "sequential",
+    "invalid",
+    "invalid"
+  ]
+}

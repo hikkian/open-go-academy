@@ -1,0 +1,26 @@
+{
+  "id": "senior-22-hard",
+  "signature": "func MergeReady(blockers, testsGreen, ownerApproved int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Blockers int `json:\"blockers\"`; TestsGreen int `json:\"testsGreen\"`; OwnerApproved int `json:\"ownerApproved\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(MergeReady(in.Blockers, in.TestsGreen, in.OwnerApproved)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "blockers": 0,
+      "testsGreen": 1,
+      "ownerApproved": 1
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "blockers": 1,
+      "testsGreen": 1,
+      "ownerApproved": 1
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

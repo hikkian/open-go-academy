@@ -1,0 +1,10 @@
+2026-10-16 Asia/Atyrau — Middle-27…32 assessment remediation
+
+Repaired the audited draft group: Middle-27 auth policy distinguishes trusted tenant scopes from full authorization; Middle-28 DI/config examples now practice dependency relationships and clearer startup validation; Middle-29 body-size guard exercises overflow/invalid limits; Middle-31 readiness/probe branches now include started=false; Middle-32 observability policy requires fixed route templates and avoids raw path/ID/high-cardinality attribute claims. Updated Russian lesson explanations, exercise contracts, starters, grader vectors and references.
+
+Middle-30 is owned separately for its deadline overflow fix; no files from that task were modified here.
+
+Scoped command:
+`ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middle-27,middle-28,middle-29,middle-31,middle-32 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-m11-middle27-32-20261016 .tools/go/bin/go test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+
+Result: PASS, 177.461s; five lessons, 15 examples/starters/reference checks and catalog validation. JSON/vector consistency passed. The groups remain drafts; this is not full M11 acceptance or publication.

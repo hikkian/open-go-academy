@@ -1,0 +1,34 @@
+{
+  "id": "middle-17-easy",
+  "signature": "func OutboxActionEasy(committed bool, published bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Committed bool; Published bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(OutboxActionEasy(x.Committed, x.Published));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Committed": false,
+      "Published": false
+    },
+    {
+      "Committed": true,
+      "Published": false
+    }
+  ],
+  "public_expected": [
+    "discard",
+    "publish"
+  ],
+  "private_input": [
+    {
+      "Committed": false,
+      "Published": true
+    },
+    {
+      "Committed": true,
+      "Published": false
+    }
+  ],
+  "private_expected": [
+    "discard",
+    "publish"
+  ]
+}

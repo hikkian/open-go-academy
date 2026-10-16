@@ -1,0 +1,77 @@
+{
+  "id": "middleplus-18-hard",
+  "signature": "func ProtectCritical(offered int, capacity int, critical bool, deadlineOK bool, queueAge int, maxQueueAge int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Offered int `json:\"offered\"`; Capacity int `json:\"capacity\"`; Critical bool `json:\"critical\"`; DeadlineOK bool `json:\"deadlineOK\"`; QueueAge int `json:\"queueAge\"`; MaxQueueAge int `json:\"maxQueueAge\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ProtectCritical(in.Offered, in.Capacity, in.Critical, in.DeadlineOK, in.QueueAge, in.MaxQueueAge)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "offered": 4,
+      "capacity": 5,
+      "critical": false,
+      "deadlineOK": true,
+      "queueAge": 0,
+      "maxQueueAge": 60
+    },
+    {
+      "offered": 8,
+      "capacity": 5,
+      "critical": true,
+      "deadlineOK": true,
+      "queueAge": 30,
+      "maxQueueAge": 60
+    }
+  ],
+  "public_expected": [
+    true,
+    true
+  ],
+  "private_input": [
+    {
+      "offered": 8,
+      "capacity": 5,
+      "critical": false,
+      "deadlineOK": true,
+      "queueAge": 30,
+      "maxQueueAge": 60
+    },
+    {
+      "offered": 8,
+      "capacity": 5,
+      "critical": true,
+      "deadlineOK": false,
+      "queueAge": 30,
+      "maxQueueAge": 60
+    },
+    {
+      "offered": 8,
+      "capacity": 5,
+      "critical": true,
+      "deadlineOK": true,
+      "queueAge": 61,
+      "maxQueueAge": 60
+    },
+    {
+      "offered": 8,
+      "capacity": 5,
+      "critical": true,
+      "deadlineOK": true,
+      "queueAge": 60,
+      "maxQueueAge": 60
+    },
+    {
+      "offered": 8,
+      "capacity": 5,
+      "critical": true,
+      "deadlineOK": true,
+      "queueAge": -1,
+      "maxQueueAge": 60
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    true,
+    false
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "id": "middle-14-easy",
+  "signature": "func PoolStateEasy(inUse int64, maximum int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{InUse int64; Maximum int64; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(PoolStateEasy(x.InUse, x.Maximum));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "InUse": 2,
+      "Maximum": 8
+    },
+    {
+      "InUse": 7,
+      "Maximum": 8
+    },
+    {
+      "InUse": 8,
+      "Maximum": 8
+    }
+  ],
+  "public_expected": [
+    "available",
+    "available",
+    "wait"
+  ],
+  "private_input": [
+    {
+      "InUse": -1,
+      "Maximum": 8
+    },
+    {
+      "InUse": 9,
+      "Maximum": 8
+    },
+    {
+      "InUse": 0,
+      "Maximum": 0
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid",
+    "invalid"
+  ]
+}

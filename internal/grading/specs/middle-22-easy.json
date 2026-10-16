@@ -1,0 +1,38 @@
+{
+  "id": "middle-22-easy",
+  "signature": "func TokenDecisionEasy(available, capacity, cost int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Available int64;Capacity int64;Cost int64}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(TokenDecisionEasy(x.Available,x.Capacity,x.Cost));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Available": 5,
+      "Capacity": 10,
+      "Cost": 3
+    },
+    {
+      "Available": 2,
+      "Capacity": 10,
+      "Cost": 3
+    },
+    {
+      "Available": 10,
+      "Capacity": 10,
+      "Cost": 10
+    }
+  ],
+  "public_expected": [
+    "allow",
+    "deny",
+    "allow"
+  ],
+  "private_input": [
+    {
+      "Available": -1,
+      "Capacity": 10,
+      "Cost": 1
+    }
+  ],
+  "private_expected": [
+    "invalid"
+  ]
+}

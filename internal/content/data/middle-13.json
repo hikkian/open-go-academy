@@ -1,0 +1,142 @@
+{
+  "id": "middle-13",
+  "title": "EXPLAIN, индексы и стоимость плана",
+  "rank": "Middle",
+  "module": "middle-sql",
+  "prerequisites": [
+    "juniorplus-10"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Объяснять, что EXPLAIN показывает оценки плана, а не фактическое время запроса.",
+    "Классифицировать долю совпадений и безопасно проверять фиксированный порог без int64 overflow.",
+    "Обосновывать индекс с учётом частоты чтения и цены дополнительной записи."
+  ],
+  "glossary": [
+    {
+      "term": "EXPLAIN",
+      "translation": "план выполнения",
+      "definition": "PostgreSQL выбирает способ получить строки"
+    },
+    {
+      "term": "selectivity",
+      "translation": "селективность",
+      "definition": "Доля строк, подходящая условию"
+    },
+    {
+      "term": "sequential scan",
+      "translation": "последовательное чтение",
+      "definition": "Проверка строк таблицы без поиска по индексу"
+    }
+  ],
+  "markdown_file": "middle-13.md",
+  "order": 53,
+  "exercises": [
+    {
+      "id": "middle-13-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Классифицируй долю совпадений",
+      "prompt": "Входы — оценки количества совпавших и всех строк, каждое в диапазоне [0, MaxInt64]. Верни invalid, если одно значение отрицательно или matches > total; no_rows при total=0; none при matches=0; sparse, если matches <= floor(total/100); иначе common. Это классификация доли, а не прогноз плана PostgreSQL.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc MatchSelectivity(matches, total int64) string {\n\t// Реализуйте классификацию доли совпадений из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"sparse\"\n\"common\"\n",
+      "criteria": [
+        "Точная сигнатура и контракт соблюдены.",
+        "Входы int64 проверяются без небезопасного умножения.",
+        "Вывод описывает учебную оценку, а не реальный план PostgreSQL."
+      ],
+      "self_check": [
+        {
+          "question": "Какие границы покрывает закрытый набор?",
+          "answer": "Он проверяет пороги и крайние значения int64, включая MaxInt64."
+        },
+        {
+          "question": "Что доказывает функция?",
+          "answer": "Только классификацию входных целочисленных оценок; не реальный план БД."
+        }
+      ]
+    },
+    {
+      "id": "middle-13-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Найди границу индексного кандидата без переполнения",
+      "prompt": "Входы — оценки строк [0, MaxInt64], matches <= total. Верни invalid при отрицательном значении или matches > total; no_rows при total=0. Иначе index_candidate, когда строго выполняется 4*matches < total, и sequential при равенстве или большем значении. Не вычисляй 4*matches: используй эквивалентную целочисленную проверку без переполнения. Порог 25% — условие упражнения, не выбор самого PostgreSQL.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc IndexScanCandidate(matches, total int64) string {\n\t// Сравните долю с фиксированным порогом без умножения.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"index_candidate\"\n\"sequential\"\n\"index_candidate\"\n",
+      "criteria": [
+        "Точная сигнатура и контракт соблюдены.",
+        "Входы int64 проверяются без небезопасного умножения.",
+        "Вывод описывает учебную оценку, а не реальный план PostgreSQL."
+      ],
+      "self_check": [
+        {
+          "question": "Какие границы покрывает закрытый набор?",
+          "answer": "Он проверяет пороги и крайние значения int64, включая MaxInt64."
+        },
+        {
+          "question": "Что доказывает функция?",
+          "answer": "Только классификацию входных целочисленных оценок; не реальный план БД."
+        }
+      ]
+    },
+    {
+      "id": "middle-13-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Учти чтения, записи и крайние int64",
+      "prompt": "Все оценки — int64 в диапазоне [0, MaxInt64], matches <= total. Верни invalid при любом отрицательном значении или matches > total; no_rows при total=0. Порог-кандидат тот же: строго 4*matches < total, вычисленный без умножения. Если порог не пройден — sequential. Если пройден, но writes > reads — write_heavy; иначе index_candidate. Сравнивайте reads и writes напрямую, не перемножайте значения. Это учебная матрица trade-off, не стоимость PostgreSQL.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc IndexReadWriteDecision(matches, total, reads, writes int64) string {\n\t// Учитывайте порог чтения, частоту чтений и цену записи.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"index_candidate\"\n\"write_heavy\"\n\"sequential\"\n",
+      "criteria": [
+        "Точная сигнатура и контракт соблюдены.",
+        "Входы int64 проверяются без небезопасного умножения.",
+        "Вывод описывает учебную оценку, а не реальный план PostgreSQL."
+      ],
+      "self_check": [
+        {
+          "question": "Какие границы покрывает закрытый набор?",
+          "answer": "Он проверяет пороги и крайние значения int64, включая MaxInt64."
+        },
+        {
+          "question": "Что доказывает функция?",
+          "answer": "Только классификацию входных целочисленных оценок; не реальный план БД."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какую гарантию дает данный учебный пример?",
+      "answer": "Только соответствие описанному детерминированному контракту на заданных входах."
+    },
+    {
+      "question": "Что следует проверять отдельно в работающей системе?",
+      "answer": "Транзакции, ограничения хранения, повторные запросы, отказ и восстановление реальных зависимостей."
+    },
+    {
+      "question": "Можно ли сделать универсальный вывод по EXPLAIN/кешу/брокеру?",
+      "answer": "Нет. Нужны фактический движок, конфигурация и измеренный workload."
+    }
+  ]
+}

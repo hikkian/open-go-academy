@@ -1,0 +1,42 @@
+{
+  "id": "middle-04-easy",
+  "signature": "func BufferAcceptCount(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(BufferAcceptCount(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      2,
+      5
+    ],
+    [
+      5,
+      1
+    ]
+  ],
+  "public_expected": [
+    [
+      2
+    ],
+    [
+      1
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      1
+    ],
+    [
+      -1,
+      2
+    ]
+  ],
+  "private_expected": [
+    [
+      0
+    ],
+    [
+      0
+    ]
+  ]
+}

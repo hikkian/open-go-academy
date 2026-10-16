@@ -1,0 +1,26 @@
+{
+  "id": "senior-17-hard",
+  "signature": "func CutoverAllowed(shadowMatched, rollbackTested, ownerApproved bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { ShadowMatched bool `json:\"shadowMatched\"`; RollbackTested bool `json:\"rollbackTested\"`; OwnerApproved bool `json:\"ownerApproved\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CutoverAllowed(in.ShadowMatched, in.RollbackTested, in.OwnerApproved)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "shadowMatched": true,
+      "rollbackTested": true,
+      "ownerApproved": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "shadowMatched": true,
+      "rollbackTested": false,
+      "ownerApproved": true
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

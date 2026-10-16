@@ -1,0 +1,46 @@
+{
+  "id": "middle-09-easy",
+  "signature": "func BlockedSenders(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(BlockedSenders(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      2,
+      1,
+      4
+    ],
+    [
+      3,
+      3,
+      2
+    ]
+  ],
+  "public_expected": [
+    [
+      3
+    ],
+    [
+      2
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      0,
+      2
+    ],
+    [
+      2,
+      4,
+      3
+    ]
+  ],
+  "private_expected": [
+    [
+      2
+    ],
+    [
+      3
+    ]
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "middleplus-exam-compare-benchmark",
+  "signature": "func CompareBenchmark(baselineRuns int, baselineMedianNS int64, candidateRuns int, candidateMedianNS int64, minimumRuns int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { BaselineRuns int `json:\"baselineRuns\"`; BaselineMedianNS int64 `json:\"baselineMedianNS\"`; CandidateRuns int `json:\"candidateRuns\"`; CandidateMedianNS int64 `json:\"candidateMedianNS\"`; MinimumRuns int `json:\"minimumRuns\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CompareBenchmark(in.BaselineRuns, in.BaselineMedianNS, in.CandidateRuns, in.CandidateMedianNS, in.MinimumRuns)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "baselineRuns": 5,
+      "baselineMedianNS": 1000,
+      "candidateRuns": 5,
+      "candidateMedianNS": 900,
+      "minimumRuns": 5
+    },
+    {
+      "baselineRuns": 5,
+      "baselineMedianNS": 1000,
+      "candidateRuns": 5,
+      "candidateMedianNS": 1000,
+      "minimumRuns": 5
+    },
+    {
+      "baselineRuns": 5,
+      "baselineMedianNS": 1000,
+      "candidateRuns": 5,
+      "candidateMedianNS": 1100,
+      "minimumRuns": 5
+    }
+  ],
+  "public_expected": [
+    "improved",
+    "equal",
+    "regressed"
+  ],
+  "private_input": [
+    {
+      "baselineRuns": 4,
+      "baselineMedianNS": 1000,
+      "candidateRuns": 5,
+      "candidateMedianNS": 900,
+      "minimumRuns": 5
+    },
+    {
+      "baselineRuns": 5,
+      "baselineMedianNS": 1000,
+      "candidateRuns": 4,
+      "candidateMedianNS": 900,
+      "minimumRuns": 5
+    },
+    {
+      "baselineRuns": 5,
+      "baselineMedianNS": 0,
+      "candidateRuns": 5,
+      "candidateMedianNS": 900,
+      "minimumRuns": 5
+    },
+    {
+      "baselineRuns": 5,
+      "baselineMedianNS": 1000,
+      "candidateRuns": 5,
+      "candidateMedianNS": -1,
+      "minimumRuns": 5
+    },
+    {
+      "baselineRuns": 5,
+      "baselineMedianNS": 1000,
+      "candidateRuns": 5,
+      "candidateMedianNS": 900,
+      "minimumRuns": 0
+    },
+    {
+      "baselineRuns": 0,
+      "baselineMedianNS": 1000,
+      "candidateRuns": 0,
+      "candidateMedianNS": 900,
+      "minimumRuns": 1
+    }
+  ],
+  "private_expected": [
+    "insufficient",
+    "insufficient",
+    "insufficient",
+    "insufficient",
+    "improved",
+    "insufficient"
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "id": "middle-19",
+  "title": "Dead letter, backoff и предел попыток",
+  "rank": "Middle",
+  "module": "middle-messaging",
+  "prerequisites": [
+    "middle-18"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Ограничивать число повторов",
+    "Увеличивать задержку между временными ошибками",
+    "Отделять постоянный отказ в dead-letter маршрут"
+  ],
+  "glossary": [
+    {
+      "term": "backoff",
+      "translation": "растущая задержка",
+      "definition": "Ожидание перед новой попыткой"
+    },
+    {
+      "term": "dead-letter queue",
+      "translation": "очередь отложенных ошибок",
+      "definition": "Место для сообщений, исчерпавших политику повторов"
+    },
+    {
+      "term": "retry budget",
+      "translation": "лимит повторов",
+      "definition": "Верхняя граница попыток для одной операции"
+    }
+  ],
+  "markdown_file": "middle-19.md",
+  "order": 59,
+  "exercises": [
+    {
+      "id": "middle-19-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Delay — локальное правило",
+      "prompt": "Контракт `func RetryDelayEasy(attempt, baseMS, maximumMS int64) int64`: attempt<=0 or negative bounds => 0; otherwise double baseMS per one-based attempt, saturate at maximumMS without overflow. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RetryDelayEasy(attempt, baseMS, maximumMS int64) int64 {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "10\n50\n30\n",
+      "criteria": [
+        "Контракт delay выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-19-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Retry policy — ветви политики",
+      "prompt": "Контракт `func RetryActionMedium(attempt, maxAttempts int64, failed, temporary bool) string`: attempt and maxAttempts are one-based positive limits; invalid limits => invalid; success => ack; failed temporary work retries only while attempt < maxAttempts; permanent failure or exhausted budget => dead_letter. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RetryActionMedium(attempt, maxAttempts int64, failed, temporary bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"retry\"\n\"dead_letter\"\n\"dead_letter\"\n",
+      "criteria": [
+        "Контракт retry policy выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-19-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Delivery transition — отказ и граница гарантии",
+      "prompt": "Контракт `func RetryTransitionHard(attempt, maxAttempts int64, failed, temporary, acknowledged bool) string`: validate positive attempt/budget first; an already acknowledged delivery stays ack; success is ack; a temporary failed delivery retries only below the attempt ceiling; every other failed delivery goes to dead_letter. This is a state transition label, not broker acknowledgement or persistence. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RetryTransitionHard(attempt, maxAttempts int64, failed, temporary, acknowledged bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"retry\"\n\"dead_letter\"\n\"dead_letter\"\n",
+      "criteria": [
+        "Контракт delivery transition выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какую гарантию дает данный учебный пример?",
+      "answer": "Только соответствие описанному детерминированному контракту на заданных входах."
+    },
+    {
+      "question": "Что следует проверять отдельно в работающей системе?",
+      "answer": "Транзакции, ограничения хранения, повторные запросы, отказ и восстановление реальных зависимостей."
+    },
+    {
+      "question": "Можно ли сделать универсальный вывод по EXPLAIN/кешу/брокеру?",
+      "answer": "Нет. Нужны фактический движок, конфигурация и измеренный workload."
+    }
+  ]
+}

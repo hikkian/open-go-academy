@@ -1,0 +1,50 @@
+{
+  "id": "middle-27-medium",
+  "signature": "func OwnerDecision(principalID, ownerID string, authenticated bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { PrincipalID string `json:\"principalID\"`; OwnerID string `json:\"ownerID\"`; Authenticated bool `json:\"authenticated\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(OwnerDecision(in.PrincipalID, in.OwnerID, in.Authenticated)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "principalID": "u1",
+      "ownerID": "u1",
+      "authenticated": true
+    },
+    {
+      "principalID": "u1",
+      "ownerID": "u1",
+      "authenticated": false
+    }
+  ],
+  "public_expected": [
+    "allow",
+    "unauthenticated"
+  ],
+  "private_input": [
+    {
+      "principalID": "",
+      "ownerID": "u1",
+      "authenticated": true
+    },
+    {
+      "principalID": "u1",
+      "ownerID": "",
+      "authenticated": true
+    },
+    {
+      "principalID": "u1",
+      "ownerID": "u2",
+      "authenticated": true
+    },
+    {
+      "principalID": "",
+      "ownerID": "",
+      "authenticated": false
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid",
+    "forbidden",
+    "unauthenticated"
+  ]
+}

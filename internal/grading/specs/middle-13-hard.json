@@ -1,0 +1,84 @@
+{
+  "id": "middle-13-hard",
+  "signature": "func IndexReadWriteDecision(matches, total, reads, writes int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Matches int64; Total int64; Reads int64; Writes int64 }\nfunc main() {\n var cases []input\n if err := json.Unmarshal([]byte(os.Args[1]), &cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases {\n  if err := enc.Encode(IndexReadWriteDecision(in.Matches, in.Total, in.Reads, in.Writes)); err != nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Matches": 20,
+      "Total": 100,
+      "Reads": 8,
+      "Writes": 2
+    },
+    {
+      "Matches": 20,
+      "Total": 100,
+      "Reads": 2,
+      "Writes": 8
+    },
+    {
+      "Matches": 30,
+      "Total": 100,
+      "Reads": 100,
+      "Writes": 0
+    }
+  ],
+  "public_expected": [
+    "index_candidate",
+    "write_heavy",
+    "sequential"
+  ],
+  "private_input": [
+    {
+      "Matches": 2305843009213693951,
+      "Total": 9223372036854775807,
+      "Reads": 9223372036854775807,
+      "Writes": 0
+    },
+    {
+      "Matches": 2305843009213693951,
+      "Total": 9223372036854775807,
+      "Reads": 0,
+      "Writes": 9223372036854775807
+    },
+    {
+      "Matches": 2305843009213693952,
+      "Total": 9223372036854775807,
+      "Reads": 9223372036854775807,
+      "Writes": 0
+    },
+    {
+      "Matches": 0,
+      "Total": 0,
+      "Reads": 0,
+      "Writes": 0
+    },
+    {
+      "Matches": -1,
+      "Total": 1,
+      "Reads": 0,
+      "Writes": 0
+    },
+    {
+      "Matches": 2,
+      "Total": 1,
+      "Reads": 0,
+      "Writes": 0
+    },
+    {
+      "Matches": 0,
+      "Total": 1,
+      "Reads": -1,
+      "Writes": 0
+    }
+  ],
+  "private_expected": [
+    "index_candidate",
+    "write_heavy",
+    "sequential",
+    "no_rows",
+    "invalid",
+    "invalid",
+    "invalid"
+  ]
+}

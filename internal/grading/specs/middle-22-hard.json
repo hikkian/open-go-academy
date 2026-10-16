@@ -1,0 +1,46 @@
+{
+  "id": "middle-22-hard",
+  "signature": "func RetryAfterSecondsHard(available, capacity, elapsedSeconds, refillPerSecond, cost int64) int64",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Available int64;Capacity int64;ElapsedSeconds int64;RefillPerSecond int64;Cost int64}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RetryAfterSecondsHard(x.Available,x.Capacity,x.ElapsedSeconds,x.RefillPerSecond,x.Cost));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Available": 2,
+      "Capacity": 10,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 2,
+      "Cost": 5
+    },
+    {
+      "Available": 5,
+      "Capacity": 10,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 2,
+      "Cost": 5
+    },
+    {
+      "Available": 0,
+      "Capacity": 10,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 0,
+      "Cost": 1
+    }
+  ],
+  "public_expected": [
+    2,
+    0,
+    -1
+  ],
+  "private_input": [
+    {
+      "Available": 0,
+      "Capacity": 10,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 2,
+      "Cost": 1
+    }
+  ],
+  "private_expected": [
+    1
+  ]
+}

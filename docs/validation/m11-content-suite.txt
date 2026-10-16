@@ -1,0 +1,8 @@
+2026-10-16 Asia/Atyrau
+Command:
+GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test -count=1 ./internal/content
+
+Result:
+ok  academy/internal/content  58.193s
+
+This ran the default published-curriculum package suite, including the 117 published function references/starters and examples. The opt-in M11 draft acceptance test was skipped because ACADEMY_ACCEPT_M11_DRAFTS was not set; this is not M11 publication evidence.

@@ -1,0 +1,34 @@
+{
+  "id": "senior-06-medium",
+  "signature": "func ChangePath(ownerKnown, bypassExists bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { OwnerKnown bool; BypassExists bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(ChangePath(in.OwnerKnown, in.BypassExists)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "OwnerKnown": false,
+      "BypassExists": false
+    },
+    {
+      "OwnerKnown": true,
+      "BypassExists": true
+    }
+  ],
+  "public_expected": [
+    "clarify-owner",
+    "close-bypass"
+  ],
+  "private_input": [
+    {
+      "OwnerKnown": true,
+      "BypassExists": false
+    },
+    {
+      "OwnerKnown": false,
+      "BypassExists": true
+    }
+  ],
+  "private_expected": [
+    "owned-path",
+    "clarify-owner"
+  ]
+}

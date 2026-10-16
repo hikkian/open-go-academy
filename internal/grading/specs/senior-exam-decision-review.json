@@ -1,0 +1,74 @@
+{
+  "id": "senior-exam-decision-review",
+  "signature": "func DecisionReview(triggerObserved, evidenceUpdated, ownerAssigned bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { TriggerObserved bool `json:\"triggerObserved\"`; EvidenceUpdated bool `json:\"evidenceUpdated\"`; OwnerAssigned bool `json:\"ownerAssigned\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(DecisionReview(in.TriggerObserved, in.EvidenceUpdated, in.OwnerAssigned)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "triggerObserved": false,
+      "evidenceUpdated": true,
+      "ownerAssigned": true
+    },
+    {
+      "triggerObserved": true,
+      "evidenceUpdated": false,
+      "ownerAssigned": false
+    },
+    {
+      "triggerObserved": true,
+      "evidenceUpdated": true,
+      "ownerAssigned": false
+    },
+    {
+      "triggerObserved": true,
+      "evidenceUpdated": true,
+      "ownerAssigned": true
+    }
+  ],
+  "public_expected": [
+    "wait",
+    "gather_evidence",
+    "assign_owner",
+    "revisit_decision"
+  ],
+  "private_input": [
+    {
+      "triggerObserved": false,
+      "evidenceUpdated": false,
+      "ownerAssigned": false
+    },
+    {
+      "triggerObserved": false,
+      "evidenceUpdated": false,
+      "ownerAssigned": true
+    },
+    {
+      "triggerObserved": false,
+      "evidenceUpdated": true,
+      "ownerAssigned": false
+    },
+    {
+      "triggerObserved": true,
+      "evidenceUpdated": false,
+      "ownerAssigned": true
+    },
+    {
+      "triggerObserved": true,
+      "evidenceUpdated": true,
+      "ownerAssigned": false
+    },
+    {
+      "triggerObserved": true,
+      "evidenceUpdated": true,
+      "ownerAssigned": true
+    }
+  ],
+  "private_expected": [
+    "wait",
+    "wait",
+    "wait",
+    "gather_evidence",
+    "assign_owner",
+    "revisit_decision"
+  ]
+}

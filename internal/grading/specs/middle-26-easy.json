@@ -1,0 +1,26 @@
+{
+  "id": "middle-26-easy",
+  "signature": "func ValidationResultEasy(valid bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Valid bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(ValidationResultEasy(x.Valid));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Valid": true
+    },
+    {
+      "Valid": false
+    }
+  ],
+  "public_expected": [
+    "ready_to_write",
+    "invalid"
+  ],
+  "private_input": [
+    {
+      "Valid": false
+    }
+  ],
+  "private_expected": [
+    "invalid"
+  ]
+}

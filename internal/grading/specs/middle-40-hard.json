@@ -1,0 +1,50 @@
+{
+  "id": "middle-40-hard",
+  "signature": "func ReleaseDecision(acceptancePassed, rollbackReady, reviewerApproved bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { AcceptancePassed bool `json:\"acceptancePassed\"`; RollbackReady bool `json:\"rollbackReady\"`; ReviewerApproved bool `json:\"reviewerApproved\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ReleaseDecision(in.AcceptancePassed, in.RollbackReady, in.ReviewerApproved)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "acceptancePassed": true,
+      "rollbackReady": true,
+      "reviewerApproved": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "acceptancePassed": true,
+      "rollbackReady": true,
+      "reviewerApproved": true
+    },
+    {
+      "acceptancePassed": false,
+      "rollbackReady": true,
+      "reviewerApproved": true
+    },
+    {
+      "acceptancePassed": true,
+      "rollbackReady": false,
+      "reviewerApproved": true
+    },
+    {
+      "acceptancePassed": true,
+      "rollbackReady": true,
+      "reviewerApproved": false
+    },
+    {
+      "acceptancePassed": false,
+      "rollbackReady": false,
+      "reviewerApproved": false
+    }
+  ],
+  "private_expected": [
+    true,
+    false,
+    false,
+    false,
+    false
+  ]
+}

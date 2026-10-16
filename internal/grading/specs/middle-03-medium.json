@@ -1,0 +1,44 @@
+{
+  "id": "middle-03-medium",
+  "signature": "func DrainThroughSentinel(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(DrainThroughSentinel(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      0,
+      2,
+      3,
+      0,
+      4
+    ],
+    [
+      9,
+      9
+    ]
+  ],
+  "public_expected": [
+    [
+      2,
+      3
+    ],
+    []
+  ],
+  "private_input": [
+    [
+      5,
+      1,
+      2,
+      5
+    ],
+    [
+      7
+    ]
+  ],
+  "private_expected": [
+    [
+      1,
+      2
+    ],
+    []
+  ]
+}

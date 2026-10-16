@@ -1,0 +1,34 @@
+{
+  "id": "senior-05-hard",
+  "signature": "func VersionPolicy(known, invariantCritical bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Known bool; InvariantCritical bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(VersionPolicy(in.Known, in.InvariantCritical)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Known": true,
+      "InvariantCritical": true
+    },
+    {
+      "Known": false,
+      "InvariantCritical": true
+    }
+  ],
+  "public_expected": [
+    "process",
+    "quarantine"
+  ],
+  "private_input": [
+    {
+      "Known": false,
+      "InvariantCritical": false
+    },
+    {
+      "Known": true,
+      "InvariantCritical": false
+    }
+  ],
+  "private_expected": [
+    "review",
+    "process"
+  ]
+}

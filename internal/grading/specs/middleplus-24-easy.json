@@ -1,0 +1,44 @@
+{
+  "id": "middleplus-24-easy",
+  "signature": "func ScaleLabDecision(baselineRuns int, candidateRuns int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Baselineruns int `json:\"baselineRuns\"`; Candidateruns int `json:\"candidateRuns\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { out:=ScaleLabDecision(in.Baselineruns, in.Candidateruns); if err:=enc.Encode(out); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "baselineRuns": 3,
+      "candidateRuns": 3
+    },
+    {
+      "baselineRuns": 1,
+      "candidateRuns": 8
+    }
+  ],
+  "public_expected": [
+    "compare",
+    "compare"
+  ],
+  "private_input": [
+    {
+      "baselineRuns": 0,
+      "candidateRuns": 3
+    },
+    {
+      "baselineRuns": -1,
+      "candidateRuns": 3
+    },
+    {
+      "baselineRuns": 3,
+      "candidateRuns": 0
+    },
+    {
+      "baselineRuns": 3,
+      "candidateRuns": -1
+    }
+  ],
+  "private_expected": [
+    "incomplete",
+    "incomplete",
+    "incomplete",
+    "incomplete"
+  ]
+}

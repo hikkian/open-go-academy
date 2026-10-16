@@ -1,0 +1,148 @@
+{
+  "id": "senior-12",
+  "title": "Секреты, ключи и проверяемая ротация",
+  "rank": "Senior",
+  "module": "senior-security-reliability",
+  "prerequisites": [
+    "senior-11"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 116,
+  "learning_outcomes": [
+    "Определять полномочия credential, scope, consumer, срок и отзыв.",
+    "Выбирать локальный или централизованный delivery механизм по threat model.",
+    "Планировать совместимую ротацию и emergency revoke с проверкой consumers.",
+    "Находить утечки в code, env, logs, traces, CI и backups без записи secret values."
+  ],
+  "glossary": [
+    {
+      "term": "credential",
+      "translation": "средство полномочий",
+      "definition": "Пароль, token, key или certificate, дающий определённые права."
+    },
+    {
+      "term": "rotation",
+      "translation": "ротация ключа",
+      "definition": "Совместимая замена credential с отзывом старого значения."
+    },
+    {
+      "term": "revoke",
+      "translation": "отзыв",
+      "definition": "Прекращение действия ранее выданного credential."
+    },
+    {
+      "term": "envelope encryption",
+      "translation": "конвертное шифрование",
+      "definition": "Хранение data key, защищённого отдельным key-encryption key."
+    }
+  ],
+  "markdown_file": "senior-12.md",
+  "self_check": [
+    {
+      "question": "Что проверяется здесь?",
+      "answer": "Только ограниченный детерминированный helper contract."
+    },
+    {
+      "question": "Какое доказательство требуется отдельно?",
+      "answer": "Проверка реальной авторизации, восстановления, rotation или threat boundary."
+    },
+    {
+      "question": "Как избежать неподтверждённого обещания?",
+      "answer": "Назвать допущения, scope теста и остаточный риск."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "senior-12-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "SecretState",
+      "prompt": "Настроен → `present`; иначе → `missing`. Никогда не выводите значение секрета.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc SecretState(configured bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"present\"\n\"missing\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    },
+    {
+      "id": "senior-12-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Rotation",
+      "prompt": "Новый ключ ещё не проверен → `hold`; проверен, пока старый активен → `switch`; иначе → `complete`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc Rotation(oldActive, newVerified bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"hold\"\n\"switch\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    },
+    {
+      "id": "senior-12-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Revoke",
+      "prompt": "Секрет раскрыт и влияние высокое → `revoke-now`; секрет раскрыт при меньшем влиянии → `rotate-and-review`; иначе → `monitor`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc Revoke(exposed, impactHigh bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"revoke-now\"\n\"rotate-and-review\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    }
+  ]
+}

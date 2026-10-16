@@ -1,0 +1,151 @@
+{
+  "id": "middleplus-15",
+  "title": "Глубина очереди, возраст и задержка",
+  "rank": "Middle+",
+  "module": "middleplus-scalelab",
+  "prerequisites": [
+    "middleplus-14"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 95,
+  "learning_outcomes": [
+    "Различать пустую, частичную и полную очередь по глубине.",
+    "Сопоставлять oldest-item age с заданным включительным порогом независимо от глубины.",
+    "Применять pause-priority к снимку очереди и назвать границы такой модели."
+  ],
+  "glossary": [
+    {
+      "term": "capacity",
+      "translation": "ёмкость",
+      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+    },
+    {
+      "term": "backpressure",
+      "translation": "обратное давление",
+      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+    },
+    {
+      "term": "queue depth",
+      "translation": "глубина очереди",
+      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+    },
+    {
+      "term": "retry budget",
+      "translation": "бюджет повторов",
+      "definition": "Верхняя граница попыток в заданном контексте."
+    },
+    {
+      "term": "outbox",
+      "translation": "исходящий журнал",
+      "definition": "Устойчивая запись о намерении опубликовать событие."
+    },
+    {
+      "term": "SLI/SLO",
+      "translation": "индикатор/цель уровня сервиса",
+      "definition": "Измеренный сигнал и явно заданная цель по окну."
+    },
+    {
+      "term": "baseline",
+      "translation": "исходный уровень",
+      "definition": "Закреплённое сравнимое состояние до изменения."
+    }
+  ],
+  "markdown_file": "middleplus-15.md",
+  "exercises": [
+    {
+      "id": "middleplus-15-easy",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: очередь по глубине",
+      "prompt": "Реализуйте чистую функцию `func QueueBand(depth int, capacity int) string`. Контракт: depth<0 или capacity<=0 => \"invalid\"; depth=0 => \"empty\"; depth>=capacity => \"full\"; иначе \"queued\".\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. oldestSeconds относится к старейшему ожидающему элементу; empty state не задаёт возраст.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc QueueBand(depth int, capacity int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"empty\"\n",
+      "criteria": [
+        "Различить empty, queued и full с валидацией capacity/depth.",
+        "Не выводить возраст или latency из одной глубины."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. oldestSeconds относится к старейшему ожидающему элементу; empty state не задаёт возраст."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-15-medium",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: глубина и возраст",
+      "prompt": "Реализуйте чистую функцию `func QueuePressure(depth int, capacity int, oldestSeconds int, maxAgeSeconds int) string`. Контракт: Отклоните depth<0, oldestSeconds<0, capacity<=0 или maxAgeSeconds<=0 как \"invalid\". Затем: depth=0 => \"empty\"; depth>=capacity => \"full\"; oldestSeconds>=maxAgeSeconds => \"stale\"; иначе \"normal\". Глубина и возраст — независимые сигналы; age порог включителен.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. oldestSeconds относится к старейшему ожидающему элементу; empty state не задаёт возраст.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc QueuePressure(depth int, capacity int, oldestSeconds int, maxAgeSeconds int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"empty\"\n",
+      "criteria": [
+        "Сопоставить depth и oldest age с caller-supplied maxAgeSeconds; age boundary включителен.",
+        "Проверить empty, normal, stale, full и invalid branches."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. oldestSeconds относится к старейшему ожидающему элементу; empty state не задаёт возраст."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-15-hard",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: pause-aware queue policy",
+      "prompt": "Реализуйте чистую функцию `func QueueAction(depth int, capacity int, oldestSeconds int, maxAgeSeconds int, consumerPaused bool) string`. Контракт: Проверьте диапазоны; затем consumerPaused => \"paused\"; depth=0 => \"empty\"; depth>=capacity => \"full\"; oldestSeconds>=maxAgeSeconds => \"stale\"; иначе \"normal\". Приоритет pause выше пустой очереди, а заполненность выше возраста. Это классификация снимка, не оценка latency distribution и не управление consumer.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. oldestSeconds относится к старейшему ожидающему элементу; empty state не задаёт возраст.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc QueueAction(depth int, capacity int, oldestSeconds int, maxAgeSeconds int, consumerPaused bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"empty\"\n",
+      "criteria": [
+        "Добавить состояние paused с явно заданным приоритетом выше пустой очереди; остальные решения соответствуют Medium.",
+        "Классификация snapshot не доказывает throughput, latency distribution или recovery."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. oldestSeconds относится к старейшему ожидающему элементу; empty state не задаёт возраст."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Почему одной queue depth недостаточно?",
+      "answer": "Одинаковая глубина при разном возрасте, размере задач и скорости обслуживания означает разный риск."
+    },
+    {
+      "question": "Какие границы учитывать вместе с depth?",
+      "answer": "Capacity/memory bound, oldest age, входной и выходной rates и время ожидания."
+    },
+    {
+      "question": "Что может скрыть средняя глубина?",
+      "answer": "Короткий пик насыщения и отдельные задачи, которые остаются в очереди намного дольше среднего."
+    },
+    {
+      "question": "Как интерпретировать старую задачу при небольшой очереди?",
+      "answer": "Проверить размер/блокировку и скорость обслуживания; сначала исключить зависший consumer, затем менять лимит."
+    }
+  ]
+}

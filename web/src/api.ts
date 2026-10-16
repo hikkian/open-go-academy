@@ -17,7 +17,43 @@ export type LearningSnapshot = {
   review_exercises: string[];
 };
 
-export type ExamSummary = { id: string; version: string; title: string; rank: string; estimated_minutes: number; description: string; eligible: boolean; missing_prerequisites: string[]; criteria: string[] };
+export type RankEvidenceRequirement = { requirement_id: string; kind: 'course' | 'prior_rank' | 'project'; status: 'verified' | 'missing'; reason?: string };
+export type RankEvidenceSummary = { exam_id?: string; exam_version?: string; rank?: string; policy_version?: number; policy_hash?: string; eligible?: boolean; requirements?: RankEvidenceRequirement[]; status?: 'unavailable'; reason?: string };
+export type ProjectReviewPacket = {
+  submission_id: string; evaluation_id: string; project_id: string; project_version: string;
+  criteria_hash: string; artifact_schema_version: string; artifact_hash: string; executed_source_hash: string;
+  evaluation_status: string; checks_hash: string; checker_version: string; checker_digest: string;
+  rubric: { version: string; hash: string; project_id: string; project: string; requirements: string[]; milestones: unknown[]; rubric_files?: Record<string, string> };
+  attestation_template: Omit<ProjectReviewAttestation, 'decision'> & { decision: '' };
+  files: Record<string, string>;
+};
+export type ProjectReviewAttestation = {
+  version: number; reviewer_id: string; submission_id: string; evaluation_id: string; project_id: string;
+  project_version: string; artifact_hash: string; rubric_version: string; rubric_hash: string;
+  decision: 'approve' | 'changes_requested' | 'reject'; comments: string; issued_at: string; signature: string;
+};
+export type ProjectReviewResult = {
+  review_id: string; reviewer_id: string; decision: ProjectReviewAttestation['decision'];
+  artifact_hash: string; rubric_version: string; rubric_hash: string; attestation_digest: string;
+  created_at: string; rank_awarded: false;
+};
+export type ProjectReviewHistoryItem = {
+  id: string; reviewer_id: string; decision: ProjectReviewAttestation['decision']; comments: string;
+  artifact_hash: string; rubric_version: string; rubric_hash: string; attestation_digest: string; created_at: string;
+};
+export async function getProjectReviewPacket(projectId: string, submissionId: string, evaluationId: string) {
+  const query = new URLSearchParams({ evaluation_id: evaluationId });
+  return api<ProjectReviewPacket>(`/projects/${encodeURIComponent(projectId)}/submissions/${encodeURIComponent(submissionId)}/review-packet?${query}`);
+}
+export async function submitProjectReview(projectId: string, submissionId: string, attestation: ProjectReviewAttestation) {
+  return api<ProjectReviewResult>(`/projects/${encodeURIComponent(projectId)}/submissions/${encodeURIComponent(submissionId)}/reviews`, {
+    method: 'POST', body: JSON.stringify(attestation),
+  });
+}
+export async function getProjectReviewHistory(projectId: string, submissionId: string) {
+  return api<{ reviews: ProjectReviewHistoryItem[] }>(`/projects/${encodeURIComponent(projectId)}/submissions/${encodeURIComponent(submissionId)}/reviews`);
+}
+export type ExamSummary = { id: string; version: string; title: string; rank: string; estimated_minutes: number; description: string; eligible: boolean; missing_prerequisites: string[]; criteria: string[]; rank_evidence?: RankEvidenceSummary };
 export type ExamQuestion = { id: string; prompt: string; options: { id: string; text: string }[] };
 export type ExamTask = { id: string; title: string; kind: 'coding' | 'debugging'; description: string; starter_code: string; public_examples: { input: string; output: string }[] };
 export type PublicExam = { id: string; version: string; title: string; rank: string; description: string; estimated_minutes: number; prerequisites: string[]; criteria: string[]; questions: ExamQuestion[]; tasks: ExamTask[] };

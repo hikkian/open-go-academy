@@ -1,0 +1,62 @@
+{
+  "id": "middle-16-medium",
+  "signature": "func DeliveryWindowMedium(published bool, handlerCommitted bool, acked bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Published bool; HandlerCommitted bool; Acked bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(DeliveryWindowMedium(x.Published, x.HandlerCommitted, x.Acked));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Published": false,
+      "HandlerCommitted": false,
+      "Acked": false
+    },
+    {
+      "Published": true,
+      "HandlerCommitted": false,
+      "Acked": true
+    },
+    {
+      "Published": true,
+      "HandlerCommitted": true,
+      "Acked": false
+    },
+    {
+      "Published": true,
+      "HandlerCommitted": true,
+      "Acked": true
+    },
+    {
+      "Published": true,
+      "HandlerCommitted": false,
+      "Acked": false
+    }
+  ],
+  "public_expected": [
+    "not_delivered",
+    "unsafe_ack",
+    "redelivery_possible",
+    "complete",
+    "pending"
+  ],
+  "private_input": [
+    {
+      "Published": false,
+      "HandlerCommitted": true,
+      "Acked": true
+    },
+    {
+      "Published": true,
+      "HandlerCommitted": false,
+      "Acked": true
+    },
+    {
+      "Published": true,
+      "HandlerCommitted": true,
+      "Acked": false
+    }
+  ],
+  "private_expected": [
+    "not_delivered",
+    "unsafe_ack",
+    "redelivery_possible"
+  ]
+}

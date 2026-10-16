@@ -1,0 +1,38 @@
+{
+  "id": "middle-20-medium",
+  "signature": "func DirectRouteMedium(exchange, routingKey, bindingKey string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Exchange string;RoutingKey string;BindingKey string}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(DirectRouteMedium(x.Exchange,x.RoutingKey,x.BindingKey));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Exchange": "orders",
+      "RoutingKey": "created",
+      "BindingKey": "created"
+    },
+    {
+      "Exchange": "orders",
+      "RoutingKey": "created",
+      "BindingKey": "cancelled"
+    },
+    {
+      "Exchange": "orders",
+      "RoutingKey": "",
+      "BindingKey": "created"
+    }
+  ],
+  "public_expected": [
+    "route",
+    "unrouted",
+    "invalid"
+  ],
+  "private_input": [
+    {
+      "Exchange": "",
+      "RoutingKey": "created",
+      "BindingKey": "created"
+    }
+  ],
+  "private_expected": [
+    "invalid"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "id": "middleplus-22-easy",
+  "signature": "func RolloutAction(errorPercent int, threshold int, sampleCount int, minimumSample int, evidenceReady bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { ErrorPercent int `json:\"errorPercent\"`; Threshold int `json:\"threshold\"`; SampleCount int `json:\"sampleCount\"`; MinimumSample int `json:\"minimumSample\"`; EvidenceReady bool `json:\"evidenceReady\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RolloutAction(in.ErrorPercent, in.Threshold, in.SampleCount, in.MinimumSample, in.EvidenceReady)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "errorPercent": 1,
+      "threshold": 5,
+      "sampleCount": 120,
+      "minimumSample": 100,
+      "evidenceReady": true
+    },
+    {
+      "errorPercent": 1,
+      "threshold": 5,
+      "sampleCount": 99,
+      "minimumSample": 100,
+      "evidenceReady": true
+    }
+  ],
+  "public_expected": [
+    "expand",
+    "hold"
+  ],
+  "private_input": [
+    {
+      "errorPercent": 6,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": true
+    },
+    {
+      "errorPercent": 5,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": true
+    },
+    {
+      "errorPercent": 1,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": false
+    },
+    {
+      "errorPercent": -1,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": true
+    },
+    {
+      "errorPercent": 1,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 0,
+      "evidenceReady": true
+    }
+  ],
+  "private_expected": [
+    "rollback",
+    "expand",
+    "hold",
+    "invalid",
+    "invalid"
+  ]
+}

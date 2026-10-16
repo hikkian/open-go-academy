@@ -1,0 +1,49 @@
+{
+  "id": "middle-26-hard",
+  "signature": "func TransactionOutcomeHard(valid, conflict, writeFailed, commitFailed bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Valid bool;Conflict bool;WriteFailed bool;CommitFailed bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(TransactionOutcomeHard(x.Valid,x.Conflict,x.WriteFailed,x.CommitFailed));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Valid": true,
+      "Conflict": false,
+      "WriteFailed": false,
+      "CommitFailed": false
+    },
+    {
+      "Valid": false,
+      "Conflict": false,
+      "WriteFailed": false,
+      "CommitFailed": false
+    },
+    {
+      "Valid": true,
+      "Conflict": true,
+      "WriteFailed": false,
+      "CommitFailed": false
+    }
+  ],
+  "public_expected": [
+    "commit_requested",
+    "invalid",
+    "rollback"
+  ],
+  "private_input": [
+    {
+      "Valid": true,
+      "Conflict": false,
+      "WriteFailed": true,
+      "CommitFailed": false
+    },
+    {
+      "Valid": true,
+      "Conflict": false,
+      "WriteFailed": false,
+      "CommitFailed": true
+    }
+  ],
+  "private_expected": [
+    "rollback",
+    "rollback"
+  ]
+}

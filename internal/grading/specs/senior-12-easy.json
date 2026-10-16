@@ -1,0 +1,30 @@
+{
+  "id": "senior-12-easy",
+  "signature": "func SecretState(configured bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Configured bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(SecretState(in.Configured)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Configured": true
+    },
+    {
+      "Configured": false
+    }
+  ],
+  "public_expected": [
+    "present",
+    "missing"
+  ],
+  "private_input": [
+    {
+      "Configured": false
+    },
+    {
+      "Configured": true
+    }
+  ],
+  "private_expected": [
+    "missing",
+    "present"
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "id": "middle-37-easy",
+  "signature": "func RoleCan(role, action string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Role string `json:\"role\"`; Action string `json:\"action\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RoleCan(in.Role, in.Action)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "role": "editor",
+      "action": "write"
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "role": "owner",
+      "action": "read"
+    },
+    {
+      "role": "owner",
+      "action": "write"
+    },
+    {
+      "role": "owner",
+      "action": "delete"
+    },
+    {
+      "role": "owner",
+      "action": "unknown"
+    },
+    {
+      "role": "editor",
+      "action": "read"
+    },
+    {
+      "role": "editor",
+      "action": "write"
+    },
+    {
+      "role": "editor",
+      "action": "delete"
+    },
+    {
+      "role": "viewer",
+      "action": "read"
+    },
+    {
+      "role": "viewer",
+      "action": "write"
+    },
+    {
+      "role": "viewer",
+      "action": "delete"
+    },
+    {
+      "role": "unknown",
+      "action": "read"
+    }
+  ],
+  "private_expected": [
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false,
+    false
+  ]
+}

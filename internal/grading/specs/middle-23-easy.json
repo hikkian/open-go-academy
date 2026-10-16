@@ -1,0 +1,39 @@
+{
+  "id": "middle-23-easy",
+  "signature": "func CacheVersionActionEasy(current, incoming int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Current int64;Incoming int64}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(CacheVersionActionEasy(x.Current,x.Incoming));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Current": 4,
+      "Incoming": 5
+    },
+    {
+      "Current": 8,
+      "Incoming": 6
+    },
+    {
+      "Current": 4,
+      "Incoming": 4
+    }
+  ],
+  "public_expected": [
+    "apply",
+    "ignore",
+    "ignore"
+  ],
+  "private_input": [
+    {
+      "Current": 0,
+      "Incoming": 1
+    },
+    {
+      "Current": -1,
+      "Incoming": 2
+    }
+  ],
+  "private_expected": [
+    "apply",
+    "invalid"
+  ]
+}

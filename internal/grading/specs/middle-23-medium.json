@@ -1,0 +1,44 @@
+{
+  "id": "middle-23-medium",
+  "signature": "func CacheEventActionMedium(current, incoming int64, deleted bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Current int64;Incoming int64;Deleted bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(CacheEventActionMedium(x.Current,x.Incoming,x.Deleted));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Current": 4,
+      "Incoming": 5,
+      "Deleted": false
+    },
+    {
+      "Current": 4,
+      "Incoming": 5,
+      "Deleted": true
+    },
+    {
+      "Current": 8,
+      "Incoming": 7,
+      "Deleted": true
+    }
+  ],
+  "public_expected": [
+    "refresh",
+    "invalidate",
+    "ignore"
+  ],
+  "private_input": [
+    {
+      "Current": 5,
+      "Incoming": 5,
+      "Deleted": false
+    },
+    {
+      "Current": 0,
+      "Incoming": 0,
+      "Deleted": true
+    }
+  ],
+  "private_expected": [
+    "ignore",
+    "ignore"
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "id": "senior-19",
+  "title": "Incident command и координация",
+  "rank": "Senior",
+  "module": "senior-p5-architecture",
+  "prerequisites": [
+    "senior-18"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Определить роли, временную шкалу, канал связи и критерий передачи управления во время инцидента.",
+    "Сохранять alternatives, assumptions, risk, evidence и пересмотр в ADR/design doc.",
+    "Ограничивать вывод фактической проверкой и обозначать неизвестное."
+  ],
+  "glossary": [
+    {
+      "term": "quality attribute",
+      "translation": "атрибут качества",
+      "definition": "Измеримое свойство в конкретном сценарии."
+    },
+    {
+      "term": "ADR",
+      "translation": "запись архитектурного решения",
+      "definition": "Контекст, варианты, последствия, доказательства и триггер пересмотра."
+    },
+    {
+      "term": "trade-off",
+      "translation": "компромисс",
+      "definition": "Обмен одного свойства на другое."
+    },
+    {
+      "term": "rollback",
+      "translation": "откат",
+      "definition": "Возврат состояния при совместимости бинарника и данных."
+    },
+    {
+      "term": "human review",
+      "translation": "человеческое рецензирование",
+      "definition": "Оценка конкретной версии и артефакта в ограниченном scope."
+    }
+  ],
+  "markdown_file": "senior-19.md",
+  "order": 123,
+  "exercises": [
+    {
+      "id": "senior-19-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: Incident command и координация — рабочая запись",
+      "prompt": "Реализуйте `func IncidentLevel(impact int, suspected bool) string`. Для синтетического incident scenario оцените impact и подозрение на потерю данных: отрицательный impact → invalid; suspected → critical_review; impact≥3 → major; иначе routine. Добавьте timeline и affected users в отдельную карточку; helper не устанавливает реальную серьёзность без этих свидетельств. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc IncidentLevel(impact int, suspected bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"major\"\n",
+      "criteria": [
+        "Точно реализовать контракт `IncidentLevel` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-19-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: Incident command и координация — decision artifact",
+      "prompt": "Реализуйте `func CommandAction(commanderAssigned, mitigationKnown bool) string`. Для инцидента выберите следующий coordination action: нет commander → assign_commander; иначе неизвестна безопасная мера → stabilize_and_gather; иначе execute_mitigation. В артефакте зафиксируйте owner, текущий impact и условие остановки; helper не рекомендует конкретное разрушительное действие. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CommandAction(commanderAssigned, mitigationKnown bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"execute_mitigation\"\n",
+      "criteria": [
+        "Точно реализовать контракт `CommandAction` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-19-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: Incident command и координация — review пакет",
+      "prompt": "Реализуйте `func HandoffReady(timeline, currentImpact, nextAction bool) bool`. Подготовьте передачу incident command: временная линия, текущий impact и ближайшее действие должны быть записаны. Helper true только при наличии всех частей. В заметке добавьте owner и известные неизвестные; отметки не подтверждают, что принимающая сторона поняла контекст. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc HandoffReady(timeline, currentImpact, nextAction bool) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Точно реализовать контракт `HandoffReady` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Зачем incident command отделяют от технического исполнения?",
+      "answer": "Чтобы сохранять координацию и общую картину, пока специалисты выполняют изменения."
+    },
+    {
+      "question": "Какие поля нужны для handoff?",
+      "answer": "Актуальный impact, timeline, неизвестные, уже выполненные действия и следующий владелец."
+    },
+    {
+      "question": "Почему устный статус не заменяет журнал инцидента?",
+      "answer": "Он теряет время, доказательства и контекст при смене участников."
+    },
+    {
+      "question": "Как безопасно объявить mitigation?",
+      "answer": "Назвать владельца, действие, критерий успеха и условие остановки/возврата."
+    }
+  ]
+}

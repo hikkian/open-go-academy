@@ -1,0 +1,34 @@
+{
+  "id": "middle-16-easy",
+  "signature": "func DeliveryModeEasy(mode string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Mode string; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(DeliveryModeEasy(x.Mode));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Mode": "loss_ok"
+    },
+    {
+      "Mode": "retry_possible"
+    }
+  ],
+  "public_expected": [
+    "at_most_once",
+    "at_least_once"
+  ],
+  "private_input": [
+    {
+      "Mode": "loss_ok"
+    },
+    {
+      "Mode": "retry_possible"
+    },
+    {
+      "Mode": "exactly_once"
+    }
+  ],
+  "private_expected": [
+    "at_most_once",
+    "at_least_once",
+    "invalid"
+  ]
+}

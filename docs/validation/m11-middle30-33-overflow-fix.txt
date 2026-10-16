@@ -1,0 +1,9 @@
+2026-10-16 Asia/Atyrau — Middle-30/33 integer overflow repairs
+
+Middle-30 `DrainDeadline`: documented Unix-millisecond inputs, rejects negative values and int64 overflow with -1; examples/references/specs include MaxInt64 exact-sum and overflow cases.
+Middle-33 SLO: both percentage checks use quotient/remainder to compute `floor(total*percent/100)` without overflowing `int`; threshold rounding is explicit and vectors cover 0%, 100%, exact threshold, one above and MaxInt false-pass cases.
+
+Scoped M11 command:
+`ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middle-30,middle-33 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-m30-m33-overflow-acceptance-20261016 .tools/go/bin/go test -count=1 -timeout=45m ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+
+Result: PASS, 71.721s; six examples, six starter compiles and six production-reference checks. Direct MaxInt regression tests passed. No lesson was published.

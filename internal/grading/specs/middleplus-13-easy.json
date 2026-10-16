@@ -1,0 +1,39 @@
+{
+  "id": "middleplus-13-easy",
+  "signature": "func CapacityClass(workers int, arrival int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Workers int `json:\"workers\"`; Arrival int `json:\"arrival\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(CapacityClass(in.Workers,in.Arrival)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "workers": 2,
+      "arrival": 1
+    }
+  ],
+  "public_expected": [
+    "within"
+  ],
+  "private_input": [
+    {
+      "workers": 2,
+      "arrival": 2
+    },
+    {
+      "workers": 2,
+      "arrival": 3
+    },
+    {
+      "workers": 0,
+      "arrival": 0
+    },
+    {
+      "workers": 2,
+      "arrival": -1
+    }
+  ],
+  "private_expected": [
+    "within",
+    "over",
+    "invalid",
+    "invalid"
+  ]
+}

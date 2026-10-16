@@ -1,0 +1,34 @@
+{
+  "id": "middle-24-easy",
+  "signature": "func RedisRoleEasy(durabilityRequired, replayable bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{DurabilityRequired bool;Replayable bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RedisRoleEasy(x.DurabilityRequired,x.Replayable));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "DurabilityRequired": false,
+      "Replayable": false
+    },
+    {
+      "DurabilityRequired": false,
+      "Replayable": true
+    },
+    {
+      "DurabilityRequired": true,
+      "Replayable": false
+    }
+  ],
+  "public_expected": [
+    "cache",
+    "cache",
+    "needs_review"
+  ],
+  "private_input": [
+    {
+      "DurabilityRequired": true,
+      "Replayable": true
+    }
+  ],
+  "private_expected": [
+    "needs_review"
+  ]
+}

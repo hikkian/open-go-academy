@@ -1,0 +1,19 @@
+2026-10-16 Asia/Atyrau — M11 current aggregate attempt and targeted repairs
+
+The earlier full candidate gate passed before the pedagogical revisions; its report is retained at `docs/validation/m11-aggregate-acceptance-before-quality-review.txt`. It is not current-tree acceptance.
+
+Current full attempt
+- Command: `ACADEMY_ACCEPT_M11_DRAFTS=1 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+- Snapshot started: 2026-10-16 09:34:38 Asia/Atyrau; epoch `1792125278`.
+- Raw output: ignored `.data/m11-aggregate-acceptance-3.log`.
+- Result: FAIL, 1231.351 s. Ten Middle Markdown word counts were below 1,800 in the already-loaded snapshot. The run also stopped during the first `middleplus-04` starter compile after Go linker panic `bad alignment value` (no source diagnostic). Other examples up through M+04 were seen passing; this was not a full current-tree gate.
+
+Corrections after that run
+- Ten Middle Markdown files were expanded; current exact Unicode-regex counts are 1,849–1,890 words.
+- `internal/content/m11_acceptance_test.go` now supports `ACADEMY_M11_LESSON_IDS` for current-tree scoped runs while still validating the full candidate catalog/ranks/orders.
+- Fresh-cache targeted M+04 run: `ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middleplus-04 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-m11-fresh-cache-20261016 .tools/go/bin/go test -count=1 -timeout=30m ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v` — PASS, 28.724 s, examples + all three starter compiles + three isolated production refs. This did not reproduce the linker panic.
+- Updated Middle text run: `ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middle-01,middle-02,middle-04,middle-05,middle-06,middle-07,middle-08,middle-09,middle-11,middle-12 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-m11-fresh-cache-20261016 .tools/go/bin/go test -count=1 -timeout=45m ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v` — PASS, 285.649 s. It loaded/validated all 128 lessons, then checked all ten updated word counts, 30 Go example groups, 30 starter compiles and 30 isolated production reference checks. Raw output: ignored `.data/m11-middle-word-fixes-targeted.log`.
+
+Other independently scoped post-review PASS evidence is in `docs/validation/m11-middle01-12-quality.txt`, `m11-middleplus01-12-quality.txt`, `m11-middleplus24-quality.txt`, and `m11-senior13-24-quality.txt`. The prior linker panic remains an environment/toolchain anomaly to investigate if it recurs; one fresh-cache rerun passed.
+
+This evidence is intentionally not labeled as one clean 88-lesson full gate. No M11 chapters are published. Further risk-based editorial review, projects P3–P5, advanced assessments, M12 and M13 remain open.

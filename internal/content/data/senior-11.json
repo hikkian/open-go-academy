@@ -1,0 +1,148 @@
+{
+  "id": "senior-11",
+  "title": "Изоляция арендаторов и безопасность межклиентских границ",
+  "rank": "Senior",
+  "module": "senior-security-reliability",
+  "prerequisites": [
+    "senior-10"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 115,
+  "learning_outcomes": [
+    "Проверять server-owned principal, tenant, object, action и context для доступа.",
+    "Обнаруживать tenant leak в SQL, pool, cache, search, export, worker и telemetry.",
+    "Сравнивать logical/schema/database separation с ресурсной и операционной ценой.",
+    "Проектировать negative integration matrix и отслеживать удаление копий tenant-данных."
+  ],
+  "glossary": [
+    {
+      "term": "tenant",
+      "translation": "арендатор/организация",
+      "definition": "Отдельный scope клиентских данных и доступа."
+    },
+    {
+      "term": "IDOR",
+      "translation": "прямая ссылка без авторизации",
+      "definition": "Доступ по известному object ID без проверки прав principal-а."
+    },
+    {
+      "term": "noisy neighbor",
+      "translation": "шумный сосед",
+      "definition": "Tenant, вытесняющий shared resources других."
+    },
+    {
+      "term": "row-level security",
+      "translation": "построчная защита БД",
+      "definition": "Политика базы, ограничивающая доступ по контексту к строкам."
+    }
+  ],
+  "markdown_file": "senior-11.md",
+  "self_check": [
+    {
+      "question": "Что проверяется здесь?",
+      "answer": "Только ограниченный детерминированный helper contract."
+    },
+    {
+      "question": "Какое доказательство требуется отдельно?",
+      "answer": "Проверка реальной авторизации, восстановления, rotation или threat boundary."
+    },
+    {
+      "question": "Как избежать неподтверждённого обещания?",
+      "answer": "Назвать допущения, scope теста и остаточный риск."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "senior-11-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "SameTenantScope",
+      "prompt": "Верните true только если оба явно переданных значения tenant scope непустые и равны. Это необходимое совпадение областей, но не решение об авторизации: отдельно проверяются подлинность principal, membership, ресурс и действие.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc SameTenantScope(principalTenant, resourceTenant string) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    },
+    {
+      "id": "senior-11-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "RateScope",
+      "prompt": "Без аутентификации → `anonymous`; аутентифицирован, но tenant неизвестен → `invalid-scope`; иначе → `tenant`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RateScope(authenticated, tenantKnown bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"anonymous\"\n\"invalid-scope\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    },
+    {
+      "id": "senior-11-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "security",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "DeletionState",
+      "prompt": "Активен → `active`; иначе при наличии копий, ожидающих очистки, → `cleanup-pending`; иначе → `deleted`. Функция не удаляет данные из хранилища.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc DeletionState(active, pendingCopies bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"active\"\n\"cleanup-pending\"\n",
+      "criteria": [
+        "Соблюдать точную сигнатуру и приоритет ветвей.",
+        "Разобрать границу и ошибочные/неизвестные входы.",
+        "Не приписывать helper внешнюю security или recovery гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что проверяют vectors?",
+          "answer": "Только указанный pure helper contract."
+        },
+        {
+          "question": "Что остаётся за пределом?",
+          "answer": "Реальные права, секреты, хранилища, эксплуатация и внешнее подтверждение."
+        }
+      ]
+    }
+  ]
+}

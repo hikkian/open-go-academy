@@ -1,0 +1,68 @@
+{
+  "id": "middleplus-13-hard",
+  "signature": "func CapacityDecision(workers int, arrival int, reservePercent int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Workers int `json:\"workers\"`; Arrival int `json:\"arrival\"`; ReservePercent int `json:\"reservePercent\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(CapacityDecision(in.Workers,in.Arrival,in.ReservePercent)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "workers": 100,
+      "arrival": 80,
+      "reservePercent": 20
+    }
+  ],
+  "public_expected": [
+    "within"
+  ],
+  "private_input": [
+    {
+      "workers": 100,
+      "arrival": 81,
+      "reservePercent": 20
+    },
+    {
+      "workers": 100,
+      "arrival": 100,
+      "reservePercent": 0
+    },
+    {
+      "workers": 100,
+      "arrival": 1,
+      "reservePercent": 99
+    },
+    {
+      "workers": 100,
+      "arrival": 0,
+      "reservePercent": 100
+    },
+    {
+      "workers": 9223372036854775807,
+      "arrival": 9223372036854775807,
+      "reservePercent": 0
+    },
+    {
+      "workers": 9223372036854775807,
+      "arrival": 9131138316486228048,
+      "reservePercent": 1
+    },
+    {
+      "workers": 9223372036854775807,
+      "arrival": 9223372036854775807,
+      "reservePercent": 1
+    },
+    {
+      "workers": 1,
+      "arrival": 0,
+      "reservePercent": 101
+    }
+  ],
+  "private_expected": [
+    "over",
+    "within",
+    "within",
+    "within",
+    "within",
+    "within",
+    "over",
+    "invalid"
+  ]
+}

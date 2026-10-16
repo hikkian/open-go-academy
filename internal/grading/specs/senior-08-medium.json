@@ -1,0 +1,34 @@
+{
+  "id": "senior-08-medium",
+  "signature": "func Enqueue(depth, capacity int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Depth int64; Capacity int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(Enqueue(in.Depth, in.Capacity)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Depth": 2,
+      "Capacity": 4
+    },
+    {
+      "Depth": 4,
+      "Capacity": 4
+    }
+  ],
+  "public_expected": [
+    "accept",
+    "reject"
+  ],
+  "private_input": [
+    {
+      "Depth": -1,
+      "Capacity": 4
+    },
+    {
+      "Depth": 0,
+      "Capacity": 0
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid"
+  ]
+}

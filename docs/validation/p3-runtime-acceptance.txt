@@ -1,0 +1,22 @@
+2026-10-16 Asia/Atyrau — isolated P3 Podman runtime acceptance
+
+Isolation/preflight
+- Existing listeners were observed on 127.0.0.1:8380 and 127.0.0.1:8080; neither was stopped, queried, or reconfigured. The existing `.data/project-runner.sock` process was left running.
+- Rootless Podman + cgroup v2 confirmed. Required pinned Go 1.27.2, PostgreSQL 18.6 and checker base images were cached. No active Podman containers were present before acceptance.
+- `make project-runtime` — PASS; build used pinned digest images with `--pull=never`; checker image was built with `--network=none` and P3 capability label `academy.checker.p3=taskflow-v1`.
+- `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-p3-focused-cache-20261016 .tools/go/bin/go test -count=1 ./internal/projectrunner/...` — PASS (projectrunner and checker packages).
+- Built the runner from current source and started isolated instances at `/tmp/academy-p3-runtime-acceptance/worker.sock` (combined P2/P3 profile) and `/tmp/academy-p3-runtime-acceptance/old/worker.sock` (pre-existing P2-only checker image). Each used separate 0700 socket directories and copied 0600 module-lock files. Test requests went directly to each runner's Unix socket; no API, browser, host database, or user credentials were involved.
+
+Runtime results
+- P3 reference `Test` — PASS, HTTP 200, runner status `ok`, exit code 0.
+- P3 reference `Submit`, current combined profile — PASS, `automatic_pass`, 45/45 checks. Includes auth/session, tenant separation, RBAC, idempotency, bounded listing, optimistic versioning, restart persistence, completed outbox receipt, readiness/liveness and all nine expected PostgreSQL tables.
+- Initial P3 Submit exposed a runner fixture decoder mismatch: strict JSON decoding rejected the checker's `second_project_id`. After the root agent added and validated that field, the focused runner tests and fresh P3 Submit passed. This acceptance run did not edit application code.
+- P2 reference `Submit`, current combined profile — PASS, `automatic_pass`, 44/44 checks.
+- P2 reference `Submit`, old P2-only checker profile — PASS, `automatic_pass`, 44/44 checks. P2 regression thus passed under both profiles.
+- P2 reference `Test` also returned `ok`, exit code 0 under each profile.
+- Container inspection during P3 Submit observed the disposable PostgreSQL container on `network=none`; app and checker shared only that container's network namespace. No host port bindings were present. Containers had read-only root filesystems, dropped capabilities, `no-new-privileges`, 1 CPU, 128 PID limit, and memory caps of 512 MiB (DB), 1536 MiB (app), and 768 MiB (checker). These are local rootless-container controls, not certification of public multi-tenant isolation.
+- Cleanup verified zero remaining containers for each temporary runner installation label. Both temporary runner processes were stopped; the existing service processes and image cache were left intact.
+
+Harness: ephemeral Python Unix-socket client and policy sampler under `/tmp/academy-p3-runtime-acceptance/`; it sent reference files from `content/projects/p2/reference` and `content/projects/p3/reference`, plus the P3 starter README. Responses were summarized without logging response bodies or secrets.
+
+Not covered: browser/UI acceptance, public multi-tenant threat-model certification, and P3 `Run` action. This is runtime acceptance only; publication and the wider M11 milestone remain separate.

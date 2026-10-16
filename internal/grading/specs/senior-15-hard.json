@@ -1,0 +1,26 @@
+{
+  "id": "senior-15-hard",
+  "signature": "func ContractReady(hasOwner, hasErrors, hasVersionPolicy bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { HasOwner bool `json:\"hasOwner\"`; HasErrors bool `json:\"hasErrors\"`; HasVersionPolicy bool `json:\"hasVersionPolicy\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ContractReady(in.HasOwner, in.HasErrors, in.HasVersionPolicy)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "hasOwner": true,
+      "hasErrors": true,
+      "hasVersionPolicy": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "hasOwner": true,
+      "hasErrors": false,
+      "hasVersionPolicy": true
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

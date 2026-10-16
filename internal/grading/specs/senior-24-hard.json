@@ -1,0 +1,26 @@
+{
+  "id": "senior-24-hard",
+  "signature": "func RetrospectiveComplete(factsSeparated, actionsOwned, limitsRecorded bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { FactsSeparated bool `json:\"factsSeparated\"`; ActionsOwned bool `json:\"actionsOwned\"`; LimitsRecorded bool `json:\"limitsRecorded\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RetrospectiveComplete(in.FactsSeparated, in.ActionsOwned, in.LimitsRecorded)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "factsSeparated": true,
+      "actionsOwned": true,
+      "limitsRecorded": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "factsSeparated": true,
+      "actionsOwned": false,
+      "limitsRecorded": true
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

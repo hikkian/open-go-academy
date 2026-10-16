@@ -1,0 +1,157 @@
+{
+  "id": "middleplus-21",
+  "title": "SLI, SLO и error budget",
+  "rank": "Middle+",
+  "module": "middleplus-scalelab",
+  "prerequisites": [
+    "middleplus-20"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 101,
+  "learning_outcomes": [
+    "Объяснить и применить slo к ограниченной воспроизводимой модели.",
+    "Связать наблюдаемую метрику с ресурсом, окном и известными ограничениями.",
+    "Проверить граничные сценарии, восстановление и границы учебной модели."
+  ],
+  "glossary": [
+    {
+      "term": "capacity",
+      "translation": "ёмкость",
+      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+    },
+    {
+      "term": "backpressure",
+      "translation": "обратное давление",
+      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+    },
+    {
+      "term": "queue depth",
+      "translation": "глубина очереди",
+      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+    },
+    {
+      "term": "retry budget",
+      "translation": "бюджет повторов",
+      "definition": "Верхняя граница попыток в заданном контексте."
+    },
+    {
+      "term": "outbox",
+      "translation": "исходящий журнал",
+      "definition": "Устойчивая запись о намерении опубликовать событие."
+    },
+    {
+      "term": "SLI/SLO",
+      "translation": "индикатор/цель уровня сервиса",
+      "definition": "Измеренный сигнал и явно заданная цель по окну."
+    },
+    {
+      "term": "baseline",
+      "translation": "исходный уровень",
+      "definition": "Закреплённое сравнимое состояние до изменения."
+    }
+  ],
+  "markdown_file": "middleplus-21.md",
+  "exercises": [
+    {
+      "id": "middleplus-21-easy",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: sli, slo и error budget — классификация",
+      "prompt": "Реализуйте чистую функцию `func SLOBand(total int, failed int) string`. Контракт: total<=0, failed вне [0,total] → \"invalid\"; failed=0 → \"within\", иначе \"errors\".\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc SLOBand(total int, failed int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"errors\"\n",
+      "criteria": [
+        "Контракт: total<=0, failed вне [0,total] → \"invalid\"; failed=0 → \"within\", иначе \"errors\".",
+        "Точная сигнатура, типы и результат контракта.",
+        "Проверить границы и порядок правил; не скрывать невалидный ввод.",
+        "Не выдавать чистый helper за интеграцию, нагрузочный тест или гарантию SLA."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает прохождение этих тестов?",
+          "answer": "Только соответствие детерминированной функции перечисленным входам и ожидаемым ответам. Внешние процессы, измерения и эксплуатационные гарантии не проверяются."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-21-medium",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: sli, slo и error budget — политика",
+      "prompt": "Реализуйте чистую функцию `func SLOMeets(total int, failed int, maxErrorPercent int) bool`. Контракт: false при total<=0, failed вне [0,total] или maxErrorPercent вне [0,100]; иначе true тогда и только тогда, когда failed/total не превышает maxErrorPercent процентов. Контракт действует для всего допустимого диапазона int; промежуточная арифметика не должна переполняться. Проверяйте граничный процент, значение сразу выше границы и MaxInt.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc SLOMeets(total int, failed int, maxErrorPercent int) bool {\n\t// TODO: проверьте диапазоны, затем вычислите допустимое число отказов без переполнения.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\n",
+      "criteria": [
+        "Отклонять некорректные диапазоны и сравнивать долю отказов с процентом без переполнения для всего допустимого диапазона int.",
+        "Точная сигнатура, типы и результат контракта.",
+        "Проверить точную границу, значение сразу выше неё и MaxInt; нулевой допустимый процент при failed=total должен давать false.",
+        "Не выдавать чистый helper за интеграцию, нагрузочный тест или гарантию SLA."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает прохождение этих тестов?",
+          "answer": "Только соответствие детерминированной функции перечисленным входам и ожидаемым ответам. Внешние процессы, измерения и эксплуатационные гарантии не проверяются."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-21-hard",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: sli, slo и error budget — проверка инварианта",
+      "prompt": "Реализуйте чистую функцию `func BudgetRemaining(total int, failed int, maxErrorPercent int) bool`. Контракт: false при total<=0, failed вне [0,total] или maxErrorPercent вне [0,100]; иначе true тогда и только тогда, когда failed/total не превышает maxErrorPercent процентов. Контракт действует для всего допустимого диапазона int; промежуточная арифметика не должна переполняться. Проверяйте граничный процент, значение сразу выше границы и MaxInt.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc BudgetRemaining(total int, failed int, maxErrorPercent int) bool {\n\t// TODO: проверьте диапазоны, затем вычислите допустимое число отказов без переполнения.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\nfalse\n",
+      "criteria": [
+        "Отклонять некорректные диапазоны и сравнивать долю отказов с процентом без переполнения для всего допустимого диапазона int.",
+        "Точная сигнатура, типы и результат контракта.",
+        "Проверить точную границу, значение сразу выше неё и MaxInt; нулевой допустимый процент при failed=total должен давать false.",
+        "Не выдавать чистый helper за интеграцию, нагрузочный тест или гарантию SLA."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает прохождение этих тестов?",
+          "answer": "Только соответствие детерминированной функции перечисленным входам и ожидаемым ответам. Внешние процессы, измерения и эксплуатационные гарантии не проверяются."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Как определить error ratio SLI?",
+      "answer": "Явно задать плохое событие, total denominator и окно наблюдения."
+    },
+    {
+      "question": "Что означает пустой denominator?",
+      "answer": "Неизвестный результат, не нулевой error rate."
+    },
+    {
+      "question": "Как error budget связывает измерение с изменениями?",
+      "answer": "Остаток бюджета направляет риск-политику, но сам по себе не задаёт договорный SLA."
+    },
+    {
+      "question": "Как проверить alert threshold?",
+      "answer": "Подать повторяемую временную серию с границей окна и проверить, что срабатывает правильное действие."
+    }
+  ]
+}

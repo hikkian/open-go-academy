@@ -1,0 +1,84 @@
+{
+  "id": "middleplus-exam-slo-budget",
+  "signature": "func SLOBudget(targetP95MS int, observedP95MS int, errorBasisPoints int, maxErrorBasisPoints int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { TargetP95MS int `json:\"targetP95MS\"`; ObservedP95MS int `json:\"observedP95MS\"`; ErrorBasisPoints int `json:\"errorBasisPoints\"`; MaxErrorBasisPoints int `json:\"maxErrorBasisPoints\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(SLOBudget(in.TargetP95MS, in.ObservedP95MS, in.ErrorBasisPoints, in.MaxErrorBasisPoints)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "targetP95MS": 200,
+      "observedP95MS": 180,
+      "errorBasisPoints": 20,
+      "maxErrorBasisPoints": 50
+    },
+    {
+      "targetP95MS": 200,
+      "observedP95MS": 201,
+      "errorBasisPoints": 20,
+      "maxErrorBasisPoints": 50
+    }
+  ],
+  "public_expected": [
+    "within",
+    "breach"
+  ],
+  "private_input": [
+    {
+      "targetP95MS": 0,
+      "observedP95MS": 10,
+      "errorBasisPoints": 0,
+      "maxErrorBasisPoints": 50
+    },
+    {
+      "targetP95MS": 200,
+      "observedP95MS": -1,
+      "errorBasisPoints": 0,
+      "maxErrorBasisPoints": 50
+    },
+    {
+      "targetP95MS": 200,
+      "observedP95MS": 10,
+      "errorBasisPoints": -1,
+      "maxErrorBasisPoints": 50
+    },
+    {
+      "targetP95MS": 200,
+      "observedP95MS": 10,
+      "errorBasisPoints": 0,
+      "maxErrorBasisPoints": 0
+    },
+    {
+      "targetP95MS": 200,
+      "observedP95MS": 200,
+      "errorBasisPoints": 50,
+      "maxErrorBasisPoints": 50
+    },
+    {
+      "targetP95MS": 200,
+      "observedP95MS": 201,
+      "errorBasisPoints": 0,
+      "maxErrorBasisPoints": 50
+    },
+    {
+      "targetP95MS": 200,
+      "observedP95MS": 100,
+      "errorBasisPoints": 51,
+      "maxErrorBasisPoints": 50
+    },
+    {
+      "targetP95MS": 200,
+      "observedP95MS": 100,
+      "errorBasisPoints": 50,
+      "maxErrorBasisPoints": 50
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid",
+    "invalid",
+    "invalid",
+    "within",
+    "breach",
+    "breach",
+    "within"
+  ]
+}

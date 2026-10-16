@@ -1,0 +1,24 @@
+{
+  "id": "senior-17-medium",
+  "signature": "func RollbackWindow(dataCompatible, oldVersionAvailable bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { DataCompatible bool `json:\"dataCompatible\"`; OldVersionAvailable bool `json:\"oldVersionAvailable\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RollbackWindow(in.DataCompatible, in.OldVersionAvailable)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "dataCompatible": true,
+      "oldVersionAvailable": true
+    }
+  ],
+  "public_expected": [
+    "rollback_available"
+  ],
+  "private_input": [
+    {
+      "dataCompatible": false,
+      "oldVersionAvailable": true
+    }
+  ],
+  "private_expected": [
+    "data_blocked"
+  ]
+}

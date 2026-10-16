@@ -1,0 +1,30 @@
+{
+  "id": "senior-05-medium",
+  "signature": "func ErrorClass(code int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Code int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(ErrorClass(in.Code)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Code": 0
+    },
+    {
+      "Code": 1
+    }
+  ],
+  "public_expected": [
+    "ok",
+    "invalid"
+  ],
+  "private_input": [
+    {
+      "Code": 2
+    },
+    {
+      "Code": 99
+    }
+  ],
+  "private_expected": [
+    "temporary",
+    "unknown"
+  ]
+}

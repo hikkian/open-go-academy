@@ -1,0 +1,44 @@
+{
+  "id": "middleplus-18-easy",
+  "signature": "func LoadMode(offered int, capacity int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Offered int `json:\"offered\"`; Capacity int `json:\"capacity\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(LoadMode(in.Offered, in.Capacity)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "offered": 4,
+      "capacity": 5
+    },
+    {
+      "offered": 5,
+      "capacity": 5
+    }
+  ],
+  "public_expected": [
+    "normal",
+    "normal"
+  ],
+  "private_input": [
+    {
+      "offered": 6,
+      "capacity": 5
+    },
+    {
+      "offered": 0,
+      "capacity": 5
+    },
+    {
+      "offered": -1,
+      "capacity": 5
+    },
+    {
+      "offered": 1,
+      "capacity": 0
+    }
+  ],
+  "private_expected": [
+    "overloaded",
+    "normal",
+    "invalid",
+    "invalid"
+  ]
+}

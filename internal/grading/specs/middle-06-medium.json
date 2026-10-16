@@ -1,0 +1,46 @@
+{
+  "id": "middle-06-medium",
+  "signature": "func ApplyLockedDeltas(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(ApplyLockedDeltas(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      5,
+      10,
+      2,
+      -3,
+      4
+    ],
+    [
+      1,
+      5,
+      -1,
+      -1
+    ]
+  ],
+  "public_expected": [
+    [
+      7,
+      4,
+      8
+    ],
+    [
+      0
+    ]
+  ],
+  "private_input": [
+    [
+      8,
+      9,
+      2
+    ],
+    [
+      2,
+      2
+    ]
+  ],
+  "private_expected": [
+    [],
+    []
+  ]
+}

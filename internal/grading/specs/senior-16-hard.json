@@ -1,0 +1,26 @@
+{
+  "id": "senior-16-hard",
+  "signature": "func ScaleEvidence(sameWorkload, stateMeasured, failureTested bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { SameWorkload bool `json:\"sameWorkload\"`; StateMeasured bool `json:\"stateMeasured\"`; FailureTested bool `json:\"failureTested\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ScaleEvidence(in.SameWorkload, in.StateMeasured, in.FailureTested)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "sameWorkload": true,
+      "stateMeasured": true,
+      "failureTested": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "sameWorkload": true,
+      "stateMeasured": false,
+      "failureTested": true
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

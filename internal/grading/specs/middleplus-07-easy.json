@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-07-easy",
+  "signature": "func SelectivityClass(matches, total int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Matches int; Total int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=SelectivityClass(in.Matches, in.Total); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Matches": 5,
+      "Total": 100
+    }
+  ],
+  "public_expected": [
+    "low"
+  ],
+  "private_input": [
+    {
+      "Matches": 90,
+      "Total": 100
+    },
+    {
+      "Matches": -1,
+      "Total": 100
+    }
+  ],
+  "private_expected": [
+    "high",
+    "invalid"
+  ]
+}

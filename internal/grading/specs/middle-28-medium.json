@@ -1,0 +1,44 @@
+{
+  "id": "middle-28-medium",
+  "signature": "func DependencyPlan(repositoryProvided, serviceProvided, handlerProvided bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { RepositoryProvided bool `json:\"repositoryProvided\"`; ServiceProvided bool `json:\"serviceProvided\"`; HandlerProvided bool `json:\"handlerProvided\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(DependencyPlan(in.RepositoryProvided, in.ServiceProvided, in.HandlerProvided)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "repositoryProvided": true,
+      "serviceProvided": true,
+      "handlerProvided": true
+    },
+    {
+      "repositoryProvided": false,
+      "serviceProvided": true,
+      "handlerProvided": true
+    }
+  ],
+  "public_expected": [
+    "ready",
+    "missing_repository"
+  ],
+  "private_input": [
+    {
+      "repositoryProvided": true,
+      "serviceProvided": false,
+      "handlerProvided": true
+    },
+    {
+      "repositoryProvided": true,
+      "serviceProvided": true,
+      "handlerProvided": false
+    },
+    {
+      "repositoryProvided": false,
+      "serviceProvided": false,
+      "handlerProvided": false
+    }
+  ],
+  "private_expected": [
+    "missing_service",
+    "missing_handler",
+    "missing_repository"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "senior-20-medium",
+  "signature": "func CanExpand(errorPercent, threshold, sampleCount int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { ErrorPercent int `json:\"errorPercent\"`; Threshold int `json:\"threshold\"`; SampleCount int `json:\"sampleCount\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CanExpand(in.ErrorPercent, in.Threshold, in.SampleCount)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "errorPercent": 1,
+      "threshold": 3,
+      "sampleCount": 120
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "errorPercent": 1,
+      "threshold": 3,
+      "sampleCount": 10
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

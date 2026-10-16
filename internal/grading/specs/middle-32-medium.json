@@ -1,0 +1,64 @@
+{
+  "id": "middle-32-medium",
+  "signature": "func TraceAttributeAllowed(key, value string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Key string `json:\"key\"`; Value string `json:\"value\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(TraceAttributeAllowed(in.Key,in.Value)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "key": "route",
+      "value": "/v1/tasks/{taskID}"
+    },
+    {
+      "key": "route",
+      "value": "/v1/projects/{projectID}/tasks/{taskID}"
+    },
+    {
+      "key": "method",
+      "value": "GET"
+    },
+    {
+      "key": "status_code",
+      "value": "200"
+    }
+  ],
+  "public_expected": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "private_input": [
+    {
+      "key": "route",
+      "value": "/v1/tasks/839274"
+    },
+    {
+      "key": "route",
+      "value": "/v1/tasks/839274?token=secret"
+    },
+    {
+      "key": "route",
+      "value": "/v1/unknown/{id}"
+    },
+    {
+      "key": "method",
+      "value": "TRACE"
+    },
+    {
+      "key": "status_code",
+      "value": "Bearer secret"
+    },
+    {
+      "key": "authorization",
+      "value": "safe"
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

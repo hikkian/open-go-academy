@@ -1,0 +1,54 @@
+{
+  "id": "middle-40-easy",
+  "signature": "func EvidenceCount(required, passed int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Required int `json:\"required\"`; Passed int `json:\"passed\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(EvidenceCount(in.Required, in.Passed)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "required": 8,
+      "passed": 6
+    }
+  ],
+  "public_expected": [
+    6
+  ],
+  "private_input": [
+    {
+      "required": 8,
+      "passed": 6
+    },
+    {
+      "required": 8,
+      "passed": 8
+    },
+    {
+      "required": 8,
+      "passed": 9
+    },
+    {
+      "required": -1,
+      "passed": 6
+    },
+    {
+      "required": 8,
+      "passed": -1
+    },
+    {
+      "required": 0,
+      "passed": 0
+    },
+    {
+      "required": 0,
+      "passed": 1
+    }
+  ],
+  "private_expected": [
+    6,
+    8,
+    8,
+    0,
+    0,
+    0,
+    0
+  ]
+}

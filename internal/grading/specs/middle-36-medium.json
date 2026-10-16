@@ -1,0 +1,59 @@
+{
+  "id": "middle-36-medium",
+  "signature": "func TaskTransition(from, to string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { From string `json:\"from\"`; To string `json:\"to\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(TaskTransition(in.From, in.To)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "from": "open",
+      "to": "in_progress"
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "from": "open",
+      "to": "in_progress"
+    },
+    {
+      "from": "open",
+      "to": "cancelled"
+    },
+    {
+      "from": "open",
+      "to": "done"
+    },
+    {
+      "from": "in_progress",
+      "to": "done"
+    },
+    {
+      "from": "in_progress",
+      "to": "cancelled"
+    },
+    {
+      "from": "in_progress",
+      "to": "open"
+    },
+    {
+      "from": "done",
+      "to": "open"
+    },
+    {
+      "from": "unknown",
+      "to": "done"
+    }
+  ],
+  "private_expected": [
+    true,
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false
+  ]
+}

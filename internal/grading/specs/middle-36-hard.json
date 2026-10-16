@@ -1,0 +1,44 @@
+{
+  "id": "middle-36-hard",
+  "signature": "func SameProject(taskProject, requestedProject string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { TaskProject string `json:\"taskProject\"`; RequestedProject string `json:\"requestedProject\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(SameProject(in.TaskProject, in.RequestedProject)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "taskProject": "p1",
+      "requestedProject": "p1"
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "taskProject": "p1",
+      "requestedProject": "p1"
+    },
+    {
+      "taskProject": "p1",
+      "requestedProject": "p2"
+    },
+    {
+      "taskProject": "",
+      "requestedProject": "p1"
+    },
+    {
+      "taskProject": "p1",
+      "requestedProject": ""
+    },
+    {
+      "taskProject": "",
+      "requestedProject": ""
+    }
+  ],
+  "private_expected": [
+    true,
+    false,
+    false,
+    false,
+    false
+  ]
+}

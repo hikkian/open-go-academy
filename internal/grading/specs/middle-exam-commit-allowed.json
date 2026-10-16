@@ -1,0 +1,62 @@
+{
+  "id": "middle-exam-commit-allowed",
+  "signature": "func CommitAllowed(validated, conflictFree, contextActive bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Validated bool `json:\"validated\"`; ConflictFree bool `json:\"conflictFree\"`; ContextActive bool `json:\"contextActive\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CommitAllowed(in.Validated, in.ConflictFree, in.ContextActive)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "validated": true,
+      "conflictFree": true,
+      "contextActive": true
+    },
+    {
+      "validated": false,
+      "conflictFree": true,
+      "contextActive": true
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "validated": false,
+      "conflictFree": false,
+      "contextActive": false
+    },
+    {
+      "validated": false,
+      "conflictFree": true,
+      "contextActive": true
+    },
+    {
+      "validated": true,
+      "conflictFree": false,
+      "contextActive": true
+    },
+    {
+      "validated": true,
+      "conflictFree": true,
+      "contextActive": false
+    },
+    {
+      "validated": true,
+      "conflictFree": false,
+      "contextActive": false
+    },
+    {
+      "validated": false,
+      "conflictFree": false,
+      "contextActive": true
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ]
+}

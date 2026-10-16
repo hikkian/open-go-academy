@@ -1,0 +1,59 @@
+{
+  "id": "middle-13-easy",
+  "signature": "func MatchSelectivity(matches, total int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Matches int64; Total int64 }\nfunc main() {\n var cases []input\n if err := json.Unmarshal([]byte(os.Args[1]), &cases); err != nil { panic(err) }\n enc := json.NewEncoder(os.Stdout)\n for _, in := range cases {\n  if err := enc.Encode(MatchSelectivity(in.Matches, in.Total)); err != nil { panic(err) }\n }\n}\n",
+  "public_input": [
+    {
+      "Matches": 10,
+      "Total": 10000
+    },
+    {
+      "Matches": 20,
+      "Total": 1000
+    }
+  ],
+  "public_expected": [
+    "sparse",
+    "common"
+  ],
+  "private_input": [
+    {
+      "Matches": 0,
+      "Total": 0
+    },
+    {
+      "Matches": 0,
+      "Total": 9223372036854775807
+    },
+    {
+      "Matches": 92233720368547758,
+      "Total": 9223372036854775807
+    },
+    {
+      "Matches": 92233720368547759,
+      "Total": 9223372036854775807
+    },
+    {
+      "Matches": 9223372036854775807,
+      "Total": 9223372036854775807
+    },
+    {
+      "Matches": -1,
+      "Total": 2
+    },
+    {
+      "Matches": 3,
+      "Total": 2
+    }
+  ],
+  "private_expected": [
+    "no_rows",
+    "none",
+    "sparse",
+    "common",
+    "common",
+    "invalid",
+    "invalid"
+  ]
+}

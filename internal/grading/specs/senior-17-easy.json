@@ -1,0 +1,26 @@
+{
+  "id": "senior-17-easy",
+  "signature": "func MigrationPhase(expanded, backfillVerified, consumersMoved bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Expanded bool `json:\"expanded\"`; BackfillVerified bool `json:\"backfillVerified\"`; ConsumersMoved bool `json:\"consumersMoved\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(MigrationPhase(in.Expanded, in.BackfillVerified, in.ConsumersMoved)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "expanded": false,
+      "backfillVerified": false,
+      "consumersMoved": false
+    }
+  ],
+  "public_expected": [
+    "expand"
+  ],
+  "private_input": [
+    {
+      "expanded": true,
+      "backfillVerified": true,
+      "consumersMoved": true
+    }
+  ],
+  "private_expected": [
+    "contract_candidate"
+  ]
+}

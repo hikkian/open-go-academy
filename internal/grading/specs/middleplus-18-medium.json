@@ -1,0 +1,50 @@
+{
+  "id": "middleplus-18-medium",
+  "signature": "func LoadDecision(offered int, capacity int, critical bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Offered int `json:\"offered\"`; Capacity int `json:\"capacity\"`; Critical bool `json:\"critical\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(LoadDecision(in.Offered, in.Capacity, in.Critical)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "offered": 5,
+      "capacity": 5,
+      "critical": false
+    },
+    {
+      "offered": 8,
+      "capacity": 5,
+      "critical": true
+    }
+  ],
+  "public_expected": [
+    "accept",
+    "prioritize"
+  ],
+  "private_input": [
+    {
+      "offered": 8,
+      "capacity": 5,
+      "critical": false
+    },
+    {
+      "offered": 6,
+      "capacity": 5,
+      "critical": true
+    },
+    {
+      "offered": -1,
+      "capacity": 5,
+      "critical": false
+    },
+    {
+      "offered": 5,
+      "capacity": 0,
+      "critical": true
+    }
+  ],
+  "private_expected": [
+    "shed",
+    "prioritize",
+    "invalid",
+    "invalid"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "middle-35-easy",
+  "signature": "func FaultStage(stage string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Stage string `json:\"stage\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(FaultStage(in.Stage)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "stage": "publish"
+    }
+  ],
+  "public_expected": [
+    "republish_idempotently"
+  ],
+  "private_input": [
+    {
+      "stage": "before_commit"
+    },
+    {
+      "stage": "after_commit"
+    },
+    {
+      "stage": "publish"
+    },
+    {
+      "stage": "mystery"
+    },
+    {
+      "stage": ""
+    }
+  ],
+  "private_expected": [
+    "rollback",
+    "reconcile",
+    "republish_idempotently",
+    "unknown",
+    "unknown"
+  ]
+}

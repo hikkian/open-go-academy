@@ -1,0 +1,151 @@
+{
+  "id": "middleplus-14",
+  "title": "Обратное давление и управляемый отказ",
+  "rank": "Middle+",
+  "module": "middleplus-scalelab",
+  "prerequisites": [
+    "middleplus-13"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 94,
+  "learning_outcomes": [
+    "Классифицировать свободное место и насыщение ограниченной очереди.",
+    "Выбрать admit, wait, shed, reject или deadline, сопоставив ожидание с остатком caller deadline.",
+    "Учесть cancellation с явным приоритетом и объяснить, что policy helper не исполняет ожидание или отмену."
+  ],
+  "glossary": [
+    {
+      "term": "capacity",
+      "translation": "ёмкость",
+      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+    },
+    {
+      "term": "backpressure",
+      "translation": "обратное давление",
+      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+    },
+    {
+      "term": "queue depth",
+      "translation": "глубина очереди",
+      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+    },
+    {
+      "term": "retry budget",
+      "translation": "бюджет повторов",
+      "definition": "Верхняя граница попыток в заданном контексте."
+    },
+    {
+      "term": "outbox",
+      "translation": "исходящий журнал",
+      "definition": "Устойчивая запись о намерении опубликовать событие."
+    },
+    {
+      "term": "SLI/SLO",
+      "translation": "индикатор/цель уровня сервиса",
+      "definition": "Измеренный сигнал и явно заданная цель по окну."
+    },
+    {
+      "term": "baseline",
+      "translation": "исходный уровень",
+      "definition": "Закреплённое сравнимое состояние до изменения."
+    }
+  ],
+  "markdown_file": "middleplus-14.md",
+  "exercises": [
+    {
+      "id": "middleplus-14-easy",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: admission limit",
+      "prompt": "Реализуйте чистую функцию `func Admission(depth int, limit int) string`. Контракт: depth<0 или limit<=0 => \"invalid\"; depth>=limit => \"full\"; иначе \"admit\".\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это синхронная policy decision; отдельный код должен реализовать ограниченное ожидание и отмену.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc Admission(depth int, limit int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"admit\"\n",
+      "criteria": [
+        "Классифицировать свободное и полное состояние очереди.",
+        "Не выдавать full за реальное ожидание или отказ producer."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это синхронная policy decision; отдельный код должен реализовать ограниченное ожидание и отмену."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-14-medium",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: backpressure и caller deadline",
+      "prompt": "Реализуйте чистую функцию `func AdmissionReason(depth int, limit int, waitMillis int, deadlineMillis int, shed bool) string`. Контракт: Сначала отклоните некорректные отрицательные значения или limit<=0 как \"invalid\". При свободном месте верните \"admit\". На полной очереди: shed=true => \"shed\"; затем deadlineMillis<=0 или waitMillis>=deadlineMillis => \"deadline\"; waitMillis<=0 => \"reject\"; иначе \"wait\". Это решение политики, а не реальный таймер.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это синхронная policy decision; отдельный код должен реализовать ограниченное ожидание и отмену.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc AdmissionReason(depth int, limit int, waitMillis int, deadlineMillis int, shed bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"admit\"\n",
+      "criteria": [
+        "Сопоставить wait window с оставшимся deadline; shedding применяется на заполненной очереди до оценки ожидания.",
+        "Проверить wait, shed, reject, deadline и invalid."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это синхронная policy decision; отдельный код должен реализовать ограниченное ожидание и отмену."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-14-hard",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: cancellation и admission policy",
+      "prompt": "Реализуйте чистую функцию `func AdmissionDecision(depth int, limit int, waitMillis int, deadlineMillis int, cancelled bool, shed bool) string`. Контракт: Проверьте все диапазоны, затем примените приоритет: некорректно => \"invalid\"; cancelled => \"cancelled\"; свободное место => \"admit\"; полная очередь с shed => \"shed\"; истёкший deadline или waitMillis>=deadlineMillis => \"deadline\"; нулевое ожидание => \"reject\"; иначе \"wait\". Отмена имеет приоритет над admission. Модель не запускает ожидание и не отменяет goroutine.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это синхронная policy decision; отдельный код должен реализовать ограниченное ожидание и отмену.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc AdmissionDecision(depth int, limit int, waitMillis int, deadlineMillis int, cancelled bool, shed bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"admit\"\n",
+      "criteria": [
+        "Добавить явное событие cancellation; в рамках модели cancelled важнее admission, но не перекрывает invalid ranges.",
+        "Функция выбирает метку и не управляет timer/context/goroutine."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это синхронная policy decision; отдельный код должен реализовать ограниченное ожидание и отмену."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Как producer узнаёт, что consumer перегружен?",
+      "answer": "Через bounded queue, ограниченное ожидание/deadline или явный отказ, а не через неограниченное накопление."
+    },
+    {
+      "question": "Почему отказ не всегда можно безопасно повторить?",
+      "answer": "Caller может не знать, применился ли эффект, поэтому нужен idempotency key или запрос результата."
+    },
+    {
+      "question": "Какой компромисс возникает у load shedding?",
+      "answer": "Он защищает нижестоящий ресурс ценой отклонения части работы и должен учитывать приоритет и объяснимую политику."
+    },
+    {
+      "question": "Как проверить backpressure end-to-end?",
+      "answer": "Замедлить тестовый consumer и наблюдать admission, queue bound, caller response и восстановление после снятия ограничения."
+    }
+  ]
+}

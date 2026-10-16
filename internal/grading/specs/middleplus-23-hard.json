@@ -1,0 +1,144 @@
+{
+  "id": "middleplus-23-hard",
+  "signature": "func PostmortemReady(eventTimes []int, observed []bool, actionStatus string, ownerAssigned bool, dueDay int, verified bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { EventTimes []int `json:\"eventTimes\"`; Observed []bool `json:\"observed\"`; ActionStatus string `json:\"actionStatus\"`; OwnerAssigned bool `json:\"ownerAssigned\"`; DueDay int `json:\"dueDay\"`; Verified bool `json:\"verified\"` }\nfunc main(){ var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil{panic(err)}; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(PostmortemReady(in.EventTimes, in.Observed, in.ActionStatus, in.OwnerAssigned, in.DueDay, in.Verified)); err!=nil{panic(err)} } }\n",
+  "public_input": [
+    {
+      "eventTimes": [
+        0,
+        5,
+        9
+      ],
+      "observed": [
+        true,
+        true,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": true,
+      "dueDay": 10,
+      "verified": true
+    },
+    {
+      "eventTimes": [
+        0,
+        5
+      ],
+      "observed": [
+        true,
+        true
+      ],
+      "actionStatus": "open",
+      "ownerAssigned": true,
+      "dueDay": 10,
+      "verified": false
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "eventTimes": [
+        0,
+        5,
+        9
+      ],
+      "observed": [
+        true,
+        true,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": true,
+      "dueDay": 10,
+      "verified": false
+    },
+    {
+      "eventTimes": [
+        0,
+        5,
+        9
+      ],
+      "observed": [
+        true,
+        false,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": true,
+      "dueDay": 10,
+      "verified": true
+    },
+    {
+      "eventTimes": [
+        0,
+        5,
+        9
+      ],
+      "observed": [
+        true,
+        true,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": false,
+      "dueDay": 10,
+      "verified": true
+    },
+    {
+      "eventTimes": [
+        0,
+        5,
+        9
+      ],
+      "observed": [
+        true,
+        true,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": true,
+      "dueDay": 0,
+      "verified": true
+    },
+    {
+      "eventTimes": [
+        5,
+        4
+      ],
+      "observed": [
+        true,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": true,
+      "dueDay": 10,
+      "verified": true
+    },
+    {
+      "eventTimes": [
+        0,
+        5
+      ],
+      "observed": [
+        true,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": true,
+      "dueDay": 10,
+      "verified": true
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    true
+  ]
+}

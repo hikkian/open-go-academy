@@ -1,0 +1,49 @@
+{
+  "id": "middle-39-medium",
+  "signature": "func CloseStatus(active int, graceExpired bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Active int `json:\"active\"`; GraceExpired bool `json:\"graceExpired\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CloseStatus(in.Active, in.GraceExpired)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "active": 0,
+      "graceExpired": false
+    }
+  ],
+  "public_expected": [
+    "closed"
+  ],
+  "private_input": [
+    {
+      "active": -1,
+      "graceExpired": false
+    },
+    {
+      "active": 0,
+      "graceExpired": false
+    },
+    {
+      "active": 0,
+      "graceExpired": true
+    },
+    {
+      "active": 1,
+      "graceExpired": false
+    },
+    {
+      "active": 1,
+      "graceExpired": true
+    },
+    {
+      "active": 2,
+      "graceExpired": true
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "closed",
+    "closed",
+    "draining",
+    "cancel_remaining",
+    "cancel_remaining"
+  ]
+}

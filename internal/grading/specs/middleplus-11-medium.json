@@ -1,0 +1,32 @@
+{
+  "id": "middleplus-11-medium",
+  "signature": "func ReplicaSafeForRead(wrote, replicaFresh, staleTolerant bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Wrote bool; ReplicaFresh bool; StaleTolerant bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ReplicaSafeForRead(in.Wrote, in.ReplicaFresh, in.StaleTolerant); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Wrote": false,
+      "ReplicaFresh": true,
+      "StaleTolerant": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "Wrote": true,
+      "ReplicaFresh": true,
+      "StaleTolerant": true
+    },
+    {
+      "Wrote": false,
+      "ReplicaFresh": false,
+      "StaleTolerant": false
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

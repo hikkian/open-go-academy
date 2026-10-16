@@ -1,0 +1,17 @@
+2026-10-16 Asia/Atyrau — M11 current-tree aggregate acceptance
+
+Started: 2026-10-16 12:30:34 Asia/Atyrau
+Started epoch: 1792135834
+
+Command:
+ACADEMY_ACCEPT_M11_DRAFTS=1 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-m11-full-cache-20261016 .tools/go/bin/go test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v
+
+Result: PASS
+ok academy/internal/content 2616.291s
+
+Candidate catalog: all 40 published lessons + all 88 current M11 drafts loaded. Catalog schemas, rank labels, prerequisites and global unique order 41–128 passed.
+Execution: isolated runner preflight passed; 265 trusted Go example groups executed; all 264 starters passed production source-contract validation and compilation; all 264 reference implementations passed production Request → isolated Execute → public+private Spec.Check. No lexical word-count, starter, reference, runner or grader failures occurred.
+
+This is current-tree automated content/grading acceptance. It is not full pedagogical review, publication, or M11 project/rank assessment acceptance. No M11 lesson was added to the published manifest. P3–P5 runtime/browser workflows, advanced assessments, and M12/M13 remain open.
+
+Raw output: ignored `.data/m11-aggregate-acceptance-4.log`. A previous failed attempt after the prose fixes (stale snapshot + transient Go linker panic) is retained at `docs/validation/m11-aggregate-acceptance-failed-revision-attempt.txt`; a fresh-cache isolated Middle+04 run and targeted prose suite passed before this unfiltered rerun.

@@ -1,0 +1,34 @@
+{
+  "id": "middleplus-09-easy",
+  "signature": "func PartitionRoute(day int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Day int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=PartitionRoute(in.Day); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Day": 1
+    },
+    {
+      "Day": 16
+    },
+    {
+      "Day": 31
+    }
+  ],
+  "public_expected": [
+    "p1",
+    "p2",
+    "p3"
+  ],
+  "private_input": [
+    {
+      "Day": 0
+    },
+    {
+      "Day": 32
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid"
+  ]
+}

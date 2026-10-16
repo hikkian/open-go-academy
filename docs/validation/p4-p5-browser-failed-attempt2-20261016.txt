@@ -1,0 +1,43 @@
+[WebServer] 2026/10/16 18:01:58 INFO academy local API ready address=127.0.0.1:8081
+
+Running 1 test using 1 worker
+
+(node:3552580) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › tests/p4-p5-evidence.spec.ts:16:5 › P4/P5 isolated submissions persist machine evidence but never award rank (19.8s)
+
+
+  1) [desktop] › tests/p4-p5-evidence.spec.ts:16:5 › P4/P5 isolated submissions persist machine evidence but never award rank
+
+    Error: p5 reference artifact saves
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      45 |     }
+      46 |     const saved = await page.request.put(`/api/projects/${id}/files`, {headers: {'X-CSRF-Token': csrf}, data: {files}});
+    > 47 |     expect(saved.ok(), `${id} reference artifact saves`).toBe(true);
+         |                                                          ^
+      48 |
+      49 |     await page.reload();
+      50 |     await page.getByRole('button', {name: 'Проекты', exact: true}).click();
+        at /home/alisher/Desktop/open-go-academy/tests/p4-p5-evidence.spec.ts:47:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/playwright/p4-p5-evidence-P4-P5-isola-b86d6-idence-but-never-award-rank-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/playwright/p4-p5-evidence-P4-P5-isola-b86d6-idence-but-never-award-rank-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/playwright/p4-p5-evidence-P4-P5-isola-b86d6-idence-but-never-award-rank-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/playwright/p4-p5-evidence-P4-P5-isola-b86d6-idence-but-never-award-rank-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › tests/p4-p5-evidence.spec.ts:16:5 › P4/P5 isolated submissions persist machine evidence but never award rank

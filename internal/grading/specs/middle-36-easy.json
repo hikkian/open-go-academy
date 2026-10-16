@@ -1,0 +1,54 @@
+{
+  "id": "middle-36-easy",
+  "signature": "func TaskInput(projectID, title string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { ProjectID string `json:\"projectID\"`; Title string `json:\"title\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(TaskInput(in.ProjectID, in.Title)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "projectID": "p1",
+      "title": "Ship"
+    }
+  ],
+  "public_expected": [
+    "valid"
+  ],
+  "private_input": [
+    {
+      "projectID": "",
+      "title": "Ship"
+    },
+    {
+      "projectID": "p1",
+      "title": ""
+    },
+    {
+      "projectID": "p1",
+      "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "projectID": "p1",
+      "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "projectID": "p1",
+      "title": "яяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяя"
+    },
+    {
+      "projectID": "p1",
+      "title": "яяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяяя"
+    },
+    {
+      "projectID": "",
+      "title": ""
+    }
+  ],
+  "private_expected": [
+    "missing_project",
+    "missing_title",
+    "valid",
+    "title_too_long",
+    "valid",
+    "title_too_long",
+    "missing_project"
+  ]
+}

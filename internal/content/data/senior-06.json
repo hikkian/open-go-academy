@@ -1,0 +1,148 @@
+{
+  "id": "senior-06",
+  "title": "Эволюция монолита без преждевременного распила",
+  "rank": "Senior",
+  "module": "senior-systems-design",
+  "prerequisites": [
+    "senior-05"
+  ],
+  "estimated_minutes": 240,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 110,
+  "learning_outcomes": [
+    "Различать форму развёртывания и внутреннюю модульность.",
+    "Картировать зависимости, data owner и обход доменных правил.",
+    "Выбирать небольшое изменение с guard, compatibility и rollback criteria.",
+    "Задавать измеримый extraction trigger и сравнивать с альтернативой."
+  ],
+  "glossary": [
+    {
+      "term": "modular monolith",
+      "translation": "модульный монолит",
+      "definition": "Единая единица запуска с явными внутренними границами."
+    },
+    {
+      "term": "dependency graph",
+      "translation": "граф зависимостей",
+      "definition": "Модель вызовов и связей между компонентами."
+    },
+    {
+      "term": "dual-write",
+      "translation": "двойная запись",
+      "definition": "Изменение двух независимых источников с окном частичного отказа."
+    },
+    {
+      "term": "roll-forward",
+      "translation": "исправление вперёд",
+      "definition": "Исправление при невозможности безопасного возврата данных."
+    }
+  ],
+  "markdown_file": "senior-06.md",
+  "self_check": [
+    {
+      "question": "Что проверяет grader?",
+      "answer": "Только функцию на синтетических входах, не реальную архитектуру или distributed failure."
+    },
+    {
+      "question": "Что следует назвать явно?",
+      "answer": "Предположение, владельца, условие пересмотра и границу доказательств."
+    },
+    {
+      "question": "Почему нужен негативный сценарий?",
+      "answer": "Он проверяет поведение при конфликте, деградации или неизвестном статусе."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "senior-06-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "systems-design",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "RollbackState",
+      "prompt": "Обратимое изменение → `rollback`; иначе при наличии новых записей → `roll-forward`; в остальных случаях → `review`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RollbackState(reversible, newWrites bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"rollback\"\n\"roll-forward\"\n",
+      "criteria": [
+        "Соблюдать приоритет ветвей и точные выходы.",
+        "Проверить граничные комбинации и невалидные состояния.",
+        "Не приписывать helper системную гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждают vectors?",
+          "answer": "Только зафиксированную таблицу pure function."
+        },
+        {
+          "question": "Что надо проверить дополнительно?",
+          "answer": "Реальную границу, configuration, failure mode и recovery."
+        }
+      ]
+    },
+    {
+      "id": "senior-06-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "systems-design",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "ChangePath",
+      "prompt": "Неизвестный владелец → `clarify-owner`; существует обходной путь → `close-bypass`; иначе → `owned-path`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ChangePath(ownerKnown, bypassExists bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"clarify-owner\"\n\"close-bypass\"\n",
+      "criteria": [
+        "Соблюдать приоритет ветвей и точные выходы.",
+        "Проверить граничные комбинации и невалидные состояния.",
+        "Не приписывать helper системную гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждают vectors?",
+          "answer": "Только зафиксированную таблицу pure function."
+        },
+        {
+          "question": "Что надо проверить дополнительно?",
+          "answer": "Реальную границу, configuration, failure mode и recovery."
+        }
+      ]
+    },
+    {
+      "id": "senior-06-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "systems-design",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Extraction",
+      "prompt": "Если проверены и доказательства, и альтернатива, верните `prototype-boundary`; иначе — `strengthen-module`.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc Extraction(evidence, alternativeChecked bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"prototype-boundary\"\n\"strengthen-module\"\n",
+      "criteria": [
+        "Соблюдать приоритет ветвей и точные выходы.",
+        "Проверить граничные комбинации и невалидные состояния.",
+        "Не приписывать helper системную гарантию."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждают vectors?",
+          "answer": "Только зафиксированную таблицу pure function."
+        },
+        {
+          "question": "Что надо проверить дополнительно?",
+          "answer": "Реальную границу, configuration, failure mode и recovery."
+        }
+      ]
+    }
+  ]
+}

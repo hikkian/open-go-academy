@@ -1,0 +1,15 @@
+{
+  "project": "P5 Architecture & Systems Capstone",
+  "curriculum_version": "2026.10",
+  "go_version": "1.27.2",
+  "dependency_policy": "Go standard library only for the risk prototype",
+  "prototype_scope": "Deterministic in-memory model of at-least-once delivery, lease expiry, and stale-worker fencing; not a production datastore",
+  "rank_evidence_policy": {
+    "machine_checks_can_approve_human_review": false,
+    "ai_can_approve_human_review": false,
+    "self_review_can_approve_human_review": false,
+    "independent_authenticated_human_review_required": true,
+    "required_artifacts": ["architecture package", "prototype source", "test evidence", "artifact hash", "review decision"]
+  },
+  "last_verified_at": "2026-10-16"
+}

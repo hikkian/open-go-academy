@@ -1,0 +1,50 @@
+{
+  "id": "middle-07-medium",
+  "signature": "func CompareAndSwapModel(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(CompareAndSwapModel(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      7,
+      7,
+      9
+    ],
+    [
+      5,
+      4,
+      8
+    ]
+  ],
+  "public_expected": [
+    [
+      9,
+      1
+    ],
+    [
+      5,
+      0
+    ]
+  ],
+  "private_input": [
+    [
+      1,
+      1,
+      2
+    ],
+    [
+      2,
+      3,
+      4
+    ]
+  ],
+  "private_expected": [
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      0
+    ]
+  ]
+}

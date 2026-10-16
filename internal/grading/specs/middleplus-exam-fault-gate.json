@@ -1,0 +1,68 @@
+{
+  "id": "middleplus-exam-fault-gate",
+  "signature": "func FaultGate(recovered bool, dataLoss bool, errorBudgetAvailable bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Recovered bool `json:\"recovered\"`; DataLoss bool `json:\"dataLoss\"`; ErrorBudgetAvailable bool `json:\"errorBudgetAvailable\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(FaultGate(in.Recovered, in.DataLoss, in.ErrorBudgetAvailable)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "recovered": true,
+      "dataLoss": false,
+      "errorBudgetAvailable": true
+    },
+    {
+      "recovered": true,
+      "dataLoss": false,
+      "errorBudgetAvailable": false
+    },
+    {
+      "recovered": false,
+      "dataLoss": false,
+      "errorBudgetAvailable": true
+    }
+  ],
+  "public_expected": [
+    "proceed",
+    "hold",
+    "hold"
+  ],
+  "private_input": [
+    {
+      "recovered": false,
+      "dataLoss": true,
+      "errorBudgetAvailable": true
+    },
+    {
+      "recovered": true,
+      "dataLoss": true,
+      "errorBudgetAvailable": true
+    },
+    {
+      "recovered": false,
+      "dataLoss": false,
+      "errorBudgetAvailable": false
+    },
+    {
+      "recovered": false,
+      "dataLoss": false,
+      "errorBudgetAvailable": true
+    },
+    {
+      "recovered": true,
+      "dataLoss": false,
+      "errorBudgetAvailable": false
+    },
+    {
+      "recovered": true,
+      "dataLoss": false,
+      "errorBudgetAvailable": true
+    }
+  ],
+  "private_expected": [
+    "stop",
+    "stop",
+    "hold",
+    "hold",
+    "hold",
+    "proceed"
+  ]
+}

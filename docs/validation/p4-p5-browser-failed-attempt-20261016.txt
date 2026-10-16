@@ -1,0 +1,54 @@
+[WebServer] 2026/10/16 18:00:06 INFO academy local API ready address=127.0.0.1:8081
+
+Running 1 test using 1 worker
+
+(node:3549113) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › tests/p4-p5-evidence.spec.ts:16:5 › P4/P5 isolated submissions persist machine evidence but never award rank (1.2m)
+
+
+  1) [desktop] › tests/p4-p5-evidence.spec.ts:16:5 › P4/P5 isolated submissions persist machine evidence but never award rank
+
+    Test was interrupted.
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.project-output')
+    Expected substring: "Автоматические проверки пройдены."
+    Received string:    "Автоматическая оценка проектаСостояние: error; код завершения: 1Некоторые автоматические проверки не пройдены. Результат не присваивает учебный ранг. Для полного подтверждения требуется отдельное ревью: Интерпретация CPU/heap профилей; Воспроизводимость baseline/after измерений; Capacity/SLO расчёт и эксплуатационные выводы.Сохранённое доказательство этой версии проектаПакет67848a65b9546c5601f0ade3ec4a65fe · версия p4-scalelab-v1Проверкаa9fc4abe9fcb77347c95200a356fb380 · error, код 1Checkerscalelab-deterministic-v1Хеш артефактаsha256:04532bf91153284612aa843ab38c7dd8c52314cca57fc49a1cc7809dd72235c7Хеш исполняемых файловsha256:04532bf91153284612aa843ab38c7dd8c52314cca57fc49a1cc7809dd72235c7Хеш проверокsha256:4462bfca7ee7cebdb1682e711331e48e378cccaf796f2a2bb651cd7ecdd3f205Политика / rubricsha256:b521d0d5134f73c0f6021ba0d218ab18ddd7775273054947b1c3e2be754247a3 · scalelab-deterministic-v1Запись хранится отдельно от текущего workspace; автоматическое evidence не подтверждает ручное ревью и не присваивает ранг.Ошибки и диагностикаДетерминированная проверка ScaleLab завершилась ошибкой."
+
+    Call log:
+      - Expect "toContainText" locator('.project-output') with timeout 220000ms
+      - waiting for locator('.project-output')
+        40 × locator resolved to <section class="project-output">…</section>
+           - unexpected value "Вывод и проверкиЗапусти приложение или его тесты, чтобы увидеть реальный результат."
+        109 × locator resolved to <section class="project-output">…</section>
+            - unexpected value "Автоматическая оценка проектаСостояние: error; код завершения: 1Некоторые автоматические проверки не пройдены. Результат не присваивает учебный ранг. Для полного подтверждения требуется отдельное ревью: Интерпретация CPU/heap профилей; Воспроизводимость baseline/after измерений; Capacity/SLO расчёт и эксплуатационные выводы.Сохранённое доказательство этой версии проектаПакет67848a65b9546c5601f0ade3ec4a65fe · версия p4-scalelab-v1Проверкаa9fc4abe9fcb77347c95200a356fb380 · error, код 1Checkerscalelab-deterministic-v1Хеш артефактаsha256:04532bf91153284612aa843ab38c7dd8c52314cca57fc49a1cc7809dd72235c7Хеш исполняемых файловsha256:04532bf91153284612aa843ab38c7dd8c52314cca57fc49a1cc7809dd72235c7Хеш проверокsha256:4462bfca7ee7cebdb1682e711331e48e378cccaf796f2a2bb651cd7ecdd3f205Политика / rubricsha256:b521d0d5134f73c0f6021ba0d218ab18ddd7775273054947b1c3e2be754247a3 · scalelab-deterministic-v1Запись хранится отдельно от текущего workspace; автоматическое evidence не подтверждает ручное ревью и не присваивает ранг.Ошибки и диагностикаДетерминированная проверка ScaleLab завершилась ошибкой."
+      - Test ended.
+
+
+      53 |     await page.getByRole('button', {name: 'Проверить проект', exact: true}).click();
+      54 |     const output = page.locator('.project-output');
+    > 55 |     await expect(output).toContainText('Автоматические проверки пройдены.', {timeout: 220_000});
+         |                          ^
+      56 |     await expect(output).toContainText('automatic_pass');
+      57 |     await expect(output).toContainText('не присваивает ранг');
+      58 |     await expect(output).toContainText('требуется отдельное ревью');
+        at /home/alisher/Desktop/open-go-academy/tests/p4-p5-evidence.spec.ts:55:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/playwright/p4-p5-evidence-P4-P5-isola-b86d6-idence-but-never-award-rank-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/playwright/p4-p5-evidence-P4-P5-isola-b86d6-idence-but-never-award-rank-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/playwright/p4-p5-evidence-P4-P5-isola-b86d6-idence-but-never-award-rank-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/playwright/p4-p5-evidence-P4-P5-isola-b86d6-idence-but-never-award-rank-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 interrupted
+    [desktop] › tests/p4-p5-evidence.spec.ts:16:5 › P4/P5 isolated submissions persist machine evidence but never award rank

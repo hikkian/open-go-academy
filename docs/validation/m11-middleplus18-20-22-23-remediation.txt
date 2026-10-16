@@ -1,0 +1,17 @@
+2026-10-16 Asia/Atyrau — Middle+18,19,20,22,23 remediation
+
+The five lessons now encode topic-specific bounded policy/state decisions rather than scalar labels:
+- Middle+18: overload admission, load shedding and critical work under deadline/queue-age guards.
+- Middle+19: fault stage/commit/observation, recovery and safe retry conditions.
+- Middle+20: deterministic worker batch selection with starvation threshold/fairness constraints.
+- Middle+22: canary evidence/sample thresholds, rollback readiness and safe rollout decision.
+- Middle+23: incident facts/timeline and postmortem action readiness (`PostmortemReady`), without scoring narrative causality.
+
+The copied generic paragraph was removed in this group. Markdown, metadata, E/M/H specs, starter examples, references and vectors are synchronized; each chapter says the pure helper models a policy and does not prove external-system behavior.
+
+Scoped command:
+`ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middleplus-18,middleplus-19,middleplus-20,middleplus-22,middleplus-23 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-m11-middleplus-18-20-22-23-final3-20261016 .tools/go/bin/go test -count=1 -timeout=2h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+
+Result: PASS, 152.173s; 15 examples, 15 starter builds and 15 isolated reference/grader checks. All 15 reference packages also compiled.
+
+This is scoped evidence only; Middle+21 is validated separately. No M11 draft is published.

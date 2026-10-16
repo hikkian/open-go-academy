@@ -1,0 +1,34 @@
+{
+  "id": "senior-02-easy",
+  "signature": "func WindowState(windowSeconds, samples int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { WindowSeconds int64; Samples int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(WindowState(in.WindowSeconds, in.Samples)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "WindowSeconds": 300,
+      "Samples": 20
+    },
+    {
+      "WindowSeconds": 0,
+      "Samples": 2
+    }
+  ],
+  "public_expected": [
+    "review",
+    "invalid"
+  ],
+  "private_input": [
+    {
+      "WindowSeconds": 60,
+      "Samples": 0
+    },
+    {
+      "WindowSeconds": -1,
+      "Samples": -1
+    }
+  ],
+  "private_expected": [
+    "no-data",
+    "invalid"
+  ]
+}

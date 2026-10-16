@@ -1,0 +1,70 @@
+{
+  "id": "middleplus-14-medium",
+  "signature": "func AdmissionReason(depth int, limit int, waitMillis int, deadlineMillis int, shed bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Depth int `json:\"depth\"`; Limit int `json:\"limit\"`; WaitMillis int `json:\"waitMillis\"`; DeadlineMillis int `json:\"deadlineMillis\"`; Shed bool `json:\"shed\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(AdmissionReason(in.Depth,in.Limit,in.WaitMillis,in.DeadlineMillis,in.Shed)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "depth": 0,
+      "limit": 1,
+      "waitMillis": 5,
+      "deadlineMillis": 10,
+      "shed": false
+    }
+  ],
+  "public_expected": [
+    "admit"
+  ],
+  "private_input": [
+    {
+      "depth": 1,
+      "limit": 1,
+      "waitMillis": 5,
+      "deadlineMillis": 10,
+      "shed": false
+    },
+    {
+      "depth": 1,
+      "limit": 1,
+      "waitMillis": 5,
+      "deadlineMillis": 5,
+      "shed": false
+    },
+    {
+      "depth": 1,
+      "limit": 1,
+      "waitMillis": 0,
+      "deadlineMillis": 10,
+      "shed": false
+    },
+    {
+      "depth": 1,
+      "limit": 1,
+      "waitMillis": 5,
+      "deadlineMillis": 10,
+      "shed": true
+    },
+    {
+      "depth": -1,
+      "limit": 1,
+      "waitMillis": 5,
+      "deadlineMillis": 10,
+      "shed": true
+    },
+    {
+      "depth": 1,
+      "limit": 0,
+      "waitMillis": 5,
+      "deadlineMillis": 10,
+      "shed": false
+    }
+  ],
+  "private_expected": [
+    "wait",
+    "deadline",
+    "reject",
+    "shed",
+    "invalid",
+    "invalid"
+  ]
+}

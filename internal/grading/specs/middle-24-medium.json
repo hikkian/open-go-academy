@@ -1,0 +1,42 @@
+{
+  "id": "middle-24-medium",
+  "signature": "func RedisQueuePrerequisitesMedium(persistenceConfigured, writeAcknowledged, consumerRecovery, idempotentHandler bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{PersistenceConfigured bool;WriteAcknowledged bool;ConsumerRecovery bool;IdempotentHandler bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RedisQueuePrerequisitesMedium(x.PersistenceConfigured,x.WriteAcknowledged,x.ConsumerRecovery,x.IdempotentHandler));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "PersistenceConfigured": true,
+      "WriteAcknowledged": true,
+      "ConsumerRecovery": true,
+      "IdempotentHandler": true
+    },
+    {
+      "PersistenceConfigured": false,
+      "WriteAcknowledged": true,
+      "ConsumerRecovery": true,
+      "IdempotentHandler": true
+    },
+    {
+      "PersistenceConfigured": true,
+      "WriteAcknowledged": false,
+      "ConsumerRecovery": true,
+      "IdempotentHandler": true
+    }
+  ],
+  "public_expected": [
+    "candidate_only",
+    "needs_review",
+    "needs_review"
+  ],
+  "private_input": [
+    {
+      "PersistenceConfigured": true,
+      "WriteAcknowledged": true,
+      "ConsumerRecovery": false,
+      "IdempotentHandler": true
+    }
+  ],
+  "private_expected": [
+    "needs_review"
+  ]
+}

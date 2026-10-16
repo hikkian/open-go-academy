@@ -1,0 +1,142 @@
+{
+  "id": "middle-22",
+  "title": "Rate limit и токен-бакет",
+  "rank": "Middle",
+  "module": "middle-cache",
+  "prerequisites": [
+    "middle-21"
+  ],
+  "estimated_minutes": 150,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Считать доступные токены целыми числами",
+    "Различать локальный и общий лимит",
+    "Выбирать безопасную политику при недоступности хранилища"
+  ],
+  "glossary": [
+    {
+      "term": "rate limit",
+      "translation": "ограничение частоты",
+      "definition": "Правило допуска запросов в заданном интервале"
+    },
+    {
+      "term": "token bucket",
+      "translation": "токен-бакет",
+      "definition": "Модель, где запрос тратит токен, а время пополняет запас"
+    },
+    {
+      "term": "shared store",
+      "translation": "общее хранилище",
+      "definition": "Хранилище лимита, совместно используемое процессами"
+    }
+  ],
+  "markdown_file": "middle-22.md",
+  "order": 62,
+  "exercises": [
+    {
+      "id": "middle-22-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Token consume — локальное правило",
+      "prompt": "Контракт `func TokenDecisionEasy(available, capacity, cost int64) string`: reject invalid negative/out-of-capacity state or non-positive cost; allow only when available tokens cover cost. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc TokenDecisionEasy(available, capacity, cost int64) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"allow\"\n\"deny\"\n\"allow\"\n",
+      "criteria": [
+        "Контракт token consume выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-22-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Refill and consume — ветви политики",
+      "prompt": "Контракт `func RefilledTokensMedium(available, capacity, elapsedSeconds, refillPerSecond, cost int64) int64`: return remaining tokens after elapsed-time refill, clamped to capacity and after cost; invalid negative values, capacity overflow state, or non-positive cost => -1; insufficient tokens => -1. Integer model; no clock/store access. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RefilledTokensMedium(available, capacity, elapsedSeconds, refillPerSecond, cost int64) int64 {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "1\n0\n-1\n",
+      "criteria": [
+        "Контракт refill and consume выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-22-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Retry-after calculation — отказ и граница гарантии",
+      "prompt": "Контракт `func RetryAfterSecondsHard(available, capacity, elapsedSeconds, refillPerSecond, cost int64) int64`: given already-refilled tokens (compute refill separately), return ceil((cost-available)/refillPerSecond) seconds; 0 if already allowed; -1 for invalid state or a denied request that can never refill. Caller must persist bucket state atomically. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RetryAfterSecondsHard(available, capacity, elapsedSeconds, refillPerSecond, cost int64) int64 {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "2\n0\n-1\n",
+      "criteria": [
+        "Контракт retry-after calculation выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какую гарантию дает данный учебный пример?",
+      "answer": "Только соответствие описанному детерминированному контракту на заданных входах."
+    },
+    {
+      "question": "Что следует проверять отдельно в работающей системе?",
+      "answer": "Транзакции, ограничения хранения, повторные запросы, отказ и восстановление реальных зависимостей."
+    },
+    {
+      "question": "Можно ли сделать универсальный вывод по EXPLAIN/кешу/брокеру?",
+      "answer": "Нет. Нужны фактический движок, конфигурация и измеренный workload."
+    }
+  ]
+}

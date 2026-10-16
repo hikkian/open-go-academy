@@ -1,0 +1,62 @@
+{
+  "id": "middle-18-easy",
+  "signature": "func MessageDispositionEasy(transient bool, attempts int64, succeeded bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Transient bool; Attempts int64; Succeeded bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(MessageDispositionEasy(x.Transient, x.Attempts, x.Succeeded));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Transient": false,
+      "Attempts": 0,
+      "Succeeded": true
+    },
+    {
+      "Transient": false,
+      "Attempts": 0,
+      "Succeeded": false
+    },
+    {
+      "Transient": true,
+      "Attempts": 1,
+      "Succeeded": false
+    },
+    {
+      "Transient": true,
+      "Attempts": 3,
+      "Succeeded": false
+    }
+  ],
+  "public_expected": [
+    "ack",
+    "reject",
+    "retry",
+    "dead_letter"
+  ],
+  "private_input": [
+    {
+      "Transient": false,
+      "Attempts": -1,
+      "Succeeded": false
+    },
+    {
+      "Transient": false,
+      "Attempts": 0,
+      "Succeeded": false
+    },
+    {
+      "Transient": true,
+      "Attempts": 2,
+      "Succeeded": false
+    },
+    {
+      "Transient": true,
+      "Attempts": 3,
+      "Succeeded": false
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "reject",
+    "retry",
+    "dead_letter"
+  ]
+}

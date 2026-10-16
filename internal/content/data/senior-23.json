@@ -1,0 +1,159 @@
+{
+  "id": "senior-23",
+  "title": "P5 defense и независимый review",
+  "rank": "Senior",
+  "module": "senior-p5-architecture",
+  "prerequisites": [
+    "senior-22"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Защитить решение через trade-offs, неизвестные, критерии пересмотра и независимый human review.",
+    "Сохранять alternatives, assumptions, risk, evidence и пересмотр в ADR/design doc.",
+    "Ограничивать вывод фактической проверкой и обозначать неизвестное."
+  ],
+  "glossary": [
+    {
+      "term": "quality attribute",
+      "translation": "атрибут качества",
+      "definition": "Измеримое свойство в конкретном сценарии."
+    },
+    {
+      "term": "ADR",
+      "translation": "запись архитектурного решения",
+      "definition": "Контекст, варианты, последствия, доказательства и триггер пересмотра."
+    },
+    {
+      "term": "trade-off",
+      "translation": "компромисс",
+      "definition": "Обмен одного свойства на другое."
+    },
+    {
+      "term": "rollback",
+      "translation": "откат",
+      "definition": "Возврат состояния при совместимости бинарника и данных."
+    },
+    {
+      "term": "human review",
+      "translation": "человеческое рецензирование",
+      "definition": "Оценка конкретной версии и артефакта в ограниченном scope."
+    }
+  ],
+  "markdown_file": "senior-23.md",
+  "order": 127,
+  "exercises": [
+    {
+      "id": "senior-23-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: P5 defense и независимый review — рабочая запись",
+      "prompt": "Реализуйте `func EvidenceStrength(reproduced, independentReview, boundedClaim bool) string`. Оцените ограниченное утверждение по трём отдельным признакам: claim не ограничен → overclaim; иначе без воспроизведения → not_reproduced; без независимого review → needs_review; иначе reviewed_evidence. В defense note укажите точный scope и остаточные ограничения; helper не удостоверяет reviewer или результат. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc EvidenceStrength(reproduced, independentReview, boundedClaim bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"reviewed_evidence\"\n",
+      "criteria": [
+        "Точно реализовать контракт `EvidenceStrength` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-23-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: P5 defense и независимый review — decision artifact",
+      "prompt": "Реализуйте `func TradeoffRecorded(benefit, cost, revisitTrigger string) bool`. Зафиксируйте одну пару benefit/cost и наблюдаемый revisit trigger. Helper true только при непустых трёх полях. В артефакте укажите альтернативу и источник выбранных критериев; строка trigger должна быть проверяемой, но helper проверяет только пустоту, не семантику. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc TradeoffRecorded(benefit, cost, revisitTrigger string) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Точно реализовать контракт `TradeoffRecorded` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-23-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: P5 defense и независимый review — review пакет",
+      "prompt": "Реализуйте `func DefenseStatus(openRisks, reviewerSigned int) string`. Классифицируйте review: отрицательный счётчик или reviewerSigned не 0/1 → invalid; reviewerSigned=0 → not_reviewed; иначе openRisks>0 → reviewed_with_risks; иначе reviewed_no_listed_risks. Приложите scope/version review и открытые риски; статус не является credential и не удостоверяет квалификацию. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc DefenseStatus(openRisks, reviewerSigned int) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"reviewed_with_risks\"\n",
+      "criteria": [
+        "Точно реализовать контракт `DefenseStatus` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Как строится P5 defense?",
+      "answer": "От требований и источника через схемы/ADR к отказам, тестам и остаточному риску."
+    },
+    {
+      "question": "Как обозначить независимый review?",
+      "answer": "Указать точную версию, артефакты, дату и согласованный scope проверки."
+    },
+    {
+      "question": "Что reviewer signature не подтверждает?",
+      "answer": "Стаж, должность, аккредитацию или корректность ещё не проверенной реализации."
+    },
+    {
+      "question": "Как поступить при несогласии с trade-off?",
+      "answer": "Сохранить альтернативы, риск и evidence, которое позволит пересмотреть выбор позже."
+    }
+  ]
+}

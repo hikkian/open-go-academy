@@ -1,0 +1,60 @@
+{
+  "id": "middle-12-hard",
+  "signature": "func ApplyVersionedEdits(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(ApplyVersionedEdits(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      10,
+      2,
+      2,
+      11,
+      3,
+      12,
+      3,
+      13
+    ],
+    [
+      5,
+      0,
+      0,
+      6
+    ]
+  ],
+  "public_expected": [
+    [
+      12,
+      4,
+      2
+    ],
+    [
+      6,
+      1,
+      1
+    ]
+  ],
+  "private_input": [
+    [
+      2,
+      -1
+    ],
+    [
+      1,
+      0,
+      0,
+      5
+    ]
+  ],
+  "private_expected": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      5,
+      1,
+      1
+    ]
+  ]
+}

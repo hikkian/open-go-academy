@@ -1,0 +1,34 @@
+{
+  "id": "middleplus-10-hard",
+  "signature": "func ReadAfterWrite(wrote, replicaFresh bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Wrote bool; ReplicaFresh bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ReadAfterWrite(in.Wrote, in.ReplicaFresh); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Wrote": true,
+      "ReplicaFresh": false
+    },
+    {
+      "Wrote": false,
+      "ReplicaFresh": true
+    }
+  ],
+  "public_expected": [
+    "primary",
+    "replica"
+  ],
+  "private_input": [
+    {
+      "Wrote": true,
+      "ReplicaFresh": true
+    },
+    {
+      "Wrote": false,
+      "ReplicaFresh": false
+    }
+  ],
+  "private_expected": [
+    "primary",
+    "primary"
+  ]
+}

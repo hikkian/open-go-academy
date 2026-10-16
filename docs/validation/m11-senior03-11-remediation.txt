@@ -1,0 +1,14 @@
+2026-10-16 Asia/Atyrau — Senior-01…12 targeted remediation
+
+Changes:
+- Senior-03 `Spare` distinguishes a valid negative margin from invalid input by returning `(margin, valid)`; prompt, starter, reference and vectors agree.
+- Senior-11 helper now names principal/resource tenant scope and is explicitly described as a prerequisite check, never complete authorization.
+- Senior-03…12 exercise prompts are Russian with code status literals retained.
+- Senior-01 Hard gained its missing reversible/high-impact combination; Senior-09 Medium covers negative allowed time; Senior-12 Easy uses a distinct hidden vector.
+- Senior helper outcomes remain practice only. Senior award still requires P5 evidence and human architecture review.
+
+Scoped M11 acceptance passed twice:
+- Senior-03 + Senior-11: PASS, 63.147s.
+- `senior-01,senior-03,senior-09,senior-11,senior-12`: PASS, 167.421s; examples, starters and production grading checks passed.
+
+Static JSON/prompt-language check (10 lessons, all 30 prompts) and `git diff --check` passed. These changes do not complete or award the Senior rank and do not count as a full M11 gate.

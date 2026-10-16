@@ -1,0 +1,26 @@
+{
+  "id": "senior-20-easy",
+  "signature": "func ReleaseGate(testsPassed, migrationReversible, rollbackReady bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { TestsPassed bool `json:\"testsPassed\"`; MigrationReversible bool `json:\"migrationReversible\"`; RollbackReady bool `json:\"rollbackReady\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ReleaseGate(in.TestsPassed, in.MigrationReversible, in.RollbackReady)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "testsPassed": true,
+      "migrationReversible": true,
+      "rollbackReady": true
+    }
+  ],
+  "public_expected": [
+    "eligible_for_review"
+  ],
+  "private_input": [
+    {
+      "testsPassed": true,
+      "migrationReversible": false,
+      "rollbackReady": true
+    }
+  ],
+  "private_expected": [
+    "hold_migration"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "middleplus-02-medium",
+  "signature": "func ValidBenchmarkResult(nsPerOp, bytesPerOp, allocsPerOp int64) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { NsPerOp int64; BytesPerOp int64; AllocsPerOp int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ValidBenchmarkResult(in.NsPerOp, in.BytesPerOp, in.AllocsPerOp); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "NsPerOp": 12,
+      "BytesPerOp": 64,
+      "AllocsPerOp": 2
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "NsPerOp": 0,
+      "BytesPerOp": 64,
+      "AllocsPerOp": 2
+    },
+    {
+      "NsPerOp": 12,
+      "BytesPerOp": -1,
+      "AllocsPerOp": 2
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

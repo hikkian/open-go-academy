@@ -1,0 +1,62 @@
+{
+  "id": "middleplus-16-medium",
+  "signature": "func RetryDelay(attempt int, baseMillis int, capMillis int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Attempt int `json:\"attempt\"`; BaseMillis int `json:\"baseMillis\"`; CapMillis int `json:\"capMillis\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(RetryDelay(in.Attempt,in.BaseMillis,in.CapMillis)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "attempt": 0,
+      "baseMillis": 10,
+      "capMillis": 100
+    }
+  ],
+  "public_expected": [
+    10
+  ],
+  "private_input": [
+    {
+      "attempt": 1,
+      "baseMillis": 10,
+      "capMillis": 100
+    },
+    {
+      "attempt": 4,
+      "baseMillis": 10,
+      "capMillis": 100
+    },
+    {
+      "attempt": 100,
+      "baseMillis": 1,
+      "capMillis": 100
+    },
+    {
+      "attempt": 0,
+      "baseMillis": 10,
+      "capMillis": 5
+    },
+    {
+      "attempt": 0,
+      "baseMillis": 0,
+      "capMillis": 100
+    },
+    {
+      "attempt": -1,
+      "baseMillis": 10,
+      "capMillis": 100
+    },
+    {
+      "attempt": 1,
+      "baseMillis": 10,
+      "capMillis": -1
+    }
+  ],
+  "private_expected": [
+    20,
+    100,
+    100,
+    5,
+    0,
+    0,
+    0
+  ]
+}

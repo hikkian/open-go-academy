@@ -1,0 +1,11 @@
+[WebServer] 2026/10/16 18:10:27 INFO academy local API ready address=127.0.0.1:8081
+
+Running 2 tests using 1 worker
+
+(node:3567500) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node-24 --trace-warnings ...` to show where the warning was created)
+  -  1 [mobile] › tests/p4-p5-evidence.spec.ts:16:5 › P4/P5 isolated submissions persist machine evidence but never award rank
+  ✓  2 [mobile] › tests/p4-p5-evidence.spec.ts:76:5 › P4/P5 workspaces remain accessible and fit a mobile viewport (3.8s)
+
+  1 skipped
+  1 passed (5.6s)

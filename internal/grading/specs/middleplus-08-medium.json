@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-08-medium",
+  "signature": "func ValidIndexShape(equalityColumns, sortColumns int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { EqualityColumns int; SortColumns int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ValidIndexShape(in.EqualityColumns, in.SortColumns); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "EqualityColumns": 1,
+      "SortColumns": 1
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "EqualityColumns": -1,
+      "SortColumns": 0
+    },
+    {
+      "EqualityColumns": 0,
+      "SortColumns": 0
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

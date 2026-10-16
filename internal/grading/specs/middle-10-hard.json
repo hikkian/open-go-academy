@@ -1,0 +1,51 @@
+{
+  "id": "middle-10-hard",
+  "signature": "func OrderedResults(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(OrderedResults(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      2,
+      30,
+      0,
+      10,
+      1,
+      20
+    ],
+    [
+      1,
+      8,
+      0,
+      7
+    ]
+  ],
+  "public_expected": [
+    [
+      10,
+      20,
+      30
+    ],
+    [
+      7,
+      8
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      1,
+      0,
+      2
+    ],
+    [
+      2,
+      9
+    ]
+  ],
+  "private_expected": [
+    [
+      1
+    ],
+    []
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "middleplus-12-hard",
+  "signature": "func CacheReadPolicy(writeSucceeded, invalidationSucceeded, versionMatches bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { WriteSucceeded bool; InvalidationSucceeded bool; VersionMatches bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=CacheReadPolicy(in.WriteSucceeded, in.InvalidationSucceeded, in.VersionMatches); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "WriteSucceeded": true,
+      "InvalidationSucceeded": true,
+      "VersionMatches": true
+    }
+  ],
+  "public_expected": [
+    "cache"
+  ],
+  "private_input": [
+    {
+      "WriteSucceeded": true,
+      "InvalidationSucceeded": false,
+      "VersionMatches": true
+    },
+    {
+      "WriteSucceeded": true,
+      "InvalidationSucceeded": true,
+      "VersionMatches": false
+    },
+    {
+      "WriteSucceeded": false,
+      "InvalidationSucceeded": true,
+      "VersionMatches": true
+    }
+  ],
+  "private_expected": [
+    "source",
+    "source",
+    "source"
+  ]
+}

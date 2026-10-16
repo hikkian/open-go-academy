@@ -1,0 +1,34 @@
+{
+  "id": "senior-11-medium",
+  "signature": "func RateScope(authenticated, tenantKnown bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Authenticated bool; TenantKnown bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(RateScope(in.Authenticated, in.TenantKnown)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Authenticated": false,
+      "TenantKnown": false
+    },
+    {
+      "Authenticated": true,
+      "TenantKnown": false
+    }
+  ],
+  "public_expected": [
+    "anonymous",
+    "invalid-scope"
+  ],
+  "private_input": [
+    {
+      "Authenticated": true,
+      "TenantKnown": true
+    },
+    {
+      "Authenticated": false,
+      "TenantKnown": true
+    }
+  ],
+  "private_expected": [
+    "tenant",
+    "anonymous"
+  ]
+}

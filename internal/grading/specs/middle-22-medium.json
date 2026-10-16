@@ -1,0 +1,54 @@
+{
+  "id": "middle-22-medium",
+  "signature": "func RefilledTokensMedium(available, capacity, elapsedSeconds, refillPerSecond, cost int64) int64",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Available int64;Capacity int64;ElapsedSeconds int64;RefillPerSecond int64;Cost int64}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RefilledTokensMedium(x.Available,x.Capacity,x.ElapsedSeconds,x.RefillPerSecond,x.Cost));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Available": 4,
+      "Capacity": 10,
+      "ElapsedSeconds": 2,
+      "RefillPerSecond": 2,
+      "Cost": 7
+    },
+    {
+      "Available": 9,
+      "Capacity": 10,
+      "ElapsedSeconds": 9,
+      "RefillPerSecond": 2,
+      "Cost": 10
+    },
+    {
+      "Available": 1,
+      "Capacity": 5,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 1,
+      "Cost": 3
+    }
+  ],
+  "public_expected": [
+    1,
+    0,
+    -1
+  ],
+  "private_input": [
+    {
+      "Available": 0,
+      "Capacity": 5,
+      "ElapsedSeconds": 4,
+      "RefillPerSecond": 1,
+      "Cost": 2
+    },
+    {
+      "Available": 6,
+      "Capacity": 5,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 1,
+      "Cost": 1
+    }
+  ],
+  "private_expected": [
+    2,
+    -1
+  ]
+}

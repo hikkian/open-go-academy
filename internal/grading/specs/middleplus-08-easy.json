@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-08-easy",
+  "signature": "func IndexOrder(equalityColumns, sortColumns int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { EqualityColumns int; SortColumns int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=IndexOrder(in.EqualityColumns, in.SortColumns); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "EqualityColumns": 2,
+      "SortColumns": 1
+    }
+  ],
+  "public_expected": [
+    "equality_then_sort"
+  ],
+  "private_input": [
+    {
+      "EqualityColumns": 0,
+      "SortColumns": 2
+    },
+    {
+      "EqualityColumns": -1,
+      "SortColumns": 1
+    }
+  ],
+  "private_expected": [
+    "sort_only",
+    "invalid"
+  ]
+}

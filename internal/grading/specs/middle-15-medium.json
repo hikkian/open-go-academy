@@ -1,0 +1,56 @@
+{
+  "id": "middle-15-medium",
+  "signature": "func IdempotencyStateMedium(found bool, payloadMatches bool, completed bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Found bool; PayloadMatches bool; Completed bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(IdempotencyStateMedium(x.Found, x.PayloadMatches, x.Completed));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Found": false,
+      "PayloadMatches": false,
+      "Completed": false
+    },
+    {
+      "Found": true,
+      "PayloadMatches": false,
+      "Completed": false
+    },
+    {
+      "Found": true,
+      "PayloadMatches": true,
+      "Completed": false
+    },
+    {
+      "Found": true,
+      "PayloadMatches": true,
+      "Completed": true
+    }
+  ],
+  "public_expected": [
+    "new",
+    "conflict",
+    "in_progress",
+    "replay"
+  ],
+  "private_input": [
+    {
+      "Found": false,
+      "PayloadMatches": true,
+      "Completed": true
+    },
+    {
+      "Found": true,
+      "PayloadMatches": false,
+      "Completed": true
+    },
+    {
+      "Found": true,
+      "PayloadMatches": true,
+      "Completed": false
+    }
+  ],
+  "private_expected": [
+    "new",
+    "conflict",
+    "in_progress"
+  ]
+}

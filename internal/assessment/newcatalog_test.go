@@ -22,12 +22,24 @@ func TestCatalogAndFrozenZeroCriteria(t *testing.T) {
 		t.Fatal("new rank requirement not bound to legacy policy hash")
 	}
 	all := All()
-	if len(all) != 3 {
+	if len(all) != 6 {
 		t.Fatalf("catalog has %d exams", len(all))
 	}
-	for _, e := range all[1:] {
+	for _, e := range all[1:3] {
 		if e.Version != "1.0.0" || len(e.Questions) != 20 || len(e.Tasks) != 3 {
 			t.Errorf("incomplete exam %s: %s questions=%d tasks=%d", e.ID, e.Version, len(e.Questions), len(e.Tasks))
+		}
+	}
+	advancedIDs := []string{"middle-exam", "middleplus-exam", "senior-exam"}
+	for i, id := range advancedIDs {
+		e := all[i+3]
+		if e.ID != id || e.Version != "1.0.0" || len(e.Questions) != 15 || len(e.Tasks) != 3 {
+			t.Errorf("incomplete advanced exam %s: %+v", id, e)
+		}
+		for _, exerciseID := range e.Prerequisites {
+			if strings.Contains(exerciseID, ":") {
+				t.Errorf("advanced prerequisite %q is not an exercise ID", exerciseID)
+			}
 		}
 	}
 	if e, ok := Find("junior-core", ""); !ok || e.RequiredRank != "Zero" {
@@ -66,7 +78,7 @@ func TestNewExamTrustedReferencesPassProductionPrivateRequests(t *testing.T) {
 	if _, err := os.Stat(goBin); err != nil {
 		goBin = "go"
 	}
-	for _, exam := range All()[1:] {
+	for _, exam := range All()[1:3] {
 		for _, task := range exam.Tasks {
 			exam, task := exam, task
 			t.Run(exam.ID+"/"+task.ID, func(t *testing.T) {

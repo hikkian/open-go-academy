@@ -1,0 +1,34 @@
+{
+  "id": "senior-01-hard",
+  "signature": "func NextStep(reversible, highImpact bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Reversible bool; Highimpact bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(NextStep(in.Reversible, in.Highimpact)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Reversible": false,
+      "HighImpact": true
+    },
+    {
+      "Reversible": true,
+      "HighImpact": true
+    }
+  ],
+  "public_expected": [
+    "evidence-first",
+    "timeboxed-trial"
+  ],
+  "private_input": [
+    {
+      "Reversible": false,
+      "HighImpact": false
+    },
+    {
+      "Reversible": true,
+      "HighImpact": false
+    }
+  ],
+  "private_expected": [
+    "owner-review",
+    "timeboxed-trial"
+  ]
+}

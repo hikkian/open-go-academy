@@ -1,0 +1,49 @@
+{
+  "id": "middle-23-hard",
+  "signature": "func ProjectionEventActionHard(current, incoming int64, deleted, alreadyApplied bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Current int64;Incoming int64;Deleted bool;AlreadyApplied bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(ProjectionEventActionHard(x.Current,x.Incoming,x.Deleted,x.AlreadyApplied));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Current": 4,
+      "Incoming": 5,
+      "Deleted": false,
+      "AlreadyApplied": false
+    },
+    {
+      "Current": 4,
+      "Incoming": 5,
+      "Deleted": true,
+      "AlreadyApplied": false
+    },
+    {
+      "Current": 8,
+      "Incoming": 7,
+      "Deleted": false,
+      "AlreadyApplied": false
+    }
+  ],
+  "public_expected": [
+    "refresh",
+    "invalidate",
+    "ignore"
+  ],
+  "private_input": [
+    {
+      "Current": 5,
+      "Incoming": 5,
+      "Deleted": true,
+      "AlreadyApplied": true
+    },
+    {
+      "Current": -1,
+      "Incoming": 2,
+      "Deleted": false,
+      "AlreadyApplied": false
+    }
+  ],
+  "private_expected": [
+    "duplicate",
+    "invalid"
+  ]
+}

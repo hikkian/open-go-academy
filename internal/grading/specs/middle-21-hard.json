@@ -1,0 +1,49 @@
+{
+  "id": "middle-21-hard",
+  "signature": "func CacheFailurePolicyHard(fresh, staleAllowed, backendAvailable, staleData bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Fresh bool;StaleAllowed bool;BackendAvailable bool;StaleData bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(CacheFailurePolicyHard(x.Fresh,x.StaleAllowed,x.BackendAvailable,x.StaleData));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Fresh": true,
+      "StaleAllowed": false,
+      "BackendAvailable": false,
+      "StaleData": false
+    },
+    {
+      "Fresh": false,
+      "StaleAllowed": true,
+      "BackendAvailable": false,
+      "StaleData": true
+    },
+    {
+      "Fresh": false,
+      "StaleAllowed": false,
+      "BackendAvailable": true,
+      "StaleData": true
+    }
+  ],
+  "public_expected": [
+    "serve_fresh",
+    "serve_stale",
+    "load"
+  ],
+  "private_input": [
+    {
+      "Fresh": false,
+      "StaleAllowed": false,
+      "BackendAvailable": false,
+      "StaleData": true
+    },
+    {
+      "Fresh": false,
+      "StaleAllowed": true,
+      "BackendAvailable": false,
+      "StaleData": false
+    }
+  ],
+  "private_expected": [
+    "unavailable",
+    "unavailable"
+  ]
+}

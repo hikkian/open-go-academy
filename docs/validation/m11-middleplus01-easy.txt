@@ -1,0 +1,7 @@
+2026-10-16 Asia/Atyrau
+Command:
+scripts/go.sh test -overlay=/tmp/middleplus_01_easy_overlay.json ./internal/content -run '^TestMiddlePlus01EasyScopedOverlay$' -count=1
+
+Result: PASS. The scoped overlay exercised production LoadFor, BindReference, Request, Check, starter compilation and trusted reference execution. Word count reported 2,123; order=81 and prerequisite middle-40 preserved.
+
+Corrected operation: before-after; same units/comparable workload; positive=improvement, negative=regression, zero=equal; inputs bounded [0, MaxInt64]. Public/private vectors include after>before.

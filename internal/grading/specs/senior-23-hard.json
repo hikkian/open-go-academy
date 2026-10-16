@@ -1,0 +1,24 @@
+{
+  "id": "senior-23-hard",
+  "signature": "func DefenseStatus(openRisks, reviewerSigned int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { OpenRisks int `json:\"openRisks\"`; ReviewerSigned int `json:\"reviewerSigned\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(DefenseStatus(in.OpenRisks, in.ReviewerSigned)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "openRisks": 2,
+      "reviewerSigned": 1
+    }
+  ],
+  "public_expected": [
+    "reviewed_with_risks"
+  ],
+  "private_input": [
+    {
+      "openRisks": 0,
+      "reviewerSigned": 0
+    }
+  ],
+  "private_expected": [
+    "not_reviewed"
+  ]
+}

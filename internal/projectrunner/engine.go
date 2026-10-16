@@ -19,6 +19,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"academy/internal/projects"
 	"academy/internal/runner"
 )
 
@@ -26,6 +27,8 @@ const jobTimeout = 180 * time.Second
 const cleanupTimeout = 20 * time.Second
 const maxCommandOutput = 32 << 10
 const readinessTimeout = 35 * time.Second
+const p3CheckerVersion = "taskflow-v1"
+const projectRuntimePolicyVersion = "rootless-oci-policy-v1"
 
 type command func(context.Context, []byte, ...string) ([]byte, error)
 type engine struct {
@@ -34,6 +37,9 @@ type engine struct {
 	run        command
 	install    string
 	poisoned   atomic.Bool
+	p3Enabled  atomic.Bool
+	p4Enabled  atomic.Bool
+	p5Enabled  atomic.Bool
 	checkerSeq atomic.Uint32
 }
 
@@ -74,6 +80,15 @@ func New(cfg Config) (Engine, error) {
 	defer cancel()
 	if err := e.preflight(ctx); err != nil {
 		return nil, err
+	}
+	if out, capErr := e.pod(ctx, "image", "inspect", "--format", "{{ index .Config.Labels \"academy.checker.p3\" }}", cfg.CheckerImage); capErr == nil && strings.TrimSpace(string(out)) == "taskflow-v1" {
+		e.p3Enabled.Store(true)
+	}
+	if out, capErr := e.pod(ctx, "image", "inspect", "--format", "{{ index .Config.Labels \"academy.checker.p4\" }}", cfg.CheckerImage); capErr == nil && strings.TrimSpace(string(out)) == p4CheckerVersion {
+		e.p4Enabled.Store(true)
+	}
+	if out, capErr := e.pod(ctx, "image", "inspect", "--format", "{{ index .Config.Labels \"academy.checker.p5\" }}", cfg.CheckerImage); capErr == nil && strings.TrimSpace(string(out)) == p5CheckerVersion {
+		e.p5Enabled.Store(true)
 	}
 	if err := e.reconcile(ctx); err != nil {
 		return nil, err
@@ -130,8 +145,13 @@ func (e *engine) preflight(ctx context.Context) error {
 	if err != nil || strings.TrimSpace(string(out)) != "true v2" {
 		return errors.New("rootless Podman with cgroup v2 is required")
 	}
-	for _, img := range []string{e.cfg.GoImage, e.cfg.CheckerImage, e.cfg.PostgresImage} {
+	for _, img := range []string{e.cfg.GoImage, e.cfg.CheckerImage} {
 		if _, err = e.pod(ctx, "image", "exists", img); err != nil {
+			return errors.New("required immutable project image is not cached")
+		}
+	}
+	if e.cfg.PostgresImage != "" {
+		if _, err = e.pod(ctx, "image", "exists", e.cfg.PostgresImage); err != nil {
 			return errors.New("required immutable project image is not cached")
 		}
 	}
@@ -139,6 +159,79 @@ func (e *engine) preflight(ctx context.Context) error {
 }
 func (e *engine) Available(ctx context.Context) bool {
 	return !e.poisoned.Load() && e.preflight(ctx) == nil
+}
+func (e *engine) SupportsProject(projectID string) bool {
+	return projectID == "p2" || projectID == "p3" && e.p3Enabled.Load() || projectID == "p4" && e.p4Enabled.Load() || projectID == "p5" && e.p5Enabled.Load()
+}
+
+func (e *engine) ProjectProfile(projectID string) (EvaluationProfile, bool) {
+	if projectID != "p3" && projectID != "p4" && projectID != "p5" || !e.SupportsProject(projectID) {
+		return EvaluationProfile{}, false
+	}
+	if !validImage(e.cfg.GoImage) || !validImage(e.cfg.CheckerImage) || projectID == "p3" && !validImage(e.cfg.PostgresImage) {
+		return EvaluationProfile{}, false
+	}
+	project, ok := projects.Find(projectID)
+	if !ok || project.Version == "" {
+		return EvaluationProfile{}, false
+	}
+	criteriaHash, ok := projects.CriteriaHash(projectID)
+	if !ok {
+		return EvaluationProfile{}, false
+	}
+	mod, sum, ok := projects.ModulePolicy(projectID)
+	if !ok {
+		return EvaluationProfile{}, false
+	}
+	moduleHash := sha256.Sum256([]byte(mod))
+	sumHash := sha256.Sum256([]byte(sum))
+	checkerDigest := imageDigest(e.cfg.CheckerImage)
+	if checkerDigest == "" {
+		return EvaluationProfile{}, false
+	}
+	checkerVersion, rubricVersion := p3CheckerVersion, "taskflow-automatic-v1"
+	if projectID == "p4" {
+		checkerVersion, rubricVersion = p4CheckerVersion, "scalelab-deterministic-v1"
+		// The trusted P4 oracle is the compiled host-side test overlay. Its source
+		// digest, rather than the Go runtime image digest, is the checker identity.
+		oracleDigest := sha256.Sum256([]byte(p4AcceptanceTests))
+		checkerDigest = "sha256:" + hex.EncodeToString(oracleDigest[:])
+	}
+	if projectID == "p5" {
+		checkerVersion, rubricVersion = p5CheckerVersion, "capstone-deterministic-v1"
+		oracleDigest := sha256.Sum256([]byte(p5AcceptanceTests + "\x00" + p5ArtifactPolicy))
+		checkerDigest = "sha256:" + hex.EncodeToString(oracleDigest[:])
+	}
+	profile := EvaluationProfile{
+		ProjectVersion: project.Version,
+		CriteriaHash:   criteriaHash,
+		CheckerVersion: checkerVersion,
+		CheckerDigest:  checkerDigest,
+		RubricVersion:  rubricVersion,
+	}
+	policyFields := []string{projectRuntimePolicyVersion, projectID, project.Version, checkerVersion, e.cfg.GoImage, e.cfg.CheckerImage, criteriaHash, hex.EncodeToString(moduleHash[:]), hex.EncodeToString(sumHash[:])}
+	if projectID == "p3" {
+		policyFields = append(policyFields, e.cfg.PostgresImage)
+	}
+	policyHash := sha256.Sum256([]byte(strings.Join(policyFields, "\x00")))
+	profile.RuntimePolicyHash = "sha256:" + hex.EncodeToString(policyHash[:])
+	rubricHash := sha256.Sum256([]byte(strings.Join([]string{profile.RubricVersion, checkerVersion, checkerDigest, criteriaHash}, "\x00")))
+	profile.RubricHash = "sha256:" + hex.EncodeToString(rubricHash[:])
+	return profile, true
+}
+
+func imageDigest(reference string) string {
+	if strings.HasPrefix(reference, "sha256:") && validImage(reference) {
+		return reference
+	}
+	marker := "@sha256:"
+	if index := strings.LastIndex(reference, marker); index > 0 {
+		digest := reference[index+1:]
+		if validImage(digest) {
+			return digest
+		}
+	}
+	return ""
 }
 func (e *engine) labels(job string) []string {
 	return []string{"--label", "academy.project-runner=true", "--label", "academy.install=" + e.install, "--label", "academy.job=" + job}
@@ -212,6 +305,15 @@ func (e *engine) Execute(parent context.Context, req Request) (result runner.Res
 	if err := validate(req, e.cfg); err != nil {
 		return runner.Result{}, err
 	}
+	if req.ProjectID == "p3" && !e.SupportsProject("p3") {
+		return runner.Result{}, errors.New("TaskFlow checker profile is unavailable")
+	}
+	if req.ProjectID == "p4" && !e.SupportsProject("p4") {
+		return runner.Result{}, errors.New("ScaleLab checker profile is unavailable")
+	}
+	if req.ProjectID == "p5" && !e.SupportsProject("p5") {
+		return runner.Result{}, errors.New("Capstone checker profile is unavailable")
+	}
 	select {
 	case e.slot <- struct{}{}:
 		defer func() { <-e.slot }()
@@ -223,6 +325,12 @@ func (e *engine) Execute(parent context.Context, req Request) (result runner.Res
 	}
 	ctx, cancel := context.WithTimeout(parent, jobTimeout)
 	defer cancel()
+	if req.ProjectID == "p4" {
+		return e.runP4(ctx, req)
+	}
+	if req.ProjectID == "p5" {
+		return e.runP5(ctx, req)
+	}
 	job, err := randomHex(12)
 	if err != nil {
 		return runner.Result{}, err
@@ -278,9 +386,9 @@ func (e *engine) Execute(parent context.Context, req Request) (result runner.Res
 	app := name("app")
 	var build []byte
 	if req.Action == "test" {
-		build, err = e.runStudent(ctx, app, db, files, dsn, true, labels)
+		build, err = e.runStudent(ctx, req.ProjectID, app, db, files, dsn, true, labels)
 	} else {
-		build, err = e.runStudent(ctx, app, db, files, dsn, false, labels)
+		build, err = e.runStudent(ctx, req.ProjectID, app, db, files, dsn, false, labels)
 	}
 	if err != nil {
 		result := runner.Result{Status: "error", ExitCode: 1}
@@ -290,7 +398,14 @@ func (e *engine) Execute(parent context.Context, req Request) (result runner.Res
 		return result, nil
 	}
 	if req.Action == "run" {
-		checked, diagnostics, readyErr := e.waitReady(ctx, job, db, app, labels)
+		var checked checkerOutput
+		var diagnostics []byte
+		var readyErr error
+		if req.ProjectID == "p3" {
+			checked, diagnostics, readyErr = e.waitLiveness(ctx, job, db, app, req.ProjectID, labels)
+		} else {
+			checked, diagnostics, readyErr = e.waitReady(ctx, job, db, app, req.ProjectID, labels)
+		}
 		if readyErr != nil {
 			msg := "Сервер не прошёл проверку готовности."
 			if len(diagnostics) > 0 {
@@ -303,6 +418,13 @@ func (e *engine) Execute(parent context.Context, req Request) (result runner.Res
 	if req.Action == "test" {
 		return runner.Result{Status: "ok", ExitCode: 0, Stdout: bounded(redact(string(build), bootstrapPass, appPass, dsn)), Passed: false, Checks: []runner.Check{{Name: "Пользовательские Go-тесты выполнены (результат требует ревью)", Passed: true}}}, nil
 	}
+	if req.ProjectID == "p3" {
+		result, err = e.submitTaskFlow(ctx, job, db, app, dsn, labels, files)
+		if err != nil {
+			return runner.Result{}, err
+		}
+		return result, nil
+	}
 	result, err = e.submit(ctx, job, db, app, dsn, labels, files)
 	if err != nil {
 		return runner.Result{}, err
@@ -310,7 +432,15 @@ func (e *engine) Execute(parent context.Context, req Request) (result runner.Res
 	return result, nil
 }
 
-func (e *engine) waitReady(ctx context.Context, job, db, app string, labels []string) (checkerOutput, []byte, error) {
+func (e *engine) waitReady(ctx context.Context, job, db, app, projectID string, labels []string) (checkerOutput, []byte, error) {
+	return e.waitProbe(ctx, job, db, app, projectID, labels, false)
+}
+
+func (e *engine) waitLiveness(ctx context.Context, job, db, app, projectID string, labels []string) (checkerOutput, []byte, error) {
+	return e.waitProbe(ctx, job, db, app, projectID, labels, true)
+}
+
+func (e *engine) waitProbe(ctx context.Context, job, db, app, projectID string, labels []string, liveness bool) (checkerOutput, []byte, error) {
 	deadline := time.Now().Add(readinessTimeout)
 	var latest checkerOutput
 	for {
@@ -319,7 +449,15 @@ func (e *engine) waitReady(ctx context.Context, job, db, app string, labels []st
 			logs, _ := e.pod(ctx, "logs", app)
 			return latest, logs, errors.New("student server exited before readiness")
 		}
-		out, err := e.runChecker(ctx, job, db, labels, checkerInput{Phase: "health", BaseURL: "http://127.0.0.1:8097"})
+		phase := "health"
+		checkName := healthCheckName(projectID)
+		if liveness {
+			phase = "liveness"
+			if projectID == "p3" {
+				checkName = "livez"
+			}
+		}
+		out, err := e.runChecker(ctx, job, db, labels, checkerInput{ProjectID: projectID, Phase: phase, BaseURL: taskBaseURL(projectID)})
 		if err != nil {
 			return latest, nil, err
 		}
@@ -329,7 +467,7 @@ func (e *engine) waitReady(ctx context.Context, job, db, app string, labels []st
 			if strings.TrimSpace(check.Name) == "" {
 				return latest, nil, errors.New("invalid checker check")
 			}
-			if check.Name == "healthz" {
+			if check.Name == checkName {
 				hasHealth, ready = true, check.Passed
 			}
 		}
@@ -361,11 +499,17 @@ func (e *engine) waitDB(ctx context.Context, db string) error {
 		}
 	}
 }
-func (e *engine) runStudent(ctx context.Context, app, db string, files []byte, dsn string, tests bool, labels []string) ([]byte, error) {
+func (e *engine) runStudent(ctx context.Context, projectID, app, db string, files []byte, dsn string, tests bool, labels []string) ([]byte, error) {
 	waiter := "while [ ! -f /work/READY ]; do sleep 0.1; done; cd /work/src && go build -mod=readonly -o /work/build/server . && exec /work/build/server"
 	args := []string{"run", "--pull=never", "-d", "--name", app}
 	args = append(args, labels...)
-	args = append(args, "--stop-timeout=0", "--log-driver=k8s-file", "--log-opt=max-size=32kb", "--network", "container:"+db, "--user", "65532:65532", "--read-only", "--cap-drop=all", "--security-opt=no-new-privileges", "--http-proxy=false", "--cpus=1", "--memory=1536m", "--memory-swap=1536m", "--pids-limit=128", "--tmpfs", "/tmp:rw,noexec,nosuid,nodev,size=128m", "--tmpfs", "/work:rw,nosuid,nodev,size=512m", "--tmpfs", "/cache:rw,nosuid,nodev,size=512m", "-e", "HOME=/tmp", "-e", "GOPROXY=off", "-e", "GOSUMDB=off", "-e", "GOTOOLCHAIN=local", "-e", "CGO_ENABLED=0", "-e", "GOFLAGS=", "-e", "GOMODCACHE=/opt/academy/gomod", "-e", "GOCACHE=/cache", "-e", "GOTMPDIR=/work/build", "-e", "LINKHUB_ADDR=0.0.0.0:8097", "-e", "LINKHUB_ORIGIN=http://127.0.0.1:8097", "-e", "LINKHUB_DATABASE_URL="+dsn, e.cfg.GoImage, "/bin/sh", "-c", waiter)
+	args = append(args, "--stop-timeout=0", "--log-driver=k8s-file", "--log-opt=max-size=32kb", "--network", "container:"+db, "--user", "65532:65532", "--read-only", "--cap-drop=all", "--security-opt=no-new-privileges", "--http-proxy=false", "--cpus=1", "--memory=1536m", "--memory-swap=1536m", "--pids-limit=128", "--tmpfs", "/tmp:rw,noexec,nosuid,nodev,size=128m", "--tmpfs", "/work:rw,nosuid,nodev,size=512m", "--tmpfs", "/cache:rw,nosuid,nodev,size=512m", "-e", "HOME=/tmp", "-e", "GOPROXY=off", "-e", "GOSUMDB=off", "-e", "GOTOOLCHAIN=local", "-e", "CGO_ENABLED=0", "-e", "GOFLAGS=", "-e", "GOMODCACHE=/opt/academy/gomod", "-e", "GOCACHE=/cache", "-e", "GOTMPDIR=/work/build")
+	if projectID == "p3" {
+		args = append(args, "-e", "TASKFLOW_ADDR=0.0.0.0:8098", "-e", "TASKFLOW_DATABASE_URL="+dsn)
+	} else {
+		args = append(args, "-e", "LINKHUB_ADDR=0.0.0.0:8097", "-e", "LINKHUB_ORIGIN=http://127.0.0.1:8097", "-e", "LINKHUB_DATABASE_URL="+dsn)
+	}
+	args = append(args, e.cfg.GoImage, "/bin/sh", "-c", waiter)
 	if _, err := e.pod(ctx, args...); err != nil {
 		return nil, err
 	}
@@ -407,9 +551,10 @@ func redact(s string, secrets ...string) string {
 }
 
 type checkerInput struct {
-	Phase   string          `json:"phase"`
-	BaseURL string          `json:"base_url"`
-	State   json.RawMessage `json:"state,omitempty"`
+	ProjectID string          `json:"project_id,omitempty"`
+	Phase     string          `json:"phase"`
+	BaseURL   string          `json:"base_url"`
+	State     json.RawMessage `json:"state,omitempty"`
 }
 type checkerOutput struct {
 	Checks []runner.Check  `json:"checks"`
@@ -467,12 +612,12 @@ func (e *engine) persistedFixtureCheck(ctx context.Context, db string, appRole s
 }
 
 func (e *engine) submit(ctx context.Context, job, db, app, dsn string, labels []string, files []byte) (runner.Result, error) {
-	ready, _, err := e.waitReady(ctx, job, db, app, labels)
+	ready, _, err := e.waitReady(ctx, job, db, app, "p2", labels)
 	if err != nil {
 		return runner.Result{Status: "error", ExitCode: 1, Passed: false, Checks: ready.Checks, Stderr: "Сервер не прошёл проверку готовности."}, nil
 	}
 	// Trusted checker executes in its own image and receives only its JSON protocol on stdin.
-	first, err := e.runChecker(ctx, job, db, labels, checkerInput{Phase: "initial", BaseURL: "http://127.0.0.1:8097"})
+	first, err := e.runChecker(ctx, job, db, labels, checkerInput{ProjectID: "p2", Phase: "initial", BaseURL: "http://127.0.0.1:8097"})
 	if err != nil {
 		return runner.Result{}, err
 	}
@@ -481,14 +626,14 @@ func (e *engine) submit(ctx context.Context, job, db, app, dsn string, labels []
 		return runner.Result{}, errors.New("cannot stop phase-one server")
 	}
 	app2 := "academy-" + job + "-app2"
-	if _, err = e.runStudent(ctx, app2, db, files, dsn, false, labels); err != nil {
+	if _, err = e.runStudent(ctx, "p2", app2, db, files, dsn, false, labels); err != nil {
 		return runner.Result{Status: "error", ExitCode: 1}, nil
 	}
-	ready2, _, err := e.waitReady(ctx, job, db, app2, labels)
+	ready2, _, err := e.waitReady(ctx, job, db, app2, "p2", labels)
 	if err != nil {
 		return runner.Result{Status: "error", ExitCode: 1, Passed: false, Checks: append(ready.Checks, ready2.Checks...), Stderr: "Сервер после перезапуска не прошёл проверку готовности."}, nil
 	}
-	second, err := e.runChecker(ctx, job, db, labels, checkerInput{Phase: "persistence", BaseURL: "http://127.0.0.1:8097", State: first.State})
+	second, err := e.runChecker(ctx, job, db, labels, checkerInput{ProjectID: "p2", Phase: "persistence", BaseURL: "http://127.0.0.1:8097", State: first.State})
 	if err != nil {
 		return runner.Result{}, err
 	}
@@ -513,6 +658,11 @@ func (e *engine) submit(ctx context.Context, job, db, app, dsn string, labels []
 }
 
 func (e *engine) runChecker(ctx context.Context, job, db string, labels []string, input checkerInput) (checkerOutput, error) {
+	// Keep the original P2 checker protocol byte-compatible with already-built
+	// immutable P2 images; the new discriminator is required only by P3.
+	if input.ProjectID == "p2" {
+		input.ProjectID = ""
+	}
 	checker := "academy-" + job + "-checker-" + input.Phase + "-" + fmt.Sprint(e.checkerSeq.Add(1))
 	b, _ := json.Marshal(input)
 	args := []string{"run", "--pull=never", "--rm", "--name", checker}

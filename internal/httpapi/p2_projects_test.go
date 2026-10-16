@@ -62,6 +62,17 @@ func TestP2RoutesSeparateWorkerPolicyAndEvidence(t *testing.T) {
 	}
 	if w := request("POST", "/p2/submit", map[string]any{"files": files}); w.Code != 200 {
 		t.Fatal(w.Code, w.Body.String())
+	} else {
+		var result struct {
+			ManualReviewRequired bool     `json:"manual_review_required"`
+			ManualReviewLabels   []string `json:"manual_review_labels"`
+		}
+		if err := json.Unmarshal(w.Body.Bytes(), &result); err != nil {
+			t.Fatal(err)
+		}
+		if !result.ManualReviewRequired || len(result.ManualReviewLabels) != 3 {
+			t.Fatalf("P2 review boundary missing: %+v", result)
+		}
 	}
 	if len(worker.calls) != 1 || worker.calls[0].ProjectID != "p2" {
 		t.Fatal("wrong execution boundary")

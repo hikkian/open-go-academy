@@ -1,0 +1,46 @@
+{
+  "id": "middle-05-medium",
+  "signature": "func RemainingDeadline(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(RemainingDeadline(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      900,
+      500,
+      100
+    ],
+    [
+      200,
+      500,
+      250
+    ]
+  ],
+  "public_expected": [
+    [
+      400
+    ],
+    [
+      0
+    ]
+  ],
+  "private_input": [
+    [
+      1,
+      2,
+      3
+    ],
+    [
+      -1,
+      2,
+      0
+    ]
+  ],
+  "private_expected": [
+    [
+      0
+    ],
+    [
+      0
+    ]
+  ]
+}

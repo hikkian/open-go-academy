@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-06-easy",
+  "signature": "func ProfileDelta(before, after int64) int64",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Before int64; After int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ProfileDelta(in.Before, in.After); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Before": 100,
+      "After": 75
+    }
+  ],
+  "public_expected": [
+    25
+  ],
+  "private_input": [
+    {
+      "Before": 75,
+      "After": 100
+    },
+    {
+      "Before": 10,
+      "After": 10
+    }
+  ],
+  "private_expected": [
+    -25,
+    0
+  ]
+}

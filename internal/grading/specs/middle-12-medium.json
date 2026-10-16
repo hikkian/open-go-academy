@@ -1,0 +1,57 @@
+{
+  "id": "middle-12-medium",
+  "signature": "func ConditionalUpdate(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(ConditionalUpdate(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      10,
+      3,
+      3,
+      12
+    ],
+    [
+      10,
+      3,
+      2,
+      12
+    ]
+  ],
+  "public_expected": [
+    [
+      12,
+      4,
+      1
+    ],
+    [
+      10,
+      3,
+      0
+    ]
+  ],
+  "private_input": [
+    [
+      1,
+      -1,
+      -1,
+      2
+    ],
+    [
+      1,
+      2,
+      2
+    ]
+  ],
+  "private_expected": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ]
+  ]
+}

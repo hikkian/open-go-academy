@@ -1,0 +1,80 @@
+{
+  "id": "middle-34-medium",
+  "signature": "func BackoffMillis(attempt, baseMillis, maxMillis int) int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Attempt int `json:\"attempt\"`; BaseMillis int `json:\"baseMillis\"`; MaxMillis int `json:\"maxMillis\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(BackoffMillis(in.Attempt, in.BaseMillis, in.MaxMillis)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "attempt": 2,
+      "baseMillis": 100,
+      "maxMillis": 1000
+    }
+  ],
+  "public_expected": [
+    400
+  ],
+  "private_input": [
+    {
+      "attempt": -1,
+      "baseMillis": 100,
+      "maxMillis": 1000
+    },
+    {
+      "attempt": 1,
+      "baseMillis": -1,
+      "maxMillis": 1000
+    },
+    {
+      "attempt": 1,
+      "baseMillis": 100,
+      "maxMillis": -1
+    },
+    {
+      "attempt": 0,
+      "baseMillis": 100,
+      "maxMillis": 1000
+    },
+    {
+      "attempt": 2,
+      "baseMillis": 100,
+      "maxMillis": 1000
+    },
+    {
+      "attempt": 10,
+      "baseMillis": 100,
+      "maxMillis": 500
+    },
+    {
+      "attempt": 1,
+      "baseMillis": 400,
+      "maxMillis": 500
+    },
+    {
+      "attempt": 100,
+      "baseMillis": 0,
+      "maxMillis": 500
+    },
+    {
+      "attempt": 0,
+      "baseMillis": 500,
+      "maxMillis": 0
+    },
+    {
+      "attempt": 1000000000,
+      "baseMillis": 0,
+      "maxMillis": 500
+    }
+  ],
+  "private_expected": [
+    0,
+    0,
+    0,
+    100,
+    400,
+    500,
+    500,
+    0,
+    0,
+    0
+  ]
+}

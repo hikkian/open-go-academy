@@ -26,9 +26,10 @@ const (
 )
 
 type request struct {
-	Phase   string          `json:"phase"`
-	BaseURL string          `json:"base_url"`
-	State   json.RawMessage `json:"state,omitempty"`
+	ProjectID string          `json:"project_id,omitempty"`
+	Phase     string          `json:"phase"`
+	BaseURL   string          `json:"base_url"`
+	State     json.RawMessage `json:"state,omitempty"`
 }
 type check struct {
 	Name   string `json:"name"`
@@ -78,19 +79,46 @@ func main() {
 		emit(response{Checks: []check{{Name: "protocol.target", Passed: false}}})
 		return
 	}
+	projectID := req.ProjectID
+	if projectID == "" {
+		projectID = "p2"
+	}
+	if projectID != "p2" && projectID != "p3" {
+		c.add("protocol.project", false)
+		emit(response{Checks: c.checks})
+		return
+	}
 	var state any
-	if req.Phase != "health" && req.Phase != "initial" && req.Phase != "persistence" {
+	if req.Phase != "health" && req.Phase != "liveness" && req.Phase != "initial" && req.Phase != "persistence" {
 		c.add("protocol.phase", false)
 		emit(response{Checks: c.checks})
 		return
 	}
 	switch req.Phase {
 	case "health":
-		c.add("healthz", c.call("GET", "/healthz", nil, nil, 200, nil) == nil)
+		if projectID == "p3" {
+			c.taskFlowReadiness()
+		} else {
+			c.add("healthz", c.call("GET", "/healthz", nil, nil, 200, nil) == nil)
+		}
+	case "liveness":
+		if projectID == "p3" {
+			c.taskFlowLiveness()
+		} else {
+			c.add("healthz", c.call("GET", "/healthz", nil, nil, 200, nil) == nil)
+		}
 	case "initial":
-		state = c.initial()
+		if projectID == "p3" {
+			state = c.taskFlowInitial()
+		} else {
+			state = c.initial()
+		}
 	case "persistence":
-		state = c.persistence(req.State)
+		if projectID == "p3" {
+			state = c.taskFlowPersistence(req.State)
+		} else {
+			state = c.persistence(req.State)
+		}
 	default:
 		c.add("protocol.phase", false)
 	}

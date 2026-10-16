@@ -1,0 +1,26 @@
+Open Go Academy — current-tree technical verification
+Date: 2026-10-16 Asia/Atyrau
+
+Command:
+`GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-current-fullmake-20261016 make test`
+
+Result: PASS (exit code 0). Repeated after adding the advanced-rank guard and P3 immutable evidence storage; every full run passed.
+
+The Make target completed `go test ./...`, P1 reference `go test` and `go vet`, repository-wide `go vet ./...`, `go test -race ./...`, frontend TypeScript typecheck, and Vite production build. The pinned Go binary is `.tools/go/bin/go` version go1.27.2 linux/amd64. GOPROXY and GOSUMDB were disabled for this run.
+
+This is technical code/build evidence. The full M11 draft-catalog acceptance is a separate opt-in gate and is not implied by this report.
+
+Advanced-rank guard follow-up after expanding the test matrix to Middle/Middle+/Senior:
+- Focused store/API tests and `go vet ./internal/store ./internal/httpapi` — PASS.
+- `go test -race -count=1 ./internal/store ./internal/httpapi -run 'TestAdvancedRankEvidenceErrorIsAConflict|TestAdvancedExamCannotAwardWithoutProjectEvidencePolicy'` — PASS.
+- The rejection preserves the grading inputs without writing score/checks/award; API interruption supports a clean new attempt. Current exam catalog still exposes only Zero, Junior and Junior+.
+
+After the full Make runs, the final P3 success-banner copy was shortened to avoid repeating review labels. Latest frontend `npm run typecheck` and `npm run build` passed, and the isolated P3 desktop Playwright suite passed 2/2 with Run/Test/Submit, review labels, 45/45 checks and restore coverage.
+
+Latest full run also compiled and tested migration 0007, canonical project/evaluation storage, execution-profile transport and P3 evidence API/UI. Targeted property-style hashing, persistence/replay, failed/error outcome, no-rank, store/API and projectrunner tests pass; the focused browser evidence is in `docs/validation/p3-project-evidence.txt` and `docs/validation/p3-browser-acceptance.txt`.
+
+2026-10-16 rank-policy integration follow-up:
+- `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-rank-evidence-fullmake-20261016 make test` — PASS. The complete `make test` sequence returned successfully: `go test ./...`, P1 reference tests/vet, `go vet ./...`, `go test -race ./...`, frontend TypeScript typecheck and Vite production build.
+- Focused store/API tests passed with exact P3 project-evidence bindings and advanced-award fail-closed behavior. Focused `go test -race` for evidence linking/eligibility and scoped `go vet` passed. Detailed coverage and limitations are in `docs/validation/project-rank-evidence-progress.txt`.
+- `npm run test:progress` — PASS on desktop/light and mobile/dark after progress descriptions were updated to distinguish fixture-backed evidence links from actual advanced exam policies.
+- No actual advanced rank policy is in the HTTP exam catalog; no Middle/Middle+/Senior rank award was enabled.

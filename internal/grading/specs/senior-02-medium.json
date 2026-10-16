@@ -1,0 +1,34 @@
+{
+  "id": "senior-02-medium",
+  "signature": "func ErrorClass(total, failures int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Total int64; Failures int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(ErrorClass(in.Total, in.Failures)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Total": 100,
+      "Failures": 2
+    },
+    {
+      "Total": 100,
+      "Failures": 0
+    }
+  ],
+  "public_expected": [
+    "observed-errors",
+    "clean-sample"
+  ],
+  "private_input": [
+    {
+      "Total": 0,
+      "Failures": 0
+    },
+    {
+      "Total": 4,
+      "Failures": 5
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "middle-27-easy",
+  "signature": "func AccessDecision(principalTenant, resourceTenant string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { PrincipalTenant string `json:\"principalTenant\"`; ResourceTenant string `json:\"resourceTenant\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(AccessDecision(in.PrincipalTenant, in.ResourceTenant)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "principalTenant": "t1",
+      "resourceTenant": "t1"
+    },
+    {
+      "principalTenant": "",
+      "resourceTenant": "t1"
+    },
+    {
+      "principalTenant": "t1",
+      "resourceTenant": ""
+    }
+  ],
+  "public_expected": [
+    "tenant_match",
+    "invalid",
+    "invalid"
+  ],
+  "private_input": [
+    {
+      "principalTenant": "t1",
+      "resourceTenant": "t2"
+    },
+    {
+      "principalTenant": "T1",
+      "resourceTenant": "t1"
+    }
+  ],
+  "private_expected": [
+    "deny",
+    "deny"
+  ]
+}

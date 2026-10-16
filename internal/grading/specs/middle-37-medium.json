@@ -1,0 +1,63 @@
+{
+  "id": "middle-37-medium",
+  "signature": "func TaskAccess(authenticated, sameTenant, isOwner, canRead bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Authenticated bool `json:\"authenticated\"`; SameTenant bool `json:\"sameTenant\"`; IsOwner bool `json:\"isOwner\"`; CanRead bool `json:\"canRead\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(TaskAccess(in.Authenticated, in.SameTenant, in.IsOwner, in.CanRead)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "authenticated": true,
+      "sameTenant": true,
+      "isOwner": true,
+      "canRead": false
+    }
+  ],
+  "public_expected": [
+    "allow"
+  ],
+  "private_input": [
+    {
+      "authenticated": false,
+      "sameTenant": true,
+      "isOwner": true,
+      "canRead": true
+    },
+    {
+      "authenticated": false,
+      "sameTenant": false,
+      "isOwner": true,
+      "canRead": true
+    },
+    {
+      "authenticated": true,
+      "sameTenant": false,
+      "isOwner": true,
+      "canRead": true
+    },
+    {
+      "authenticated": true,
+      "sameTenant": true,
+      "isOwner": false,
+      "canRead": false
+    },
+    {
+      "authenticated": true,
+      "sameTenant": true,
+      "isOwner": true,
+      "canRead": false
+    },
+    {
+      "authenticated": true,
+      "sameTenant": true,
+      "isOwner": false,
+      "canRead": true
+    }
+  ],
+  "private_expected": [
+    "unauthenticated",
+    "unauthenticated",
+    "not_found",
+    "forbidden",
+    "allow",
+    "allow"
+  ]
+}

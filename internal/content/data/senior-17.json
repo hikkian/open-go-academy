@@ -1,0 +1,159 @@
+{
+  "id": "senior-17",
+  "title": "P5: migration и cutover",
+  "rank": "Senior",
+  "module": "senior-p5-architecture",
+  "prerequisites": [
+    "senior-16"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Спланировать expand-migrate-contract, сверку данных, обратимый cutover и предел rollback.",
+    "Сохранять alternatives, assumptions, risk, evidence и пересмотр в ADR/design doc.",
+    "Ограничивать вывод фактической проверкой и обозначать неизвестное."
+  ],
+  "glossary": [
+    {
+      "term": "quality attribute",
+      "translation": "атрибут качества",
+      "definition": "Измеримое свойство в конкретном сценарии."
+    },
+    {
+      "term": "ADR",
+      "translation": "запись архитектурного решения",
+      "definition": "Контекст, варианты, последствия, доказательства и триггер пересмотра."
+    },
+    {
+      "term": "trade-off",
+      "translation": "компромисс",
+      "definition": "Обмен одного свойства на другое."
+    },
+    {
+      "term": "rollback",
+      "translation": "откат",
+      "definition": "Возврат состояния при совместимости бинарника и данных."
+    },
+    {
+      "term": "human review",
+      "translation": "человеческое рецензирование",
+      "definition": "Оценка конкретной версии и артефакта в ограниченном scope."
+    }
+  ],
+  "markdown_file": "senior-17.md",
+  "order": 121,
+  "exercises": [
+    {
+      "id": "senior-17-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: P5: migration и cutover — рабочая запись",
+      "prompt": "Реализуйте `func MigrationPhase(expanded, backfillVerified, consumersMoved bool) string`. Составьте план expand/backfill/cutover/contract и классифицируйте текущие отметки: не expanded → expand; backfill не проверен → backfill; consumers не moved → cutover_ready; иначе contract_candidate. В отдельной таблице назовите проверку полноты и владельца каждой фазы; helper не считает строки и не запускает миграцию. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc MigrationPhase(expanded, backfillVerified, consumersMoved bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"expand\"\n",
+      "criteria": [
+        "Точно реализовать контракт `MigrationPhase` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-17-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: P5: migration и cutover — decision artifact",
+      "prompt": "Реализуйте `func RollbackWindow(dataCompatible, oldVersionAvailable bool) string`. Для миграционного окна оцените доступность старого binary и совместимость уже записанных данных: нет binary → no_binary_rollback; иначе несовместимые данные → data_blocked; иначе rollback_available. Отдельно опишите тест downgrade/forward recovery и предел окна; две отметки не доказывают восстановимость. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RollbackWindow(dataCompatible, oldVersionAvailable bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"rollback_available\"\n",
+      "criteria": [
+        "Точно реализовать контракт `RollbackWindow` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-17-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: P5: migration и cutover — review пакет",
+      "prompt": "Реализуйте `func CutoverAllowed(shadowMatched, rollbackTested, ownerApproved bool) bool`. Подготовьте cutover review: shadow результаты сопоставлены, rollback проверен на disposable-копии, владелец одобрил переход. Helper true только при всех трёх отметках. В артефакте приложите критерий совпадения, команды и stop condition; helper не переключает трафик и не заменяет проверку миграции. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CutoverAllowed(shadowMatched, rollbackTested, ownerApproved bool) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Точно реализовать контракт `CutoverAllowed` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Зачем миграцию разбивают на expand/backfill/cutover/contract?",
+      "answer": "Чтобы старые и новые версии могли временно сосуществовать, а шаги имели stop/rollback границы."
+    },
+    {
+      "question": "Когда бинарный rollback недостаточен?",
+      "answer": "Когда новая схема или side effect уже несовместимы со старой версией."
+    },
+    {
+      "question": "Как проверить полноту backfill?",
+      "answer": "Сравнить контрольные агрегаты или выборку старого и нового представлений, зафиксировав правила расхождения."
+    },
+    {
+      "question": "Кто должен разрешать contract step?",
+      "answer": "Названный владелец данных после подтверждения всех consumers и окна возврата."
+    }
+  ]
+}

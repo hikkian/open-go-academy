@@ -1,0 +1,26 @@
+{
+  "id": "senior-15-medium",
+  "signature": "func ChangeCompatibility(additive, removesField, changesMeaning bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Additive bool `json:\"additive\"`; RemovesField bool `json:\"removesField\"`; ChangesMeaning bool `json:\"changesMeaning\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ChangeCompatibility(in.Additive, in.RemovesField, in.ChangesMeaning)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "additive": true,
+      "removesField": false,
+      "changesMeaning": false
+    }
+  ],
+  "public_expected": [
+    "candidate"
+  ],
+  "private_input": [
+    {
+      "additive": true,
+      "removesField": true,
+      "changesMeaning": false
+    }
+  ],
+  "private_expected": [
+    "breaking"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "middle-25-medium",
+  "signature": "func ServiceWiringMedium(repositoryBound, clockBound bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{RepositoryBound bool;ClockBound bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(ServiceWiringMedium(x.RepositoryBound,x.ClockBound));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "RepositoryBound": true,
+      "ClockBound": true
+    },
+    {
+      "RepositoryBound": false,
+      "ClockBound": true
+    },
+    {
+      "RepositoryBound": true,
+      "ClockBound": false
+    }
+  ],
+  "public_expected": [
+    "ready",
+    "missing_repository",
+    "missing_clock"
+  ],
+  "private_input": [
+    {
+      "RepositoryBound": false,
+      "ClockBound": false
+    }
+  ],
+  "private_expected": [
+    "missing_repository_and_clock"
+  ]
+}

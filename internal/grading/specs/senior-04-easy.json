@@ -1,0 +1,34 @@
+{
+  "id": "senior-04-easy",
+  "signature": "func CommandState(key, previous string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Key string; Previous string }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(CommandState(in.Key, in.Previous)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Key": "k-7",
+      "Previous": "k-7"
+    },
+    {
+      "Key": "k-8",
+      "Previous": "k-7"
+    }
+  ],
+  "public_expected": [
+    "replay",
+    "new"
+  ],
+  "private_input": [
+    {
+      "Key": "",
+      "Previous": ""
+    },
+    {
+      "Key": "k-1",
+      "Previous": ""
+    }
+  ],
+  "private_expected": [
+    "missing-key",
+    "new"
+  ]
+}

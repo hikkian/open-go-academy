@@ -1,0 +1,38 @@
+{
+  "id": "middle-19-easy",
+  "signature": "func RetryDelayEasy(attempt, baseMS, maximumMS int64) int64",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Attempt int64;BaseMS int64;MaximumMS int64}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RetryDelayEasy(x.Attempt,x.BaseMS,x.MaximumMS));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Attempt": 1,
+      "BaseMS": 10,
+      "MaximumMS": 100
+    },
+    {
+      "Attempt": 4,
+      "BaseMS": 10,
+      "MaximumMS": 50
+    },
+    {
+      "Attempt": 2,
+      "BaseMS": 80,
+      "MaximumMS": 30
+    }
+  ],
+  "public_expected": [
+    10,
+    50,
+    30
+  ],
+  "private_input": [
+    {
+      "Attempt": 0,
+      "BaseMS": 10,
+      "MaximumMS": 100
+    }
+  ],
+  "private_expected": [
+    0
+  ]
+}

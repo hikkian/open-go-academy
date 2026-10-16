@@ -1,0 +1,38 @@
+{
+  "id": "middle-20-hard",
+  "signature": "func PublishOutcomeHard(mandatory, brokerConfirm, returned bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Mandatory bool;BrokerConfirm bool;Returned bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(PublishOutcomeHard(x.Mandatory,x.BrokerConfirm,x.Returned));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Mandatory": true,
+      "BrokerConfirm": true,
+      "Returned": false
+    },
+    {
+      "Mandatory": true,
+      "BrokerConfirm": true,
+      "Returned": true
+    },
+    {
+      "Mandatory": false,
+      "BrokerConfirm": false,
+      "Returned": false
+    }
+  ],
+  "public_expected": [
+    "confirmed",
+    "unrouted",
+    "unknown"
+  ],
+  "private_input": [
+    {
+      "Mandatory": false,
+      "BrokerConfirm": true,
+      "Returned": false
+    }
+  ],
+  "private_expected": [
+    "confirmed"
+  ]
+}

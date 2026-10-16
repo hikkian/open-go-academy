@@ -1,0 +1,42 @@
+{
+  "id": "middle-10-easy",
+  "signature": "func BatchCount(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(BatchCount(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      10,
+      3
+    ],
+    [
+      4,
+      4
+    ]
+  ],
+  "public_expected": [
+    [
+      4
+    ],
+    [
+      1
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      3
+    ],
+    [
+      5,
+      0
+    ]
+  ],
+  "private_expected": [
+    [
+      0
+    ],
+    [
+      0
+    ]
+  ]
+}

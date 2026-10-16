@@ -1,0 +1,151 @@
+{
+  "id": "middle-38",
+  "title": "TaskFlow: outbox и ограниченный worker",
+  "rank": "Middle",
+  "module": "middle-taskflow",
+  "prerequisites": [
+    "middle-10",
+    "middle-16",
+    "middle-17",
+    "middle-18",
+    "middle-19",
+    "middle-20",
+    "middle-36",
+    "middle-37"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Связывать изменение домена и outbox intent одной транзакцией.",
+    "Обрабатывать повторную доставку через устойчивую идемпотентность, retry budget и dead-letter policy.",
+    "Понимать, что булевый helper не доказывает долговечное хранение или exactly-once effect."
+  ],
+  "glossary": [
+    {
+      "term": "outbox",
+      "translation": "исходящий журнал",
+      "definition": "Запись события в той же транзакции, что и доменное изменение."
+    },
+    {
+      "term": "at-least-once delivery",
+      "translation": "доставка минимум один раз",
+      "definition": "Модель доставки, допускающая повтор события после потери подтверждения."
+    },
+    {
+      "term": "idempotency",
+      "translation": "идемпотентность",
+      "definition": "Повтор одной команды не создаёт повторного бизнес-эффекта."
+    },
+    {
+      "term": "dead-letter queue",
+      "translation": "очередь необрабатываемых сообщений",
+      "definition": "Отдельное место для событий, исчерпавших политику повторов."
+    },
+    {
+      "term": "worker lease",
+      "translation": "аренда задачи worker",
+      "definition": "Временное владение задачей с восстановлением после истечения срока."
+    }
+  ],
+  "markdown_file": "middle-38.md",
+  "order": 78,
+  "exercises": [
+    {
+      "id": "middle-38-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: taskflow: outbox и ограниченный worker — базовое правило",
+      "prompt": "Реализуйте `func OutboxAction(committed, published bool) string`. Контракт: Нет commit→not_committed; уже published→ack; иначе publish. Проверяются только значения данной функции. Она не выполняет SQL, HTTP middleware, authn/authz сервиса, нагрузку или реальные проверки угроз.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc OutboxAction(committed, published bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"publish\"\n",
+      "criteria": [
+        "Точно выполнить контракт: Нет commit→not_committed; уже published→ack; иначе publish.",
+        "Проверить вектор на границе и отрицательный случай согласно условию.",
+        "Не трактовать helper как доказательство безопасности всего приложения или доступности системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает grader?",
+          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+        }
+      ]
+    },
+    {
+      "id": "middle-38-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: taskflow: outbox и ограниченный worker — граничная политика",
+      "prompt": "Реализуйте `func WorkerDisposition(attempt, maxAttempts int, transient, effectApplied bool) string`. Контракт: Некорректный счётчик→invalid; уже применён эффект→ack; постоянный сбой или лимит→dead_letter; иначе retry. Проверяются только значения данной функции. Она не выполняет SQL, HTTP middleware, authn/authz сервиса, нагрузку или реальные проверки угроз.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc WorkerDisposition(attempt, maxAttempts int, transient, effectApplied bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"retry\"\n",
+      "criteria": [
+        "Точно выполнить контракт: Некорректный счётчик→invalid; уже применён эффект→ack; постоянный сбой или лимит→dead_letter; иначе retry.",
+        "Проверить вектор на границе и отрицательный случай согласно условию.",
+        "Не трактовать helper как доказательство безопасности всего приложения или доступности системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает grader?",
+          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+        }
+      ]
+    },
+    {
+      "id": "middle-38-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: taskflow: outbox и ограниченный worker — helper-проверка (не доказательство безопасности)",
+      "prompt": "Реализуйте `func IdempotencyResult(key string, alreadyApplied bool) string`. Контракт: Пустой ключ→missing_key; повтор уже применённого события→duplicate_ack; иначе apply_once. Проверяются только значения данной функции. Она не выполняет SQL, HTTP middleware, authn/authz сервиса, нагрузку или реальные проверки угроз. Это warm-up helper check, не подтверждение Middle-компетентности и не security invariant; необходимое практическое доказательство собирается в P3 acceptance/review отдельно.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc IdempotencyResult(key string, alreadyApplied bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"duplicate_ack\"\n",
+      "criteria": [
+        "Точно выполнить контракт: Пустой ключ→missing_key; повтор уже применённого события→duplicate_ack; иначе apply_once. Эта задача — только helper-проверка; Middle-компетентность подтверждается отдельным P3 проектом/проверкой и не следует из этого результата.",
+        "Проверить вектор на границе и отрицательный случай согласно условию.",
+        "Не трактовать helper как доказательство безопасности всего приложения или доступности системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает grader?",
+          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Зачем outbox пишется в той же транзакции, что и доменное изменение?",
+      "answer": "Чтобы commit состояния и намерение публикации не разошлись в окне между независимыми записями."
+    },
+    {
+      "question": "Что делать, если публикация прошла, а подтверждение потерялось?",
+      "answer": "Ожидать повторную доставку и сделать обработчик идемпотентным по стабильному ключу."
+    },
+    {
+      "question": "Почему outbox не гарантирует exactly-once эффект?",
+      "answer": "Между publisher, брокером и consumer остаются повторная доставка и отдельные failure boundaries."
+    },
+    {
+      "question": "Как проверить повторный worker безопасно?",
+      "answer": "Подать один ключ повторно через integration test и сверить число бизнес-изменений и outbox статусов."
+    }
+  ]
+}

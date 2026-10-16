@@ -1,0 +1,151 @@
+{
+  "id": "middle-30",
+  "title": "Shutdown, readiness и drain",
+  "rank": "Middle",
+  "module": "middle-taskflow",
+  "prerequisites": [
+    "middle-05",
+    "middle-10",
+    "middle-29"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Прекратить приём, завершить ограниченное число работ в grace period и отменить оставшиеся.",
+    "Разделять unit helper checks и интеграционные доказательства.",
+    "Сохранять воспроизводимую проверку, риски и границы вывода."
+  ],
+  "glossary": [
+    {
+      "term": "authentication",
+      "translation": "аутентификация",
+      "definition": "Установление principal после проверки credential."
+    },
+    {
+      "term": "authorization",
+      "translation": "авторизация",
+      "definition": "Решение, разрешено ли действие над конкретным ресурсом."
+    },
+    {
+      "term": "tenant",
+      "translation": "граница владения",
+      "definition": "Область данных и полномочий отдельного владельца."
+    },
+    {
+      "term": "readiness",
+      "translation": "готовность",
+      "definition": "Возможность экземпляра принимать работу сейчас."
+    },
+    {
+      "term": "context cancellation",
+      "translation": "отмена контекста",
+      "definition": "Кооперативный сигнал остановить дочернюю работу."
+    },
+    {
+      "term": "outbox",
+      "translation": "исходящий журнал",
+      "definition": "Сохраняемое намерение публикации рядом с изменением данных."
+    }
+  ],
+  "markdown_file": "middle-30.md",
+  "order": 70,
+  "exercises": [
+    {
+      "id": "middle-30-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: shutdown, readiness и drain — базовое правило",
+      "prompt": "Реализуйте `func AdmissionState(shuttingDown, ready bool) string`. Контракт: Приоритет shuttingDown→draining, затем !ready→not_ready, иначе accepting. Проверяются только значения данной функции. Она не выполняет SQL, HTTP middleware, authn/authz сервиса, нагрузку или реальные проверки угроз.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc AdmissionState(shuttingDown, ready bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"accepting\"\n",
+      "criteria": [
+        "Точно выполнить контракт: Приоритет shuttingDown→draining, затем !ready→not_ready, иначе accepting.",
+        "Проверить вектор на границе и отрицательный случай согласно условию.",
+        "Не трактовать helper как доказательство безопасности всего приложения или доступности системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает grader?",
+          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+        }
+      ]
+    },
+    {
+      "id": "middle-30-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: shutdown, readiness и drain — граничная политика",
+      "prompt": "Реализуйте `func DrainDeadline(nowMillis, graceMillis int64) int64`. Оба аргумента — неотрицательные миллисекунды Unix epoch и длительности grace соответственно; это целочисленная политика, не замена `time.Time`/`time.Duration` и не сам механизм shutdown. Верните -1 при отрицательном аргументе или если сумма превысила `math.MaxInt64`; иначе верните точную сумму. Проверяются только значения функции.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc DrainDeadline(nowMillis, graceMillis int64) int64 {\n\t// Аргументы — миллисекунды Unix epoch и grace. Верните -1 при\n\t// отрицательном аргументе или сложении сверх MaxInt64.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "1500\n",
+      "criteria": [
+        "Вернуть -1 для отрицательных аргументов и при переполнении (`nowMillis > MaxInt64-graceMillis`); иначе вернуть сумму миллисекунд.",
+        "Проверить сумму ровно до MaxInt64, переполнение, отрицательные значения и пояснить, что числа означают Unix milliseconds, а не `time.Duration`.",
+        "Не трактовать helper как доказательство безопасности всего приложения или доступности системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает grader?",
+          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+        }
+      ]
+    },
+    {
+      "id": "middle-30-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: shutdown, readiness и drain — инвариант безопасности",
+      "prompt": "Реализуйте `func ShutdownAction(shuttingDown bool, active int, graceExpired bool) string`. Контракт: Не shutdown→serve; отрицательная active→invalid; ноль→stopped; grace истёк→cancel_remaining; иначе wait. Проверяются только значения данной функции. Она не выполняет SQL, HTTP middleware, authn/authz сервиса, нагрузку или реальные проверки угроз.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ShutdownAction(shuttingDown bool, active int, graceExpired bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"stopped\"\n",
+      "criteria": [
+        "Точно выполнить контракт: Не shutdown→serve; отрицательная active→invalid; ноль→stopped; grace истёк→cancel_remaining; иначе wait.",
+        "Проверить вектор на границе и отрицательный случай согласно условию.",
+        "Не трактовать helper как доказательство безопасности всего приложения или доступности системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает grader?",
+          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "В каком порядке выполняют graceful shutdown?",
+      "answer": "Снять readiness и прекратить admission, закрыть выдачу новой работы, ограниченно дождаться активных задач, затем отменить остаток и закрыть зависимости."
+    },
+    {
+      "question": "Что произойдёт с задачей, которая пережила grace period?",
+      "answer": "Она должна получить отмену и наблюдаемый исход; бесконечно ждать её нельзя."
+    },
+    {
+      "question": "Почему нельзя закрывать очередь, пока producer может писать?",
+      "answer": "Параллельная отправка в закрытый канал вызывает panic и нарушает владельца жизненного цикла."
+    },
+    {
+      "question": "Как проверить одновременный запрос и остановку?",
+      "answer": "Запустить конкурентный lifecycle test с активной работой, readiness transition и конечным shutdown deadline."
+    }
+  ]
+}

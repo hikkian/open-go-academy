@@ -1,0 +1,50 @@
+{
+  "id": "middle-04-hard",
+  "signature": "func BufferAccounting(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(BufferAccounting(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      3,
+      5,
+      2
+    ],
+    [
+      4,
+      2,
+      0
+    ]
+  ],
+  "public_expected": [
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      0
+    ]
+  ],
+  "private_input": [
+    [
+      2,
+      1,
+      3
+    ],
+    [
+      -1,
+      2,
+      0
+    ]
+  ],
+  "private_expected": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ]
+}

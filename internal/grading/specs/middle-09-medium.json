@@ -1,0 +1,44 @@
+{
+  "id": "middle-09-medium",
+  "signature": "func CancelChildren(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(CancelChildren(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "public_expected": [
+    [
+      1
+    ],
+    []
+  ],
+  "private_input": [
+    [
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "private_expected": [
+    [
+      0
+    ],
+    []
+  ]
+}

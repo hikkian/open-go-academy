@@ -17,10 +17,10 @@
   ],
   "private_input": [
     {
-      "Text": "🙂a🙂b"
+      "Text": "\ud83d\ude42a\ud83d\ude42b"
     },
     {
-      "Text": "ééøx"
+      "Text": "\u00e9\u00e9\u00f8x"
     },
     {
       "Text": ""
@@ -28,7 +28,7 @@
   ],
   "private_expected": [
     "a",
-    "ø",
+    "\u00f8",
     ""
   ]
 }

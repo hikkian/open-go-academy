@@ -1,0 +1,151 @@
+{
+  "id": "middleplus-13",
+  "title": "Оценка ёмкости и устойчивый запас",
+  "rank": "Middle+",
+  "module": "middleplus-scalelab",
+  "prerequisites": [
+    "middleplus-12"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 93,
+  "learning_outcomes": [
+    "Сопоставить поступающий поток с пределом обработки в одинаковых единицах.",
+    "Рассчитать бюджет после резерва без переполнения целочисленного произведения.",
+    "Принять решение within/over/invalid по безопасному расчетному бюджету и границе."
+  ],
+  "glossary": [
+    {
+      "term": "capacity",
+      "translation": "ёмкость",
+      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+    },
+    {
+      "term": "backpressure",
+      "translation": "обратное давление",
+      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+    },
+    {
+      "term": "queue depth",
+      "translation": "глубина очереди",
+      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+    },
+    {
+      "term": "retry budget",
+      "translation": "бюджет повторов",
+      "definition": "Верхняя граница попыток в заданном контексте."
+    },
+    {
+      "term": "outbox",
+      "translation": "исходящий журнал",
+      "definition": "Устойчивая запись о намерении опубликовать событие."
+    },
+    {
+      "term": "SLI/SLO",
+      "translation": "индикатор/цель уровня сервиса",
+      "definition": "Измеренный сигнал и явно заданная цель по окну."
+    },
+    {
+      "term": "baseline",
+      "translation": "исходный уровень",
+      "definition": "Закреплённое сравнимое состояние до изменения."
+    }
+  ],
+  "markdown_file": "middleplus-13.md",
+  "exercises": [
+    {
+      "id": "middleplus-13-easy",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: классификация capacity",
+      "prompt": "Реализуйте чистую функцию `func CapacityClass(workers int, arrival int) string`. Контракт: workers<=0 or arrival<0 => \"invalid\"; arrival>workers => \"over\"; otherwise \"within\".\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Единицы workers и arrival должны быть одинаковыми.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CapacityClass(workers int, arrival int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"within\"\n",
+      "criteria": [
+        "Классифицировать только диапазоны и отношение arrival к workers; это счетчик units/sec учебной модели, не benchmark.",
+        "Проверить ноль, точную границу, превышение и невалидные значения."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Единицы workers и arrival должны быть одинаковыми."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-13-medium",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: безопасный reserve budget",
+      "prompt": "Реализуйте чистую функцию `func CapacityBudget(workers int, reservePercent int) int`. Контракт: workers<=0 или reservePercent вне [0,100] => -1. Иначе верните floor(workers*(100-reservePercent)/100), вычислив без переполнения через частное и остаток.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Учебный резерв не является результатом нагрузочного измерения.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CapacityBudget(workers int, reservePercent int) int {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "100\n",
+      "criteria": [
+        "Вычислить резервный бюджет безопасно через quotient/remainder; -1 означает невалидный ввод, 100% резерв даёт нулевой бюджет.",
+        "Проверить reserve 0/1/99/100 и MaxInt без overflow."
+      ],
+      "self_check": [
+        {
+          "question": "Как доказать, что расчет не переполнится на MaxInt?",
+          "answer": "Разложить workers на частное и остаток по 100; произведение частного на долю не превышает workers, остаток меньше 100."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-13-hard",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: решение по capacity boundary",
+      "prompt": "Реализуйте чистую функцию `func CapacityDecision(workers int, arrival int, reservePercent int) string`. Контракт: workers<=0, arrival<0 или reservePercent вне [0,100] => \"invalid\". Рассчитайте безопасный бюджет как в Medium; arrival выше бюджета => \"over\", иначе \"within\".\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Формула избегает переполнения, но не измеряет фактическую пропускную способность.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CapacityDecision(workers int, arrival int, reservePercent int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"within\"\n",
+      "criteria": [
+        "Проверить входы, рассчитать безопасный бюджет и вернуть invalid/over/within, включая точное равенство на MaxInt.",
+        "Не приравнивать расчетный лимит к измеренной пропускной способности системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
+          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Формула избегает переполнения, но не измеряет фактическую пропускную способность."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Как связаны arrivals и service capacity в этой учебной модели?",
+      "answer": "Они сравнимы только при одинаковых единицах и окне; worker count сам по себе не является throughput measurement."
+    },
+    {
+      "question": "Что произойдёт при исчерпании reserve budget?",
+      "answer": "Политика должна ограничить admission или явно принять очередь; бесконечное накопление лишь переносит перегрузку."
+    },
+    {
+      "question": "Какой предел у расчётного capacity helper?",
+      "answer": "Он проверяет целочисленную границу фиксированной модели, но не измеряет CPU, память или downstream."
+    },
+    {
+      "question": "Какие факторы добавить перед экспериментом?",
+      "answer": "Сохранить workload, Go version, ресурсные лимиты и повторения, затем отдельно сравнить полезную пропускную способность и задержку."
+    }
+  ]
+}

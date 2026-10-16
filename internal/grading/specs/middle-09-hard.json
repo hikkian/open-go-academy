@@ -1,0 +1,50 @@
+{
+  "id": "middle-09-hard",
+  "signature": "func UnblockPlan(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(UnblockPlan(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      1,
+      2,
+      5
+    ],
+    [
+      1,
+      4,
+      3
+    ]
+  ],
+  "public_expected": [
+    [
+      4,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      2,
+      0
+    ],
+    [
+      2,
+      1,
+      4
+    ]
+  ],
+  "private_expected": [
+    [
+      0,
+      2
+    ],
+    [
+      4,
+      0
+    ]
+  ]
+}

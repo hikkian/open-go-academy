@@ -1,0 +1,154 @@
+{
+  "id": "middleplus-18",
+  "title": "Перегрузка, admission control и load shedding",
+  "rank": "Middle+",
+  "module": "middleplus-scalelab",
+  "prerequisites": [
+    "middleplus-17"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 98,
+  "learning_outcomes": [
+    "Построить и проверить ограниченную детерминированную policy/state transition для темы главы 18.",
+    "Различать валидные пороги, сигналы, состояния и недопустимые комбинации.",
+    "Описывать, какие гарантии требуют интеграционных данных или независимого human review."
+  ],
+  "glossary": [
+    {
+      "term": "capacity",
+      "translation": "ёмкость",
+      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+    },
+    {
+      "term": "backpressure",
+      "translation": "обратное давление",
+      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+    },
+    {
+      "term": "queue depth",
+      "translation": "глубина очереди",
+      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+    },
+    {
+      "term": "retry budget",
+      "translation": "бюджет повторов",
+      "definition": "Верхняя граница попыток в заданном контексте."
+    },
+    {
+      "term": "outbox",
+      "translation": "исходящий журнал",
+      "definition": "Устойчивая запись о намерении опубликовать событие."
+    },
+    {
+      "term": "SLI/SLO",
+      "translation": "индикатор/цель уровня сервиса",
+      "definition": "Измеренный сигнал и явно заданная цель по окну."
+    },
+    {
+      "term": "baseline",
+      "translation": "исходный уровень",
+      "definition": "Закреплённое сравнимое состояние до изменения."
+    }
+  ],
+  "markdown_file": "middleplus-18.md",
+  "exercises": [
+    {
+      "id": "middleplus-18-easy",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: перегрузка, admission control и load shedding — классификация",
+      "prompt": "Реализуйте чистую функцию `func LoadMode(offered int, capacity int) string`. Контракт: Отрицательные offered или capacity<=0 → invalid; offered<=capacity → normal, иначе overloaded.\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc LoadMode(offered int, capacity int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"normal\"\n\"normal\"\n",
+      "criteria": [
+        "Точно соблюдать контракт функции `func LoadMode(offered int, capacity int) string` и заданный приоритет ветвей.",
+        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
+        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает прохождение векторов?",
+          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-18-medium",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: перегрузка, admission control и load shedding — политика",
+      "prompt": "Реализуйте чистую функцию `func LoadDecision(offered int, capacity int, critical bool) string`. Контракт: Сначала invalid для offered<0 или capacity<=0; затем offered<=capacity → accept; перегрузка critical=true → prioritize, иначе shed.\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc LoadDecision(offered int, capacity int, critical bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"accept\"\n\"prioritize\"\n",
+      "criteria": [
+        "Точно соблюдать контракт функции `func LoadDecision(offered int, capacity int, critical bool) string` и заданный приоритет ветвей.",
+        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
+        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает прохождение векторов?",
+          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-18-hard",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: перегрузка, admission control и load shedding — проверка инварианта",
+      "prompt": "Реализуйте чистую функцию `func ProtectCritical(offered int, capacity int, critical bool, deadlineOK bool, queueAge int, maxQueueAge int) bool`. Контракт: Верните false для отрицательных offered/queueAge/maxQueueAge или capacity<=0. Для валидного входа разрешите всё, что offered<=capacity; при перегрузке — только critical=true, deadlineOK=true и queueAge<=maxQueueAge (граница включена).\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ProtectCritical(offered int, capacity int, critical bool, deadlineOK bool, queueAge int, maxQueueAge int) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\ntrue\n",
+      "criteria": [
+        "Точно соблюдать контракт функции `func ProtectCritical(offered int, capacity int, critical bool, deadlineOK bool, queueAge int, maxQueueAge int) bool` и заданный приоритет ветвей.",
+        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
+        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывает прохождение векторов?",
+          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Что определяет admission control?",
+      "answer": "Принять ли новую работу с учётом бюджета, приоритета и состояния downstream."
+    },
+    {
+      "question": "Как отличить shedding от бесконечного ожидания?",
+      "answer": "Shedding завершает часть запросов контролируемым отказом; ожидание должно быть ограничено queue и deadline."
+    },
+    {
+      "question": "Каков риск fallback для critical work?",
+      "answer": "Непродуманное отбрасывание может потерять важное действие; приоритет и гарантии хранения должны быть явными."
+    },
+    {
+      "question": "Как проверить overload recovery?",
+      "answer": "Сравнить bounded overload window с обычным режимом и подтвердить возврат latency/queue к исходному диапазону."
+    }
+  ]
+}

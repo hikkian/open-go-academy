@@ -1,0 +1,135 @@
+{
+  "id": "middleplus-11",
+  "title": "Модели согласованности для чтения",
+  "rank": "Middle+",
+  "module": "middleplus-data",
+  "prerequisites": [
+    "middleplus-10"
+  ],
+  "estimated_minutes": 210,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 91,
+  "learning_outcomes": [
+    "Связывать продуктовый контракт чтения с источником и временем видимости данных.",
+    "Read-your-writes, monotonic reads и eventual consistency имеют разные гарантии и стоимость.",
+    "Ограничить вывод рамками наблюдений и назвать следующий проверочный эксперимент."
+  ],
+  "glossary": [
+    {
+      "term": "consistency model",
+      "translation": "модель согласованности",
+      "definition": "Правила, определяющие какие значения допустимо наблюдать при чтении."
+    },
+    {
+      "term": "stale read",
+      "translation": "устаревшее чтение",
+      "definition": "Ответ, не включающий уже подтверждённые более новые изменения."
+    },
+    {
+      "term": "read-your-writes",
+      "translation": "чтение своей записи",
+      "definition": "Свойство, при котором клиент видит собственные завершённые записи."
+    }
+  ],
+  "markdown_file": "middleplus-11.md",
+  "exercises": [
+    {
+      "id": "middleplus-11-easy",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: выбери источник чтения",
+      "prompt": "Для read-your-writes выберите primary после записи или когда replica помечена stale; иначе replica. Булевы входы — предпосылки fixture, не запрос к БД.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ReadPolicy(wrote, replicaFresh bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"primary\"\n",
+      "criteria": [
+        "Сохранить read-your-writes.",
+        "Не считать freshness flag объективно подтверждённым."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Strong consistency может требовать более точного протокола, чем boolean lag flag."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-11-medium",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: проверь условия чтения с replica",
+      "prompt": "Replica безопасна в учебной политике только если запрос допускает stale данные, replica fresh и нет read-your-writes обязательства.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ReplicaSafeForRead(wrote, replicaFresh, staleTolerant bool) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Все три условия обязательны.",
+        "Уточнить, что boolean fresh — входной сигнал."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Consistency модели задают допустимую наблюдаемость записи, а не только физическое отставание."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-11-hard",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: маршрутизируй запрос по требованиям consistency",
+      "prompt": "Выберите primary, если запрос зависит от недавней записи, требует latest или replica stale; во всех прочих случаях — replica. Не считать это доказательством линейризуемости.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ConsistencySource(wrote, needsLatest, replicaFresh bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"replica\"\n",
+      "criteria": [
+        "Проверить каждое условие, требующее primary.",
+        "Не присваивать гарантию consistency только маршрутизации."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Для строгой гарантии нужны протоколы согласования/позиции WAL и корректная обработка гонок."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Что гарантирует eventual consistency?",
+      "answer": "При прекращении изменений и успешной доставке реплики со временем сходятся, но этот термин сам по себе не задаёт точный срок."
+    },
+    {
+      "question": "Что добавляет read-your-writes?",
+      "answer": "Клиент после своей успешной записи видит её результат в последующих чтениях в рамках заданной области гарантии."
+    },
+    {
+      "question": "Что такое monotonic reads?",
+      "answer": "Видимая версия для одного клиента не должна откатываться к более старому состоянию."
+    },
+    {
+      "question": "Почему sticky routing не покрывает все отказные сценарии?",
+      "answer": "Маршрут к primary помогает обычному read-after-write, но failover может сменить primary до применения подтверждённой записи."
+    },
+    {
+      "question": "Что нужно описать для каждого read path?",
+      "answer": "Допустимую свежесть, источник, поведение при lag или недоступности и точный fallback при deadline."
+    }
+  ]
+}

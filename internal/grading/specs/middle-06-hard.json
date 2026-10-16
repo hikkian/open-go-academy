@@ -1,0 +1,52 @@
+{
+  "id": "middle-06-hard",
+  "signature": "func TransferSequence(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(TransferSequence(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      10,
+      2,
+      3,
+      8,
+      1
+    ],
+    [
+      4,
+      5,
+      0
+    ]
+  ],
+  "public_expected": [
+    [
+      7,
+      5,
+      7,
+      5,
+      6,
+      6
+    ],
+    [
+      4,
+      5
+    ]
+  ],
+  "private_input": [
+    [
+      1,
+      1,
+      2
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "private_expected": [
+    [
+      1,
+      1
+    ],
+    []
+  ]
+}

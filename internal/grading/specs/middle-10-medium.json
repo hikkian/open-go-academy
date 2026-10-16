@@ -1,0 +1,46 @@
+{
+  "id": "middle-10-medium",
+  "signature": "func LeastLoadedWorker(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(LeastLoadedWorker(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      3,
+      4,
+      2,
+      5,
+      1
+    ],
+    [
+      2,
+      3,
+      1
+    ]
+  ],
+  "public_expected": [
+    [
+      0,
+      1,
+      2,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "private_input": [
+    [
+      0,
+      2
+    ],
+    [
+      2,
+      -1
+    ]
+  ],
+  "private_expected": [
+    [],
+    []
+  ]
+}

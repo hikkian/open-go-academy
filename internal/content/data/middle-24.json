@@ -1,0 +1,142 @@
+{
+  "id": "middle-24",
+  "title": "Граница Redis: данные не являются очередью",
+  "rank": "Middle",
+  "module": "middle-cache",
+  "prerequisites": [
+    "middle-16"
+  ],
+  "estimated_minutes": 150,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Сопоставлять назначение ключа и гарантию сохранности",
+    "Выявлять риск eviction и TTL",
+    "Выбирать durable queue для обязательной работы"
+  ],
+  "glossary": [
+    {
+      "term": "eviction",
+      "translation": "вытеснение",
+      "definition": "Удаление ключа из-за политики памяти"
+    },
+    {
+      "term": "durability",
+      "translation": "устойчивость хранения",
+      "definition": "Сохранение важного состояния после отказа"
+    },
+    {
+      "term": "queue",
+      "translation": "очередь сообщений",
+      "definition": "Система хранения работы с заданными правилами выдачи и подтверждения"
+    }
+  ],
+  "markdown_file": "middle-24.md",
+  "order": 64,
+  "exercises": [
+    {
+      "id": "middle-24-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Neutral role label — локальное правило",
+      "prompt": "Контракт `func RedisRoleEasy(durabilityRequired, replayable bool) string`: cache when durability is not required; otherwise return needs_review. Replayability alone says nothing about Redis persistence, write acknowledgement, consumer ownership, or recovery. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RedisRoleEasy(durabilityRequired, replayable bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"cache\"\n\"cache\"\n\"needs_review\"\n",
+      "criteria": [
+        "Контракт neutral role label выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-24-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Declared prerequisites — ветви политики",
+      "prompt": "Контракт `func RedisQueuePrerequisitesMedium(persistenceConfigured, writeAcknowledged, consumerRecovery, idempotentHandler bool) string`: return candidate_only when all four declared design prerequisites are true; otherwise needs_review. This does not verify actual Redis persistence settings, acknowledgement protocol, recovery behavior, or handler semantics. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RedisQueuePrerequisitesMedium(persistenceConfigured, writeAcknowledged, consumerRecovery, idempotentHandler bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"candidate_only\"\n\"needs_review\"\n\"needs_review\"\n",
+      "criteria": [
+        "Контракт declared prerequisites выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-24-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Queue suitability review — отказ и граница гарантии",
+      "prompt": "Контракт `func RedisQueueReviewHard(persistenceConfigured, writeAcknowledged, consumerRecovery, idempotentHandler, lossBudgetDefined bool) string`: return candidate_only only when persistence, acknowledged writes, consumer recovery, idempotent handling, and an explicit acceptable loss budget are all declared. Otherwise needs_review. Even candidate_only is a checklist result: it cannot inspect persistence mode, failover, replication, acknowledgement timing, or restart recovery of a live Redis deployment. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc RedisQueueReviewHard(persistenceConfigured, writeAcknowledged, consumerRecovery, idempotentHandler, lossBudgetDefined bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"candidate_only\"\n\"needs_review\"\n\"needs_review\"\n",
+      "criteria": [
+        "Контракт queue suitability review выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какую гарантию дает данный учебный пример?",
+      "answer": "Только соответствие описанному детерминированному контракту на заданных входах."
+    },
+    {
+      "question": "Что следует проверять отдельно в работающей системе?",
+      "answer": "Транзакции, ограничения хранения, повторные запросы, отказ и восстановление реальных зависимостей."
+    },
+    {
+      "question": "Можно ли сделать универсальный вывод по EXPLAIN/кешу/брокеру?",
+      "answer": "Нет. Нужны фактический движок, конфигурация и измеренный workload."
+    }
+  ]
+}

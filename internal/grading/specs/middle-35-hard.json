@@ -1,0 +1,50 @@
+{
+  "id": "middle-35-hard",
+  "signature": "func SafeExperiment(hasStopCondition, boundedScope, usesProductionData bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { HasStopCondition bool `json:\"hasStopCondition\"`; BoundedScope bool `json:\"boundedScope\"`; UsesProductionData bool `json:\"usesProductionData\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(SafeExperiment(in.HasStopCondition, in.BoundedScope, in.UsesProductionData)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "hasStopCondition": true,
+      "boundedScope": true,
+      "usesProductionData": false
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "hasStopCondition": true,
+      "boundedScope": true,
+      "usesProductionData": false
+    },
+    {
+      "hasStopCondition": false,
+      "boundedScope": true,
+      "usesProductionData": false
+    },
+    {
+      "hasStopCondition": true,
+      "boundedScope": false,
+      "usesProductionData": false
+    },
+    {
+      "hasStopCondition": true,
+      "boundedScope": true,
+      "usesProductionData": true
+    },
+    {
+      "hasStopCondition": false,
+      "boundedScope": false,
+      "usesProductionData": true
+    }
+  ],
+  "private_expected": [
+    true,
+    false,
+    false,
+    false,
+    false
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "id": "middle-34-easy",
+  "signature": "func RetryDecision(attempt, maxAttempts int, transient bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Attempt int `json:\"attempt\"`; MaxAttempts int `json:\"maxAttempts\"`; Transient bool `json:\"transient\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RetryDecision(in.Attempt, in.MaxAttempts, in.Transient)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "attempt": 1,
+      "maxAttempts": 3,
+      "transient": true
+    }
+  ],
+  "public_expected": [
+    "retry"
+  ],
+  "private_input": [
+    {
+      "attempt": -1,
+      "maxAttempts": 3,
+      "transient": true
+    },
+    {
+      "attempt": 0,
+      "maxAttempts": 0,
+      "transient": true
+    },
+    {
+      "attempt": 1,
+      "maxAttempts": 3,
+      "transient": false
+    },
+    {
+      "attempt": 3,
+      "maxAttempts": 3,
+      "transient": true
+    },
+    {
+      "attempt": 2,
+      "maxAttempts": 3,
+      "transient": true
+    },
+    {
+      "attempt": 3,
+      "maxAttempts": 3,
+      "transient": false
+    }
+  ],
+  "private_expected": [
+    "invalid",
+    "invalid",
+    "stop",
+    "exhausted",
+    "retry",
+    "stop"
+  ]
+}

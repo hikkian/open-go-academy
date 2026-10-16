@@ -1,0 +1,142 @@
+{
+  "id": "middle-26",
+  "title": "Валидация, доменная ошибка и транзакция",
+  "rank": "Middle",
+  "module": "middle-architecture",
+  "prerequisites": [
+    "middle-25"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Валидировать ввод до записи",
+    "Сопоставлять доменные ошибки с безопасным ответом",
+    "Связывать атомарные изменения одной транзакцией"
+  ],
+  "glossary": [
+    {
+      "term": "domain error",
+      "translation": "доменная ошибка",
+      "definition": "Стабильная категория ошибки правила продукта"
+    },
+    {
+      "term": "transaction",
+      "translation": "транзакция",
+      "definition": "Атомарная группа операций базы данных"
+    },
+    {
+      "term": "rollback",
+      "translation": "откат",
+      "definition": "Отмена незавершённых изменений транзакции"
+    }
+  ],
+  "markdown_file": "middle-26.md",
+  "order": 66,
+  "exercises": [
+    {
+      "id": "middle-26-easy",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "easy",
+      "title": "Validation boundary — локальное правило",
+      "prompt": "Контракт `func ValidationResultEasy(valid bool) string`: return invalid before a write when validation fails; otherwise ready_to_write. Does not commit a transaction. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ValidationResultEasy(valid bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"ready_to_write\"\n\"invalid\"\n",
+      "criteria": [
+        "Контракт validation boundary выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-26-medium",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "medium",
+      "title": "Safe error mapping — ветви политики",
+      "prompt": "Контракт `func HTTPStatusForDomainErrorMedium(code string) int`: map known stable domain categories invalid/conflict/not_found to 400/409/404; unknown or internal categories map to 500 without exposing database text. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc HTTPStatusForDomainErrorMedium(code string) int {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "400\n409\n404\n",
+      "criteria": [
+        "Контракт safe error mapping выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    },
+    {
+      "id": "middle-26-hard",
+      "kind": "function",
+      "skills": [
+        "backend",
+        "testing",
+        "go-core"
+      ],
+      "difficulty": "hard",
+      "title": "Transaction decision — отказ и граница гарантии",
+      "prompt": "Контракт `func TransactionOutcomeHard(valid, conflict, writeFailed, commitFailed bool) string`: validation fails => invalid before transaction; a conflict, write error, or commit error => rollback; only valid with no failure => commit_requested. The function cannot execute SQL, guarantee rollback, or establish atomicity. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc TransactionOutcomeHard(valid, conflict, writeFailed, commitFailed bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"commit_requested\"\n\"invalid\"\n\"rollback\"\n",
+      "criteria": [
+        "Контракт transaction decision выполнен для нормального, граничного и отказного векторов.",
+        "Ветки policy имеют явный приоритет и обработку invalid input.",
+        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+      ],
+      "self_check": [
+        {
+          "question": "Что подтверждает этот grader?",
+          "answer": "Только поведение локальной модели на переданных векторах."
+        },
+        {
+          "question": "Как подтвердить гарантию реальной зависимости?",
+          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какую гарантию дает данный учебный пример?",
+      "answer": "Только соответствие описанному детерминированному контракту на заданных входах."
+    },
+    {
+      "question": "Что следует проверять отдельно в работающей системе?",
+      "answer": "Транзакции, ограничения хранения, повторные запросы, отказ и восстановление реальных зависимостей."
+    },
+    {
+      "question": "Можно ли сделать универсальный вывод по EXPLAIN/кешу/брокеру?",
+      "answer": "Нет. Нужны фактический движок, конфигурация и измеренный workload."
+    }
+  ]
+}

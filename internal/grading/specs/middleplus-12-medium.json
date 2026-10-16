@@ -1,0 +1,32 @@
+{
+  "id": "middleplus-12-medium",
+  "signature": "func CacheEntryValid(ageSeconds, ttlSeconds int64, versionMatches bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { AgeSeconds int64; TTLSeconds int64; VersionMatches bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=CacheEntryValid(in.AgeSeconds, in.TTLSeconds, in.VersionMatches); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "AgeSeconds": 5,
+      "TTLSeconds": 10,
+      "VersionMatches": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "AgeSeconds": 10,
+      "TTLSeconds": 10,
+      "VersionMatches": true
+    },
+    {
+      "AgeSeconds": 1,
+      "TTLSeconds": 10,
+      "VersionMatches": false
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

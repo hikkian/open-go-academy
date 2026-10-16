@@ -1,0 +1,166 @@
+{
+  "id": "middleplus-24",
+  "title": "ScaleLab: SLI/SLO, отказ, выпуск и защита решения",
+  "rank": "Middle+",
+  "module": "middleplus-scalelab",
+  "prerequisites": [
+    "middleplus-23"
+  ],
+  "estimated_minutes": 180,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 104,
+  "learning_outcomes": [
+    "Объяснить и применить scalelab к ограниченной воспроизводимой модели.",
+    "Связать наблюдаемую метрику с ресурсом, окном и известными ограничениями.",
+    "Проверить граничные сценарии, восстановление и границы учебной модели."
+  ],
+  "glossary": [
+    {
+      "term": "capacity",
+      "translation": "ёмкость",
+      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+    },
+    {
+      "term": "backpressure",
+      "translation": "обратное давление",
+      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+    },
+    {
+      "term": "queue depth",
+      "translation": "глубина очереди",
+      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+    },
+    {
+      "term": "retry budget",
+      "translation": "бюджет повторов",
+      "definition": "Верхняя граница попыток в заданном контексте."
+    },
+    {
+      "term": "outbox",
+      "translation": "исходящий журнал",
+      "definition": "Устойчивая запись о намерении опубликовать событие."
+    },
+    {
+      "term": "SLI/SLO",
+      "translation": "индикатор/цель уровня сервиса",
+      "definition": "Измеренный сигнал и явно заданная цель по окну."
+    },
+    {
+      "term": "baseline",
+      "translation": "исходный уровень",
+      "definition": "Закреплённое сравнимое состояние до изменения."
+    }
+  ],
+  "markdown_file": "middleplus-24.md",
+  "exercises": [
+    {
+      "id": "middleplus-24-easy",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: scalelab: sli/slo, отказ, выпуск и защита решения — классификация",
+      "prompt": "Реализуйте `func ScaleLabDecision(baselineRuns, candidateRuns int) string`. Верните \"incomplete\", если хотя бы одно число прогонов <= 0; иначе верните \"compare\". Эта функция видит только два счётчика: она не проверяет Go version, dataset hash, одинаковость входов или реальные запуски.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ScaleLabDecision(baselineRuns int, candidateRuns int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"compare\"\n\"compare\"",
+      "criteria": [
+        "Вернуть incomplete при baselineRuns<=0 или candidateRuns<=0; иначе compare.",
+        "Проверить нулевые и отрицательные счётчики отдельно для baseline и candidate.",
+        "Не утверждать, что положительные числа подтверждают одинаковый вход или воспроизводимый benchmark."
+      ],
+      "self_check": [
+        {
+          "question": "Что означает compare в этой функции?",
+          "answer": "Только то, что оба переданных счётчика положительны; реальное сравнение результатов должно быть сделано отдельно."
+        },
+        {
+          "question": "Какие данные она не получает?",
+          "answer": "Версию Go, команду, dataset hash и сами результаты прогонов; их нужно записать в лабораторном evidence record."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-24-medium",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: scalelab: sli/slo, отказ, выпуск и защита решения — политика",
+      "prompt": "Реализуйте `func ScaleLabGate(baselineRuns, candidateRuns int, faultTested bool) string`. Если хотя бы один счётчик <3, верните \"repeat\". Иначе при faultTested=false верните \"fault_test\", а при true — \"review\". Функция не проверяет, что fault test действительно запускался, и не получает Go version, dataset hash или сами результаты.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ScaleLabGate(baselineRuns int, candidateRuns int, faultTested bool) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"review\"\n\"repeat\"\n\"repeat\"\n\"fault_test\"",
+      "criteria": [
+        "Проверять сначала оба порога повторов; любой счётчик <3 даёт repeat.",
+        "При достаточных повторах faultTested=false даёт fault_test, иначе review.",
+        "Считать faultTested только входным утверждением; не выдавать его за подтверждённый эксперимент или SLA."
+      ],
+      "self_check": [
+        {
+          "question": "Почему порядок порога повторов и faultTested важен?",
+          "answer": "Пока сравнимых повторов меньше заданного минимума, дальнейшие gates не должны сообщать review."
+        },
+        {
+          "question": "Доказывает ли true во входе, что отказ действительно тестировали?",
+          "answer": "Нет. Это лишь значение аргумента; запуск и наблюдение fault case подтверждаются отдельными артефактами."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-24-hard",
+      "kind": "function",
+      "skills": [
+        "reliability",
+        "performance",
+        "distributed-systems"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: scalelab: sli/slo, отказ, выпуск и защита решения — проверка инварианта",
+      "prompt": "Реализуйте `func ReleaseEvidence(baselineRuns, candidateRuns int, faultTested bool) bool`. Верните true ровно когда оба счётчика >=3 и faultTested=true. Сигнатура не получает Go version, dataset hash или флаг одинакового входа, поэтому функция не может подтвердить эти части воспроизводимости; зафиксируйте их отдельно в evidence record.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ReleaseEvidence(baselineRuns int, candidateRuns int, faultTested bool) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\ntrue\nfalse",
+      "criteria": [
+        "true только при baselineRuns>=3, candidateRuns>=3 и faultTested=true.",
+        "Отклонить недостаток повторов в любой выборке и false faultTested.",
+        "Не называть true подтверждением same input, реального fault run, безопасного rollout или универсальной performance claim."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно означает true у ReleaseEvidence?",
+          "answer": "Только выполнение трёх условий, доступных сигнатуре: число прогонов обеих выборок и булевый faultTested."
+        },
+        {
+          "question": "Как отдельно доказать одинаковость входа и версию Go?",
+          "answer": "Записать хэш набора, версию toolchain, команды и сырые результаты в воспроизводимом evidence record; текущая функция этого не читает."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какие артефакты делают ScaleLab повторяемым?",
+      "answer": "Вход/хэш, Go version, команда, число прогонов и результаты baseline/candidate."
+    },
+    {
+      "question": "Какую роль играет fault case в P4?",
+      "answer": "Он проверяет ограниченное поведение отказа; он не является нагрузкой на production."
+    },
+    {
+      "question": "Почему нельзя обобщать измеренное ускорение на другой workload?",
+      "answer": "Изменяются машина, вход, runtime и профиль нагрузки; результат относится к закреплённым условиям."
+    },
+    {
+      "question": "Какое evidence нужно перед рекомендацией о выпуске?",
+      "answer": "Сопоставимые измерения, корректность, failure result, rollout/rollback условия и открытые риски."
+    }
+  ]
+}

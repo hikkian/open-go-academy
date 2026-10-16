@@ -1,0 +1,24 @@
+{
+  "id": "middle-33-easy",
+  "signature": "func ErrorBand(total, failed int) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Total int `json:\"total\"`; Failed int `json:\"failed\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ErrorBand(in.Total, in.Failed)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "total": 100,
+      "failed": 1
+    }
+  ],
+  "public_expected": [
+    "errors"
+  ],
+  "private_input": [
+    {
+      "total": 0,
+      "failed": 0
+    }
+  ],
+  "private_expected": [
+    "no_sample"
+  ]
+}

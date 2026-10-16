@@ -1,0 +1,70 @@
+{
+  "id": "senior-exam-release-gate",
+  "signature": "func ReleaseGate(acceptancePassed, rollbackReady, independentReviewApproved, highRiskOpen bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { AcceptancePassed bool `json:\"acceptancePassed\"`; RollbackReady bool `json:\"rollbackReady\"`; IndependentReviewApproved bool `json:\"independentReviewApproved\"`; HighRiskOpen bool `json:\"highRiskOpen\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ReleaseGate(in.AcceptancePassed, in.RollbackReady, in.IndependentReviewApproved, in.HighRiskOpen)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "acceptancePassed": true,
+      "rollbackReady": true,
+      "independentReviewApproved": true,
+      "highRiskOpen": false
+    },
+    {
+      "acceptancePassed": false,
+      "rollbackReady": true,
+      "independentReviewApproved": true,
+      "highRiskOpen": false
+    }
+  ],
+  "public_expected": [
+    true,
+    false
+  ],
+  "private_input": [
+    {
+      "acceptancePassed": true,
+      "rollbackReady": true,
+      "independentReviewApproved": true,
+      "highRiskOpen": true
+    },
+    {
+      "acceptancePassed": false,
+      "rollbackReady": true,
+      "independentReviewApproved": true,
+      "highRiskOpen": false
+    },
+    {
+      "acceptancePassed": true,
+      "rollbackReady": false,
+      "independentReviewApproved": true,
+      "highRiskOpen": false
+    },
+    {
+      "acceptancePassed": true,
+      "rollbackReady": true,
+      "independentReviewApproved": false,
+      "highRiskOpen": false
+    },
+    {
+      "acceptancePassed": false,
+      "rollbackReady": false,
+      "independentReviewApproved": false,
+      "highRiskOpen": true
+    },
+    {
+      "acceptancePassed": true,
+      "rollbackReady": true,
+      "independentReviewApproved": true,
+      "highRiskOpen": false
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    true
+  ]
+}

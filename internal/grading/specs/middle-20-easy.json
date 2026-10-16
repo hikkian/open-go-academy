@@ -1,0 +1,38 @@
+{
+  "id": "middle-20-easy",
+  "signature": "func TopologyReadyEasy(exchange, queue, binding bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Exchange bool;Queue bool;Binding bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(TopologyReadyEasy(x.Exchange,x.Queue,x.Binding));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Exchange": true,
+      "Queue": true,
+      "Binding": true
+    },
+    {
+      "Exchange": true,
+      "Queue": true,
+      "Binding": false
+    },
+    {
+      "Exchange": false,
+      "Queue": true,
+      "Binding": true
+    }
+  ],
+  "public_expected": [
+    true,
+    false,
+    false
+  ],
+  "private_input": [
+    {
+      "Exchange": true,
+      "Queue": false,
+      "Binding": true
+    }
+  ],
+  "private_expected": [
+    false
+  ]
+}

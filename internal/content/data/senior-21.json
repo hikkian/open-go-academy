@@ -1,0 +1,159 @@
+{
+  "id": "senior-21",
+  "title": "Стоимость и capacity planning",
+  "rank": "Senior",
+  "module": "senior-p5-architecture",
+  "prerequisites": [
+    "senior-20"
+  ],
+  "estimated_minutes": 270,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "learning_outcomes": [
+    "Оценить ресурсную стоимость по нагрузочной гипотезе, запасу и неизвестным, не выдавать цифры за бюджет.",
+    "Сохранять alternatives, assumptions, risk, evidence и пересмотр в ADR/design doc.",
+    "Ограничивать вывод фактической проверкой и обозначать неизвестное."
+  ],
+  "glossary": [
+    {
+      "term": "quality attribute",
+      "translation": "атрибут качества",
+      "definition": "Измеримое свойство в конкретном сценарии."
+    },
+    {
+      "term": "ADR",
+      "translation": "запись архитектурного решения",
+      "definition": "Контекст, варианты, последствия, доказательства и триггер пересмотра."
+    },
+    {
+      "term": "trade-off",
+      "translation": "компромисс",
+      "definition": "Обмен одного свойства на другое."
+    },
+    {
+      "term": "rollback",
+      "translation": "откат",
+      "definition": "Возврат состояния при совместимости бинарника и данных."
+    },
+    {
+      "term": "human review",
+      "translation": "человеческое рецензирование",
+      "definition": "Оценка конкретной версии и артефакта в ограниченном scope."
+    }
+  ],
+  "markdown_file": "senior-21.md",
+  "order": 125,
+  "exercises": [
+    {
+      "id": "senior-21-easy",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: Стоимость и capacity planning — рабочая запись",
+      "prompt": "Реализуйте `func MonthlyEstimate(units, unitCost int64) int64`. Рассчитайте синтетическую месячную статью units×unitCost: отрицательный ввод или overflow int64 → -1; иначе произведение. Укажите валюту, период, источник цены и включённые расходы отдельно; helper проверяет арифметику, а не реальную стоимость владения. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc MonthlyEstimate(units, unitCost int64) int64 {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "300\n",
+      "criteria": [
+        "Точно реализовать контракт `MonthlyEstimate` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-21-medium",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: Стоимость и capacity planning — decision artifact",
+      "prompt": "Реализуйте `func CapacityBand(demand, testedCapacity int) string`. Сравните demand и testedCapacity только в одинаковой единице и на том же workload: некорректные числа → invalid; demand>capacity → exceeds_test; demand≥80% capacity → near_tested_limit; иначе within_tested_range. Приложите пределы теста и метрику насыщения; результат не является гарантией будущей capacity. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CapacityBand(demand, testedCapacity int) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"within_tested_range\"\n",
+      "criteria": [
+        "Точно реализовать контракт `CapacityBand` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    },
+    {
+      "id": "senior-21-hard",
+      "kind": "function",
+      "skills": [
+        "systems-design",
+        "architecture",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: Стоимость и capacity planning — review пакет",
+      "prompt": "Реализуйте `func CostDecision(estimateValid, workloadMeasured, budgetOwner bool) bool`. Соберите cost review: расчёт проверен, workload измерен, владелец бюджета назван. Helper true только при всех трёх отметках. В артефакте покажите низкий/базовый/пиковый сценарии, допущения и cost driver; булевы входы не доказывают точность сметы или наличие согласия. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc CostDecision(estimateValid, workloadMeasured, budgetOwner bool) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Точно реализовать контракт `CostDecision` и его приоритет ветвей.",
+        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
+        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
+        "Не представлять результат helper или учебное evidence как проверку production-системы."
+      ],
+      "self_check": [
+        {
+          "question": "Что доказывают vectors?",
+          "answer": "Только соответствие детерминированной функции конкретным входам; они не подтверждают решение всей системы."
+        },
+        {
+          "question": "Каков необходимый следующий шаг?",
+          "answer": "Проверка контекста, интеграционный тест либо независимый review с сохранением неизвестных."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Какие компоненты входят в cost model?",
+      "answer": "Compute, storage, network, backup, сопровождение и стоимость отказа."
+    },
+    {
+      "question": "Что делает умножение unit cost на объём недостоверным?",
+      "answer": "Несовпадающие единицы, забытые пики, retention, region или незафиксированная версия цены."
+    },
+    {
+      "question": "Как показывать чувствительность оценки?",
+      "answer": "Назвать неизвестные, которые сильнее всего меняют итог, и дать диапазон/сценарий."
+    },
+    {
+      "question": "Как получить полезную capacity estimate?",
+      "answer": "Зафиксировать demand profile и измеренные ресурсы, затем сверить оценку с наблюдаемым пределом."
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "id": "middleplus-15-hard",
+  "signature": "func QueueAction(depth int, capacity int, oldestSeconds int, maxAgeSeconds int, consumerPaused bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Depth int `json:\"depth\"`; Capacity int `json:\"capacity\"`; OldestSeconds int `json:\"oldestSeconds\"`; MaxAgeSeconds int `json:\"maxAgeSeconds\"`; ConsumerPaused bool `json:\"consumerPaused\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { if err:=enc.Encode(QueueAction(in.Depth,in.Capacity,in.OldestSeconds,in.MaxAgeSeconds,in.ConsumerPaused)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "depth": 0,
+      "capacity": 4,
+      "oldestSeconds": 0,
+      "maxAgeSeconds": 60,
+      "consumerPaused": false
+    }
+  ],
+  "public_expected": [
+    "empty"
+  ],
+  "private_input": [
+    {
+      "depth": 1,
+      "capacity": 4,
+      "oldestSeconds": 59,
+      "maxAgeSeconds": 60,
+      "consumerPaused": false
+    },
+    {
+      "depth": 1,
+      "capacity": 4,
+      "oldestSeconds": 60,
+      "maxAgeSeconds": 60,
+      "consumerPaused": false
+    },
+    {
+      "depth": 4,
+      "capacity": 4,
+      "oldestSeconds": 1,
+      "maxAgeSeconds": 60,
+      "consumerPaused": false
+    },
+    {
+      "depth": 0,
+      "capacity": 4,
+      "oldestSeconds": 100,
+      "maxAgeSeconds": 60,
+      "consumerPaused": true
+    },
+    {
+      "depth": 1,
+      "capacity": 4,
+      "oldestSeconds": 1,
+      "maxAgeSeconds": 60,
+      "consumerPaused": true
+    },
+    {
+      "depth": 1,
+      "capacity": 4,
+      "oldestSeconds": -1,
+      "maxAgeSeconds": 60,
+      "consumerPaused": false
+    }
+  ],
+  "private_expected": [
+    "normal",
+    "stale",
+    "full",
+    "paused",
+    "paused",
+    "invalid"
+  ]
+}

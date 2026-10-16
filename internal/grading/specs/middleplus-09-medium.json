@@ -1,0 +1,29 @@
+{
+  "id": "middleplus-09-medium",
+  "signature": "func ValidPartitionRange(startDay, endDay int) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { StartDay int; EndDay int }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=ValidPartitionRange(in.StartDay, in.EndDay); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "StartDay": 1,
+      "EndDay": 10
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "StartDay": 10,
+      "EndDay": 9
+    },
+    {
+      "StartDay": 0,
+      "EndDay": 5
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}

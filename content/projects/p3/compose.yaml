@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:18.6-bookworm@sha256:9551dd5bf356409a21b31248f49b33bba9bb1877365f3a7e933aecd9af3cf52d
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?copy .env.example and set POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set a local random password in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-taskflow}
+    ports:
+      - "127.0.0.1:55433:5432"
+    volumes:
+      - taskflow-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+  api:
+    build:
+      context: reference
+    environment:
+      TASKFLOW_ADDR: 0.0.0.0:8098
+      TASKFLOW_DATABASE_URL: postgres://${POSTGRES_USER:-taskflow}:${POSTGRES_PASSWORD:?set a local random password in .env}@db:5432/${POSTGRES_DB:-taskflow}?sslmode=disable
+    ports:
+      - "127.0.0.1:8098:8098"
+    depends_on:
+      db:
+        condition: service_healthy
+    read_only: true
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    tmpfs: [/tmp]
+volumes:
+  taskflow-data:

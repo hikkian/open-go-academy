@@ -1,0 +1,24 @@
+{
+  "id": "senior-19-easy",
+  "signature": "func IncidentLevel(impact int, suspected bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Impact int `json:\"impact\"`; Suspected bool `json:\"suspected\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(IncidentLevel(in.Impact, in.Suspected)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "impact": 3,
+      "suspected": false
+    }
+  ],
+  "public_expected": [
+    "major"
+  ],
+  "private_input": [
+    {
+      "impact": 1,
+      "suspected": true
+    }
+  ],
+  "private_expected": [
+    "critical_review"
+  ]
+}

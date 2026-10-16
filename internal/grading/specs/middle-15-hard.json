@@ -1,0 +1,70 @@
+{
+  "id": "middle-15-hard",
+  "signature": "func IdempotencyRaceHard(inserted bool, payloadMatches bool, completed bool, hasStoredResponse bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Inserted bool; PayloadMatches bool; Completed bool; HasStoredResponse bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(IdempotencyRaceHard(x.Inserted, x.PayloadMatches, x.Completed, x.HasStoredResponse));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Inserted": true,
+      "PayloadMatches": false,
+      "Completed": false,
+      "HasStoredResponse": false
+    },
+    {
+      "Inserted": false,
+      "PayloadMatches": false,
+      "Completed": false,
+      "HasStoredResponse": false
+    },
+    {
+      "Inserted": false,
+      "PayloadMatches": true,
+      "Completed": false,
+      "HasStoredResponse": false
+    },
+    {
+      "Inserted": false,
+      "PayloadMatches": true,
+      "Completed": true,
+      "HasStoredResponse": true
+    },
+    {
+      "Inserted": false,
+      "PayloadMatches": true,
+      "Completed": true,
+      "HasStoredResponse": false
+    }
+  ],
+  "public_expected": [
+    "created",
+    "conflict",
+    "in_progress",
+    "replay",
+    "unknown_result"
+  ],
+  "private_input": [
+    {
+      "Inserted": true,
+      "PayloadMatches": true,
+      "Completed": true,
+      "HasStoredResponse": true
+    },
+    {
+      "Inserted": false,
+      "PayloadMatches": true,
+      "Completed": true,
+      "HasStoredResponse": false
+    },
+    {
+      "Inserted": false,
+      "PayloadMatches": true,
+      "Completed": true,
+      "HasStoredResponse": true
+    }
+  ],
+  "private_expected": [
+    "created",
+    "unknown_result",
+    "replay"
+  ]
+}

@@ -1,0 +1,10 @@
+2026-10-16 Asia/Atyrau
+
+First full opt-in M11 aggregate pass ran to completion with exit code 1:
+ACADEMY_ACCEPT_M11_DRAFTS=1 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off .tools/go/bin/go test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v
+
+Evidence: `.data/m11-aggregate-acceptance.log` (local, ignored).
+- 128-lesson candidate catalog loaded; sandbox Preflight passed.
+- All 265 documented Go example groups executed (one lesson has 4; all others have at least 3). No example failures.
+- All 264 M11 reference requests reached the isolated runner and production public/private Check with no runner/check failures in the log.
+- Sole three failures: `senior-02-{easy,medium,hard}` starters had `strin` instead of `string` in the embedded snapshot. The source has been corrected, and each current starter compiled with pinned Go 1.27.2 using `go test -run=^$ .` in a fresh temporary module (see command output from root run). A clean full rerun is required; first-run FAIL is not M11 acceptance.

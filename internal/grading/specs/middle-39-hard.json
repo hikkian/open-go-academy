@@ -1,0 +1,56 @@
+{
+  "id": "middle-39-hard",
+  "signature": "func ReleaseEvidence(unit, race, failure, boundedLoad bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Unit bool `json:\"unit\"`; Race bool `json:\"race\"`; Failure bool `json:\"failure\"`; BoundedLoad bool `json:\"boundedLoad\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ReleaseEvidence(in.Unit, in.Race, in.Failure, in.BoundedLoad)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "unit": true,
+      "race": true,
+      "failure": true,
+      "boundedLoad": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "unit": true,
+      "race": true,
+      "failure": true,
+      "boundedLoad": true
+    },
+    {
+      "unit": false,
+      "race": true,
+      "failure": true,
+      "boundedLoad": true
+    },
+    {
+      "unit": true,
+      "race": false,
+      "failure": true,
+      "boundedLoad": true
+    },
+    {
+      "unit": true,
+      "race": true,
+      "failure": false,
+      "boundedLoad": true
+    },
+    {
+      "unit": true,
+      "race": true,
+      "failure": true,
+      "boundedLoad": false
+    }
+  ],
+  "private_expected": [
+    true,
+    false,
+    false,
+    false,
+    false
+  ]
+}

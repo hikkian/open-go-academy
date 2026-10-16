@@ -1,0 +1,46 @@
+{
+  "id": "middle-11-hard",
+  "signature": "func SerializationRetryBudget(values []int) []int",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\";\"os\")\nfunc main(){var cases [][]int;if e:=json.Unmarshal([]byte(os.Args[1]),&cases);e!=nil{panic(e)};enc:=json.NewEncoder(os.Stdout);for _,in:=range cases{if e:=enc.Encode(SerializationRetryBudget(in));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    [
+      5,
+      2,
+      1
+    ],
+    [
+      3,
+      3,
+      0
+    ]
+  ],
+  "public_expected": [
+    [
+      3
+    ],
+    [
+      0
+    ]
+  ],
+  "private_input": [
+    [
+      4,
+      1,
+      9
+    ],
+    [
+      -1,
+      0,
+      0
+    ]
+  ],
+  "private_expected": [
+    [
+      3
+    ],
+    [
+      0
+    ]
+  ]
+}

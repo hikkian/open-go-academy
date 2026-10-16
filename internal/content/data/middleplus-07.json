@@ -1,0 +1,135 @@
+{
+  "id": "middleplus-07",
+  "title": "Селективность и выбор SQL-плана",
+  "rank": "Middle+",
+  "module": "middleplus-data",
+  "prerequisites": [
+    "middleplus-06"
+  ],
+  "estimated_minutes": 210,
+  "go_version": "1.27.2",
+  "curriculum_version": "2026.10",
+  "order": 87,
+  "learning_outcomes": [
+    "Рассуждать о доле строк, статистике и стоимости альтернативного доступа.",
+    "План зависит от распределения данных, статистики и параметров; индекс не бесплатен.",
+    "Ограничить вывод рамками наблюдений и назвать следующий проверочный эксперимент."
+  ],
+  "glossary": [
+    {
+      "term": "selectivity",
+      "translation": "селективность",
+      "definition": "Доля строк, удовлетворяющих предикату, от общего числа строк."
+    },
+    {
+      "term": "cardinality",
+      "translation": "кардинальность",
+      "definition": "Количество строк или различных значений в указанном контексте."
+    },
+    {
+      "term": "EXPLAIN",
+      "translation": "план запроса",
+      "definition": "Планировочное дерево операций, выбранное PostgreSQL для запроса."
+    }
+  ],
+  "markdown_file": "middleplus-07.md",
+  "exercises": [
+    {
+      "id": "middleplus-07-easy",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "easy",
+      "title": "Easy: оцени selectivity по доле строк",
+      "prompt": "Классифицируйте `matches/total`: low <10%, medium <50%, иначе high. Границы и пороги заданы учебной моделью, а не универсальной эвристикой planner.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc SelectivityClass(matches, total int) string {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"low\"\n",
+      "criteria": [
+        "Проверить 0≤matches≤total и total>0.",
+        "Не утверждать, что класс однозначно определяет план PostgreSQL."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "План зависит от статистики, стоимости, индексов, параметров и распределения данных."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-07-medium",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "medium",
+      "title": "Medium: проверь знаменатель и cardinality",
+      "prompt": "Проверьте допустимость фактического числа совпадений и размера набора. Функция не анализирует SQL или статистику базы.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc ValidSelectivity(matches, total int) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Нулевой total недопустим.",
+        "matches не может превышать total."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Селективность — доля совпавших строк; реальная оценка planner может отличаться от факта."
+        }
+      ]
+    },
+    {
+      "id": "middleplus-07-hard",
+      "kind": "function",
+      "skills": [
+        "performance",
+        "sql",
+        "reliability"
+      ],
+      "difficulty": "hard",
+      "title": "Hard: сравни estimate и actual для кандидата индекса",
+      "prompt": "Верните true, если входы допустимы и planner estimate меньше половины общего числа строк. Это критерий для дальнейшего EXPLAIN анализа, не доказательство, что индекс будет быстрее.",
+      "starter_file": "main.go",
+      "starter_code": "package main\n\nfunc IndexCandidate(matches, total, estimatedRows int) bool {\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "true\n",
+      "criteria": [
+        "Проверять фактические и оценённые количества отдельно.",
+        "Не объявлять индекс выгодным без плана и измерения."
+      ],
+      "self_check": [
+        {
+          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
+          "answer": "Погрешность estimate указывает на возможную проблему статистики; индексный выбор требует полного плана/стоимости."
+        }
+      ]
+    }
+  ],
+  "self_check": [
+    {
+      "question": "Что такое селективность?",
+      "answer": "Доля строк, удовлетворяющих предикату, относительно набора строк, который рассматривается."
+    },
+    {
+      "question": "Почему низкая селективность не гарантирует пользу индекса?",
+      "answer": "Случайное чтение многих страниц может оказаться дороже последовательного чтения, особенно когда совпадений много."
+    },
+    {
+      "question": "Что означает расхождение estimated rows и actual rows?",
+      "answer": "Модель оптимизатора не совпала с наблюдаемым числом строк; проверьте статистику, её актуальность, skew, корреляцию и форму параметров."
+    },
+    {
+      "question": "Что делает EXPLAIN ANALYZE?",
+      "answer": "Он фактически исполняет запрос и сообщает наблюдаемое выполнение; для изменяющего запроса это имеет побочные эффекты и требует безопасной среды."
+    },
+    {
+      "question": "Почему нельзя принять решение по одному Index Scan?",
+      "answer": "Наличие операции в плане само по себе не доказывает выигрыш; сравните фактические строки, блоки, фильтрацию, сортировку и общую стоимость."
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "id": "middle-17-medium",
+  "signature": "func OutboxActionMedium(committed bool, brokerAccepted bool, rowMarked bool) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Committed bool; BrokerAccepted bool; RowMarked bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(OutboxActionMedium(x.Committed, x.BrokerAccepted, x.RowMarked));e!=nil{panic(e)}}}\n",
+  "public_input": [
+    {
+      "Committed": false,
+      "BrokerAccepted": false,
+      "RowMarked": false
+    },
+    {
+      "Committed": true,
+      "BrokerAccepted": false,
+      "RowMarked": false
+    },
+    {
+      "Committed": true,
+      "BrokerAccepted": true,
+      "RowMarked": false
+    },
+    {
+      "Committed": true,
+      "BrokerAccepted": true,
+      "RowMarked": true
+    }
+  ],
+  "public_expected": [
+    "discard",
+    "publish",
+    "mark_published",
+    "complete"
+  ],
+  "private_input": [
+    {
+      "Committed": false,
+      "BrokerAccepted": true,
+      "RowMarked": true
+    },
+    {
+      "Committed": true,
+      "BrokerAccepted": false,
+      "RowMarked": true
+    },
+    {
+      "Committed": true,
+      "BrokerAccepted": true,
+      "RowMarked": false
+    }
+  ],
+  "private_expected": [
+    "discard",
+    "publish",
+    "mark_published"
+  ]
+}

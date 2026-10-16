@@ -1,0 +1,34 @@
+{
+  "id": "senior-04-hard",
+  "signature": "func ProjectionState(source, view int64) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Source int64; View int64 }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if e:=enc.Encode(ProjectionState(in.Source, in.View)); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "Source": 9,
+      "View": 9
+    },
+    {
+      "Source": 10,
+      "View": 8
+    }
+  ],
+  "public_expected": [
+    "caught-up",
+    "lagging"
+  ],
+  "private_input": [
+    {
+      "Source": 7,
+      "View": 8
+    },
+    {
+      "Source": -1,
+      "View": 0
+    }
+  ],
+  "private_expected": [
+    "unexpected-ahead",
+    "invalid"
+  ]
+}

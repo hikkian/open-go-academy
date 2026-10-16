@@ -1,0 +1,42 @@
+{
+  "id": "middle-32-easy",
+  "signature": "func MetricLabelAllowed(label string) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Label string `json:\"label\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(MetricLabelAllowed(in.Label)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "label": "operation"
+    },
+    {
+      "label": "status_class"
+    },
+    {
+      "label": "result"
+    }
+  ],
+  "public_expected": [
+    true,
+    true,
+    true
+  ],
+  "private_input": [
+    {
+      "label": "user_id"
+    },
+    {
+      "label": "route"
+    },
+    {
+      "label": ""
+    },
+    {
+      "label": "Operation"
+    }
+  ],
+  "private_expected": [
+    false,
+    false,
+    false,
+    false
+  ]
+}

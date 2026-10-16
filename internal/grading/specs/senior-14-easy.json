@@ -1,0 +1,24 @@
+{
+  "id": "senior-14-easy",
+  "signature": "func StorageFit(pattern, consistency string) string",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Pattern string `json:\"pattern\"`; Consistency string `json:\"consistency\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(StorageFit(in.Pattern, in.Consistency)); err!=nil { panic(err) } } }\n",
+  "public_input": [
+    {
+      "pattern": "relational",
+      "consistency": "transactional"
+    }
+  ],
+  "public_expected": [
+    "relational_candidate"
+  ],
+  "private_input": [
+    {
+      "pattern": "append",
+      "consistency": "eventual"
+    }
+  ],
+  "private_expected": [
+    "log_candidate"
+  ]
+}

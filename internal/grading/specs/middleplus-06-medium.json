@@ -1,0 +1,32 @@
+{
+  "id": "middleplus-06-medium",
+  "signature": "func SameProfileWindow(beforeSeconds, afterSeconds int, sameWorkload bool) bool",
+  "allowed_imports": [],
+  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { BeforeSeconds int; AfterSeconds int; SameWorkload bool }\nfunc main() { var cases []input; if e:=json.Unmarshal([]byte(os.Args[1]),&cases); e!=nil { panic(e) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { out:=SameProfileWindow(in.BeforeSeconds, in.AfterSeconds, in.SameWorkload); if e:=enc.Encode(out); e!=nil { panic(e) } } }\n",
+  "public_input": [
+    {
+      "BeforeSeconds": 30,
+      "AfterSeconds": 30,
+      "SameWorkload": true
+    }
+  ],
+  "public_expected": [
+    true
+  ],
+  "private_input": [
+    {
+      "BeforeSeconds": 30,
+      "AfterSeconds": 60,
+      "SameWorkload": true
+    },
+    {
+      "BeforeSeconds": 30,
+      "AfterSeconds": 30,
+      "SameWorkload": false
+    }
+  ],
+  "private_expected": [
+    false,
+    false
+  ]
+}
