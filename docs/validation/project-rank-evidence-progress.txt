@@ -27,4 +27,4 @@ Still open:
 Manual review workflow follow-up — 2026-10-16:
 - `docs/validation/project-review-flow-20261016.txt` records key generation, packet/template, canonical signature verification, immutable review persistence/history, API/UI, and full verification.
 - This does not alter the fail-closed award behavior above. No Middle/Middle+/Senior rank policy is registered; no review row is consumed by StartExam/Claim/Finish. A future transaction must snapshot the exact review tied to the same submission/evaluation/artifact as project machine evidence and must define trusted reviewer independence before any rank award.
-- Latest M11 current-tree content acceptance predates the Senior-24 DecisionReview edit and must be rerun; scoped current evidence is `docs/validation/m11-senior24-decisionreview-20261016.txt`.
+- The M11 current-tree content acceptance has now rerun after the Senior-24 edits and passed: 530 subtests, 2,985.278s. See `docs/validation/m11-current-tree-acceptance-20261016.txt` and the scoped Senior-24 reports.

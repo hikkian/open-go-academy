@@ -1,0 +1,15 @@
+Senior-24 curriculum remediation — current-tree technical verification
+Date: 2026-10-16
+
+Senior-24 current scoped M11 catalog gate:
+- `ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=senior-24 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-m11-senior24-current .tools/go/bin/go test -count=1 -timeout=10m ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v`
+- PASS in 30.325s: 3 Go example groups, 3 starter builds, and all 9 production reference suites; current catalog/public-output validation passed.
+- The full 88-draft unfiltered gate subsequently passed on the same content tree: `docs/validation/m11-current-tree-acceptance-20261016.txt` (530 subtests, 0 failures, 2,985.278s).
+
+Full technical suite after the Senior-24 changes:
+- `GOFLAGS=-p=1 GOMAXPROCS=2 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-senior24-final-make-20261016 make test` — **PASS**.
+- Covers all Go package tests, P1 reference tests/vet, whole-tree vet/race, TypeScript typecheck and production build.
+- `go vet ./internal/content ./internal/grading` — PASS; `npm run test:progress` — PASS on desktop/light and mobile/dark, no overflow or axe violations.
+- Senior-24 Markdown is 2,180 words, inside the M11 acceptance range 1,800–2,200.
+
+Scope note: this confirms current-tree automated acceptance only. It does not complete independent pedagogical review, P5 artifact review, advanced rank policy registration, reviewer identity/independence, M12 or M13.

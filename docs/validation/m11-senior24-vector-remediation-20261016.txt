@@ -113,5 +113,6 @@ Scoped M11 catalog gate after that correction:
   PASS in 30.325 s: all 3 lesson Go examples, all 3 starters and all 9
   production reference suites; candidate catalog/public-output validation passed.
 
-The full unfiltered aggregate still needs a fresh run; the previous exact-tree
-gate predates this Senior-24 remediation and remains stale.
+The subsequent full unfiltered M11 current-tree gate passed in 2,985.278 seconds
+(530 passing subtests, 0 failures); see
+`docs/validation/m11-current-tree-acceptance-20261016.txt`.
