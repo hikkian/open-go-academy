@@ -3,15 +3,98 @@ package httpapi
 import (
 	"academy/internal/content"
 	"academy/internal/projects"
+	"academy/internal/runner"
 	"academy/internal/store"
 	"archive/zip"
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
+
+type p1DeadlineExecutor struct {
+	calls    int
+	deadline time.Time
+}
+
+func (e *p1DeadlineExecutor) Available(context.Context) bool { return true }
+func (e *p1DeadlineExecutor) Execute(ctx context.Context, q runner.Request) (runner.Result, error) {
+	e.calls++
+	if deadline, ok := ctx.Deadline(); ok && e.deadline.IsZero() {
+		e.deadline = deadline
+	}
+	if q.Mode == "test" {
+		return runner.Result{Status: "ok", ExitCode: 0}, nil
+	}
+	results := []runner.Result{
+		{Status: "ok", ExitCode: 0, Stdout: "2\n"},
+		{Status: "error", ExitCode: 2},
+		{Status: "error", ExitCode: 2},
+		{Status: "error", ExitCode: 2},
+		{Status: "ok", ExitCode: 0, Stdout: "-1\n"},
+		{Status: "error", ExitCode: 2},
+		{Status: "error", ExitCode: 2},
+		{Status: "error", ExitCode: 2},
+		{Status: "error", ExitCode: 2},
+		{Status: "error", ExitCode: 2},
+		{Status: "error", ExitCode: 2},
+		{Status: "error", ExitCode: 2},
+		{Status: "ok", ExitCode: 0, Stdout: "4\n"},
+		{Status: "ok", ExitCode: 0, Stdout: "0\n"},
+		{Status: "error", ExitCode: 2},
+	}
+	index := e.calls - 1
+	if index < 0 || index >= len(results) {
+		return runner.Result{}, context.Canceled
+	}
+	result := results[index]
+	if result.Status == "error" {
+		result.Stderr = "invalid input"
+	}
+	return result, nil
+}
+
+func TestP1SubmitBudgetCoversFullIsolatedEvaluation(t *testing.T) {
+	s, err := store.Open(":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	if _, err := s.CreateProfile("Ada", "light"); err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := content.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	executor := &p1DeadlineExecutor{}
+	a := New(s, catalog, executor, "secret", "127.0.0.1:8080")
+	files := projects.Load().StarterFiles
+	files["main_test.go"] = "package main\nimport \"testing\"\nfunc TestSmoke(t *testing.T) {}\n"
+	requestBody, err := json.Marshal(map[string]any{"files": files})
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := httptest.NewRequest(http.MethodPost, "http://127.0.0.1:8080/api/projects/p1/submit", bytes.NewReader(requestBody))
+	r.AddCookie(&http.Cookie{Name: "academy_session", Value: "secret"})
+	r.Header.Set("X-CSRF-Token", "secret")
+	w := httptest.NewRecorder()
+	a.Handler(t.TempDir()).ServeHTTP(w, r)
+	if w.Code != http.StatusOK {
+		t.Fatalf("submit status=%d body=%s", w.Code, w.Body.String())
+	}
+	if executor.calls != 16 {
+		t.Fatalf("runner executions=%d; want 15 isolated vectors plus test run", executor.calls)
+	}
+	remaining := time.Until(executor.deadline)
+	if remaining < 200*time.Second || remaining > p1SubmitTimeout {
+		t.Fatalf("submit context budget=%s; want between 200s and %s", remaining.Round(time.Second), p1SubmitTimeout)
+	}
+}
 
 func TestProjectAPIStorageZIPAndIsolation(t *testing.T) {
 	s, _ := store.Open(":memory:")

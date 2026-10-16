@@ -24,6 +24,11 @@ import (
 	"unicode/utf8"
 )
 
+// P1's automatic submit runs the complete isolated CLI vector suite and the
+// learner's tests in one request. Keep it below the API server's 230s write
+// timeout while leaving enough headroom to return a structured response.
+const p1SubmitTimeout = 210 * time.Second
+
 func projectJob(files map[string]string, tests bool, args []string) runner.Request {
 	q := runner.Request{Files: map[string]string{}, Assets: map[string]string{}, Args: args, Mode: "run"}
 	if tests {
@@ -338,7 +343,7 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 			write(w, 200, result)
 			return
 		}
-		ctx, cancel := context.WithTimeout(r.Context(), 180*time.Second)
+		ctx, cancel := context.WithTimeout(r.Context(), p1SubmitTimeout)
 		defer cancel()
 		result := runner.Result{Status: "failed", Checks: []runner.Check{}, Passed: true}
 		vectors := []struct {
