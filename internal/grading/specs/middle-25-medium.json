@@ -1,34 +1,74 @@
 {
   "id": "middle-25-medium",
-  "signature": "func ServiceWiringMedium(repositoryBound, clockBound bool) string",
+  "signature": "func RenameProfileMedium(repository ProfileRepositoryMedium, id, newName string) string",
   "allowed_imports": [],
-  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{RepositoryBound bool;ClockBound bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(ServiceWiringMedium(x.RepositoryBound,x.ClockBound));e!=nil{panic(e)}}}\n",
+  "driver": "package main\nimport(\"encoding/json\";\"fmt\";\"os\")\ntype input struct{HasRepository bool;ID string;NewName string;OldName string;Found bool;SaveOK bool}\ntype graderProfileRepositoryMedium struct{old string;found bool;saveOK bool;saves int}\nfunc(r *graderProfileRepositoryMedium) FindProfile(id string)(string,bool){return r.old,r.found}\nfunc(r *graderProfileRepositoryMedium) SaveProfile(id,name string)bool{r.saves++;return r.saveOK}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{repo:=&graderProfileRepositoryMedium{old:x.OldName,found:x.Found,saveOK:x.SaveOK};var dependency ProfileRepositoryMedium;if x.HasRepository{dependency=repo};result:=RenameProfileMedium(dependency,x.ID,x.NewName);if e:=w.Encode(fmt.Sprintf(\"%s:%d\",result,repo.saves));e!=nil{panic(e)}}}\n",
   "public_input": [
     {
-      "RepositoryBound": true,
-      "ClockBound": true
+      "HasRepository": true,
+      "ID": "7",
+      "NewName": "Лена",
+      "OldName": "Алия",
+      "Found": true,
+      "SaveOK": true
     },
     {
-      "RepositoryBound": false,
-      "ClockBound": true
+      "HasRepository": true,
+      "ID": "7",
+      "NewName": "Алия",
+      "OldName": "Алия",
+      "Found": true,
+      "SaveOK": true
     },
     {
-      "RepositoryBound": true,
-      "ClockBound": false
+      "HasRepository": true,
+      "ID": "404",
+      "NewName": "Лена",
+      "OldName": "",
+      "Found": false,
+      "SaveOK": true
     }
   ],
   "public_expected": [
-    "ready",
-    "missing_repository",
-    "missing_clock"
+    "updated:1",
+    "unchanged:0",
+    "not_found:0"
   ],
   "private_input": [
     {
-      "RepositoryBound": false,
-      "ClockBound": false
+      "HasRepository": false,
+      "ID": "7",
+      "NewName": "Лена"
+    },
+    {
+      "HasRepository": true,
+      "ID": "7",
+      "NewName": "Лена",
+      "OldName": "Алия",
+      "Found": true,
+      "SaveOK": false
+    },
+    {
+      "HasRepository": true,
+      "ID": "7",
+      "NewName": "",
+      "OldName": "Алия",
+      "Found": true,
+      "SaveOK": true
+    },
+    {
+      "HasRepository": true,
+      "ID": "7",
+      "NewName": "Лена",
+      "OldName": "",
+      "Found": true,
+      "SaveOK": true
     }
   ],
   "private_expected": [
-    "missing_repository_and_clock"
+    "dependency_missing:0",
+    "storage_error:1",
+    "invalid_request:0",
+    "invalid_profile:0"
   ]
 }

@@ -1,0 +1,20 @@
+M11 scoped lesson remediation — Middle-25 dependency injection — 2026-10-17
+
+Finding addressed: the previous Handler/service/repository lesson promised implementing layer boundaries and dependency injection, but its three tasks classified strings/booleans and did not pass dependencies or exercise use-case behavior.
+
+Changes limited to Middle-25 metadata/Markdown, three grading specs and their reference solutions:
+- Easy injects a narrow `ProfileReaderEasy` interface and distinguishes invalid request, not found, invalid stored profile and a successful welcome response.
+- Medium injects a read/write `ProfileRepositoryMedium`; it validates input, distinguishes missing/invalid profiles, avoids an unnecessary write for an unchanged value, and handles write failure.
+- Hard injects separate profile-creation and audit interfaces, and makes the partial-failure boundary explicit when creation succeeds but audit recording fails.
+- Grader fakes count `SaveProfile` calls, so `unchanged` requires zero writes. Hard fixtures record the event sequence: audit must follow create, and a failed create must not call audit. Public/private vectors check both result and side effects.
+- The lesson explicitly says fake-based grading does not prove SQL, HTTP, atomic rollback or real integration behavior.
+
+Checks:
+- `ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middle-25 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-middle25-side-effect-20261017 sh scripts/go.sh test -count=1 -timeout=15m ./internal/content -run '^TestM11DraftCatalogAcceptance$'` — PASS, 30.324s on final side-effect assertions, isolated runner/examples/starter/reference checks.
+- `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-middle25-side-effect-20261017 sh scripts/go.sh test ./internal/content ./internal/grading` — PASS, 54.453s / 0.186s on current tree.
+- Full `make test` passed after the lesson rewrite but before the final test-driver side-effect assertions. After those final JSON/Markdown/spec changes, the targeted M11 gate and both affected Go packages above passed; production Go code was unchanged.
+- Scoped `git diff --check` — PASS.
+- The system `/usr/bin/go` is 1.26.9 and does not satisfy the repo's Go 1.27.2 module target; all tests used the repository-pinned `scripts/go.sh` toolchain.
+- Full repository `make test` on combined Middle-24/Middle-25 changes is running; update with final result before checkpointing.
+
+Limitations: Hard's two bool-returning interfaces model an observable partial failure, but do not prove cross-resource atomicity or SQL correctness. This is stated in the lesson and criteria. The previous full 88-draft aggregate predates both Middle-24 and Middle-25 edits; rerun after remaining M11 curriculum changes. M11 remains incomplete.

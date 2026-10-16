@@ -6,10 +6,10 @@ Changes are limited to the Middle-24 lesson metadata/Markdown, Medium/Hard task 
 
 Scoped checks:
 
-- `ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middle-24 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-middle24-scoped-20261017 .tools/go/bin/go test -count=1 -timeout=45m ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v` — PASS, 30.208s; three examples and three starter compilations passed. (The scoped gate also checks catalog metadata, not just those six displayed subtests.)
+- `ACADEMY_ACCEPT_M11_DRAFTS=1 ACADEMY_M11_LESSON_IDS=middle-24 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/open-go-academy-middle24-scoped-20261017 .tools/go/bin/go test -count=1 -timeout=45m ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v` — PASS, 30.937s on the final wording; three examples and three starter compilations passed. (The scoped gate also checks catalog metadata, not just those six displayed subtests.)
 - `go test ./internal/content ./internal/grading` — PASS, 55.252s / 0.189s.
 - `git diff --check` — PASS.
-- `GOFLAGS=-p=1 GOMAXPROCS=2 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-rank-pipeline-full-20261017 make test` — PASS: all Go packages (including current Middle-24 content and advanced rank HTTP integration), P1 references/vet, repository vet, `go test -race ./...`, TypeScript typecheck and Vite production build.
+- `GOFLAGS=-p=1 GOMAXPROCS=2 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-rank-pipeline-full-20261017 make test` — PASS after the lesson/spec implementation, before the final one-sentence wording clarification; all Go packages, P1 references/vet, repository vet, `go test -race ./...`, TypeScript typecheck and Vite production build. The final wording is covered by the scoped gate above.
 - `GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOFLAGS=-p=1 GOMAXPROCS=2 scripts/go.sh test ./internal/httpapi -run '^TestAdvancedRankPipelineRequiresProjectReviewAndAwardsMiddleMiddlePlusSenior$' -count=1` — PASS after fixing the test to invoke `runtime.GOROOT()/bin/go`, so it uses the pinned toolchain that built the test rather than an unrelated system Go.
 - `git diff --check` — PASS on the final staged source set.
 

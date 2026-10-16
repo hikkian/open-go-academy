@@ -1,39 +1,44 @@
 {
   "id": "middle-25-easy",
-  "signature": "func LayerForOperationEasy(layer, operation string) string",
+  "signature": "func WelcomeEasy(repository ProfileReaderEasy, id string) string",
   "allowed_imports": [],
-  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Layer string;Operation string}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(LayerForOperationEasy(x.Layer,x.Operation));e!=nil{panic(e)}}}\n",
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{ID string; Name string; Found bool}\ntype graderProfileReaderEasy struct{name string;found bool}\nfunc(r graderProfileReaderEasy) FindProfile(id string)(string,bool){return r.name,r.found}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(WelcomeEasy(graderProfileReaderEasy{x.Name,x.Found},x.ID));e!=nil{panic(e)}}}\n",
   "public_input": [
     {
-      "Layer": "handler",
-      "Operation": "decode"
+      "ID": "7",
+      "Name": "Алия",
+      "Found": true
     },
     {
-      "Layer": "service",
-      "Operation": "domain_rule"
+      "ID": "404",
+      "Name": "",
+      "Found": false
     },
     {
-      "Layer": "repository",
-      "Operation": "sql_write"
+      "ID": "",
+      "Name": "Алия",
+      "Found": true
     }
   ],
   "public_expected": [
-    "allow",
-    "allow",
-    "allow"
+    "hello:Алия",
+    "not_found",
+    "invalid_request"
   ],
   "private_input": [
     {
-      "Layer": "handler",
-      "Operation": "sql_write"
+      "ID": "8",
+      "Name": "",
+      "Found": true
     },
     {
-      "Layer": "",
-      "Operation": "decode"
+      "ID": "9",
+      "Name": "Имя",
+      "Found": false
     }
   ],
   "private_expected": [
-    "misplaced",
-    "misplaced"
+    "invalid_profile",
+    "not_found"
   ]
 }

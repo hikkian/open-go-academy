@@ -10,25 +10,40 @@
   "go_version": "1.27.2",
   "curriculum_version": "2026.10",
   "learning_outcomes": [
-    "Отделять протокол от правила продукта",
-    "Передавать узкую зависимость конструктору",
-    "Не полагаться на глобальное изменяемое хранилище"
+    "Объяснять границы handler, service и repository и передавать service узкий интерфейс зависимости извне",
+    "Реализовывать use case с fake repository: валидировать вход, различать отсутствие данных, повтор без изменения и отказ записи",
+    "Компоновать несколько зависимостей и описывать частичный отказ между двумя побочными эффектами, не выдавая локальный тест за интеграционный"
   ],
   "glossary": [
     {
       "term": "handler",
       "translation": "обработчик",
-      "definition": "Преобразует HTTP вход и результат use case"
+      "definition": "Преобразует HTTP-вход и результат сценария приложения."
     },
     {
       "term": "service",
       "translation": "служба приложения",
-      "definition": "Координирует сценарий и доменные правила"
+      "definition": "Выполняет правило продукта и координирует зависимости."
     },
     {
       "term": "repository",
       "translation": "репозиторий",
-      "definition": "Изолирует операции хранения"
+      "definition": "Скрывает детали чтения и записи данных за методами, нужными потребителю."
+    },
+    {
+      "term": "dependency injection (DI)",
+      "translation": "внедрение зависимости",
+      "definition": "Передача collaborator объекту извне вместо создания глобального изменяемого состояния внутри него."
+    },
+    {
+      "term": "fake",
+      "translation": "тестовая подмена",
+      "definition": "Простая управляемая реализация интерфейса, которая возвращает заданные результаты для теста."
+    },
+    {
+      "term": "composition root",
+      "translation": "точка сборки",
+      "definition": "Место приложения, где создаются конкретные зависимости и связываются конструктором."
     }
   ],
   "markdown_file": "middle-25.md",
@@ -43,24 +58,24 @@
         "go-core"
       ],
       "difficulty": "easy",
-      "title": "Responsibility boundary — локальное правило",
-      "prompt": "Контракт `func LayerForOperationEasy(layer, operation string) string`: handler decodes/encodes transport; service enforces domain rule; repository performs SQL; all cross-layer responsibilities => misplaced. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "title": "Узкий интерфейс чтения и простое правило",
+      "prompt": "Объяви интерфейс `ProfileReaderEasy` с методом `FindProfile(id string) (name string, found bool)` и реализуй `func WelcomeEasy(repository ProfileReaderEasy, id string) string`. Пустой id даёт `invalid_request`; отсутствие записи — `not_found`; найденная запись с пустым именем — `invalid_profile`; иначе результат `hello:` + имя. Зависимость передаётся параметром; не используй global. Это локальная функция с fake, не HTTP/SQL-интеграция.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc LayerForOperationEasy(layer, operation string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"allow\"\n\"allow\"\n\"allow\"\n",
+      "starter_code": "package main\n\ntype ProfileReaderEasy interface {\n\tFindProfile(id string) (name string, found bool)\n}\n\nfunc WelcomeEasy(repository ProfileReaderEasy, id string) string {\n\t// Проверяйте запрос, вызов интерфейса и результат по контракту.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"hello:Алия\"\n\"not_found\"\n\"invalid_request\"",
       "criteria": [
-        "Контракт responsibility boundary выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "Интерфейс содержит только чтение профиля, функция получает его аргументом.",
+        "Правильно различаются успешный результат, отсутствующая запись и пустой id.",
+        "Не читается глобальное хранилище и не заявляется гарантия реальной БД."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
+          "question": "Что делает зависимость заменяемой в тесте?",
+          "answer": "Service получает узкий интерфейс параметром; fake может реализовать тот же метод."
         },
         {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что доказывают grader-векторы?",
+          "answer": "Только категории функции при заданных ответах fake repository."
         }
       ]
     },
@@ -73,24 +88,24 @@
         "go-core"
       ],
       "difficulty": "medium",
-      "title": "Dependency wiring — ветви политики",
-      "prompt": "Контракт `func ServiceWiringMedium(repositoryBound, clockBound bool) string`: both explicit dependencies bound => ready; neither => missing_repository_and_clock; report the specific missing dependency otherwise. This models composition-root wiring, not runtime health. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "title": "Use case: переименование и отказ записи",
+      "prompt": "Объяви `ProfileRepositoryMedium` с методами `FindProfile(id string) (name string, found bool)` и `SaveProfile(id, name string) bool`. Реализуй `func RenameProfileMedium(repository ProfileRepositoryMedium, id, newName string) string`: пустой id/имя => `invalid_request`; nil dependency => `dependency_missing`; нет записи => `not_found`; пустое старое имя => `invalid_profile`; имя уже такое же => `unchanged` без записи; неудачный Save => `storage_error`; иначе `updated`. Тестовый fake управляет всеми ответами; bool здесь лишь упрощённый сигнал grader, не замена production error API.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ServiceWiringMedium(repositoryBound, clockBound bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"ready\"\n\"missing_repository\"\n\"missing_clock\"\n",
+      "starter_code": "package main\n\ntype ProfileRepositoryMedium interface {\n\tFindProfile(id string) (name string, found bool)\n\tSaveProfile(id, name string) bool\n}\n\nfunc RenameProfileMedium(repository ProfileRepositoryMedium, id, newName string) string {\n\t// Сначала валидируйте, затем прочитайте и примените правило.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"updated:1\"\n\"unchanged:0\"\n\"not_found:0\"",
       "criteria": [
-        "Контракт dependency wiring выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "Явно передаётся repository с минимальным read/write контрактом.",
+        "Повтор того же имени не вызывает необходимость записи и даёт unchanged.",
+        "Ошибки валидации, отсутствующей записи и неуспешной записи имеют разные результаты."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
+          "question": "Почему неизменённое имя проверяется до Save?",
+          "answer": "Чтобы не выполнять побочный эффект, когда состояние уже соответствует запросу."
         },
         {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что упрощено относительно production?",
+          "answer": "Fake возвращает bool; реальная реализация обычно возвращает error и сохраняет причину отказа."
         }
       ]
     },
@@ -103,40 +118,40 @@
         "go-core"
       ],
       "difficulty": "hard",
-      "title": "Complete request wiring — отказ и граница гарантии",
-      "prompt": "Контракт `func RequestPathReadyHard(handlerBound, serviceBound, repositoryBound bool) bool`: true only if composition root wires the complete handler -> service -> repository path; no network or database health is implied. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "title": "Две зависимости и частичный отказ",
+      "prompt": "Объяви минимальные интерфейсы `ProfileCreatorHard` (`CreateProfile(name string) bool`) и `AuditSinkHard` (`Record(event string) bool`). Реализуй `func CreateProfileHard(repository ProfileCreatorHard, audit AuditSinkHard, name string) string`: пустое имя => `invalid_request`; nil зависимость => `dependency_missing`; ошибка Create => `create_error`; успешное Create, но ошибка Record => `audit_error_after_create`; оба успеха => `created`. Важен порядок: после сбоя audit профиль уже создан. Не утверждай, что эта функция делает rollback или атомарную операцию; результат fake не доказывает поведение SQL/outbox.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc RequestPathReadyHard(handlerBound, serviceBound, repositoryBound bool) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\nfalse\nfalse\n",
+      "starter_code": "package main\n\ntype ProfileCreatorHard interface { CreateProfile(name string) bool }\ntype AuditSinkHard interface { Record(event string) bool }\n\nfunc CreateProfileHard(repository ProfileCreatorHard, audit AuditSinkHard, name string) string {\n\t// Различайте validation, зависимости, сохранение и частичный отказ аудита.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"created:create,audit:profile_created\"\n\"create_error:create\"\n\"audit_error_after_create:create,audit:profile_created\"",
       "criteria": [
-        "Контракт complete request wiring выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "Две узкие зависимости передаются явно и вызываются в заданном порядке.",
+        "Невалидный ввод, отсутствие зависимости, отказ создания и отказ аудита различаются.",
+        "Частичный отказ явно сообщает, что создание уже прошло; не заявляется rollback/атомарность."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
+          "question": "Что произошло при audit_error_after_create?",
+          "answer": "Create уже вернул успех; функция не может утверждать, что профиль откатился."
         },
         {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Как проверять реальную атомарность?",
+          "answer": "Отдельным integration test на выбранной БД и транзакционной или outbox реализации."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Какую гарантию дает данный учебный пример?",
-      "answer": "Только соответствие описанному детерминированному контракту на заданных входах."
+      "question": "Как доказать заменяемость зависимости?",
+      "answer": "Передать fake, реализующий узкий интерфейс, и проверить наблюдаемое поведение сценария."
     },
     {
-      "question": "Что следует проверять отдельно в работающей системе?",
-      "answer": "Транзакции, ограничения хранения, повторные запросы, отказ и восстановление реальных зависимостей."
+      "question": "Что означает частичный отказ двух записей?",
+      "answer": "Первый побочный эффект может сохраниться, даже если второй завершился ошибкой; стратегию восстановления нужно проектировать отдельно."
     },
     {
-      "question": "Можно ли сделать универсальный вывод по EXPLAIN/кешу/брокеру?",
-      "answer": "Нет. Нужны фактический движок, конфигурация и измеренный workload."
+      "question": "Доказывает ли этот урок корректность HTTP, SQL и транзакций?",
+      "answer": "Нет. Для этого нужен отдельный integration test на фактических адаптерах и конфигурации."
     }
   ]
 }

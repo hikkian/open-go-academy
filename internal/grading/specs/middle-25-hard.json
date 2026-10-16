@@ -1,38 +1,62 @@
 {
   "id": "middle-25-hard",
-  "signature": "func RequestPathReadyHard(handlerBound, serviceBound, repositoryBound bool) bool",
+  "signature": "func CreateProfileHard(repository ProfileCreatorHard, audit AuditSinkHard, name string) string",
   "allowed_imports": [],
-  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{HandlerBound bool;ServiceBound bool;RepositoryBound bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(RequestPathReadyHard(x.HandlerBound,x.ServiceBound,x.RepositoryBound));e!=nil{panic(e)}}}\n",
+  "driver": "package main\nimport(\"encoding/json\";\"os\";\"strings\")\ntype input struct{HasRepository bool;HasAudit bool;Name string;CreateOK bool;AuditOK bool}\ntype graderProfileCreatorHard struct{ok bool;events *[]string}\nfunc(r *graderProfileCreatorHard) CreateProfile(name string)bool{*r.events=append(*r.events,\"create\");return r.ok}\ntype graderAuditSinkHard struct{ok bool;events *[]string}\nfunc(a *graderAuditSinkHard) Record(event string)bool{*a.events=append(*a.events,\"audit:\"+event);return a.ok}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{events:=[]string{};repo:=&graderProfileCreatorHard{ok:x.CreateOK,events:&events};audit:=&graderAuditSinkHard{ok:x.AuditOK,events:&events};var repository ProfileCreatorHard;var sink AuditSinkHard;if x.HasRepository{repository=repo};if x.HasAudit{sink=audit};result:=CreateProfileHard(repository,sink,x.Name);if e:=w.Encode(result+\":\"+strings.Join(events,\",\"));e!=nil{panic(e)}}}\n",
   "public_input": [
     {
-      "HandlerBound": true,
-      "ServiceBound": true,
-      "RepositoryBound": true
+      "HasRepository": true,
+      "HasAudit": true,
+      "Name": "Илья",
+      "CreateOK": true,
+      "AuditOK": true
     },
     {
-      "HandlerBound": true,
-      "ServiceBound": false,
-      "RepositoryBound": true
+      "HasRepository": true,
+      "HasAudit": true,
+      "Name": "Илья",
+      "CreateOK": false,
+      "AuditOK": true
     },
     {
-      "HandlerBound": false,
-      "ServiceBound": true,
-      "RepositoryBound": true
+      "HasRepository": true,
+      "HasAudit": true,
+      "Name": "Илья",
+      "CreateOK": true,
+      "AuditOK": false
     }
   ],
   "public_expected": [
-    true,
-    false,
-    false
+    "created:create,audit:profile_created",
+    "create_error:create",
+    "audit_error_after_create:create,audit:profile_created"
   ],
   "private_input": [
     {
-      "HandlerBound": true,
-      "ServiceBound": true,
-      "RepositoryBound": false
+      "HasRepository": true,
+      "HasAudit": true,
+      "Name": "",
+      "CreateOK": true,
+      "AuditOK": true
+    },
+    {
+      "HasRepository": false,
+      "HasAudit": true,
+      "Name": "Илья",
+      "CreateOK": true,
+      "AuditOK": true
+    },
+    {
+      "HasRepository": true,
+      "HasAudit": false,
+      "Name": "Илья",
+      "CreateOK": true,
+      "AuditOK": true
     }
   ],
   "private_expected": [
-    false
+    "invalid_request:",
+    "dependency_missing:",
+    "dependency_missing:"
   ]
 }

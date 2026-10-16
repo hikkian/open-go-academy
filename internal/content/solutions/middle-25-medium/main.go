@@ -1,5 +1,29 @@
 package main
 
-func ServiceWiringMedium(repositoryBound, clockBound bool) string {
-	if repositoryBound && clockBound { return "ready" }; if !repositoryBound && !clockBound { return "missing_repository_and_clock" }; if !repositoryBound { return "missing_repository" }; return "missing_clock"
+type ProfileRepositoryMedium interface {
+	FindProfile(id string) (name string, found bool)
+	SaveProfile(id, name string) bool
+}
+
+func RenameProfileMedium(repository ProfileRepositoryMedium, id, newName string) string {
+	if id == "" || newName == "" {
+		return "invalid_request"
+	}
+	if repository == nil {
+		return "dependency_missing"
+	}
+	oldName, found := repository.FindProfile(id)
+	if !found {
+		return "not_found"
+	}
+	if oldName == "" {
+		return "invalid_profile"
+	}
+	if oldName == newName {
+		return "unchanged"
+	}
+	if !repository.SaveProfile(id, newName) {
+		return "storage_error"
+	}
+	return "updated"
 }
