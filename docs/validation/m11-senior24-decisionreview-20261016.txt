@@ -1,0 +1,122 @@
+Senior-24 Medium DecisionReview remediation evidence
+Date: 2026-10-16
+
+Scope
+-----
+Replaced the ambiguous evidenceUpdated input with newEvidenceAvailable and
+evidenceVerified. The ordered outputs are:
+
+  !triggerObserved                       -> keep_watch
+  triggerObserved && !newEvidenceAvailable -> gather_evidence
+  triggerObserved && newEvidenceAvailable && !evidenceVerified
+                                           -> verify_evidence
+  triggerObserved && newEvidenceAvailable && evidenceVerified && !ownerAssigned
+                                           -> assign_owner
+  all four inputs true                   -> revisit_decision
+
+The Markdown lesson records all 16 combinations with a Russian condition and
+explicit output. The grading spec has eight public and eight private vectors;
+their union contains each bool tuple exactly once. The reference and starter
+use the same ordered contract. This remains helper practice: it neither reads
+or verifies architecture/evidence artifacts, authenticates reviewer identity
+or independence, nor awards Senior or any other rank. `Spec.Check` retains the
+existing strict JSON output comparison.
+
+Environment
+-----------
+  GOTOOLCHAIN=go1.27.2 go version
+  go version go1.27.2 linux/amd64
+
+  podman version --format '{{.Client.Version}}'
+  5.8.7
+
+  podman info --format '{{.Host.Security.Rootless}} {{.Host.CgroupsVersion}}'
+  true v2
+
+Catalog and package checks
+--------------------------
+  GOTOOLCHAIN=go1.27.2 go test ./internal/content ./internal/grading -count=1
+  ok academy/internal/content 50.325s
+  ok academy/internal/grading 0.174s
+
+  GOTOOLCHAIN=go1.27.2 go vet ./internal/content ./internal/grading
+  PASS (exit 0; no diagnostics)
+
+  python3 structural contract check
+  PASS: 16 Markdown table rows; 16 unique grading input tuples (8 public,
+  8 private); expected vector counts match; legacy evidenceUpdated flag absent.
+
+Exact grading production-path execution
+---------------------------------------
+An ephemeral Go harness was created in a temporary directory under the
+repository and removed in a finally block. It loaded the embedded published
+spec, bound the trusted reference, called Spec.Request(reference, true), ran
+that request once using runner.New().Execute (rootless Podman; pinned Go
+1.27.2 image), then passed the actual runner.Result to Spec.Check(result,
+true). The private request combines all public and private vectors.
+
+Harness source:
+
+  package main
+  import (
+    "context"
+    "fmt"
+    "os"
+    "academy/internal/grading"
+    "academy/internal/runner"
+  )
+  func main() {
+    specs, err := grading.LoadFor([]string{"senior-24-medium"}); check(err)
+    spec := specs["senior-24-medium"]
+    reference, err := os.ReadFile("internal/content/solutions/senior-24-medium/main.go"); check(err)
+    check(spec.BindReference(string(reference)))
+    request, err := spec.Request(map[string]string{"main.go": string(reference)}, true); check(err)
+    fmt.Printf("spec=%s mode=%s vectors=16 args-bytes=%d\n", spec.ExerciseID(), request.Mode, len(request.Args[0]))
+    result, err := runner.New().Execute(context.Background(), request); check(err)
+    checks := spec.Check(result, true)
+    passed := 0
+    for _, item := range checks {
+      if item.Passed { passed++ }
+      fmt.Printf("%s: %t\n", item.Name, item.Passed)
+    }
+    fmt.Printf("runner-status=%s exit-code=%d stderr-bytes=%d checks=%d passed=%d\n",
+      result.Status, result.ExitCode, len(result.Stderr), len(checks), passed)
+    if passed != 16 || result.Status != "ok" || result.ExitCode != 0 || result.Stderr != "" { os.Exit(1) }
+  }
+  func check(err error) { if err != nil { fmt.Fprintln(os.Stderr, err); os.Exit(2) } }
+
+Command executed (the generated temporary path is intentionally omitted):
+  GOTOOLCHAIN=go1.27.2 go run ./tmp-senior24-harness-<random>/main.go
+
+Observed output:
+  spec=senior-24-medium mode=run vectors=16 args-bytes=1601
+  пример 1: true
+  пример 2: true
+  пример 3: true
+  пример 4: true
+  пример 5: true
+  пример 6: true
+  пример 7: true
+  пример 8: true
+  закрытый пример 9: true
+  закрытый пример 10: true
+  закрытый пример 11: true
+  закрытый пример 12: true
+  закрытый пример 13: true
+  закрытый пример 14: true
+  закрытый пример 15: true
+  закрытый пример 16: true
+  runner-status=ok exit-code=0 stderr-bytes=0 checks=16 passed=16
+
+Formatting and diff checks
+--------------------------
+  gofmt -w internal/content/solutions/senior-24-medium/main.go
+  PASS
+
+  git diff --check -- internal/content/data/senior-24.json \
+    internal/content/data/senior-24.md \
+    internal/grading/specs/senior-24-medium.json \
+    internal/content/solutions/senior-24-medium/main.go
+  PASS
+
+No full M11 aggregate gate was run.

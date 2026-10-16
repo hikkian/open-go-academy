@@ -5,20 +5,90 @@
   "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Impact int `json:\"impact\"`; Likelihood int `json:\"likelihood\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(ActionPriority(in.Impact, in.Likelihood)); err!=nil { panic(err) } } }\n",
   "public_input": [
     {
-      "impact": 3,
+      "impact": -1,
       "likelihood": 3
+    },
+    {
+      "impact": 3,
+      "likelihood": -1
+    },
+    {
+      "impact": 0,
+      "likelihood": 0
+    },
+    {
+      "impact": 0,
+      "likelihood": 1
+    },
+    {
+      "impact": 1,
+      "likelihood": 0
+    },
+    {
+      "impact": 1,
+      "likelihood": 1
+    },
+    {
+      "impact": 2,
+      "likelihood": 0
+    },
+    {
+      "impact": 0,
+      "likelihood": 2
     }
   ],
   "public_expected": [
-    "now"
+    "invalid",
+    "invalid",
+    "track",
+    "track",
+    "track",
+    "track",
+    "schedule",
+    "schedule"
   ],
   "private_input": [
     {
       "impact": 1,
-      "likelihood": 1
+      "likelihood": 2
+    },
+    {
+      "impact": 2,
+      "likelihood": 2
+    },
+    {
+      "impact": 3,
+      "likelihood": 2
+    },
+    {
+      "impact": 2,
+      "likelihood": 3
+    },
+    {
+      "impact": 3,
+      "likelihood": 3
+    },
+    {
+      "impact": 3,
+      "likelihood": 4
+    },
+    {
+      "impact": 4,
+      "likelihood": 3
+    },
+    {
+      "impact": 4,
+      "likelihood": 4
     }
   ],
   "private_expected": [
-    "track"
+    "schedule",
+    "schedule",
+    "schedule",
+    "schedule",
+    "now",
+    "now",
+    "now",
+    "now"
   ]
 }

@@ -49,3 +49,7 @@
 - Credential для каждого ранга ссылается на точный award/exam/policy version; приватность/revoke работают. Локальный verifier обязательно показывает `local-self-issued`/self-signed notice и не отображает identity-verified/accredited.
 
 **Вывод:** сегодня Junior/Junior+ — полноценные автоматические учебные цепочки по явно перечисленным упражнениям и автоматическим P1/P2 проверкам, а не «один экзамен». Middle/Middle+/Senior пока не выдаются. Перед их добавлением нужно реализовать evidence pipeline для P3/P4/P5; Senior дополнительно блокировать до содержательного human review. Маленькие helper tests — учебная практика, не Senior evidence.
+
+## Addendum — signed offline review groundwork — 2026-10-16
+
+After this read-only snapshot, an Ed25519 offline review workflow was added: API packets bind exact project submission/evaluation/artifact/rubric, the operator registry verifies configured public keys, and append-only decisions can be stored and read from the workspace. This does not close the rank gaps above: the rank policy and exam snapshot do not consume those review rows, a pinned key proves possession only (not a real person's identity/independence), and the advanced award guard remains closed. See `docs/validation/project-review-flow-20261016.txt`.

@@ -21,5 +21,10 @@ Verification:
 Still open:
 - No actual Middle/Middle+/Senior exam catalog currently registers these policies. No advanced rank is awardable.
 - `GET /api/exams` still needs policy-derived per-requirement eligibility/pending states once advanced exams enter the catalog.
-- P4/P5 and persisted Senior human-review authority do not exist. AI/self-review cannot satisfy that requirement.
+- Signed offline manual review now persists for exact P3/P4/P5 submissions and can be read by the workspace. It is not transactionally linked into rank policy; operator-pinned key possession is not proof of real-world reviewer identity or independence. AI/self-review cannot satisfy the Senior review requirement.
 - The current unfiltered M11 draft acceptance is a separate live gate; it is not implied by these store tests.
+
+Manual review workflow follow-up — 2026-10-16:
+- `docs/validation/project-review-flow-20261016.txt` records key generation, packet/template, canonical signature verification, immutable review persistence/history, API/UI, and full verification.
+- This does not alter the fail-closed award behavior above. No Middle/Middle+/Senior rank policy is registered; no review row is consumed by StartExam/Claim/Finish. A future transaction must snapshot the exact review tied to the same submission/evaluation/artifact as project machine evidence and must define trusted reviewer independence before any rank award.
+- Latest M11 current-tree content acceptance predates the Senior-24 DecisionReview edit and must be rerun; scoped current evidence is `docs/validation/m11-senior24-decisionreview-20261016.txt`.

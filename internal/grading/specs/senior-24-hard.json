@@ -5,22 +5,58 @@
   "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { FactsSeparated bool `json:\"factsSeparated\"`; ActionsOwned bool `json:\"actionsOwned\"`; LimitsRecorded bool `json:\"limitsRecorded\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(RetrospectiveComplete(in.FactsSeparated, in.ActionsOwned, in.LimitsRecorded)); err!=nil { panic(err) } } }\n",
   "public_input": [
     {
-      "factsSeparated": true,
+      "factsSeparated": false,
+      "actionsOwned": false,
+      "limitsRecorded": false
+    },
+    {
+      "factsSeparated": false,
+      "actionsOwned": false,
+      "limitsRecorded": true
+    },
+    {
+      "factsSeparated": false,
+      "actionsOwned": true,
+      "limitsRecorded": false
+    },
+    {
+      "factsSeparated": false,
       "actionsOwned": true,
       "limitsRecorded": true
     }
   ],
   "public_expected": [
-    true
+    false,
+    false,
+    false,
+    false
   ],
   "private_input": [
     {
       "factsSeparated": true,
       "actionsOwned": false,
+      "limitsRecorded": false
+    },
+    {
+      "factsSeparated": true,
+      "actionsOwned": false,
+      "limitsRecorded": true
+    },
+    {
+      "factsSeparated": true,
+      "actionsOwned": true,
+      "limitsRecorded": false
+    },
+    {
+      "factsSeparated": true,
+      "actionsOwned": true,
       "limitsRecorded": true
     }
   ],
   "private_expected": [
-    false
+    false,
+    false,
+    false,
+    true
   ]
 }

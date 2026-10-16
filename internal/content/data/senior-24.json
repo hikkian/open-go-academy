@@ -54,15 +54,15 @@
       ],
       "difficulty": "easy",
       "title": "Easy: P5 retrospective и изменение архитектуры — рабочая запись",
-      "prompt": "Реализуйте `func ActionPriority(impact, likelihood int) string`. Для retrospective backlog: отрицательные оценки → invalid; impact≥3 и likelihood≥3 → now; иначе одна оценка≥2 → schedule; иначе track. Составьте короткую матрицу impact×likelihood и укажите владельца следующего шага. Баллы — учебные метки, не калиброванная вероятность. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "prompt": "Реализуйте `func ActionPriority(impact, likelihood int) string`. Контракт приоритетный: любая отрицательная оценка → `invalid`; иначе обе оценки ≥3 → `now`; иначе хотя бы одна оценка ≥2 → `schedule`; иначе → `track`. Ровно 0 и 1 относятся к нижней полосе; порог 2 переводит в `schedule`, а пара 3/3 — в `now`. Public/private vectors включают 16 уникальных пар с отрицательными значениями и границами 0, 1, 2, 3, включая приоритет now над schedule. Баллы — синтетические метки, не калиброванная вероятность. Этот helper проверяет только входные числа; он не оценивает ретроспективу или её артефакт и не доказывает качество решения либо достижение Senior.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc ActionPriority(impact, likelihood int) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"now\"\n",
+      "public_output": "\"invalid\"\n\"invalid\"\n\"track\"\n\"track\"\n\"track\"\n\"track\"\n\"schedule\"\n\"schedule\"\n",
       "criteria": [
-        "Точно реализовать контракт `ActionPriority` и его приоритет ветвей.",
-        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
-        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
-        "Не представлять результат helper или учебное evidence как проверку production-системы."
+        "Точно реализовать порядок invalid → now → schedule → track.",
+        "Проверить отрицательные значения и границы 0, 1, 2 и 3, включая конкурирующие условия now/schedule.",
+        "Подготовить отдельную ретроспективу с источником, владельцем и ограничениями; grader не читает этот артефакт.",
+        "Не считать учебные оценки, флаги или вывод helper доказательством качества ретроспективы, архитектуры или Senior-ранга."
       ],
       "self_check": [
         {
@@ -85,15 +85,15 @@
       ],
       "difficulty": "medium",
       "title": "Medium: P5 retrospective и изменение архитектуры — decision artifact",
-      "prompt": "Реализуйте `func DecisionReview(triggerObserved, evidenceUpdated, ownerAssigned bool) string`. Для ADR review: нет записанного trigger → keep_watch; trigger с новым evidence не проверенным → gather_evidence; evidence обновлено без owner → assign_owner; всё есть → revisit_decision. В отдельной записи приложите версию ADR, новое наблюдение и срок; helper не пересматривает архитектуру. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "prompt": "Реализуйте `func DecisionReview(triggerObserved, newEvidenceAvailable, evidenceVerified, ownerAssigned bool) string`. Это приоритетный классификатор следующего шага для ADR review: 1) если trigger не наблюдался — keep_watch; 2) при trigger без нового evidence — gather_evidence; 3) если новое evidence доступно, но не проверено — verify_evidence; 4) если evidence проверено, но владелец следующего шага не назначен — assign_owner; 5) если trigger наблюдался, evidence доступно и проверено, а владелец назначен — revisit_decision. Таблица всех 16 комбинаций входов приведена в Markdown урока и проверяется public/private vectors. Флаги являются входными утверждениями: helper не читает и не проверяет ADR, дизайн-артефакт или evidence, не проверяет личность/независимость reviewer и не выдаёт Senior или другой ранг. Это локальная практика классификатора, не архитектурная оценка.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc DecisionReview(triggerObserved, evidenceUpdated, ownerAssigned bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"revisit_decision\"\n",
+      "starter_code": "package main\n\nfunc DecisionReview(triggerObserved, newEvidenceAvailable, evidenceVerified, ownerAssigned bool) string {\n\t// Следуйте приоритетной таблице всех 16 состояний в уроке.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"keep_watch\"\n\"keep_watch\"\n\"keep_watch\"\n\"keep_watch\"\n\"gather_evidence\"\n\"verify_evidence\"\n\"assign_owner\"\n\"revisit_decision\"\n",
       "criteria": [
-        "Точно реализовать контракт `DecisionReview` и его приоритет ветвей.",
-        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
-        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
-        "Не представлять результат helper или учебное evidence как проверку production-системы."
+        "Точно реализовать приоритетный контракт `DecisionReview` и все 16 булевых состояний.",
+        "Составить таблицу состояний и объяснить, когда более ранняя ветвь делает последующие флаги несущественными.",
+        "Отдельно подготовить ADR/evidence artifact с источником, владельцем, scope и ограничениями; helper его не проверяет.",
+        "Не считать helper, boolean flags или подпись доказательством архитектурного качества, независимости reviewer или Senior-ранга."
       ],
       "self_check": [
         {
@@ -116,15 +116,15 @@
       ],
       "difficulty": "hard",
       "title": "Hard: P5 retrospective и изменение архитектуры — review пакет",
-      "prompt": "Реализуйте `func RetrospectiveComplete(factsSeparated, actionsOwned, limitsRecorded bool) bool`. Подготовьте ретроспективу с разделёнными фактами/интерпретациями, проверяемыми action+owner+сроком и ограничениями выводов. Helper true только если все три категории отмечены. Добавьте пример одной причинной гипотезы и тест, способный её опровергнуть; флаги не доказывают качество анализа. Функция проверяет только описанный контракт; отдельный артефакт не проверяется grader-ом.",
+      "prompt": "Реализуйте `func RetrospectiveComplete(factsSeparated, actionsOwned, limitsRecorded bool) bool`. Контракт: вернуть `true` только если все три входа равны `true`; каждая отсутствующая категория даёт `false`. Public/private vectors покрывают полную таблицу всех 8 булевых комбинаций. Эти параметры — отметки наличия полей, а не оценка их содержимого: helper не читает и не проверяет факты, причинный анализ, действия, сроки, ограничения или ретроспективный артефакт. Флаги не доказывают качество ретроспективы, архитектурного решения, независимость review или достижение Senior/другого ранга.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc RetrospectiveComplete(factsSeparated, actionsOwned, limitsRecorded bool) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
+      "public_output": "false\nfalse\nfalse\nfalse\n",
       "criteria": [
-        "Точно реализовать контракт `RetrospectiveComplete` и его приоритет ветвей.",
-        "Добавить decision table/пограничные случаи для helper и отдельной проверки.",
-        "Подготовить названный артефакт с источником, владельцем и ограничениями вывода.",
-        "Не представлять результат helper или учебное evidence как проверку production-системы."
+        "Вернуть true только для состояния (factsSeparated=true, actionsOwned=true, limitsRecorded=true); все остальные 7 комбинаций возвращают false.",
+        "Объяснить, что флаги отмечают только наличие категорий и не проверяют их содержимое.",
+        "Подготовить отдельный review-пакет ретроспективы с гипотезой и опровергающим тестом; grader артефакт не читает.",
+        "Не представлять helper output как доказательство качества анализа, архитектуры, reviewer independence или Senior-ранга."
       ],
       "self_check": [
         {
