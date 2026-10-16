@@ -17,7 +17,7 @@ export type LearningSnapshot = {
   review_exercises: string[];
 };
 
-export type RankEvidenceRequirement = { requirement_id: string; kind: 'course' | 'prior_rank' | 'project'; status: 'verified' | 'missing'; reason?: string };
+export type RankEvidenceRequirement = { requirement_id: string; kind: 'course' | 'prior_rank' | 'project' | 'manual_review'; status: 'verified' | 'missing'; reason?: string };
 export type RankEvidenceSummary = { exam_id?: string; exam_version?: string; rank?: string; policy_version?: number; policy_hash?: string; eligible?: boolean; requirements?: RankEvidenceRequirement[]; status?: 'unavailable'; reason?: string };
 export type ProjectReviewPacket = {
   submission_id: string; evaluation_id: string; project_id: string; project_version: string;

@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"academy/internal/projectreview"
 )
 
 const rankPolicyHashDomain = "open-go-academy/rank-policy/v1\x00"
@@ -18,17 +20,23 @@ var ErrRankPolicyNotFound = errors.New("rank policy not found")
 // ProjectEvidenceRequirement pins a policy requirement to the exact project
 // and evaluator identity whose immutable evidence may satisfy it.
 type ProjectEvidenceRequirement struct {
-	RequirementID     string `json:"requirement_id"`
-	ProjectID         string `json:"project_id"`
-	ProjectVersion    string `json:"project_version"`
-	CriteriaHash      string `json:"criteria_hash"`
-	ArtifactSchema    int    `json:"artifact_schema"`
-	CheckerVersion    string `json:"checker_version"`
-	CheckerDigest     string `json:"checker_digest"`
-	RuntimePolicyHash string `json:"runtime_policy_hash"`
-	RubricVersion     string `json:"rubric_version"`
-	RubricHash        string `json:"rubric_hash"`
-	RequirePass       bool   `json:"require_pass"`
+	RequirementID                          string   `json:"requirement_id"`
+	ProjectID                              string   `json:"project_id"`
+	ProjectVersion                         string   `json:"project_version"`
+	CriteriaHash                           string   `json:"criteria_hash"`
+	ArtifactSchema                         int      `json:"artifact_schema"`
+	CheckerVersion                         string   `json:"checker_version"`
+	CheckerDigest                          string   `json:"checker_digest"`
+	RuntimePolicyHash                      string   `json:"runtime_policy_hash"`
+	RubricVersion                          string   `json:"rubric_version"`
+	RubricHash                             string   `json:"rubric_hash"`
+	RequirePass                            bool     `json:"require_pass"`
+	ManualReviewRubricVersion              string   `json:"manual_review_rubric_version,omitempty"`
+	ManualReviewRubricHash                 string   `json:"manual_review_rubric_hash,omitempty"`
+	ReviewTrustPolicyVersion               string   `json:"review_trust_policy_version,omitempty"`
+	ReviewTrustPolicyHash                  string   `json:"review_trust_policy_hash,omitempty"`
+	AllowedReviewerKeyFingerprints         []string `json:"allowed_reviewer_key_fingerprints,omitempty"`
+	MinimumDistinctReviewerKeyFingerprints int      `json:"minimum_distinct_reviewer_key_fingerprints,omitempty"`
 }
 
 // RankPolicy is a server-authored, versioned definition. Slices are ordered
@@ -103,6 +111,8 @@ func validateRankPolicy(p RankPolicy) error {
 		return fmt.Errorf("rank policy for %s must require its previous rank %s", p.Rank, previousRank)
 	}
 	seenRequirements := make(map[string]bool, len(p.ProjectEvidenceRequirements))
+	requiredProject, minimumReviewers := map[string]string{"Middle": "p3", "Middle+": "p4", "Senior": "p5"}[p.Rank], map[string]int{"Middle": 1, "Middle+": 1, "Senior": 2}[p.Rank]
+	requiredReviewGate := false
 	for _, r := range p.ProjectEvidenceRequirements {
 		if !rankPolicyID(r.RequirementID) || seenRequirements[r.RequirementID] {
 			return fmt.Errorf("invalid or duplicate project requirement %q", r.RequirementID)
@@ -117,8 +127,60 @@ func validateRankPolicy(p RankPolicy) error {
 		if !r.RequirePass {
 			return fmt.Errorf("project evidence requirement %q must require a passing evaluation", r.RequirementID)
 		}
+		if r.ProjectID == requiredProject && r.MinimumDistinctReviewerKeyFingerprints >= minimumReviewers &&
+			r.ManualReviewRubricVersion != "" && r.ManualReviewRubricHash != "" && r.ReviewTrustPolicyVersion != "" && r.ReviewTrustPolicyHash != "" &&
+			len(r.AllowedReviewerKeyFingerprints) >= minimumReviewers {
+			requiredReviewGate = true
+		}
+		reviewFields := []string{r.ManualReviewRubricVersion, r.ManualReviewRubricHash, r.ReviewTrustPolicyVersion, r.ReviewTrustPolicyHash}
+		reviewConfigured := r.MinimumDistinctReviewerKeyFingerprints != 0
+		for _, field := range reviewFields {
+			reviewConfigured = reviewConfigured || field != ""
+		}
+		if reviewConfigured {
+			if !validExamText(r.ManualReviewRubricVersion) || !validUnprefixedSHA256(r.ManualReviewRubricHash) ||
+				!validExamText(r.ReviewTrustPolicyVersion) || !validSHA256(r.ReviewTrustPolicyHash) ||
+				r.MinimumDistinctReviewerKeyFingerprints < 1 || r.MinimumDistinctReviewerKeyFingerprints > 16 ||
+				len(r.AllowedReviewerKeyFingerprints) < r.MinimumDistinctReviewerKeyFingerprints || len(r.AllowedReviewerKeyFingerprints) > 256 ||
+				r.ReviewTrustPolicyHash != ComputeReviewTrustPolicyHash(r.ReviewTrustPolicyVersion, r.AllowedReviewerKeyFingerprints) {
+				return fmt.Errorf("invalid manual review policy for project requirement %q", r.RequirementID)
+			}
+			previous := ""
+			for _, fingerprint := range r.AllowedReviewerKeyFingerprints {
+				if !projectreview.ValidKeyFingerprint(fingerprint) || fingerprint <= previous {
+					return fmt.Errorf("allowed reviewer fingerprints must be canonical, unique, and sorted for requirement %q", r.RequirementID)
+				}
+				previous = fingerprint
+			}
+		} else if len(r.AllowedReviewerKeyFingerprints) != 0 {
+			return fmt.Errorf("allowed reviewer fingerprints require manual review policy for %q", r.RequirementID)
+		}
+	}
+	if !requiredReviewGate {
+		return fmt.Errorf("rank policy for %s requires project %s with at least %d distinct allowed-key human reviews", p.Rank, requiredProject, minimumReviewers)
 	}
 	return nil
+}
+
+type reviewTrustPolicyDefinition struct {
+	Version                        string   `json:"version"`
+	AllowedReviewerKeyFingerprints []string `json:"allowed_reviewer_key_fingerprints"`
+}
+
+// ComputeReviewTrustPolicyHash binds a version to an exact, pre-sorted set of
+// canonical public-key fingerprints. It establishes key bytes, not identity.
+func ComputeReviewTrustPolicyHash(version string, fingerprints []string) string {
+	body, _ := json.Marshal(reviewTrustPolicyDefinition{Version: version, AllowedReviewerKeyFingerprints: append([]string{}, fingerprints...)})
+	sum := sha256.Sum256(append([]byte("open-go-academy/review-trust-policy/v1\x00"), body...))
+	return "sha256:" + hex.EncodeToString(sum[:])
+}
+
+func validUnprefixedSHA256(value string) bool {
+	if len(value) != 64 {
+		return false
+	}
+	_, err := hex.DecodeString(value)
+	return err == nil && strings.ToLower(value) == value
 }
 
 func rankPolicyCanonical(p RankPolicy) ([]byte, error) {
@@ -189,6 +251,11 @@ func (s *Store) RankPolicy(examID, examVersion string, policyVersion int) (RankP
 	var definition rankPolicyDefinition
 	if err = json.Unmarshal([]byte(raw), &definition); err != nil {
 		return RankPolicy{}, err
+	}
+	if err = validateRankPolicy(RankPolicy{ExamID: definition.ExamID, ExamVersion: definition.ExamVersion, PolicyVersion: definition.PolicyVersion,
+		Rank: definition.Rank, CriteriaHash: definition.CriteriaHash, RequiredCourseExerciseIDs: definition.RequiredCourseExerciseIDs,
+		RequiredPriorRanks: definition.RequiredPriorRanks, ProjectEvidenceRequirements: definition.ProjectEvidenceRequirements}); err != nil {
+		return RankPolicy{}, fmt.Errorf("stored rank policy validation failed: %w", err)
 	}
 	canonical, err := json.Marshal(definition)
 	if err != nil {

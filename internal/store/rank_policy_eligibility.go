@@ -1,6 +1,9 @@
 package store
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type RankEvidenceRequirementStatus struct {
 	RequirementID string `json:"requirement_id"`
@@ -67,24 +70,23 @@ func (s *Store) RankPolicyEligibility(profileID, examID, examVersion string) (Ra
 		add("rank:"+requiredRank, "prior_rank", count > 0, reason)
 	}
 	for _, requirement := range policy.ProjectEvidenceRequirements {
-		var count int
-		err = tx.QueryRow(`SELECT COUNT(*) FROM project_submissions s JOIN project_evaluations e
-			ON e.submission_id=s.id AND e.profile_id=s.profile_id AND e.project_id=s.project_id
-			WHERE s.profile_id=? AND s.project_id=? AND s.project_version=? AND s.criteria_hash=? AND s.artifact_schema_version=?
-			AND e.checker_version=? AND e.checker_digest=? AND e.runtime_policy_hash=?
-			AND e.rubric_version=? AND e.rubric_hash=?
-			AND e.evaluation_status='automatic_pass' AND e.exit_code=0 AND e.passed=1`,
-			profileID, requirement.ProjectID, requirement.ProjectVersion, requirement.CriteriaHash, requirement.ArtifactSchema,
-			requirement.CheckerVersion, requirement.CheckerDigest, requirement.RuntimePolicyHash,
-			requirement.RubricVersion, requirement.RubricHash).Scan(&count)
-		if err != nil {
-			return RankPolicyEligibilityStatus{}, err
+		_, resolutionErr := resolveProjectEvidenceRequirementTx(tx, profileID, requirement)
+		projectFound := resolutionErr == nil || errors.Is(resolutionErr, ErrExamManualReviewQuorum)
+		if resolutionErr != nil && !errors.Is(resolutionErr, ErrExamManualReviewQuorum) && !errors.Is(resolutionErr, ErrExamProjectEvidenceMissing) {
+			return RankPolicyEligibilityStatus{}, resolutionErr
 		}
-		reason := ""
-		if count == 0 {
-			reason = fmt.Sprintf("project_evidence_missing:%s", requirement.ProjectID)
+		projectReason := ""
+		if !projectFound {
+			projectReason = fmt.Sprintf("project_evidence_missing:%s", requirement.ProjectID)
 		}
-		add("project:"+requirement.RequirementID, "project", count > 0, reason)
+		add("project:"+requirement.RequirementID, "project", projectFound, projectReason)
+		if requirement.MinimumDistinctReviewerKeyFingerprints > 0 {
+			reviewReason := ""
+			if !projectFound || errors.Is(resolutionErr, ErrExamManualReviewQuorum) {
+				reviewReason = "manual_review_quorum_missing"
+			}
+			add("review:"+requirement.RequirementID, "manual_review", reviewReason == "", reviewReason)
+		}
 	}
 	if err = tx.Commit(); err != nil {
 		return RankPolicyEligibilityStatus{}, err

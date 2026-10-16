@@ -6,6 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"reflect"
+	"sort"
 	"strings"
 	"testing"
 )
@@ -73,6 +75,49 @@ func TestRegistryKeyFingerprintRoundTrip(t *testing.T) {
 	if strings.Contains(string(mustCanonical(t, unsigned)), "fingerprint") {
 		t.Fatal("key fingerprint changed the signed canonical payload")
 	}
+}
+
+func TestRegistryKeyFingerprintsSortedAndIndependent(t *testing.T) {
+	first, _, err := GenerateKeyPair()
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, _, err := GenerateKeyPair()
+	if err != nil {
+		t.Fatal(err)
+	}
+	registry := &Registry{keys: map[string]ed25519.PublicKey{"z-reviewer": first, "a-reviewer": second}}
+	want := []string{fingerprintForTest(first), fingerprintForTest(second)}
+	sort.Strings(want)
+	got := registry.KeyFingerprints()
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("fingerprints=%v want=%v", got, want)
+	}
+
+	got[0] = "changed"
+	if again := registry.KeyFingerprints(); !reflect.DeepEqual(again, want) {
+		t.Fatalf("returned slice aliases registry state: got %v want %v", again, want)
+	}
+	if got := (*Registry)(nil).KeyFingerprints(); len(got) != 0 {
+		t.Fatalf("nil registry returned fingerprints: %v", got)
+	}
+}
+
+func TestLoadRegistryRejectsDuplicatePublicKeys(t *testing.T) {
+	publicKey, _, err := GenerateKeyPair()
+	if err != nil {
+		t.Fatal(err)
+	}
+	encoded := base64.StdEncoding.EncodeToString(publicKey)
+	raw := `{"reviewers":[{"reviewer_id":"reviewer-a","public_key":"` + encoded + `"},{"reviewer_id":"reviewer-b","public_key":"` + encoded + `"}]}`
+	if _, err := LoadRegistry(strings.NewReader(raw)); err == nil {
+		t.Fatal("duplicate public key accepted for distinct reviewers")
+	}
+}
+
+func fingerprintForTest(publicKey ed25519.PublicKey) string {
+	sum := sha256.Sum256(publicKey)
+	return "sha256:" + hex.EncodeToString(sum[:])
 }
 
 func mustCanonical(t *testing.T, a Attestation) []byte {

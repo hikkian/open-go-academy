@@ -1,10 +1,10 @@
 # Version matrix
 
-verified_at: 2026-10-15. Выбранные версии фиксируются lockfiles; latest не используется при сборке.
+verified_at: 2026-10-17. Go release history rechecked; selected Go remains 1.27.2. Other component pins are the researched 2026-10-15 snapshot. Выбранные версии фиксируются lockfiles; latest не используется при сборке.
 
 | Component | Selected | Source | Why |
 |---|---|---|---|
-| Go | 1.27.2 | https://go.dev/dl/?mode=json | актуальный stable patch |
+| Go | 1.27.2 | https://go.dev/doc/devel/release | stable patch released 2026-10-08; still current at 2026-10-17 |
 | Node | 24.18.0 (installed) | https://nodejs.org/en/blog/release/v24.18.0 | LTS, подходит engines |
 | SQLite driver | v1.60.1 | https://proxy.golang.org/modernc.org/sqlite/@latest | pure Go local persistence |
 | react | 19.3.1 | https://registry.npmjs.org/react/latest | совместимый pinned candidate |

@@ -86,6 +86,9 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 			panic(fmt.Errorf("immutable exam registration: %w", err))
 		}
 	}
+	if err := a.registerAdvancedRankPolicies(context.Background()); err != nil {
+		panic(fmt.Errorf("immutable advanced rank policy registration: %w", err))
+	}
 	mux.HandleFunc("GET /api/exams", func(w http.ResponseWriter, r *http.Request) {
 		p, err := a.Store.Progress()
 		if err != nil {
@@ -115,10 +118,15 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 			entry := map[string]any{"id": e.ID, "version": e.Version, "title": e.Title, "rank": e.Rank, "description": e.Description, "estimated_minutes": e.EstimatedMinutes, "criteria": e.Criteria}
 			policyStatus, policyErr := a.Store.RankPolicyEligibility("local", e.ID, e.Version)
 			if policyErr == nil {
-				entry["rank_evidence"] = policyStatus
-				for _, requirement := range policyStatus.Requirements {
-					if requirement.Status != "verified" {
-						missing = append(missing, "evidence:"+requirement.RequirementID)
+				if advancedRank(e.Rank) && !a.currentReviewTrustMatches(e.ID, e.Version) {
+					entry["rank_evidence"] = map[string]any{"status": "unavailable", "reason": "review_trust_policy_mismatch"}
+					missing = append(missing, "rank_evidence_trust_policy")
+				} else {
+					entry["rank_evidence"] = policyStatus
+					for _, requirement := range policyStatus.Requirements {
+						if requirement.Status != "verified" {
+							missing = append(missing, "evidence:"+requirement.RequirementID)
+						}
 					}
 				}
 			} else if errors.Is(policyErr, store.ErrRankPolicyNotFound) && advancedRank(e.Rank) {
@@ -171,6 +179,10 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 			}
 			if eligibilityErr != nil {
 				examStoreError(w, eligibilityErr)
+				return
+			}
+			if !a.currentReviewTrustMatches(e.ID, e.Version) {
+				examStoreError(w, store.ErrRankEvidenceRequired)
 				return
 			}
 			if !eligibility.Eligible {
@@ -279,6 +291,10 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 			fail(w, 409, "версия экзамена обновлена; начните новую попытку")
 			return
 		}
+		if advancedRank(e.Rank) && !a.attemptReviewTrustMatches(existing) {
+			examStoreError(w, store.ErrRankEvidenceRequired)
+			return
+		}
 		answers, _ := json.Marshal(q.Answers)
 		codes, _ := json.Marshal(q.Codes)
 		claimed, err := a.Store.ClaimExamAttempt("local", e.ID, existing.ID, tokenHash(q.Token), *q.Revision, string(answers), string(codes))
@@ -371,6 +387,10 @@ func (a *API) examRoutes(mux *http.ServeMux) {
 		score := successful * 100 / len(checks)
 		passed := successful == len(checks)
 		encoded, _ := json.Marshal(checks)
+		if advancedRank(e.Rank) && !a.attemptReviewTrustMatches(existing) {
+			examStoreError(w, store.ErrRankEvidenceRequired)
+			return
+		}
 		completed, err := a.Store.FinishExamAttempt("local", claimed.ID, score, passed, string(encoded))
 		if err != nil {
 			examStoreError(w, err)

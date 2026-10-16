@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -108,6 +109,26 @@ func (r *Registry) KeyFingerprint(reviewerID string) (string, error) {
 	}
 	sum := sha256.Sum256(key)
 	return "sha256:" + hex.EncodeToString(sum[:]), nil
+}
+
+// KeyFingerprints returns the canonical SHA-256 fingerprints of the
+// operator-allowlisted reviewer public keys, sorted lexicographically. The
+// returned slice is independent of the registry. Fingerprints identify key
+// bytes only; they do not establish a person's identity or independence.
+func (r *Registry) KeyFingerprints() []string {
+	if r == nil || len(r.keys) == 0 {
+		return []string{}
+	}
+	fingerprints := make([]string, 0, len(r.keys))
+	for _, key := range r.keys {
+		if len(key) != ed25519.PublicKeySize {
+			continue
+		}
+		sum := sha256.Sum256(key)
+		fingerprints = append(fingerprints, "sha256:"+hex.EncodeToString(sum[:]))
+	}
+	sort.Strings(fingerprints)
+	return fingerprints
 }
 
 // ValidKeyFingerprint reports whether fingerprint has the canonical format

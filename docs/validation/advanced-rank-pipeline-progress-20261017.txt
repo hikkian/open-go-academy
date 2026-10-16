@@ -1,0 +1,31 @@
+M11 — advanced rank pipeline integration slice — 2026-10-17
+
+Implemented:
+- API builds immutable Middle/P3, Middle+/P4 and Senior/P5 rank policies only when the operator reviewer registry contains enough distinct canonical public-key fingerprints and the project runner reports the exact current project version, criteria hash, checker, runtime-policy and rubric profile.
+- Policies bind all exam course prerequisites and the prior rank to the exact passing project artifact and project/manual rubric. Registry, runner profile, manual rubric or policy-version drift fails closed; identical definitions reuse their version, changed trust inputs append a new immutable version.
+- Store `StartExam` binds current project evaluation and required signed human reviews to the attempt. `ClaimExamAttempt`/`FinishExamAttempt` revalidate exact FK-linked review IDs/digests, latest per-key decisions, trust hash, allowed fingerprints, artifact/rubric and quorum in the transaction that records the result/award/profile update.
+- Student exam catalog recognizes `manual_review`, renders missing quorum in Russian, explains that review is for the exact submitted project and passing automatic evaluation, and explicitly warns that fingerprints prove key possession only, not identity or reviewer independence. Stale trust configuration is explained as an operator action.
+- The existing fail-closed behavior remains when the registry/profile is absent, invalid or stale. Local self-issued educational rank/credential is not external identity verification, accreditation or proof of professional grade.
+
+Integration coverage:
+- `internal/httpapi/advanced_rank_pipeline_test.go` uses HTTP project submit, signed review packet/POST, exam start/submit and result endpoints for Middle, Middle+ and Senior. It proves signed rejection blocks eligibility; approve and exact quorum permit it; an objective failed attempt awards no rank; a valid retry awards exactly the expected rank; replaying a completed attempt returns conflict. Senior requires two distinct configured reviewer fingerprints.
+- The HTTP test seeds prior-rank/course progress as fixtures and supplies a deterministic project-checker stub. Trusted exam reference functions are compiled/executed using host `go run` against the real exam grader. This test does not certify project OCI isolation, project checker correctness or reviewer independence; those remain separate rootless project E2E and governance requirements.
+- `tests/manual-review-prerequisite.spec.ts` runs desktop/mobile, checks the Russian manual-review/quorum/trust notices, axe violations and horizontal overflow. Screenshots: `artifacts/desktop-manual-review-prerequisite.png` and `artifacts/mobile-manual-review-prerequisite.png`; both visually inspected.
+
+Checks:
+- `GOFLAGS=-p=1 GOMAXPROCS=2 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-rank-ui-current-20261017 .tools/go/bin/go test ./internal/httpapi ./internal/store ./internal/projectreview -count=1` — PASS.
+- `scripts/go.sh test ./internal/httpapi -run '^TestAdvancedRankPipelineRequiresProjectReviewAndAwardsMiddleMiddlePlusSenior$' -count=1` — PASS.
+- `GOFLAGS=-p=1 GOMAXPROCS=2 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-rank-pipeline-full-20261017 make test` — PASS: all Go packages, P1 reference tests/vet, repository vet, full `-race ./...`, TypeScript typecheck and Vite production build. This is a local reproducible suite, not CI evidence.
+- `npx playwright test tests/manual-review-prerequisite.spec.ts` — PASS 2/2 (desktop/mobile), axe clean and no horizontal overflow.
+- `cd web && npm run typecheck && npm run build` — PASS after the final small stale-trust explanation change.
+- `git diff --check` — PASS.
+
+Research/operations:
+- Rechecked the official Go release history on 2026-10-17: `go1.27.2` (2026-10-08) remains the latest stable patch; local pinned toolchain unchanged. Sources: https://go.dev/doc/devel/release and https://go.dev/doc/go1.27.
+- `.codex/config.toml` and `.codex/agents/{builder,researcher,reviewer}.toml` were checked. Actual available agent/model metadata included economical `gpt-6-luna` builders and strong `gpt-6.1-sol` reviewer; two builders worked on non-overlapping UI and API-test scopes. Usage at latest check: ordinary work allowed; primary 32%, weekly 99%; no reset credit used. The configured one-shot heartbeat remains the sole scheduled continuation.
+
+Still open:
+- M11 is not complete. All 88 Middle/Middle+/Senior lessons remain drafts. Independent pedagogical review, complete competency/course-to-rank mapping, manual-review rubric governance and final course acceptance remain.
+- M12 full threat-model/security, load/performance, persistence fault, mobile/tablet/desktop light/dark, accessibility and failure matrix remain.
+- M13 complete clean-source release acceptance, full SPDX/NOTICE/legal and secret scan, traceability completion and owner-chosen LICENSE remain. Do not invent a license.
+- Configured fingerprints identify public-key bytes only. An operator must establish reviewer identity, separation from the learner and review independence outside this local key format if that assurance is required.

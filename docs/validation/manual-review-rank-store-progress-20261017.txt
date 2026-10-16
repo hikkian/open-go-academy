@@ -1,0 +1,21 @@
+M11 signed-review to rank-evidence store foundation — 2026-10-17
+
+Scope: store layer only. No advanced policy is registered by the API yet, and no Middle/Middle+/Senior award is enabled by this slice.
+
+Implemented:
+- An immutable `ProjectEvidenceRequirement` may pin the human rubric version/hash, review trust-policy version/hash, canonical sorted allowlisted reviewer-key fingerprints, and the minimum distinct-fingerprint quorum. These fields are part of the existing domain-separated rank-policy hash.
+- `StartExam` resolves a passing immutable machine evaluation and, when required, a quorum of signed `approve` rows matching the exact same submission/evaluation/project/version/artifact and exact manual rubric. For each key, the latest server-accepted decision is used; later `reject` or `changes_requested` supersedes prior approval. Candidate project submissions are searched newest-first for the newest artifact satisfying both automatic and human requirements.
+- Exam attempts snapshot exact review row IDs, attestation digests, and key fingerprints in the attempt evidence JSON and append-only `exam_project_review_evidence` table. FK links bind each row to the exact attempt, policy requirement, review, and submission.
+- Claim/Finish transactionally revalidate policy identity, current backing project/evaluation rows, snapshot/link equality, policy key allowlist, exact attestation digest/rubric/artifact, quorum, and non-superseded approval decisions. The existing advanced rank-award guard remains closed.
+
+Security boundary: the API must verify signatures against the operator-configured reviewer registry and construct immutable policies from that registry's exact fingerprints. Store fingerprints prove key bytes only; they do not establish a real person's identity, learner separation, or reviewer independence. Do not register an advanced policy until API trust configuration and policy lifecycle are wired and tested. Local LLM or learner self-review does not satisfy a human review requirement.
+
+Review and validation:
+- Independent strong reviewer rechecked the three discovered P2 findings (decorative trust hash, stale approval after reject, newer unreviewed submission shadowing reviewed evidence). After fixes, no further actionable findings in the reviewed store scope.
+- `.tools/go/bin/go test -count=1 ./internal/store` — PASS.
+- `.tools/go/bin/go test -race -count=1 ./internal/store` — PASS.
+- `.tools/go/bin/go vet ./internal/store` — PASS.
+- `GOFLAGS=-p=1 GOMAXPROCS=2 GOCACHE=/tmp/oga-rank-review-store-make-20261017 make test` — PASS: all packages, references, vet/race, TypeScript typecheck and production build. An earlier attempt failed from tmpfs disk quota while multiple stale clean-source caches remained; after deleting only task-created `/tmp` archives/caches, the exact command passed. No repository `.data` state was touched.
+- `git diff --check` — PASS.
+
+Still open: API registry-to-policy construction, policy registration for the full M11 course, advanced award integration, API/UI eligibility states, and end-to-end actual award/negative/replay/credential verification. The M11 curriculum and pedagogical review also remain open.

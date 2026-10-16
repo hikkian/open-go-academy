@@ -378,7 +378,11 @@ func (s *Store) FinishExamAttempt(profileID, attemptID string, score int, passed
 		return ExamAttempt{}, errors.New("exam criteria snapshot mismatch")
 	}
 	if passed {
-		if !automaticExamRank(a.Rank) {
+		var evidence examEvidenceSnapshot
+		if err = json.Unmarshal([]byte(a.EvidenceJSON), &evidence); err != nil {
+			return ExamAttempt{}, fmt.Errorf("invalid exam evidence: %w", err)
+		}
+		if !automaticExamRank(a.Rank) && (evidence.RankPolicyVersion < 1 || evidence.RankPolicyHash == "") {
 			return ExamAttempt{}, ErrRankEvidenceRequired
 		}
 		if err = validateExamEvidenceTx(tx, profileID, a.ID, a.ExamID, a.Version, a.Rank, a.CriteriaHash, a.EvidenceJSON); err != nil {
