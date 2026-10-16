@@ -21,7 +21,7 @@
 | M8 | Optional AI Tutor, model routing, usage controls | DONE | 2026-10-15: Go unit/vet/race+TS/build; actualHTTP test-provider browser3PASS1skip, noAI desktop/mobile, consent/fallback/quota/privacy review |
 | M9 | Digital badges, certificates, verification, passport | DONE | 2026-10-15: native exam→credential→verify/revoke/privacy; PDF/PNG/QR+independent crypto, actual keyrecovery; full17PASS5skip6min, graph/project/badgedates tested |
 | M10 | Full Zero/Junior/Junior+ curriculum and projects | DONE | 2026-10-15: 40chapters/120exercises;117nativefunctionsPASS;P2native44checks/recovery;Junior→Junior+nativeawards/credentialsPASS64.3s;full27PASS7skip7.6min;unit/vet/race/TSbuildPASS |
-| M11 | Full Middle/Middle+/Senior curriculum and projects | IN PROGRESS | 2026-10-16: 88-lesson/3-project syllabus in docs/curriculum/MIDDLE_SENIOR_PLAN.md; primary ecosystem stack in docs/research/M11_ECOSYSTEM.md. Lessons/projects unimplemented. |
+| M11 | Full Middle/Middle+/Senior curriculum and projects | IN PROGRESS | 2026-10-16: syllabus for 88 planned lessons/P3–P5 in docs/curriculum/MIDDLE_SENIOR_PLAN.md; primary research in docs/research/M11_ECOSYSTEM.md. Three bounded authoring batches started; 0 lessons published, P3–P5 code not implemented. |
 | M12 | Hardening, full E2E, performance, visual and accessibility | NOT STARTED | — |
 | M13 | Open-source release preparation and final acceptance audit | NOT STARTED | — |
 
@@ -412,3 +412,7 @@ Zero8 +Junior12 полных глав опубликованы manifest2026.10; 
 ## Прогресс и прогноз
 
 Оперативная панель: [PROJECT_PROGRESS.html](PROJECT_PROGRESS.html). Счётчик M0–M13 — доля закрытых milestone gates, не оценка объёма оставшейся работы. Отдельно видны доли опубликованного курса/проектов. Диапазон даты — плановая оценка, обновляется после завершения крупных этапов; он зависит от лимитов Codex и повторных проверок.
+
+### M11 progress — 2026-10-16
+
+Dashboard and reproducible inputs are in [PROJECT_PROGRESS.html](PROJECT_PROGRESS.html) and [project-progress.json](project-progress.json); use `python3 scripts/render-project-progress.py` after checkpoint changes. The milestone count is not a weighted estimate. A full 88-lesson syllabus and primary dependency snapshot are committed. First three disjoint authoring batches have started; no M11 chapter is approved or published yet.
