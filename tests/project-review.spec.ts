@@ -33,6 +33,7 @@ const signedApproval = {
   artifact_hash: '2'.repeat(64), rubric_version: reviewPacket.rubric.version, rubric_hash: reviewPacket.rubric.hash,
   decision: 'approve', comments: 'Reviewed.', issued_at: '2026-10-16T12:00:00Z', signature: 'c2lnbmF0dXJl',
 };
+const reviewerKeyFingerprint = `sha256:${'a'.repeat(64)}`;
 
 async function setupReviewPage(page: import('@playwright/test').Page) {
   const persistedReviews: Record<string, unknown>[] = [];
@@ -58,9 +59,9 @@ async function setupReviewPage(page: import('@playwright/test').Page) {
     if (path.endsWith('/reviews') && request.method() === 'POST') {
       const body = request.postDataJSON();
       if (body.decision === 'reject') return route.fulfill({status: 422, json: {error: 'подпись reviewer не прошла проверку доверенного allowlist'}});
-      const saved = {id: 'review-saved-1234567890', reviewer_id: 'operator-reviewer', decision: 'approve', comments: 'Reviewed.', artifact_hash: '2'.repeat(64), rubric_version: reviewPacket.rubric.version, rubric_hash: reviewPacket.rubric.hash, attestation_digest: `sha256:${'9'.repeat(64)}`, created_at: '2026-10-16T12:01:00Z'};
+      const saved = {id: 'review-saved-1234567890', reviewer_id: 'operator-reviewer', reviewer_key_fingerprint: reviewerKeyFingerprint, decision: 'approve', comments: 'Reviewed.', artifact_hash: '2'.repeat(64), rubric_version: reviewPacket.rubric.version, rubric_hash: reviewPacket.rubric.hash, attestation_digest: `sha256:${'9'.repeat(64)}`, created_at: '2026-10-16T12:01:00Z'};
       if (!persistedReviews.some(item => item.id === saved.id)) persistedReviews.push(saved);
-      return route.fulfill({status: 201, json: {review_id: saved.id, reviewer_id: saved.reviewer_id, decision: saved.decision, artifact_hash: saved.artifact_hash, rubric_version: saved.rubric_version, rubric_hash: saved.rubric_hash, attestation_digest: saved.attestation_digest, created_at: saved.created_at, rank_awarded: false}});
+      return route.fulfill({status: 201, json: {review_id: saved.id, reviewer_id: saved.reviewer_id, reviewer_key_fingerprint: saved.reviewer_key_fingerprint, decision: saved.decision, artifact_hash: saved.artifact_hash, rubric_version: saved.rubric_version, rubric_hash: saved.rubric_hash, attestation_digest: saved.attestation_digest, created_at: saved.created_at, rank_awarded: false}});
     }
     return route.fulfill({status: 404, json: {error: `Unmocked ${request.method()} ${path}`}});
   });
@@ -101,9 +102,13 @@ test('passing evidence can export packet and import signed review with explicit 
   const history = page.locator('details').filter({hasText: 'Сохранённые решения reviewer'});
   await expect(reviewRegion.getByRole('status')).toContainText('Подписанное решение сохранено');
   await expect(reviewRegion.getByRole('status')).toContainText('review-saved-1234567890');
-  await expect(reviewRegion.getByRole('status')).toContainText('Ранг автоматически не начислен.');
+  await expect(reviewRegion.getByRole('status')).toContainText(reviewerKeyFingerprint);
+  await expect(reviewRegion.getByRole('status')).toContainText('Fingerprint идентифицирует ключ, не человека; ранг автоматически не начислен.');
   await expect(page.getByText(/Сохранённые решения reviewer \(1\)/)).toBeVisible();
   await expect(history).toContainText('review-saved-1234567890');
+  await expect(history).toContainText(reviewerKeyFingerprint);
+  await history.locator('summary').click();
+  await expect(history).toContainText(reviewerKeyFingerprint);
 
   await upload.setInputFiles({name: 'invalid-review.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({...signedApproval, decision: 'reject'}))});
   await expect(page.getByRole('alert')).toContainText('allowlist');

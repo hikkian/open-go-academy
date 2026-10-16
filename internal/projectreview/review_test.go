@@ -2,7 +2,9 @@ package projectreview
 
 import (
 	"crypto/ed25519"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"strings"
 	"testing"
@@ -46,6 +48,40 @@ func TestCanonicalDeterministicAndSignature(t *testing.T) {
 	if _, err := Sign(signed, priv); err == nil {
 		t.Fatal("resigning accepted")
 	}
+}
+
+func TestRegistryKeyFingerprintRoundTrip(t *testing.T) {
+	a, publicKey, privateKey, registry := fixture(t)
+	signed, err := Sign(a, privateKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := Verify(registry, signed); err != nil {
+		t.Fatalf("signature verification failed: %v", err)
+	}
+	fingerprint, err := registry.KeyFingerprint(signed.ReviewerID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sum := sha256.Sum256(publicKey)
+	want := "sha256:" + hex.EncodeToString(sum[:])
+	if fingerprint != want || !ValidKeyFingerprint(fingerprint) {
+		t.Fatalf("fingerprint=%q want=%q", fingerprint, want)
+	}
+	unsigned := signed
+	unsigned.Signature = ""
+	if strings.Contains(string(mustCanonical(t, unsigned)), "fingerprint") {
+		t.Fatal("key fingerprint changed the signed canonical payload")
+	}
+}
+
+func mustCanonical(t *testing.T, a Attestation) []byte {
+	t.Helper()
+	data, err := canonical(a)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
 }
 
 func TestVerifyRejectsTamperingBoundFields(t *testing.T) {
@@ -137,6 +173,7 @@ func TestLoadRegistryStrictAndValidated(t *testing.T) {
 		`{}`, `{"reviewers":[]}`, `{"reviewers":[{"reviewer_id":"bad id","public_key":"` + base64.StdEncoding.EncodeToString(pub) + `"}]}`,
 		`{"reviewers":[{"reviewer_id":"r","public_key":"short"}]}`,
 		`{"reviewers":[{"reviewer_id":"r","public_key":"` + base64.StdEncoding.EncodeToString(pub) + `"},{"reviewer_id":"r","public_key":"` + base64.StdEncoding.EncodeToString(pub) + `"}]}`,
+		`{"reviewers":[{"reviewer_id":"r1","public_key":"` + base64.StdEncoding.EncodeToString(pub) + `"},{"reviewer_id":"r2","public_key":"` + base64.StdEncoding.EncodeToString(pub) + `"}]}`,
 		`{"reviewers":[],"unexpected":true}`, `{"reviewers":[]} {}`,
 	}
 	for i, raw := range cases {

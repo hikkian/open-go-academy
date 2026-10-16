@@ -132,21 +132,25 @@ func (a *API) projectReviewRoutes(mux *http.ServeMux) {
 			return
 		}
 		type reviewResponse struct {
-			ID                string    `json:"id"`
-			ReviewerID        string    `json:"reviewer_id"`
-			Decision          string    `json:"decision"`
-			Comments          string    `json:"comments"`
-			ArtifactHash      string    `json:"artifact_hash"`
-			RubricVersion     string    `json:"rubric_version"`
-			RubricHash        string    `json:"rubric_hash"`
-			AttestationDigest string    `json:"attestation_digest"`
-			CreatedAt         time.Time `json:"created_at"`
+			ID                     string    `json:"id"`
+			ReviewerID             string    `json:"reviewer_id"`
+			ReviewerKeyFingerprint string    `json:"reviewer_key_fingerprint"`
+			Decision               string    `json:"decision"`
+			Comments               string    `json:"comments"`
+			ArtifactHash           string    `json:"artifact_hash"`
+			RubricVersion          string    `json:"rubric_version"`
+			RubricHash             string    `json:"rubric_hash"`
+			AttestationDigest      string    `json:"attestation_digest"`
+			CreatedAt              time.Time `json:"created_at"`
 		}
 		result := make([]reviewResponse, 0, len(reviews))
 		for _, review := range reviews {
-			result = append(result, reviewResponse{review.ID, review.Attestation.ReviewerID, review.Attestation.Decision,
-				review.Attestation.Comments, review.Attestation.ArtifactHash, review.Attestation.RubricVersion,
-				review.Attestation.RubricHash, review.AttestationDigest, review.CreatedAt})
+			result = append(result, reviewResponse{
+				ID: review.ID, ReviewerID: review.Attestation.ReviewerID, ReviewerKeyFingerprint: review.ReviewerKeyFingerprint,
+				Decision: review.Attestation.Decision, Comments: review.Attestation.Comments,
+				ArtifactHash: review.Attestation.ArtifactHash, RubricVersion: review.Attestation.RubricVersion,
+				RubricHash: review.Attestation.RubricHash, AttestationDigest: review.AttestationDigest, CreatedAt: review.CreatedAt,
+			})
 		}
 		write(w, http.StatusOK, map[string]any{"reviews": result})
 	})
@@ -198,7 +202,15 @@ func (a *API) projectReviewRoutes(mux *http.ServeMux) {
 			fail(w, http.StatusUnprocessableEntity, "подпись reviewer не прошла проверку доверенного allowlist")
 			return
 		}
-		review, err := a.Store.RecordProjectReview("local", attestation)
+		// Derive the public-key fingerprint from the exact allowlisted key that
+		// Verify used; this is evidence of key possession, not personhood or
+		// reviewer independence.
+		reviewerKeyFingerprint, err := a.ProjectReviewers.KeyFingerprint(attestation.ReviewerID)
+		if err != nil {
+			fail(w, http.StatusUnprocessableEntity, "allowlisted reviewer key is unavailable")
+			return
+		}
+		review, err := a.Store.RecordProjectReview("local", attestation, reviewerKeyFingerprint)
 		if errors.Is(err, store.ErrProjectEvidenceNotFound) {
 			fail(w, http.StatusNotFound, "submission или оценка проекта не найдены")
 			return
@@ -209,7 +221,8 @@ func (a *API) projectReviewRoutes(mux *http.ServeMux) {
 		}
 		write(w, http.StatusCreated, map[string]any{
 			"review_id": review.ID, "reviewer_id": review.Attestation.ReviewerID,
-			"decision": review.Attestation.Decision, "artifact_hash": review.Attestation.ArtifactHash,
+			"reviewer_key_fingerprint": review.ReviewerKeyFingerprint,
+			"decision":                 review.Attestation.Decision, "artifact_hash": review.Attestation.ArtifactHash,
 			"rubric_version": review.Attestation.RubricVersion, "rubric_hash": review.Attestation.RubricHash,
 			"attestation_digest": review.AttestationDigest, "created_at": review.CreatedAt,
 			"rank_awarded": false,

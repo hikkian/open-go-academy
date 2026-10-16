@@ -18,20 +18,24 @@ var ErrProjectReviewNotFound = errors.New("project review not found")
 // ProjectReview is the durable form of an operator-key-signed review decision.
 // Its digest covers every attestation field, including the signature.
 type ProjectReview struct {
-	ID                string                    `json:"id"`
-	ProfileID         string                    `json:"profile_id"`
-	Attestation       projectreview.Attestation `json:"attestation"`
-	AttestationDigest string                    `json:"attestation_digest"`
-	CreatedAt         time.Time                 `json:"created_at"`
+	ID                     string                    `json:"id"`
+	ProfileID              string                    `json:"profile_id"`
+	Attestation            projectreview.Attestation `json:"attestation"`
+	AttestationDigest      string                    `json:"attestation_digest"`
+	ReviewerKeyFingerprint string                    `json:"reviewer_key_fingerprint"`
+	CreatedAt              time.Time                 `json:"created_at"`
 }
 
-// RecordProjectReview stores an already verified offline attestation. The API
-// must verify its operator-pinned Ed25519 key and manual-rubric hash before
-// calling this method. Machine evaluator rubrics are separate from human review
-// rubrics. This binding does not establish real-world identity or independence.
-func (s *Store) RecordProjectReview(profileID string, a projectreview.Attestation) (ProjectReview, error) {
+// RecordProjectReview stores an already verified offline attestation and the
+// SHA-256 fingerprint of the exact operator-allowlisted public key used by the
+// API to verify it. This records key possession only; it does not establish a
+// real-world identity or reviewer independence.
+func (s *Store) RecordProjectReview(profileID string, a projectreview.Attestation, reviewerKeyFingerprint string) (ProjectReview, error) {
 	if profileID != "local" {
 		return ProjectReview{}, ErrProfileNotFound
+	}
+	if !projectreview.ValidKeyFingerprint(reviewerKeyFingerprint) {
+		return ProjectReview{}, errors.New("reviewer key fingerprint must be canonical sha256 hex")
 	}
 	if a.Version != projectreview.Version || a.ReviewerID == "" || a.SubmissionID == "" || a.EvaluationID == "" ||
 		a.ProjectVersion == "" || a.RubricVersion == "" || a.ArtifactHash == "" || a.RubricHash == "" ||
@@ -83,14 +87,17 @@ func (s *Store) RecordProjectReview(profileID string, a projectreview.Attestatio
 
 	var existing ProjectReview
 	var raw, created string
-	err = tx.QueryRow(`SELECT id,profile_id,attestation_json,attestation_digest,created_at
-		FROM project_reviews WHERE attestation_digest=?`, digest).Scan(&existing.ID, &existing.ProfileID, &raw, &existing.AttestationDigest, &created)
+	err = tx.QueryRow(`SELECT id,profile_id,attestation_json,attestation_digest,reviewer_key_fingerprint,created_at
+		FROM project_reviews WHERE attestation_digest=?`, digest).Scan(&existing.ID, &existing.ProfileID, &raw, &existing.AttestationDigest, &existing.ReviewerKeyFingerprint, &created)
 	if err == nil {
 		if err = json.Unmarshal([]byte(raw), &existing.Attestation); err != nil {
 			return ProjectReview{}, err
 		}
 		if string(canonical) != raw {
 			return ProjectReview{}, errors.New("project review digest collision")
+		}
+		if existing.ReviewerKeyFingerprint != reviewerKeyFingerprint {
+			return ProjectReview{}, errors.New("project review replay uses a different or unrecorded reviewer key fingerprint")
 		}
 		existing.CreatedAt, err = time.Parse(time.RFC3339Nano, created)
 		if err != nil {
@@ -111,16 +118,16 @@ func (s *Store) RecordProjectReview(profileID string, a projectreview.Attestatio
 	now := time.Now().UTC()
 	_, err = tx.Exec(`INSERT INTO project_reviews(id,profile_id,submission_id,evaluation_id,project_id,project_version,
 		artifact_hash,reviewer_id,attestation_version,rubric_version,rubric_hash,decision,comments,issued_at,signature,
-		attestation_digest,attestation_json,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+		attestation_digest,attestation_json,reviewer_key_fingerprint,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 		id, profileID, a.SubmissionID, a.EvaluationID, a.ProjectID, a.ProjectVersion, a.ArtifactHash, a.ReviewerID,
-		a.Version, a.RubricVersion, a.RubricHash, a.Decision, a.Comments, a.IssuedAt, a.Signature, digest, string(canonical), now.Format(time.RFC3339Nano))
+		a.Version, a.RubricVersion, a.RubricHash, a.Decision, a.Comments, a.IssuedAt, a.Signature, digest, string(canonical), reviewerKeyFingerprint, now.Format(time.RFC3339Nano))
 	if err != nil {
 		return ProjectReview{}, fmt.Errorf("persist project review: %w", err)
 	}
 	if err = tx.Commit(); err != nil {
 		return ProjectReview{}, err
 	}
-	return ProjectReview{ID: id, ProfileID: profileID, Attestation: a, AttestationDigest: digest, CreatedAt: now}, nil
+	return ProjectReview{ID: id, ProfileID: profileID, Attestation: a, AttestationDigest: digest, ReviewerKeyFingerprint: reviewerKeyFingerprint, CreatedAt: now}, nil
 }
 
 // ProjectReview reads one immutable attestation for the local profile.
@@ -130,8 +137,8 @@ func (s *Store) ProjectReview(profileID, id string) (ProjectReview, error) {
 	}
 	var review ProjectReview
 	var raw, created string
-	err := s.db.QueryRow(`SELECT id,profile_id,attestation_json,attestation_digest,created_at FROM project_reviews WHERE id=? AND profile_id=?`, id, profileID).
-		Scan(&review.ID, &review.ProfileID, &raw, &review.AttestationDigest, &created)
+	err := s.db.QueryRow(`SELECT id,profile_id,attestation_json,attestation_digest,reviewer_key_fingerprint,created_at FROM project_reviews WHERE id=? AND profile_id=?`, id, profileID).
+		Scan(&review.ID, &review.ProfileID, &raw, &review.AttestationDigest, &review.ReviewerKeyFingerprint, &created)
 	if errors.Is(err, sql.ErrNoRows) {
 		return ProjectReview{}, ErrProjectReviewNotFound
 	}
@@ -152,7 +159,7 @@ func (s *Store) ProjectReviews(profileID, submissionID string) ([]ProjectReview,
 	if profileID != "local" {
 		return nil, ErrProjectReviewNotFound
 	}
-	rows, err := s.db.Query(`SELECT id,profile_id,attestation_json,attestation_digest,created_at
+	rows, err := s.db.Query(`SELECT id,profile_id,attestation_json,attestation_digest,reviewer_key_fingerprint,created_at
 		FROM project_reviews WHERE profile_id=? AND submission_id=? ORDER BY created_at,id`, profileID, submissionID)
 	if err != nil {
 		return nil, err
@@ -162,7 +169,7 @@ func (s *Store) ProjectReviews(profileID, submissionID string) ([]ProjectReview,
 	for rows.Next() {
 		var review ProjectReview
 		var raw, created string
-		if err = rows.Scan(&review.ID, &review.ProfileID, &raw, &review.AttestationDigest, &created); err != nil {
+		if err = rows.Scan(&review.ID, &review.ProfileID, &raw, &review.AttestationDigest, &review.ReviewerKeyFingerprint, &created); err != nil {
 			return nil, err
 		}
 		if err = json.Unmarshal([]byte(raw), &review.Attestation); err != nil {

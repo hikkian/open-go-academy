@@ -1,0 +1,20 @@
+Project-review reviewer-key fingerprint and legacy migration
+Date: 2026-10-16
+
+Implemented:
+- The registry computes `sha256:<lowercase hex>` from the exact allowlisted Ed25519 public-key bytes only after the API verifies the signed attestation.
+- Registry load rejects the same decoded public key assigned to multiple reviewer IDs, preventing one key from masquerading as multiple configured keys.
+- Migration `0011_project_review_key_fingerprint.sql` adds a NOT NULL fingerprint field with an empty legacy default. It does not backfill old review rows or mark them trusted.
+- Store persists, returns and exact-replay-checks the fingerprint; the POST result and GET review history expose it without exposing the raw signature.
+- Workspace labels the fingerprint as a key identifier and explicitly says it does not prove a person's identity or independence.
+- No rank policy consumes fingerprints yet. Advanced awards remain fail-closed.
+
+Verification:
+- `go test ./internal/projectreview ./internal/store ./internal/httpapi -count=1` — PASS.
+- `go test -race ./internal/projectreview ./internal/store ./internal/httpapi -count=1` — PASS.
+- `go vet ./internal/projectreview ./internal/store ./internal/httpapi` — PASS.
+- Full `make test` including Go unit/P1 references/vet/race and TypeScript/build passed before the final UI label change; current web `npm run typecheck && npm run build` — PASS afterward.
+- `npx playwright test tests/project-review.spec.ts` — 2/2 PASS desktop/mobile, full axe, no horizontal overflow; screenshot visually reviewed.
+- Independent strong reviewer found no additional fingerprint/migration finding. `git diff --check` — PASS.
+
+Trust limitation: fingerprint binds a review to one configured key, not a natural person's identity, independence from the learner, or reviewer competence.

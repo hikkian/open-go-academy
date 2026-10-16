@@ -33,12 +33,12 @@ export type ProjectReviewAttestation = {
   decision: 'approve' | 'changes_requested' | 'reject'; comments: string; issued_at: string; signature: string;
 };
 export type ProjectReviewResult = {
-  review_id: string; reviewer_id: string; decision: ProjectReviewAttestation['decision'];
+  review_id: string; reviewer_id: string; reviewer_key_fingerprint: string; decision: ProjectReviewAttestation['decision'];
   artifact_hash: string; rubric_version: string; rubric_hash: string; attestation_digest: string;
   created_at: string; rank_awarded: false;
 };
 export type ProjectReviewHistoryItem = {
-  id: string; reviewer_id: string; decision: ProjectReviewAttestation['decision']; comments: string;
+  id: string; reviewer_id: string; reviewer_key_fingerprint: string; decision: ProjectReviewAttestation['decision']; comments: string;
   artifact_hash: string; rubric_version: string; rubric_hash: string; attestation_digest: string; created_at: string;
 };
 export async function getProjectReviewPacket(projectId: string, submissionId: string, evaluationId: string) {

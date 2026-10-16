@@ -282,13 +282,13 @@ function ManualReviewPanel({ evidence, reviewState, reviewBusy, onDownloadReview
       <label>Загрузить подписанный JSON <input type="file" accept="application/json,.json" aria-label="Загрузить подписанное решение reviewer JSON" disabled={reviewBusy} onChange={event => { const file = event.currentTarget.files?.[0]; event.currentTarget.value = ''; if (file) onUploadReview(evidence, file); }} /></label></div>
     <p>Подпись подтверждает владение ключом из операторского allowlist. Личность и независимость reviewer зависят от внешней настройки и доверия оператору. Это решение само по себе не начисляет ранг.</p>
     {reviewState.error && <p role="alert">{reviewState.error}</p>}
-    {reviewState.success && <div role="status"><p>Подписанное решение сохранено: <code>{reviewState.success.decision}</code>, review ID <code>{reviewState.success.review_id}</code>.</p><p>Ранг автоматически не начислен.</p></div>}
+    {reviewState.success && <div role="status"><p>Подписанное решение сохранено: <code>{reviewState.success.decision}</code>, key fingerprint <code>{reviewState.success.reviewer_key_fingerprint}</code>, review ID <code>{reviewState.success.review_id}</code>.</p><p>Fingerprint идентифицирует ключ, не человека; ранг автоматически не начислен.</p></div>}
   </section>;
 }
 
 function ReviewHistoryList({ reviews }: { reviews: ProjectReviewHistoryItem[] }) {
   if (!reviews.length) return null;
-  return <details className="project-evidence-details"><summary>Сохранённые решения reviewer ({reviews.length})</summary><ul>{reviews.map(review => <li key={review.id}><strong>{review.decision}</strong> · reviewer key <code>{review.reviewer_id}</code> · review ID <code>{review.id}</code><p>{review.comments || 'Комментарий не приложен.'}</p><small>{formatDate(review.created_at)} · подпись/attestation <code>{review.attestation_digest}</code></small></li>)}</ul><p>Список загружен с локального сервера по сохранённому указателю submission; он не подтверждает реальную личность или независимость reviewer и не начисляет ранг.</p></details>;
+  return <details className="project-evidence-details"><summary>Сохранённые решения reviewer ({reviews.length})</summary><ul>{reviews.map(review => <li key={review.id}><strong>{review.decision}</strong> · reviewer key <code>{review.reviewer_id}</code> · fingerprint <code>{review.reviewer_key_fingerprint || 'legacy/unverified'}</code> · review ID <code>{review.id}</code><p>{review.comments || 'Комментарий не приложен.'}</p><small>{formatDate(review.created_at)} · подпись/attestation <code>{review.attestation_digest}</code></small></li>)}</ul><p>Fingerprint связывает решение с конкретным операторским ключом, но не подтверждает реальную личность или независимость reviewer и не начисляет ранг. История загружается с локального сервера после проверки указателя submission.</p></details>;
 }
 
 function validProjectFilename(filename: string, projectId = '') {

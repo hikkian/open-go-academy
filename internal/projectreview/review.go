@@ -24,6 +24,7 @@ const domain = "open-go-academy/project-review/v1\x00"
 
 var idPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$`)
 var hashPattern = regexp.MustCompile(`^[0-9a-f]{64}$`)
+var fingerprintPattern = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
 
 type Attestation struct {
 	Version        int    `json:"version"`
@@ -69,6 +70,7 @@ func LoadRegistry(r io.Reader) (*Registry, error) {
 		return nil, errors.New("reviewer registry must contain 1..10000 reviewers")
 	}
 	reg := &Registry{keys: make(map[string]ed25519.PublicKey, len(file.Reviewers))}
+	publicKeys := make(map[string]string, len(file.Reviewers))
 	for _, entry := range file.Reviewers {
 		if !validID(entry.ReviewerID) {
 			return nil, fmt.Errorf("invalid reviewer_id %q", entry.ReviewerID)
@@ -80,10 +82,37 @@ func LoadRegistry(r io.Reader) (*Registry, error) {
 		if err != nil || len(key) != ed25519.PublicKeySize {
 			return nil, fmt.Errorf("reviewer %q has invalid Ed25519 public_key", entry.ReviewerID)
 		}
+		if previous, exists := publicKeys[string(key)]; exists {
+			return nil, fmt.Errorf("reviewers %q and %q use the same Ed25519 public key", previous, entry.ReviewerID)
+		}
+		publicKeys[string(key)] = entry.ReviewerID
 		reg.keys[entry.ReviewerID] = append(ed25519.PublicKey(nil), key...)
 	}
 	return reg, nil
 }
+
+// KeyFingerprint returns the canonical SHA-256 fingerprint of the exact
+// operator-allowlisted Ed25519 public key for reviewerID. The fingerprint
+// identifies key bytes only; it does not establish a person's identity or
+// independence.
+func (r *Registry) KeyFingerprint(reviewerID string) (string, error) {
+	if r == nil {
+		return "", errors.New("reviewer registry is required")
+	}
+	key, ok := r.keys[reviewerID]
+	if !ok {
+		return "", fmt.Errorf("unknown reviewer %q", reviewerID)
+	}
+	if len(key) != ed25519.PublicKeySize {
+		return "", errors.New("invalid allowlisted Ed25519 public key size")
+	}
+	sum := sha256.Sum256(key)
+	return "sha256:" + hex.EncodeToString(sum[:]), nil
+}
+
+// ValidKeyFingerprint reports whether fingerprint has the canonical format
+// returned by Registry.KeyFingerprint.
+func ValidKeyFingerprint(fingerprint string) bool { return fingerprintPattern.MatchString(fingerprint) }
 
 func validID(s string) bool   { return idPattern.MatchString(s) }
 func validHash(s string) bool { return hashPattern.MatchString(s) }

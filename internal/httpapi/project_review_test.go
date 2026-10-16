@@ -8,7 +8,9 @@ import (
 	"bytes"
 	"crypto/ed25519"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -25,6 +27,7 @@ type projectReviewFixture struct {
 	submission store.ProjectSubmission
 	evaluation store.ProjectEvaluation
 	private    ed25519.PrivateKey
+	public     ed25519.PublicKey
 }
 
 func newProjectReviewFixture(t *testing.T, withRegistry bool) *projectReviewFixture {
@@ -77,7 +80,7 @@ func newProjectReviewFixture(t *testing.T, withRegistry bool) *projectReviewFixt
 	}
 	api := New(s, catalog, nil, "review-session", "127.0.0.1:8081")
 	api.ProjectReviewers = registry
-	return &projectReviewFixture{t: t, s: s, h: api.Handler(t.TempDir()), project: p, submission: submission, evaluation: evaluation, private: private}
+	return &projectReviewFixture{t: t, s: s, h: api.Handler(t.TempDir()), project: p, submission: submission, evaluation: evaluation, private: private, public: public}
 }
 
 func (f *projectReviewFixture) request(method, path string, body any) *httptest.ResponseRecorder {
@@ -159,7 +162,9 @@ func TestProjectReviewPacketAndSignedReviewAreBoundAndIdempotent(t *testing.T) {
 	if err := json.Unmarshal(first.Body.Bytes(), &firstResult); err != nil {
 		t.Fatal(err)
 	}
-	if firstResult["decision"] != "approve" || firstResult["reviewer_id"] != a.ReviewerID || firstResult["artifact_hash"] != a.ArtifactHash || firstResult["rank_awarded"] != false || firstResult["attestation_digest"] == "" {
+	keyHash := sha256.Sum256(f.public)
+	wantFingerprint := "sha256:" + hex.EncodeToString(keyHash[:])
+	if firstResult["decision"] != "approve" || firstResult["reviewer_id"] != a.ReviewerID || firstResult["artifact_hash"] != a.ArtifactHash || firstResult["rank_awarded"] != false || firstResult["attestation_digest"] == "" || firstResult["reviewer_key_fingerprint"] != wantFingerprint {
 		t.Fatalf("unexpected persisted review response: %#v", firstResult)
 	}
 	second := post(a)
@@ -193,7 +198,7 @@ func TestProjectReviewPacketAndSignedReviewAreBoundAndIdempotent(t *testing.T) {
 	if err := json.Unmarshal(listed.Body.Bytes(), &history); err != nil {
 		t.Fatal(err)
 	}
-	if len(history.Reviews) != 1 || history.Reviews[0]["decision"] != "approve" {
+	if len(history.Reviews) != 1 || history.Reviews[0]["decision"] != "approve" || history.Reviews[0]["reviewer_key_fingerprint"] != wantFingerprint {
 		t.Fatalf("review history did not show the persisted decision: %#v", history)
 	}
 	if _, leaksSignature := history.Reviews[0]["signature"]; leaksSignature {
