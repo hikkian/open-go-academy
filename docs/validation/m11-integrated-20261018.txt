@@ -1,0 +1,8 @@
+M11 integrated technical checkpoint — 2026-10-18
+Result: PASS
+Command: GOFLAGS=-p=1 GOMAXPROCS=2 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-m26-20261018 make test
+Coverage: Python fingerprint tests; all Go unit/reference/vet/race; TS typecheck/build.
+Scope: taxonomy, M16–18/M20/M22/M26 integrated snapshot before final M28/Senior13–23/P3 UI edits. Repeat final applicable checks after those changes.
+Raw log: artifacts/m11-integrated-tech-20261018.log
+Raw log SHA-256: 51bf1e6d358d0264de554434a357030b549d08ade7a698cbe96cb98028120f6d
+Full M11 content and browser gates pending; no M11/M12/M13 completion claim.

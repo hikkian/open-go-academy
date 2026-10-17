@@ -18,9 +18,21 @@
       "expanded": true,
       "backfillVerified": true,
       "consumersMoved": true
+    },
+    {
+      "expanded": true,
+      "backfillVerified": false,
+      "consumersMoved": false
+    },
+    {
+      "expanded": true,
+      "backfillVerified": true,
+      "consumersMoved": false
     }
   ],
   "private_expected": [
-    "contract_candidate"
+    "contract_candidate",
+    "backfill",
+    "cutover_ready"
   ]
 }

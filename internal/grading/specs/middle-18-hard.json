@@ -1,77 +1,84 @@
 {
   "id": "middle-18-hard",
-  "signature": "func MessageAckHard(transient bool, attempts int64, handlerCommitted bool, maxAttempts int64) string",
+  "signature": "func MessageAckHard(commitState string, transient bool, attempts int64, maxAttempts int64) string",
   "allowed_imports": [],
-  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Transient bool; Attempts int64; HandlerCommitted bool; MaxAttempts int64; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(MessageAckHard(x.Transient, x.Attempts, x.HandlerCommitted, x.MaxAttempts));e!=nil{panic(e)}}}\n",
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{CommitState string; Transient bool; Attempts int64; MaxAttempts int64}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(MessageAckHard(x.CommitState,x.Transient,x.Attempts,x.MaxAttempts));e!=nil{panic(e)}}}\n",
   "public_input": [
     {
-      "Transient": false,
-      "Attempts": 0,
-      "HandlerCommitted": true,
+      "CommitState": "committed",
+      "Transient": true,
+      "Attempts": 8,
       "MaxAttempts": 3
     },
     {
+      "CommitState": "unknown",
+      "Transient": true,
+      "Attempts": 1,
+      "MaxAttempts": 3
+    },
+    {
+      "CommitState": "uncommitted",
       "Transient": true,
       "Attempts": 2,
-      "HandlerCommitted": false,
       "MaxAttempts": 3
     },
     {
+      "CommitState": "uncommitted",
       "Transient": true,
       "Attempts": 3,
-      "HandlerCommitted": false,
       "MaxAttempts": 3
     },
     {
-      "Transient": true,
-      "Attempts": 3,
-      "HandlerCommitted": true,
-      "MaxAttempts": 3
-    },
-    {
+      "CommitState": "uncommitted",
       "Transient": false,
       "Attempts": 0,
-      "HandlerCommitted": false,
-      "MaxAttempts": 1
+      "MaxAttempts": 3
     }
   ],
   "public_expected": [
     "ack",
+    "reconcile",
     "retry",
     "dead_letter",
-    "ack",
     "reject"
   ],
   "private_input": [
     {
+      "CommitState": "maybe",
       "Transient": true,
-      "Attempts": -1,
-      "HandlerCommitted": false,
+      "Attempts": 0,
       "MaxAttempts": 3
     },
     {
+      "CommitState": "uncommitted",
       "Transient": true,
       "Attempts": 0,
-      "HandlerCommitted": false,
       "MaxAttempts": 0
     },
     {
+      "CommitState": "uncommitted",
       "Transient": true,
-      "Attempts": 4,
-      "HandlerCommitted": false,
+      "Attempts": -1,
       "MaxAttempts": 3
     },
     {
+      "CommitState": "committed",
       "Transient": true,
-      "Attempts": 0,
-      "HandlerCommitted": true,
-      "MaxAttempts": 3
+      "Attempts": -1,
+      "MaxAttempts": 0
+    },
+    {
+      "CommitState": "unknown",
+      "Transient": true,
+      "Attempts": -1,
+      "MaxAttempts": 0
     }
   ],
   "private_expected": [
     "invalid",
     "invalid",
-    "dead_letter",
-    "ack"
+    "invalid",
+    "ack",
+    "reconcile"
   ]
 }

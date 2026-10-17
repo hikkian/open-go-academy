@@ -39,9 +39,8 @@
       "id": "middle-24-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Cache или проверка гарантии",
@@ -69,9 +68,8 @@
       "id": "middle-24-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Заявленные гарантии — предпосылки очереди",
@@ -99,9 +97,8 @@
       "id": "middle-24-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Отказной сценарий — проверить границу очереди",

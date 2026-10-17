@@ -1,56 +1,62 @@
 {
   "id": "middle-17-hard",
-  "signature": "func OutboxCrashHard(committed bool, brokerAccepted bool, rowMarked bool) string",
+  "signature": "func OutboxCrashHard(committed bool, eventID string, publish func(string) bool, markPublished func(string) bool) string",
   "allowed_imports": [],
-  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Committed bool; BrokerAccepted bool; RowMarked bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(OutboxCrashHard(x.Committed, x.BrokerAccepted, x.RowMarked));e!=nil{panic(e)}}}\n",
+  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Committed bool; EventID string; PublishAccepted bool; MarkOK bool}\ntype output struct{Result string `json:\"result\"`; Calls []string `json:\"calls\"`}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{calls:=[]string{};publish:=func(id string)bool{calls=append(calls,\"publish:\"+id);return x.PublishAccepted};mark:=func(id string)bool{calls=append(calls,\"mark:\"+id);return x.MarkOK};r:=OutboxCrashHard(x.Committed,x.EventID,publish,mark);if e:=w.Encode(output{r,calls});e!=nil{panic(e)}}}\n",
   "public_input": [
     {
       "Committed": false,
-      "BrokerAccepted": false,
-      "RowMarked": false
+      "EventID": "evt-a",
+      "PublishAccepted": true,
+      "MarkOK": true
     },
     {
       "Committed": true,
-      "BrokerAccepted": false,
-      "RowMarked": false
+      "EventID": "evt-b",
+      "PublishAccepted": false,
+      "MarkOK": true
     },
     {
       "Committed": true,
-      "BrokerAccepted": true,
-      "RowMarked": false
-    },
-    {
-      "Committed": true,
-      "BrokerAccepted": true,
-      "RowMarked": true
+      "EventID": "evt-c",
+      "PublishAccepted": true,
+      "MarkOK": true
     }
   ],
   "public_expected": [
-    "discard",
-    "publish",
-    "retry_may_duplicate",
-    "complete"
+    {
+      "result": "discard",
+      "calls": []
+    },
+    {
+      "result": "retry_publish",
+      "calls": [
+        "publish:evt-b"
+      ]
+    },
+    {
+      "result": "complete",
+      "calls": [
+        "publish:evt-c",
+        "mark:evt-c"
+      ]
+    }
   ],
   "private_input": [
     {
-      "Committed": false,
-      "BrokerAccepted": true,
-      "RowMarked": true
-    },
-    {
       "Committed": true,
-      "BrokerAccepted": true,
-      "RowMarked": false
-    },
-    {
-      "Committed": true,
-      "BrokerAccepted": true,
-      "RowMarked": true
+      "EventID": "evt-d",
+      "PublishAccepted": true,
+      "MarkOK": false
     }
   ],
   "private_expected": [
-    "discard",
-    "retry_may_duplicate",
-    "complete"
+    {
+      "result": "duplicate_risk",
+      "calls": [
+        "publish:evt-d",
+        "mark:evt-d"
+      ]
+    }
   ]
 }

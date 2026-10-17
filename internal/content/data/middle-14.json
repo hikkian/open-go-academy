@@ -38,9 +38,8 @@
       "id": "middle-14-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "sql",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Состояние лимита",
@@ -68,9 +67,8 @@
       "id": "middle-14-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "sql",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Решение об ожидании",
@@ -98,9 +96,8 @@
       "id": "middle-14-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "sql",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Полная политика acquisition",

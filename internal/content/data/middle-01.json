@@ -38,8 +38,7 @@
       "id": "middle-01-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "Параллельная работа и конкурентность — easy",
@@ -67,8 +66,7 @@
       "id": "middle-01-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "Параллельная работа и конкурентность — medium",
@@ -96,8 +94,7 @@
       "id": "middle-01-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "Параллельная работа и конкурентность — hard",

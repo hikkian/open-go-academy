@@ -1,9 +1,9 @@
 package main
 
-func DeliveryWindowHard(published bool, handlerCommitted bool, acked bool) string {
-	if acked && !handlerCommitted { return "unsafe_ack" }
-	if !published { return "not_delivered" }
-	if handlerCommitted && !acked { return "redelivery_possible" }
-	if handlerCommitted && acked { return "complete" }
-	return "retry_or_pending"
+func DeliveryWindowHard(eventID string, alreadyProcessed bool, apply func(string) error, ack func(string) error) string {
+	if !alreadyProcessed {
+		if err := apply(eventID); err != nil { return "effect_failed" }
+	}
+	if err := ack(eventID); err != nil { return "effect_committed_ack_unknown" }
+	return "acknowledged"
 }

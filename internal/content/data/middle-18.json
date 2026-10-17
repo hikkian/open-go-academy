@@ -10,9 +10,10 @@
   "go_version": "1.27.2",
   "curriculum_version": "2026.10",
   "learning_outcomes": [
-    "Различать ack и nack",
-    "Выбирать повтор при временной ошибке",
-    "Делать обработчик безопасным к повторному запуску"
+    "Выбирать ack, retry или reject по результату обработки",
+    "Учитывать лимит повторов и dead-letter очередь",
+    "Понимать redelivery после commit до ack",
+    "Отличать неизвестный commit от подтверждённого и незавершённого; сначала сверять неизвестный результат"
   ],
   "glossary": [
     {
@@ -29,6 +30,11 @@
       "term": "redelivery",
       "translation": "повторная доставка",
       "definition": "Повторная выдача сообщения после незавершённой обработки"
+    },
+    {
+      "term": "unknown commit",
+      "translation": "неизвестный результат commit",
+      "definition": "Клиент не знает, успела ли база зафиксировать транзакцию до потери ответа"
     }
   ],
   "markdown_file": "middle-18.md",
@@ -38,9 +44,8 @@
       "id": "middle-18-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Решение по результату обработчика",
@@ -68,9 +73,8 @@
       "id": "middle-18-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Подтверждение только после commit",
@@ -98,16 +102,15 @@
       "id": "middle-18-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
-      "title": "Лимит повторов с явной очередью назначения",
-      "prompt": "Принимает transient, attempts, handlerCommitted и maxAttempts. Валидируйте attempts >= 0 и maxAttempts > 0. Зафиксированный эффект даёт ack; постоянная ошибка — reject; временная ошибка при attempts < maxAttempts — retry; при attempts >= maxAttempts — dead_letter. maxAttempts — число допустимых попыток, поэтому равенство уже исчерпывает лимит. Решение не выбирает реальный nack/requeue флаг, backoff, ack mode или DLQ policy; это должно быть согласовано с конкретным клиентом брокера. Проверяются только входы и строковое решение локальной функции; реальный пул, БД, брокер и их гарантии не запускаются.",
+      "title": "Неопределённый commit и восстановление",
+      "prompt": "commitState принимает только committed, uncommitted или unknown. Невалидное состояние — invalid. committed всегда ack, даже если счётчик попыток уже велик. unknown возвращает reconcile: сначала сверьте БД по стабильному event ID, не запускайте эффект вслепую. Только для uncommitted примените retry policy: неверный бюджет — invalid, постоянная ошибка — reject, исчерпанный transient-бюджет — dead_letter, иначе retry. Это модель политики, не проверка брокера.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc MessageAckHard(transient bool, attempts int64, handlerCommitted bool, maxAttempts int64) string {\n\t// Реализуйте перечисленные исходы в указанном приоритете.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"ack\"\n\"retry\"\n\"dead_letter\"\n\"ack\"\n\"reject\"",
+      "starter_code": "package main\n\nfunc MessageAckHard(commitState string, transient bool, attempts int64, maxAttempts int64) string {\n\t// Реализуйте валидацию состояния, сверку и бюджет повторов.\n\treturn \"TODO\"\n}\n",
+      "public_output": "\"ack\"\n\"reconcile\"\n\"retry\"\n\"dead_letter\"\n\"reject\"",
       "criteria": [
         "Соблюдена сигнатура и порядок приоритетов, включая конфликтные состояния.",
         "Проверены нормальные, граничные и отказные входы согласно уровню.",

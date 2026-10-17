@@ -10,9 +10,9 @@
   "go_version": "1.27.2",
   "curriculum_version": "2026.10",
   "learning_outcomes": [
-    "Валидировать ввод до записи",
-    "Сопоставлять доменные ошибки с безопасным ответом",
-    "Связывать атомарные изменения одной транзакцией"
+    "Валидировать ввод до начала транзакционного протокола",
+    "Сопоставлять стабильные доменные ошибки с безопасными outcome",
+    "Реализовывать и тестировать порядок Begin → Apply → Commit и failure → Rollback на контролируемом fake"
   ],
   "glossary": [
     {
@@ -38,20 +38,19 @@
       "id": "middle-26-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "sql",
+        "reliability"
       ],
       "difficulty": "easy",
-      "title": "Validation boundary — локальное правило",
-      "prompt": "Контракт `func ValidationResultEasy(valid bool) string`: return invalid before a write when validation fails; otherwise ready_to_write. Does not commit a transaction. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "title": "Validation до Begin — protocol boundary",
+      "prompt": "Контракт `func ValidationBoundaryEasy(valid bool, tx BeginnerEasy) string` и интерфейс `type BeginnerEasy interface { Begin() bool }`. Сначала отвергни invalid без вызова зависимости; при nil верни dependency_missing; иначе вызови Begin ровно один раз и верни begin_failed либо ready_to_write. Starter показывает сигнатуры. Fake grader наблюдает вызов Begin. Это проверяет только порядок на контролируемом fake, не SQL, isolation или ACID.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ValidationResultEasy(valid bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"ready_to_write\"\n\"invalid\"\n",
+      "starter_code": "package main\n\ntype BeginnerEasy interface {\n\tBegin() bool\n}\n\nfunc ValidationBoundaryEasy(valid bool, tx BeginnerEasy) string {\n\t// Сначала проверь valid, затем dependency и Begin.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"ready_to_write:begin\"\n\"invalid:\"\n",
       "criteria": [
-        "Контракт validation boundary выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "Invalid input возвращается до Begin; последовательность вызовов соответствует контракту.",
+        "Nil и отказ Begin имеют разные безопасные outcomes.",
+        "Вывод не утверждает работу записи или commit, которых в Easy нет."
       ],
       "self_check": [
         {
@@ -68,20 +67,19 @@
       "id": "middle-26-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "sql",
+        "reliability"
       ],
       "difficulty": "medium",
-      "title": "Safe error mapping — ветви политики",
-      "prompt": "Контракт `func HTTPStatusForDomainErrorMedium(code string) int`: map known stable domain categories invalid/conflict/not_found to 400/409/404; unknown or internal categories map to 500 without exposing database text. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "title": "Mutate, domain error и commit/rollback",
+      "prompt": "Реализуй `func RunTransactionMedium(valid bool, tx TransactionMedium) string` с интерфейсом Begin/Apply/Commit/Rollback из starter. Invalid не вызывает методы; после успешного Begin вызывается Apply. Результат Apply `ok` ведёт к Commit; `conflict` и `write_failed` требуют Rollback и отдельной категории; неизвестная строка — internal_error с Rollback. Begin failure не вызывает дальнейшие методы. При Commit=false попробуй Rollback и верни commit_outcome_unknown: ошибка Commit не доказывает, что запись не зафиксирована. Fake проверяет только protocol decisions, не свойства SQL.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc HTTPStatusForDomainErrorMedium(code string) int {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "400\n409\n404\n",
+      "starter_code": "package main\n\ntype TransactionMedium interface {\n\tBegin() bool\n\tApply() string\n\tCommit() bool\n\tRollback()\n}\n\nfunc RunTransactionMedium(valid bool, tx TransactionMedium) string {\n\t// Выполните валидацию, затем управляемый transaction protocol.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"committed\"\n\"conflict\"\n\"invalid\"\n",
       "criteria": [
-        "Контракт safe error mapping выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "Валидация происходит до Begin, а Apply — только после успешного Begin.",
+        "Успех проходит Apply→Commit; conflict/write failure/unknown вызывают Rollback и не маскируются как успех.",
+        "Commit failure сообщает unknown outcome; Rollback здесь только попытка cleanup."
       ],
       "self_check": [
         {
@@ -98,20 +96,20 @@
       "id": "middle-26-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "sql",
+        "reliability"
       ],
       "difficulty": "hard",
-      "title": "Transaction decision — отказ и граница гарантии",
-      "prompt": "Контракт `func TransactionOutcomeHard(valid, conflict, writeFailed, commitFailed bool) string`: validation fails => invalid before transaction; a conflict, write error, or commit error => rollback; only valid with no failure => commit_requested. The function cannot execute SQL, guarantee rollback, or establish atomicity. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "title": "Failure protocol с наблюдаемым trace",
+      "prompt": "Реализуй `func RunTransactionHard(valid bool, tx TransactionHard) string`, сохранив контракт Medium. Функция возвращает только категорию результата (`committed`, `conflict`, `write_error`, `internal_error`, `begin_failed`, `commit_outcome_unknown`, `dependency_missing` или `invalid`). Grader driver независимо записывает фактические вызовы fake и добавляет trace к категории в формате `outcome:op1,op2`; например успех `committed:begin,apply,commit`, invalid `invalid:`. На apply failure/conflict должен быть rollback без commit; после begin failure нельзя делать Apply/Commit/Rollback; после Commit=false возможна только best-effort попытка Rollback, результат остаётся `commit_outcome_unknown`. Fake подтверждает лишь вызовы протокола и их порядок. Он не моделирует SQL isolation, драйвер, фактический rollback или ACID; для этого нужен отдельный интеграционный тест на реальной БД.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc TransactionOutcomeHard(valid, conflict, writeFailed, commitFailed bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"commit_requested\"\n\"invalid\"\n\"rollback\"\n",
+      "starter_code": "package main\n\ntype TransactionHard interface {\n\tBegin() bool\n\tApply() string\n\tCommit() bool\n\tRollback()\n}\n\nfunc RunTransactionHard(valid bool, tx TransactionHard) string {\n\t// Реализуйте контракт и внимательно выберите порядок вызовов.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"committed:begin,apply,commit\"\n\"invalid:\"\n\"conflict:begin,apply,rollback\"\n",
       "criteria": [
-        "Контракт transaction decision выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "Trace подтверждает отсутствие побочных вызовов при invalid и зависимости при begin failure.",
+        "После Apply failure/conflict выполняется Rollback и Commit не вызывается.",
+        "Commit вызывается только после успешного Apply; commit failure обозначен как неопределённый outcome.",
+        "Утверждения ограничены fake protocol; SQL isolation/driver/ACID не проверяются."
       ],
       "self_check": [
         {

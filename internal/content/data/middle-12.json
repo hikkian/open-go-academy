@@ -38,8 +38,8 @@
       "id": "middle-12-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "sql",
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "Блокировки строк и конкурентное обновление — easy",
@@ -67,8 +67,8 @@
       "id": "middle-12-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "sql",
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "Блокировки строк и конкурентное обновление — medium",
@@ -96,8 +96,8 @@
       "id": "middle-12-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "sql",
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "Блокировки строк и конкурентное обновление — hard",

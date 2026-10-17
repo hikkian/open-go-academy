@@ -1,9 +1,12 @@
 // Package learning derives educational signals from server-verified exercise evidence.
 package learning
 
-import "academy/internal/store"
+import (
+	"academy/internal/competency"
+	"academy/internal/store"
+)
 
-const PolicyVersion = "rank-policy-0.2"
+const PolicyVersion = "learning-evidence-0.3"
 
 type Rank struct {
 	Name                string   `json:"name"`
@@ -37,21 +40,11 @@ func Build(p store.Progress) Snapshot {
 		{Name: "Middle", Criteria: []string{"Concurrency (конкурентность), context, race (гонки), transactions (транзакции).", "TaskFlow P3: надёжность, очереди, мониторинг, CI и нагрузочные проверки.", "Защитить инженерные решения и пройти mixed assessment (смешанную проверку)."}, Skills: []string{"concurrency", "reliability"}},
 		{Name: "Middle+", Criteria: []string{"ScaleLab P4: baseline (исходные измерения), profiling (профилирование), before/after.", "Обосновать SLO (цели уровня сервиса), capacity (ёмкость), consistency (согласованность).", "Разобрать сбои и защитить компромиссы."}, Skills: []string{"performance", "distributed"}},
 		{Name: "Senior", Criteria: []string{"Architecture Capstone P5: design doc, ADR (запись архитектурного решения), критические прототипы.", "Обосновать security (безопасность), HA (высокую доступность) и эволюцию системы.", "Пройти review (рецензию) с участием человека; учебная проверка не заменяет опыт работы."}, Skills: []string{"architecture", "communication"}},
-	}, Skills: []Skill{
-		{ID: "program", Title: "Исходный код и запуск программы", Rank: "Zero", Evidence: []string{}},
-		{ID: "output", Title: "Вывод и порядок команд", Rank: "Zero", Evidence: []string{}},
-		{ID: "functions", Title: "Функции и тип возвращаемого значения", Rank: "Zero", Evidence: []string{}},
-		{ID: "go-core", Title: "Коллекции, структуры и интерфейсы", Rank: "Junior", Evidence: []string{}},
-		{ID: "testing", Title: "Автоматические тесты и диагностика", Rank: "Junior", Evidence: []string{}},
-		{ID: "http", Title: "HTTP: запросы, ответы и API", Rank: "Junior+", Evidence: []string{}},
-		{ID: "sql", Title: "SQL: хранение и запросы данных", Rank: "Junior+", Evidence: []string{}},
-		{ID: "concurrency", Title: "Конкурентное выполнение и гонки", Rank: "Middle", Evidence: []string{}},
-		{ID: "reliability", Title: "Надёжность и эксплуатация", Rank: "Middle", Evidence: []string{}},
-		{ID: "performance", Title: "Измерение производительности", Rank: "Middle+", Evidence: []string{}},
-		{ID: "distributed", Title: "Распределённые системы", Rank: "Middle+", Evidence: []string{}},
-		{ID: "architecture", Title: "Архитектура и компромиссы", Rank: "Senior", Evidence: []string{}},
-		{ID: "communication", Title: "Ревью и инженерное объяснение", Rank: "Senior", Evidence: []string{}},
-	}}
+	}, Skills: []Skill{}}
+	for _, definition := range competency.All() {
+		s.Skills = append(s.Skills, Skill{ID: definition.ID, Title: definition.Title,
+			Rank: definition.Rank, Evidence: []string{}})
+	}
 	done := map[string]bool{}
 	for _, id := range p.Completed {
 		if p.Evidence[id] > 0 {

@@ -38,9 +38,7 @@
       "id": "middleplus-06-easy",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "easy",
       "title": "Easy: вычисли изменение flat samples",
@@ -63,9 +61,7 @@
       "id": "middleplus-06-medium",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "medium",
       "title": "Medium: проверь сопоставимость profile pair",
@@ -88,9 +84,7 @@
       "id": "middleplus-06-hard",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "hard",
       "title": "Hard: сопоставь профиль и benchmark",

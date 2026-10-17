@@ -58,9 +58,9 @@
       "id": "middleplus-18-easy",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Easy: перегрузка, admission control и load shedding — классификация",
@@ -84,9 +84,9 @@
       "id": "middleplus-18-medium",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Medium: перегрузка, admission control и load shedding — политика",
@@ -110,9 +110,9 @@
       "id": "middleplus-18-hard",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Hard: перегрузка, admission control и load shedding — проверка инварианта",

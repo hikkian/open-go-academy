@@ -18,9 +18,21 @@
       "testsPassed": true,
       "migrationReversible": false,
       "rollbackReady": true
+    },
+    {
+      "testsPassed": false,
+      "migrationReversible": false,
+      "rollbackReady": false
+    },
+    {
+      "testsPassed": true,
+      "migrationReversible": true,
+      "rollbackReady": false
     }
   ],
   "private_expected": [
-    "hold_migration"
+    "hold_migration",
+    "hold_tests",
+    "hold_rollback"
   ]
 }

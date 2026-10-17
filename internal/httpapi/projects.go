@@ -110,10 +110,16 @@ func (a *API) projectRoutes(mux *http.ServeMux) {
 		} else if isManagedProject(project.ID) {
 			available = a.projectAvailable(ctx, project.ID)
 		}
+		var manualRubric *manualReviewRubric
+		if isManagedProject(project.ID) {
+			rubric := buildManualReviewRubric(project)
+			manualRubric = &rubric
+		}
 		write(w, 200, struct {
 			projects.Project
-			ExecutionAvailable bool `json:"execution_available"`
-		}{project, available})
+			ExecutionAvailable bool                `json:"execution_available"`
+			ManualReviewRubric *manualReviewRubric `json:"manual_review_rubric,omitempty"`
+		}{project, available, manualRubric})
 	})
 	// This is a deliberately narrow, read-only projection of server-persisted
 	// evidence. The learner never supplies hashes or profile identifiers.

@@ -1,0 +1,55 @@
+{
+  "scope": "local disposable API only; no code execution, external services, or SLO assertion",
+  "platform": "Linux-7.2.11-200.fc44.x86_64-x86_64-with-glibc2.43",
+  "python": "3.14.8",
+  "read_burst": {
+    "requested": 120,
+    "workers": 16,
+    "status_counts": {
+      "200": 120
+    },
+    "errors": 0,
+    "latency_ms": {
+      "p50": 10.453,
+      "p95": 35.451,
+      "max": 41.687
+    }
+  },
+  "draft_put_burst": {
+    "requested": 140,
+    "workers": 16,
+    "status_counts": {
+      "200": 119,
+      "429": 21
+    },
+    "errors": 0,
+    "rate_limited_with_retry_after": 21,
+    "latency_ms": {
+      "p50": 5.184,
+      "p95": 8.601,
+      "max": 10.341
+    }
+  },
+  "go_version": "go version go1.27.2 linux/amd64",
+  "unauthenticated_status": 401,
+  "security_statuses": {
+    "missing_csrf": 403,
+    "foreign_origin": 403,
+    "invalid_host": 403
+  },
+  "draft_integrity": "one complete two-file submitted bundle; no mixed markers",
+  "restart": {
+    "draft_persisted": true,
+    "profile_unchanged": true,
+    "xp_after_saves": 0,
+    "rank_awards": 0,
+    "current_rank": "Zero",
+    "verified": false
+  },
+  "sqlite": {
+    "integrity_check": "ok",
+    "foreign_key_violations": 0,
+    "rank_awards": 0
+  },
+  "result": "PASS"
+}

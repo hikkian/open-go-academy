@@ -58,9 +58,9 @@
       "id": "middleplus-20-easy",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Easy: worker pool, concurrency limit и fairness — классификация",
@@ -84,9 +84,9 @@
       "id": "middleplus-20-medium",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Medium: worker pool, concurrency limit и fairness — политика",
@@ -110,9 +110,9 @@
       "id": "middleplus-20-hard",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Hard: worker pool, concurrency limit и fairness — проверка инварианта",

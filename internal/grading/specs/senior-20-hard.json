@@ -16,9 +16,19 @@
     {
       "dataCompatible": false,
       "incidentOngoing": true
+    },
+    {
+      "dataCompatible": false,
+      "incidentOngoing": false
+    },
+    {
+      "dataCompatible": true,
+      "incidentOngoing": false
     }
   ],
   "private_expected": [
-    "forward_fix_review"
+    "forward_fix_review",
+    "observe",
+    "observe"
   ]
 }

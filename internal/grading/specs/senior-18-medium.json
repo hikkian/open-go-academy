@@ -14,9 +14,21 @@
   "private_input": [
     {
       "key": "user_email"
+    },
+    {
+      "key": "status_class"
+    },
+    {
+      "key": "operation"
+    },
+    {
+      "key": ""
     }
   ],
   "private_expected": [
+    false,
+    true,
+    true,
     false
   ]
 }

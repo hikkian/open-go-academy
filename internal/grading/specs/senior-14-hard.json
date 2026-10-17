@@ -18,9 +18,45 @@
       "queryFit": true,
       "durabilityFit": true,
       "restoreTested": false
+    },
+    {
+      "queryFit": false,
+      "durabilityFit": true,
+      "restoreTested": true
+    },
+    {
+      "queryFit": true,
+      "durabilityFit": false,
+      "restoreTested": true
+    },
+    {
+      "queryFit": false,
+      "durabilityFit": false,
+      "restoreTested": false
+    },
+    {
+      "queryFit": false,
+      "durabilityFit": false,
+      "restoreTested": true
+    },
+    {
+      "queryFit": false,
+      "durabilityFit": true,
+      "restoreTested": false
+    },
+    {
+      "queryFit": true,
+      "durabilityFit": false,
+      "restoreTested": false
     }
   ],
   "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
     false
   ]
 }

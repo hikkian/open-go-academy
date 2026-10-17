@@ -16,9 +16,19 @@
     {
       "dataCompatible": false,
       "oldVersionAvailable": true
+    },
+    {
+      "dataCompatible": false,
+      "oldVersionAvailable": false
+    },
+    {
+      "dataCompatible": true,
+      "oldVersionAvailable": false
     }
   ],
   "private_expected": [
-    "data_blocked"
+    "data_blocked",
+    "no_binary_rollback",
+    "no_binary_rollback"
   ]
 }

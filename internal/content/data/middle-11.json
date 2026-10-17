@@ -38,8 +38,8 @@
       "id": "middle-11-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "sql",
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "MVCC и уровни изоляции PostgreSQL — easy",
@@ -67,8 +67,8 @@
       "id": "middle-11-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "sql",
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "MVCC и уровни изоляции PostgreSQL — medium",
@@ -96,8 +96,8 @@
       "id": "middle-11-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "sql",
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "MVCC и уровни изоляции PostgreSQL — hard",

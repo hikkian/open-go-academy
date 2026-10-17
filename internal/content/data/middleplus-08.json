@@ -38,9 +38,8 @@
       "id": "middleplus-08-easy",
       "kind": "function",
       "skills": [
-        "performance",
         "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "easy",
       "title": "Easy: составь порядок колонок B-tree",
@@ -63,9 +62,8 @@
       "id": "middleplus-08-medium",
       "kind": "function",
       "skills": [
-        "performance",
         "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "medium",
       "title": "Medium: проверь непустую форму индекса",
@@ -88,9 +86,8 @@
       "id": "middleplus-08-hard",
       "kind": "function",
       "skills": [
-        "performance",
         "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "hard",
       "title": "Hard: проверь equality prefix и порядок index",

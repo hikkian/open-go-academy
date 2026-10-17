@@ -18,9 +18,27 @@
       "additive": true,
       "removesField": true,
       "changesMeaning": false
+    },
+    {
+      "additive": false,
+      "removesField": false,
+      "changesMeaning": false
+    },
+    {
+      "additive": false,
+      "removesField": false,
+      "changesMeaning": true
+    },
+    {
+      "additive": true,
+      "removesField": true,
+      "changesMeaning": true
     }
   ],
   "private_expected": [
+    "breaking",
+    "no_change",
+    "breaking",
     "breaking"
   ]
 }

@@ -1,49 +1,78 @@
 {
   "id": "middle-26-hard",
-  "signature": "func TransactionOutcomeHard(valid, conflict, writeFailed, commitFailed bool) string",
+  "signature": "func RunTransactionHard(valid bool, tx TransactionHard) string",
   "allowed_imports": [],
-  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Valid bool;Conflict bool;WriteFailed bool;CommitFailed bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(TransactionOutcomeHard(x.Valid,x.Conflict,x.WriteFailed,x.CommitFailed));e!=nil{panic(e)}}}\n",
+  "driver": "package main\nimport(\"encoding/json\";\"os\";\"strings\")\ntype input struct{Valid bool; HasTx bool; BeginOK bool; ApplyResult string; CommitOK bool}\ntype graderTransactionHard struct{beginOK bool; applyResult string; commitOK bool; events *[]string}\nfunc(t *graderTransactionHard) Begin()bool{*t.events=append(*t.events,\"begin\");return t.beginOK}\nfunc(t *graderTransactionHard) Apply()string{*t.events=append(*t.events,\"apply\");return t.applyResult}\nfunc(t *graderTransactionHard) Commit()bool{*t.events=append(*t.events,\"commit\");return t.commitOK}\nfunc(t *graderTransactionHard) Rollback(){*t.events=append(*t.events,\"rollback\")}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{events:=[]string{};var tx TransactionHard;if x.HasTx{tx=&graderTransactionHard{beginOK:x.BeginOK,applyResult:x.ApplyResult,commitOK:x.CommitOK,events:&events}};result:=RunTransactionHard(x.Valid,tx);if e:=w.Encode(result+\":\"+strings.Join(events,\",\"));e!=nil{panic(e)}}}",
   "public_input": [
     {
       "Valid": true,
-      "Conflict": false,
-      "WriteFailed": false,
-      "CommitFailed": false
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "ok",
+      "CommitOK": true
     },
     {
       "Valid": false,
-      "Conflict": false,
-      "WriteFailed": false,
-      "CommitFailed": false
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "ok",
+      "CommitOK": true
     },
     {
       "Valid": true,
-      "Conflict": true,
-      "WriteFailed": false,
-      "CommitFailed": false
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "conflict",
+      "CommitOK": true
     }
   ],
   "public_expected": [
-    "commit_requested",
-    "invalid",
-    "rollback"
+    "committed:begin,apply,commit",
+    "invalid:",
+    "conflict:begin,apply,rollback"
   ],
   "private_input": [
     {
       "Valid": true,
-      "Conflict": false,
-      "WriteFailed": true,
-      "CommitFailed": false
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "write_failed",
+      "CommitOK": true
     },
     {
       "Valid": true,
-      "Conflict": false,
-      "WriteFailed": false,
-      "CommitFailed": true
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "ok",
+      "CommitOK": false
+    },
+    {
+      "Valid": true,
+      "HasTx": true,
+      "BeginOK": false,
+      "ApplyResult": "ok",
+      "CommitOK": true
+    },
+    {
+      "Valid": true,
+      "HasTx": false,
+      "BeginOK": true,
+      "ApplyResult": "ok",
+      "CommitOK": true
+    },
+    {
+      "Valid": true,
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "unexpected_state",
+      "CommitOK": true
     }
   ],
   "private_expected": [
-    "rollback",
-    "rollback"
+    "write_error:begin,apply,rollback",
+    "commit_outcome_unknown:begin,apply,commit,rollback",
+    "begin_failed:begin",
+    "dependency_missing:",
+    "internal_error:begin,apply,rollback"
   ]
 }

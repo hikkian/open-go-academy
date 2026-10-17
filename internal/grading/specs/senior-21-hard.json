@@ -18,9 +18,45 @@
       "estimateValid": true,
       "workloadMeasured": false,
       "budgetOwner": true
+    },
+    {
+      "estimateValid": false,
+      "workloadMeasured": true,
+      "budgetOwner": true
+    },
+    {
+      "estimateValid": true,
+      "workloadMeasured": true,
+      "budgetOwner": false
+    },
+    {
+      "estimateValid": false,
+      "workloadMeasured": false,
+      "budgetOwner": false
+    },
+    {
+      "estimateValid": false,
+      "workloadMeasured": false,
+      "budgetOwner": true
+    },
+    {
+      "estimateValid": false,
+      "workloadMeasured": true,
+      "budgetOwner": false
+    },
+    {
+      "estimateValid": true,
+      "workloadMeasured": false,
+      "budgetOwner": false
     }
   ],
   "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
     false
   ]
 }

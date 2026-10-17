@@ -69,7 +69,7 @@ func WithCatalog(snapshot Snapshot, p store.Progress, c *content.Catalog) Snapsh
 		"p2:automatic": {"http", "sql"},
 		"p3:automatic": {"concurrency", "reliability"},
 		"p4:automatic": {"performance", "distributed"},
-		"p5:automatic": {"architecture", "communication"},
+		"p5:automatic": {"architecture"},
 	} {
 		addEvidence(id, skills)
 	}

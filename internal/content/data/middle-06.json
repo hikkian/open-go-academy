@@ -38,8 +38,7 @@
       "id": "middle-06-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "Mutex и критическая секция — easy",
@@ -67,8 +66,7 @@
       "id": "middle-06-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "Mutex и критическая секция — medium",
@@ -96,8 +94,7 @@
       "id": "middle-06-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "Mutex и критическая секция — hard",

@@ -36,6 +36,10 @@ func buildManualReviewRubric(project projects.Project) manualReviewRubric {
 		Milestones:   append([]projects.Milestone(nil), project.Milestones...),
 		RubricFiles:  files,
 	}
+	if project.ID == "p3" {
+		result.Version = project.Version + "-manual-review-v2"
+		result.Requirements = append(result.Requirements, p3ManualOutcomeRequirements()...)
+	}
 	canonical, _ := json.Marshal(struct {
 		Version      string
 		ProjectID    string
@@ -46,6 +50,21 @@ func buildManualReviewRubric(project projects.Project) manualReviewRubric {
 	}{result.Version, result.ProjectID, result.Project, result.Requirements, result.Milestones, result.RubricFiles})
 	result.Hash = projectreview.Hash(canonical)
 	return result
+}
+
+// These criteria extend the human review, not the automatic P3 checker. Approval
+// attests to the complete exact-version rubric bound into the signed decision.
+func p3ManualOutcomeRequirements() []string {
+	return []string{
+		"[M27-access-boundaries] Проверь матрицу actor/tenant/role и отрицательные HTTP/SQL сценарии IDOR. В exact artifact должны быть исходники тестов, команды и результаты, а не только отметка о наличии тестов.",
+		"[M28-dependency-graph] Проверь типизированный граф handler → service → repository и composition root: конкретные экземпляры, владение ресурсами и cleanup при ошибке сборки. Потребуй fake-тесты точных вызовов/аргументов и объяснение границ интерфейсов.",
+		"[M29-request-boundaries] Проверь порядок middleware, передачу deadline/cancellation, безопасное отображение ошибок и границы тела запроса. Воспроизведи хотя бы отменённый запрос и отказ зависимости; логи не должны раскрывать секреты или payload пользователя.",
+		"[M30-32-operations] Проверь readiness/liveness, bounded shutdown/drain и реальные очищенные logs/metrics/traces. Укажи воспроизводимый сценарий завершения активной работы, ограничения cardinality и источник каждого наблюдаемого сигнала.",
+		"[M33-slo-error-budget] Проверь документированный SLI: числитель, знаменатель, окно, отсутствующие сигналы, SLO и расчёт error budget. Приложи результат фиксированного workload с ошибками/latency и параметрами машины; не принимай выдуманные измерения за evidence.",
+		"[M34-35-fault-resilience] Проверь retry budget, timeout и обоснованный выбор circuit breaker либо альтернативы. Требуется воспроизводимая fault-injection проверка отказа/восстановления, идемпотентности, освобождения ресурсов и разбор наблюдений/ограничений.",
+		"[M36-40-release-evidence] Проверь версионированный acceptance record: exact artifact/hash, schema/API, test/vet/race/build, фиксированная нагрузка, failure/recovery, rollback-план и совместимость данных. Решение о выпуске должно перечислять оставшиеся риски, причины и границы утверждений.",
+		"Решение approve по этой rubric означает проверку всех обязательных критериев на данном artifact. Если evidence отсутствует или не воспроизводится, верни changes_requested либо reject и укажи конкретный пробел; автоматический pass не заменяет ручную оценку.",
+	}
 }
 
 func (a *API) projectReviewRoutes(mux *http.ServeMux) {

@@ -38,8 +38,7 @@
       "id": "middleplus-12-easy",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
+        "distributed",
         "reliability"
       ],
       "difficulty": "easy",
@@ -63,8 +62,7 @@
       "id": "middleplus-12-medium",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
+        "distributed",
         "reliability"
       ],
       "difficulty": "medium",
@@ -88,8 +86,7 @@
       "id": "middleplus-12-hard",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
+        "distributed",
         "reliability"
       ],
       "difficulty": "hard",

@@ -58,9 +58,9 @@
       "id": "middleplus-19-easy",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Easy: инъекция отказов и восстановление — классификация",
@@ -84,9 +84,9 @@
       "id": "middleplus-19-medium",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Medium: инъекция отказов и восстановление — политика",
@@ -110,9 +110,9 @@
       "id": "middleplus-19-hard",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Hard: инъекция отказов и восстановление — проверка инварианта",

@@ -58,9 +58,9 @@
       "id": "middleplus-24-easy",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Easy: scalelab: sli/slo, отказ, выпуск и защита решения — классификация",
@@ -88,9 +88,9 @@
       "id": "middleplus-24-medium",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Medium: scalelab: sli/slo, отказ, выпуск и защита решения — политика",
@@ -118,9 +118,9 @@
       "id": "middleplus-24-hard",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Hard: scalelab: sli/slo, отказ, выпуск и защита решения — проверка инварианта",

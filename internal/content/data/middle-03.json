@@ -38,8 +38,7 @@
       "id": "middle-03-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "Каналы: отправитель и получатель — easy",
@@ -67,8 +66,7 @@
       "id": "middle-03-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "Каналы: отправитель и получатель — medium",
@@ -96,8 +94,7 @@
       "id": "middle-03-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "Каналы: отправитель и получатель — hard",

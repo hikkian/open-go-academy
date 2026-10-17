@@ -38,8 +38,7 @@
       "id": "middle-08-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "Race detector и упорядочивание памяти — easy",
@@ -67,8 +66,7 @@
       "id": "middle-08-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "Race detector и упорядочивание памяти — medium",
@@ -96,8 +94,7 @@
       "id": "middle-08-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "Race detector и упорядочивание памяти — hard",

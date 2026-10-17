@@ -38,9 +38,8 @@
       "id": "middle-15-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Повтор одного ключа",
@@ -68,9 +67,8 @@
       "id": "middle-15-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Повтор и незавершённая операция",
@@ -98,9 +96,8 @@
       "id": "middle-15-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Результат гонки вставки ключа",

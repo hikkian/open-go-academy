@@ -38,8 +38,7 @@
       "id": "middle-10-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "Ограниченный worker pool — easy",
@@ -67,8 +66,7 @@
       "id": "middle-10-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "Ограниченный worker pool — medium",
@@ -96,8 +94,7 @@
       "id": "middle-10-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "Ограниченный worker pool — hard",

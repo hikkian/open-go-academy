@@ -50,9 +50,8 @@
       "id": "middle-28-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "reliability"
+        "go-core",
+        "architecture"
       ],
       "difficulty": "easy",
       "title": "Easy: сборка приложения и di — базовое правило",
@@ -77,9 +76,8 @@
       "id": "middle-28-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "reliability"
+        "go-core",
+        "architecture"
       ],
       "difficulty": "medium",
       "title": "Medium: сборка приложения и di — граничная политика",
@@ -104,20 +102,21 @@
       "id": "middle-28-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "reliability"
+        "go-core",
+        "architecture"
       ],
       "difficulty": "hard",
-      "title": "Hard: сборка приложения и di — helper-проверка",
-      "prompt": "Реализуйте `func CanStart(dbConfigured, repositoryWired, handlerWired bool) bool`. Контракт: Вернуть true только если dbConfigured, repositoryWired и handlerWired одновременно true. Это AND трёх флагов, не построение/проверка dependency graph.",
+      "title": "Hard: service с внедрённым repository",
+      "prompt": "Реализуйте тип `TaskService`, `NewTaskService(repo TaskRepository) (*TaskService, error)` и метод `(*TaskService).Get(ctx context.Context, id string) (Task, error)`. Типы `Task`, `TaskRepository` и sentinel `ErrRepositoryMissing` объявлены в проверочном окружении. Конструктор должен отклонить nil repository, иначе сохранить именно переданный экземпляр. Get должен один раз передать исходные ctx и id repository и вернуть его Task и ошибку без подмены. Не используйте глобальное состояние.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc CanStart(dbConfigured, repositoryWired, handlerWired bool) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
+      "starter_code": "package main\n\nimport \"context\"\n\ntype TaskService struct {\n\trepo TaskRepository\n}\n\nfunc NewTaskService(repo TaskRepository) (*TaskService, error) {\n\t// Отклоните nil и сохраните точный экземпляр.\n\tpanic(\"TODO\")\n}\n\nfunc (s *TaskService) Get(ctx context.Context, id string) (Task, error) {\n\t// Передайте аргументы repository и сохраните его результат без потерь.\n\tpanic(\"TODO\")\n}\n",
+      "public_output": "\"task:task-17|repo-1|calls=1|id=task-17|ctx=true|error=false\"\n\"task:||calls=1|id=task-18|ctx=true|error=true\"\n",
       "criteria": [
-        "Точно выполнить контракт: Вернуть true только если dbConfigured, repositoryWired и handlerWired одновременно true. Это AND трёх флагов, не построение/проверка dependency graph.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "NewTaskService возвращает ErrRepositoryMissing при nil-интерфейсе и не создаёт частичный service.",
+        "Конструктор сохраняет и использует именно переданный экземпляр repository.",
+        "Get вызывает repository ровно один раз с исходными context и ID, без нормализации или замены ID.",
+        "Get возвращает результат и ошибку repository без потери ошибки.",
+        "Решение не использует mutable global для хранения зависимости."
       ],
       "self_check": [
         {
@@ -125,7 +124,7 @@
           "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
         }
       ],
-      "signature": "func CanStart(dbConfigured, repositoryWired, handlerWired bool) bool"
+      "signature": "type TaskService; func NewTaskService(repo TaskRepository) (*TaskService, error); func (s *TaskService) Get(ctx context.Context, id string) (Task, error)"
     }
   ],
   "self_check": [

@@ -38,9 +38,8 @@
       "id": "middle-13-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "sql",
+        "performance"
       ],
       "difficulty": "easy",
       "title": "Классифицируй долю совпадений",
@@ -68,9 +67,8 @@
       "id": "middle-13-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "sql",
+        "performance"
       ],
       "difficulty": "medium",
       "title": "Найди границу индексного кандидата без переполнения",
@@ -98,9 +96,8 @@
       "id": "middle-13-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "sql",
+        "performance"
       ],
       "difficulty": "hard",
       "title": "Учти чтения, записи и крайние int64",

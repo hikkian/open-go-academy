@@ -3,7 +3,7 @@
 from html import escape
 import json
 from pathlib import Path
-import re
+from m11_source_fingerprint import acceptance_matches, source_fingerprint
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs/project-progress.json"
@@ -33,39 +33,35 @@ for lesson_id in draft_ids:
             draft_count += 1
     except (OSError, ValueError, KeyError, TypeError):
         continue
-draft_track = next(item for item in data["workstreams"] if item["title"].startswith("M11 "))
+draft_track = next(item for item in data["workstreams"] if item.get("id") == "m11-drafts" or item["title"].startswith("M11 "))
+draft_track["id"] = "m11-drafts"
 draft_track["value"] = draft_count
-acceptance_path = ROOT / "docs/validation/m11-current-tree-acceptance-20261016.txt"
-candidate_paths = [ROOT / f"internal/content/data/{lesson_id}.{ext}"
-                   for lesson_id in draft_ids for ext in ("json", "md")]
-candidate_paths.extend(ROOT / f"internal/grading/specs/{lesson_id}-{level}.json"
-                       for lesson_id in draft_ids for level in ("easy", "medium", "hard"))
-candidate_paths.extend(ROOT / f"internal/content/solutions/{lesson_id}-{level}/main.go"
-                       for lesson_id in draft_ids for level in ("easy", "medium", "hard"))
+acceptance_path = ROOT / data.get("m11_acceptance_report", "docs/validation/m11-current-tree-acceptance-20261016.txt")
+current_fingerprint = source_fingerprint(ROOT)
 acceptance_passed = False
 if acceptance_path.is_file():
     evidence = acceptance_path.read_text(encoding="utf-8")
-    newest_candidate = max((p.stat().st_mtime for p in candidate_paths if p.exists()), default=0)
-    started = re.search(r"^Started epoch: (\d+)$", evidence, re.MULTILINE)
-    acceptance_passed = ("Result: PASS" in evidence and started is not None and
-                         int(started.group(1)) >= newest_candidate)
-draft_track["title"] = "M11 автоматическая приёмка черновиков"
+    acceptance_passed = acceptance_matches(evidence, current_fingerprint)
+data["m11_acceptance"] = {"status": "passed" if acceptance_passed else "needs_recheck",
+                          "source_fingerprint": current_fingerprint}
+draft_track["title"] = "M11 — подготовленные черновики"
 draft_track["detail"] = (
-    f"{draft_count}/88 полных наборов файлов. "
-    + ("Полный aggregate gate прошёл 2026-10-16: примеры, компиляция starters и изолированные production-grader проверки. "
-       if acceptance_passed else "Для последнего состояния репозитория полный aggregate gate ещё не подтверждён. ")
+    f"Подготовлены файлы {draft_count} из 88 глав. "
+    + ("Полная автоматическая проверка текущих исходников прошла. "
+       if acceptance_passed else "Полную автоматическую проверку текущих исходников ещё нужно повторить. ")
     + data.get("m11_review_detail", "")
-    + " Это автоматическая приёмка draft-кандидатов, не независимое педагогическое ревью и не публикация в manifest."
+    + " Этот счётчик показывает подготовку файлов; проверка качества и публикация — отдельные условия."
 )
 data["phase_note"] = (
     f"Для Middle, Middle+ и Senior подготовлены {draft_count}/88 черновых глав. "
-    + ("Полный автоматический aggregate gate прошёл; главы остаются unpublished и не добавлены в каталог курса."
-       if acceptance_passed else "Полный автоматический aggregate gate для текущего состояния ещё не подтверждён.")
+    + ("Автоматическая проверка текущих исходников прошла; главы ожидают педагогической приёмки."
+       if acceptance_passed else "Идёт содержательная проверка; полный автоматический прогон нужно повторить после правок.")
     + data.get("phase_note_suffix", "")
 )
 
-assert sum(item["status"] == "done" for item in data["milestones"]) == 11
+assert {item["id"] for item in data["milestones"]} == {f"M{n}" for n in range(14)}
 assert len(data["milestones"]) == 14
+assert all(item["status"] in ("done", "in_progress", "not_started") for item in data["milestones"])
 assert all(0 <= item["value"] <= item["max"] and item["max"] > 0 for item in data["workstreams"])
 
 # Persist the derived file-presence count as part of the reproducible snapshot.

@@ -16,9 +16,24 @@
     {
       "classification": "regulated",
       "required": "durable"
+    },
+    {
+      "classification": "",
+      "required": "durable"
+    },
+    {
+      "classification": "regulated",
+      "required": "durable"
+    },
+    {
+      "classification": "public",
+      "required": "ephemeral"
     }
   ],
   "private_expected": [
-    "review_retention"
+    "review_retention",
+    "clarify",
+    "review_retention",
+    "expire"
   ]
 }

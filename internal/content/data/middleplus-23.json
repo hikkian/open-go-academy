@@ -58,9 +58,7 @@
       "id": "middleplus-23-easy",
       "kind": "function",
       "skills": [
-        "reliability",
-        "performance",
-        "distributed-systems"
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Easy: postmortem, временная шкала и системные меры — классификация",
@@ -84,9 +82,7 @@
       "id": "middleplus-23-medium",
       "kind": "function",
       "skills": [
-        "reliability",
-        "performance",
-        "distributed-systems"
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Medium: postmortem, временная шкала и системные меры — политика",
@@ -110,9 +106,7 @@
       "id": "middleplus-23-hard",
       "kind": "function",
       "skills": [
-        "reliability",
-        "performance",
-        "distributed-systems"
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Hard: postmortem, временная шкала и системные меры — проверка инварианта",

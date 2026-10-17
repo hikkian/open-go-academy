@@ -38,8 +38,7 @@
       "id": "middle-04-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "Буферизированные каналы и владение — easy",
@@ -67,8 +66,7 @@
       "id": "middle-04-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "Буферизированные каналы и владение — medium",
@@ -96,8 +94,7 @@
       "id": "middle-04-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "Буферизированные каналы и владение — hard",

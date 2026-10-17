@@ -58,9 +58,7 @@
       "id": "senior-01-easy",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "requirements",
-        "reliability"
+        "architecture"
       ],
       "difficulty": "easy",
       "title": "Классификация ответа",
@@ -88,9 +86,7 @@
       "id": "senior-01-medium",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "requirements",
-        "reliability"
+        "architecture"
       ],
       "difficulty": "medium",
       "title": "Полнота критерия",
@@ -118,9 +114,7 @@
       "id": "senior-01-hard",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "requirements",
-        "reliability"
+        "architecture"
       ],
       "difficulty": "hard",
       "title": "Следующий безопасный шаг",

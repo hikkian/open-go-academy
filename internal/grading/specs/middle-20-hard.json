@@ -11,8 +11,23 @@
     },
     {
       "Mandatory": true,
+      "BrokerConfirm": false,
+      "Returned": false
+    },
+    {
+      "Mandatory": true,
       "BrokerConfirm": true,
       "Returned": true
+    },
+    {
+      "Mandatory": true,
+      "BrokerConfirm": false,
+      "Returned": true
+    },
+    {
+      "Mandatory": false,
+      "BrokerConfirm": true,
+      "Returned": false
     },
     {
       "Mandatory": false,
@@ -22,17 +37,26 @@
   ],
   "public_expected": [
     "confirmed",
+    "unknown",
     "unrouted",
+    "unrouted",
+    "confirmed",
     "unknown"
   ],
   "private_input": [
     {
       "Mandatory": false,
       "BrokerConfirm": true,
-      "Returned": false
+      "Returned": true
+    },
+    {
+      "Mandatory": false,
+      "BrokerConfirm": false,
+      "Returned": true
     }
   ],
   "private_expected": [
-    "confirmed"
+    "invalid",
+    "invalid"
   ]
 }

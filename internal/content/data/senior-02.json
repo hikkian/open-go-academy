@@ -58,9 +58,8 @@
       "id": "senior-02-easy",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "reliability",
-        "observability"
+        "architecture",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Валидность окна",
@@ -88,9 +87,8 @@
       "id": "senior-02-medium",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "reliability",
-        "observability"
+        "architecture",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Классификация входа доли ошибок",
@@ -118,9 +116,8 @@
       "id": "senior-02-hard",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "reliability",
-        "observability"
+        "architecture",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Политика чтения при конфликте",

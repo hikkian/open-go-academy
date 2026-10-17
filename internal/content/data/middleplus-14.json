@@ -58,9 +58,9 @@
       "id": "middleplus-14-easy",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Easy: admission limit",
@@ -83,9 +83,9 @@
       "id": "middleplus-14-medium",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Medium: backpressure и caller deadline",
@@ -108,9 +108,9 @@
       "id": "middleplus-14-hard",
       "kind": "function",
       "skills": [
-        "reliability",
         "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Hard: cancellation и admission policy",

@@ -1,26 +1,44 @@
 {
   "id": "middle-26-easy",
-  "signature": "func ValidationResultEasy(valid bool) string",
+  "signature": "func ValidationBoundaryEasy(valid bool, tx BeginnerEasy) string",
   "allowed_imports": [],
-  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Valid bool}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(ValidationResultEasy(x.Valid));e!=nil{panic(e)}}}\n",
+  "driver": "package main\nimport(\"encoding/json\";\"os\";\"strings\")\ntype input struct{Valid bool; HasTx bool; BeginOK bool}\ntype graderBeginnerEasy struct{ok bool; events *[]string}\nfunc(t *graderBeginnerEasy) Begin()bool{*t.events=append(*t.events,\"begin\");return t.ok}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{events:=[]string{};var tx BeginnerEasy;if x.HasTx{tx=&graderBeginnerEasy{ok:x.BeginOK,events:&events}};result:=ValidationBoundaryEasy(x.Valid,tx);if e:=w.Encode(result+\":\"+strings.Join(events,\",\"));e!=nil{panic(e)}}}",
   "public_input": [
     {
-      "Valid": true
+      "Valid": true,
+      "HasTx": true,
+      "BeginOK": true
     },
     {
-      "Valid": false
+      "Valid": false,
+      "HasTx": true,
+      "BeginOK": true
     }
   ],
   "public_expected": [
-    "ready_to_write",
-    "invalid"
+    "ready_to_write:begin",
+    "invalid:"
   ],
   "private_input": [
     {
-      "Valid": false
+      "Valid": true,
+      "HasTx": false,
+      "BeginOK": true
+    },
+    {
+      "Valid": true,
+      "HasTx": true,
+      "BeginOK": false
+    },
+    {
+      "Valid": false,
+      "HasTx": false,
+      "BeginOK": false
     }
   ],
   "private_expected": [
-    "invalid"
+    "dependency_missing:",
+    "begin_failed:begin",
+    "invalid:"
   ]
 }

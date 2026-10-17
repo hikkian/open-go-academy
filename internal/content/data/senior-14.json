@@ -48,9 +48,7 @@
       "id": "senior-14-easy",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "architecture",
-        "reliability"
+        "architecture"
       ],
       "difficulty": "easy",
       "title": "Easy: P5: выбор хранилища — рабочая запись",
@@ -79,9 +77,7 @@
       "id": "senior-14-medium",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "architecture",
-        "reliability"
+        "architecture"
       ],
       "difficulty": "medium",
       "title": "Medium: P5: выбор хранилища — decision artifact",
@@ -110,9 +106,7 @@
       "id": "senior-14-hard",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "architecture",
-        "reliability"
+        "architecture"
       ],
       "difficulty": "hard",
       "title": "Hard: P5: выбор хранилища — review пакет",

@@ -16,9 +16,24 @@
     {
       "units": -1,
       "unitCost": 3
+    },
+    {
+      "units": 0,
+      "unitCost": 9
+    },
+    {
+      "units": 9223372036854775807,
+      "unitCost": 2
+    },
+    {
+      "units": 2,
+      "unitCost": -1
     }
   ],
   "private_expected": [
+    -1,
+    0,
+    -1,
     -1
   ]
 }

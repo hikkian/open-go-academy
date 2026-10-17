@@ -38,8 +38,7 @@
       "id": "middle-02-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "Создание goroutine и завершение — easy",
@@ -67,8 +66,7 @@
       "id": "middle-02-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "Создание goroutine и завершение — medium",
@@ -96,8 +94,7 @@
       "id": "middle-02-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "Создание goroutine и завершение — hard",

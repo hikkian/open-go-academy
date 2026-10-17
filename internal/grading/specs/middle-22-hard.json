@@ -24,23 +24,119 @@
       "ElapsedSeconds": 0,
       "RefillPerSecond": 0,
       "Cost": 1
+    },
+    {
+      "Available": 2,
+      "Capacity": 10,
+      "ElapsedSeconds": 2,
+      "RefillPerSecond": 2,
+      "Cost": 5
+    },
+    {
+      "Available": 3,
+      "Capacity": 4,
+      "ElapsedSeconds": 10,
+      "RefillPerSecond": 1,
+      "Cost": 5
+    },
+    {
+      "Available": 0,
+      "Capacity": 9223372036854775807,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 2,
+      "Cost": 9223372036854775807
+    },
+    {
+      "Available": 0,
+      "Capacity": 9223372036854775807,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 9223372036854775807,
+      "Cost": 9223372036854775807
     }
   ],
   "public_expected": [
     2,
     0,
-    -1
+    -1,
+    0,
+    -1,
+    4611686018427387904,
+    1
   ],
   "private_input": [
     {
       "Available": 0,
       "Capacity": 10,
-      "ElapsedSeconds": 0,
+      "ElapsedSeconds": 1,
       "RefillPerSecond": 2,
+      "Cost": 5
+    },
+    {
+      "Available": 9223372036854775800,
+      "Capacity": 9223372036854775807,
+      "ElapsedSeconds": 9223372036854775807,
+      "RefillPerSecond": 9223372036854775807,
+      "Cost": 9223372036854775807
+    },
+    {
+      "Available": 0,
+      "Capacity": 9223372036854775807,
+      "ElapsedSeconds": 9223372036854775807,
+      "RefillPerSecond": 1,
+      "Cost": 9223372036854775807
+    },
+    {
+      "Available": 0,
+      "Capacity": -1,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 1,
       "Cost": 1
+    },
+    {
+      "Available": -1,
+      "Capacity": 10,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 1,
+      "Cost": 1
+    },
+    {
+      "Available": 11,
+      "Capacity": 10,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 1,
+      "Cost": 1
+    },
+    {
+      "Available": 0,
+      "Capacity": 10,
+      "ElapsedSeconds": -1,
+      "RefillPerSecond": 1,
+      "Cost": 1
+    },
+    {
+      "Available": 0,
+      "Capacity": 10,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": -1,
+      "Cost": 1
+    },
+    {
+      "Available": 0,
+      "Capacity": 10,
+      "ElapsedSeconds": 0,
+      "RefillPerSecond": 1,
+      "Cost": 0
     }
   ],
   "private_expected": [
-    1
+    2,
+    0,
+    0,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1,
+    -1
   ]
 }

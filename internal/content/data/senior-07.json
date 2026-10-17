@@ -58,8 +58,8 @@
       "id": "senior-07-easy",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "distributed-systems",
+        "architecture",
+        "distributed",
         "reliability"
       ],
       "difficulty": "easy",
@@ -88,8 +88,8 @@
       "id": "senior-07-medium",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "distributed-systems",
+        "architecture",
+        "distributed",
         "reliability"
       ],
       "difficulty": "medium",
@@ -118,8 +118,8 @@
       "id": "senior-07-hard",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "distributed-systems",
+        "architecture",
+        "distributed",
         "reliability"
       ],
       "difficulty": "hard",

@@ -50,8 +50,6 @@
       "id": "middle-32-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
         "reliability"
       ],
       "difficulty": "easy",
@@ -77,8 +75,6 @@
       "id": "middle-32-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
         "reliability"
       ],
       "difficulty": "medium",
@@ -108,8 +104,6 @@
       "id": "middle-32-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
         "reliability"
       ],
       "difficulty": "hard",

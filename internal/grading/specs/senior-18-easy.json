@@ -18,9 +18,27 @@
       "question": "latency",
       "source": "histogram",
       "window": ""
+    },
+    {
+      "question": "",
+      "source": "",
+      "window": ""
+    },
+    {
+      "question": "q",
+      "source": "",
+      "window": "5m"
+    },
+    {
+      "question": "q",
+      "source": "s",
+      "window": "5m"
     }
   ],
   "private_expected": [
-    "missing_window"
+    "missing_window",
+    "missing_question",
+    "missing_source",
+    "defined"
   ]
 }

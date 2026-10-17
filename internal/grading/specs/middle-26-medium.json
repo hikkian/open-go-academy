@@ -1,34 +1,70 @@
 {
   "id": "middle-26-medium",
-  "signature": "func HTTPStatusForDomainErrorMedium(code string) int",
+  "signature": "func RunTransactionMedium(valid bool, tx TransactionMedium) string",
   "allowed_imports": [],
-  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Code string}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(HTTPStatusForDomainErrorMedium(x.Code));e!=nil{panic(e)}}}\n",
+  "driver": "package main\nimport(\"encoding/json\";\"os\";\"strings\")\ntype input struct{Valid bool; HasTx bool; BeginOK bool; ApplyResult string; CommitOK bool}\ntype graderTransactionMedium struct{beginOK bool; applyResult string; commitOK bool; events *[]string}\nfunc(t *graderTransactionMedium) Begin()bool{*t.events=append(*t.events,\"begin\");return t.beginOK}\nfunc(t *graderTransactionMedium) Apply()string{*t.events=append(*t.events,\"apply\");return t.applyResult}\nfunc(t *graderTransactionMedium) Commit()bool{*t.events=append(*t.events,\"commit\");return t.commitOK}\nfunc(t *graderTransactionMedium) Rollback(){*t.events=append(*t.events,\"rollback\")}\nfunc expected(x input)string{if !x.Valid||!x.HasTx{return \"\"};if !x.BeginOK{return \"begin\"};if x.ApplyResult!=\"ok\"{return \"begin,apply,rollback\"};if !x.CommitOK{return \"begin,apply,commit,rollback\"};return \"begin,apply,commit\"}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{events:=[]string{};var tx TransactionMedium;if x.HasTx{tx=&graderTransactionMedium{beginOK:x.BeginOK,applyResult:x.ApplyResult,commitOK:x.CommitOK,events:&events}};result:=RunTransactionMedium(x.Valid,tx);if strings.Join(events,\",\")!=expected(x){result=\"protocol_error\"};if e:=w.Encode(result);e!=nil{panic(e)}}}",
   "public_input": [
     {
-      "Code": "invalid"
+      "Valid": true,
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "ok",
+      "CommitOK": true
     },
     {
-      "Code": "conflict"
+      "Valid": true,
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "conflict",
+      "CommitOK": true
     },
     {
-      "Code": "not_found"
+      "Valid": false,
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "ok",
+      "CommitOK": true
     }
   ],
   "public_expected": [
-    400,
-    409,
-    404
+    "committed",
+    "conflict",
+    "invalid"
   ],
   "private_input": [
     {
-      "Code": "internal"
+      "Valid": true,
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "write_failed",
+      "CommitOK": true
     },
     {
-      "Code": "driver: duplicate key"
+      "Valid": true,
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "ok",
+      "CommitOK": false
+    },
+    {
+      "Valid": true,
+      "HasTx": true,
+      "BeginOK": false,
+      "ApplyResult": "ok",
+      "CommitOK": true
+    },
+    {
+      "Valid": true,
+      "HasTx": true,
+      "BeginOK": true,
+      "ApplyResult": "driver: duplicate key",
+      "CommitOK": true
     }
   ],
   "private_expected": [
-    500,
-    500
+    "write_error",
+    "commit_outcome_unknown",
+    "begin_failed",
+    "internal_error"
   ]
 }

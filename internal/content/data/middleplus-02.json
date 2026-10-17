@@ -38,9 +38,7 @@
       "id": "middleplus-02-easy",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "easy",
       "title": "Easy: сопоставь имя метрики Go benchmark",
@@ -63,9 +61,7 @@
       "id": "middleplus-02-medium",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "medium",
       "title": "Medium: проверь диапазоны показателей benchmark",
@@ -88,9 +84,7 @@
       "id": "middleplus-02-hard",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "hard",
       "title": "Hard: сравни время и аллокации без подмены метрик",

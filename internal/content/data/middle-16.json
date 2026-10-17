@@ -12,7 +12,8 @@
   "learning_outcomes": [
     "Различать at-most-once и at-least-once",
     "Объяснять потерю и дублирование при сбое",
-    "Не обещать exactly-once по одному API очереди"
+    "Не обещать exactly-once по одному API очереди",
+    "Пропускать повторный эффект по event ID, но подтверждать уже обработанное сообщение"
   ],
   "glossary": [
     {
@@ -29,6 +30,11 @@
       "term": "delivery guarantee",
       "translation": "гарантия доставки",
       "definition": "Условия поведения сообщения при отказе"
+    },
+    {
+      "term": "idempotency key",
+      "translation": "ключ идемпотентности",
+      "definition": "Стабильный идентификатор, по которому повторный запрос распознаётся как уже обработанный"
     }
   ],
   "markdown_file": "middle-16.md",
@@ -38,9 +44,8 @@
       "id": "middle-16-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Выбор модели доставки",
@@ -68,9 +73,8 @@
       "id": "middle-16-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Окно обработки потребителя",
@@ -98,16 +102,15 @@
       "id": "middle-16-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
-      "title": "Окно producer/consumer при сбое",
-      "prompt": "Используйте ту же тройку фактов. Приоритеты: ack без commit — unsafe_ack; затем отсутствие публикации — not_delivered; commit без ack — redelivery_possible; оба подтверждённых шага — complete; опубликовано, но обработка не завершилась — retry_or_pending. Нельзя заключать exactly-once: функция не видит broker persistence, producer confirms, consumer offset/ack mode, транзакции или побочные системы. Практическая защита от дублей — idempotency key и атомарность эффекта с отметкой обработанного сообщения. Проверяются только входы и строковое решение локальной функции; реальный пул, БД, брокер и их гарантии не запускаются.",
+      "title": "Идемпотентный эффект и подтверждение",
+      "prompt": "Вызовите apply(eventID) только если alreadyProcessed=false. При ошибке эффекта верните effect_failed и не вызывайте ack. Для уже известного event ID эффект повторять нельзя, но ack всё равно нужен. Если эффект прошёл, а ack вернул ошибку, верните effect_committed_ack_unknown: безопасное действие — сверить состояние/повторить с тем же ID, а не заявлять потерю эффекта. Функции apply и ack — внедрённые локальные fake-зависимости; grader наблюдает журнал вызовов и ID. Это не доказывает гарантий брокера или атомарности БД. Даже если ID уже обработан, ошибка ack должна вернуть effect_committed_ack_unknown и не должна запускать эффект повторно. Для успешного пути верните acknowledged. Предусловия задания: eventID непустой, apply и ack не равны nil.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc DeliveryWindowHard(published bool, handlerCommitted bool, acked bool) string {\n\t// Реализуйте перечисленные исходы в указанном приоритете.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"unsafe_ack\"\n\"not_delivered\"\n\"redelivery_possible\"\n\"complete\"\n\"retry_or_pending\"",
+      "starter_code": "package main\n\nfunc DeliveryWindowHard(eventID string, alreadyProcessed bool, apply func(string) error, ack func(string) error) string {\n\t// Реализуйте порядок из условия.\n\treturn \"TODO\"\n}\n",
+      "public_output": "{\"result\":\"acknowledged\",\"calls\":[\"effect:evt-1\",\"ack:evt-1\"]}\n{\"result\":\"acknowledged\",\"calls\":[\"ack:evt-2\"]}\n{\"result\":\"effect_failed\",\"calls\":[\"effect:evt-3\"]}",
       "criteria": [
         "Соблюдена сигнатура и порядок приоритетов, включая конфликтные состояния.",
         "Проверены нормальные, граничные и отказные входы согласно уровню.",

@@ -58,9 +58,8 @@
       "id": "senior-09-easy",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "security",
-        "reliability"
+        "reliability",
+        "distributed"
       ],
       "difficulty": "easy",
       "title": "BackupState",
@@ -88,9 +87,8 @@
       "id": "senior-09-medium",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "security",
-        "reliability"
+        "reliability",
+        "distributed"
       ],
       "difficulty": "medium",
       "title": "LossState",
@@ -118,9 +116,8 @@
       "id": "senior-09-hard",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "security",
-        "reliability"
+        "reliability",
+        "distributed"
       ],
       "difficulty": "hard",
       "title": "Cutover",

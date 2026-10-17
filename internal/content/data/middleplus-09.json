@@ -38,9 +38,8 @@
       "id": "middleplus-09-easy",
       "kind": "function",
       "skills": [
-        "performance",
         "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "easy",
       "title": "Easy: маршрутизируй день в учебный shard",
@@ -63,9 +62,8 @@
       "id": "middleplus-09-medium",
       "kind": "function",
       "skills": [
-        "performance",
         "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "medium",
       "title": "Medium: проверь диапазон partition key",
@@ -88,9 +86,8 @@
       "id": "middleplus-09-hard",
       "kind": "function",
       "skills": [
-        "performance",
         "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "hard",
       "title": "Hard: проверь пересечение диапазонов",

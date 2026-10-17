@@ -16,9 +16,24 @@
     {
       "pattern": "append",
       "consistency": "eventual"
+    },
+    {
+      "pattern": "",
+      "consistency": "transactional"
+    },
+    {
+      "pattern": "relational",
+      "consistency": "eventual"
+    },
+    {
+      "pattern": "append",
+      "consistency": "eventual"
     }
   ],
   "private_expected": [
+    "log_candidate",
+    "insufficient",
+    "compare_options",
     "log_candidate"
   ]
 }

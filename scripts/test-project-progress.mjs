@@ -8,7 +8,7 @@ import AxeBuilder from '@axe-core/playwright';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const data = JSON.parse(await readFile(path.join(root, 'docs/project-progress.json'), 'utf8'));
 const target = path.join(root, 'docs/PROJECT_PROGRESS.html');
-const screenshots = path.join(root, '.data');
+const screenshots = path.join(root, 'artifacts');
 await mkdir(screenshots, { recursive: true });
 
 const browser = await chromium.launch({ headless: true });
@@ -23,6 +23,8 @@ try {
       await page.goto(new URL(`file://${target}`).href);
       await page.locator('h1').waitFor();
       const tracks = page.locator('article.track');
+      assert.equal(await page.getByRole('heading', { name: 'M11 — подготовленные черновики', exact: true }).count(), 1,
+        `${name}: preparation count must not claim completed acceptance`);
       assert.equal(await tracks.count(), data.workstreams.length, `${name}: workstream count`);
       assert.equal(await page.locator('.milestone').count(), data.milestones.length, `${name}: milestone count`);
       for (let i = 0; i < data.workstreams.length; i++) {

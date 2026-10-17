@@ -8,3 +8,5 @@ artifacts/
 *.db-shm
 *.db-wal
 web/*.tsbuildinfo
+__pycache__/
+*.py[cod]

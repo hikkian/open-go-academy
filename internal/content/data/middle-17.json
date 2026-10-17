@@ -12,7 +12,8 @@
   "learning_outcomes": [
     "Записывать событие рядом с изменением в одной транзакции",
     "Объяснять окно между commit и публикацией",
-    "Планировать повторяемую публикацию и дедупликацию"
+    "Планировать повторяемую публикацию и дедупликацию",
+    "Соблюдать порядок commit → publish → mark и сохранять event ID при повторах"
   ],
   "glossary": [
     {
@@ -29,6 +30,11 @@
       "term": "relay",
       "translation": "передатчик",
       "definition": "Процесс, который публикует сохранённые события"
+    },
+    {
+      "term": "outbox relay",
+      "translation": "передатчик outbox",
+      "definition": "Компонент, читающий зафиксированные события и передающий их наружу"
     }
   ],
   "markdown_file": "middle-17.md",
@@ -38,9 +44,8 @@
       "id": "middle-17-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Событие до и после commit",
@@ -68,9 +73,8 @@
       "id": "middle-17-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Публикация и отметка outbox",
@@ -98,16 +102,15 @@
       "id": "middle-17-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
-      "title": "Неопределённый результат после сбоя relay",
-      "prompt": "Принимает committed, brokerAccepted и rowMarked. До commit — discard; если брокер не подтвердил событие — publish; если брокер подтвердил, а отметка отсутствует — retry_may_duplicate: relay мог упасть между внешним эффектом и локальной отметкой; когда отметка есть — complete. Не называйте это exactly-once. Дедупликация потребителем и уникальный event ID ограничивают вред повторной публикации, но модель не проверяет broker confirm, SQL commit или восстановление. Проверяются только входы и строковое решение локальной функции; реальный пул, БД, брокер и их гарантии не запускаются.",
+      "title": "Outbox relay с управляемыми зависимостями",
+      "prompt": "При committed=false верните discard и не вызывайте зависимости. После commit вызовите publish ровно с исходным eventID. Если публикация не принята, верните retry_publish и не отмечайте строку. Если публикация принята, вызовите markPublished с тем же ID; ошибка отметки после принятия означает duplicate_risk. Проверяются fake-зависимости и точный порядок/аргументы; это локальный протокол, не реальный SQL или брокер. При успешной публикации и отметке верните complete. Предусловия: eventID непустой, publish и markPublished не равны nil.",
       "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc OutboxCrashHard(committed bool, brokerAccepted bool, rowMarked bool) string {\n\t// Реализуйте перечисленные исходы в указанном приоритете.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"discard\"\n\"publish\"\n\"retry_may_duplicate\"\n\"complete\"",
+      "starter_code": "package main\n\nfunc OutboxCrashHard(committed bool, eventID string, publish func(string) bool, markPublished func(string) bool) string {\n\t// Реализуйте порядок из условия.\n\treturn \"TODO\"\n}\n",
+      "public_output": "{\"result\":\"discard\",\"calls\":[]}\n{\"result\":\"retry_publish\",\"calls\":[\"publish:evt-b\"]}\n{\"result\":\"complete\",\"calls\":[\"publish:evt-c\",\"mark:evt-c\"]}",
       "criteria": [
         "Соблюдена сигнатура и порядок приоритетов, включая конфликтные состояния.",
         "Проверены нормальные, граничные и отказные входы согласно уровню.",

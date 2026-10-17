@@ -130,7 +130,7 @@ func TestP4P5AutomaticProjectEvidenceUpdatesSkillsButNeverAwardsRank(t *testing.
 	}
 	for projectID, skills := range map[string][]string{
 		"p4:automatic": {"performance", "distributed"},
-		"p5:automatic": {"architecture", "communication"},
+		"p5:automatic": {"architecture"},
 	} {
 		p := store.Progress{Completed: []string{projectID}, Evidence: map[string]int64{projectID: 101}}
 		snapshot := WithCatalog(Build(p), p, c)
@@ -148,6 +148,11 @@ func TestP4P5AutomaticProjectEvidenceUpdatesSkillsButNeverAwardsRank(t *testing.
 		}
 		if snapshot.Verified || snapshot.CurrentRank != "Zero" {
 			t.Fatalf("project %s automatic evidence assigned rank: %+v", projectID, snapshot)
+		}
+		for _, skill := range snapshot.Skills {
+			if skill.ID == "communication" && skill.Level != 0 {
+				t.Fatal("automatic project result cannot prove reviewed communication", skill)
+			}
 		}
 	}
 }

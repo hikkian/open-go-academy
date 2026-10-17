@@ -38,9 +38,8 @@
       "id": "middle-20-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Topology readiness — локальное правило",
@@ -68,9 +67,8 @@
       "id": "middle-20-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Direct routing — ветви политики",
@@ -98,16 +96,15 @@
       "id": "middle-20-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Publisher outcome — отказ и граница гарантии",
-      "prompt": "Контракт `func PublishOutcomeHard(mandatory, brokerConfirm, returned bool) string`: a returned unroutable message is unrouted; without publisher confirm the outcome is unknown and must not be reported as delivered; only confirmed and not returned is confirmed. This policy label does not implement a channel or retry. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Контракт `func PublishOutcomeHard(mandatory, brokerConfirm, returned bool) string`: returned=true допустим только при mandatory=true; противоречивое сочетание возвращает invalid. Допустимый returned означает unrouted независимо от confirm; без return отсутствие publisher confirm даёт unknown; только confirm даёт confirmed. Confirm не означает обработку consumer. Модель локальная: она не реализует канал, retry или гарантию брокера. Векторы покрывают противоречивый ввод и каждую ветвь.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc PublishOutcomeHard(mandatory, brokerConfirm, returned bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"confirmed\"\n\"unrouted\"\n\"unknown\"\n",
+      "public_output": "\"confirmed\"\n\"unknown\"\n\"unrouted\"\n\"unrouted\"\n\"confirmed\"\n\"unknown\"\n",
       "criteria": [
         "Контракт publisher outcome выполнен для нормального, граничного и отказного векторов.",
         "Ветки policy имеют явный приоритет и обработку invalid input.",

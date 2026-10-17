@@ -1,62 +1,76 @@
 {
   "id": "middle-16-hard",
-  "signature": "func DeliveryWindowHard(published bool, handlerCommitted bool, acked bool) string",
+  "signature": "func DeliveryWindowHard(eventID string, alreadyProcessed bool, apply func(string) error, ack func(string) error) string",
   "allowed_imports": [],
-  "driver": "package main\nimport(\"encoding/json\";\"os\")\ntype input struct{Published bool; HandlerCommitted bool; Acked bool; }\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{if e:=w.Encode(DeliveryWindowHard(x.Published, x.HandlerCommitted, x.Acked));e!=nil{panic(e)}}}\n",
+  "driver": "package main\nimport(\"encoding/json\";\"errors\";\"os\")\ntype input struct{EventID string; AlreadyProcessed bool; EffectFails bool; AckFails bool}\ntype output struct{Result string `json:\"result\"`; Calls []string `json:\"calls\"`}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{calls:=[]string{};apply:=func(id string)error{calls=append(calls,\"effect:\"+id);if x.EffectFails{return errors.New(\"effect failed\")};return nil};ack:=func(id string)error{calls=append(calls,\"ack:\"+id);if x.AckFails{return errors.New(\"ack failed\")};return nil};r:=DeliveryWindowHard(x.EventID,x.AlreadyProcessed,apply,ack);if e:=w.Encode(output{r,calls});e!=nil{panic(e)}}}\n",
   "public_input": [
     {
-      "Published": true,
-      "HandlerCommitted": false,
-      "Acked": true
+      "EventID": "evt-1",
+      "AlreadyProcessed": false,
+      "EffectFails": false,
+      "AckFails": false
     },
     {
-      "Published": false,
-      "HandlerCommitted": true,
-      "Acked": true
+      "EventID": "evt-2",
+      "AlreadyProcessed": true,
+      "EffectFails": false,
+      "AckFails": false
     },
     {
-      "Published": true,
-      "HandlerCommitted": true,
-      "Acked": false
-    },
-    {
-      "Published": true,
-      "HandlerCommitted": true,
-      "Acked": true
-    },
-    {
-      "Published": true,
-      "HandlerCommitted": false,
-      "Acked": false
+      "EventID": "evt-3",
+      "AlreadyProcessed": false,
+      "EffectFails": true,
+      "AckFails": false
     }
   ],
   "public_expected": [
-    "unsafe_ack",
-    "not_delivered",
-    "redelivery_possible",
-    "complete",
-    "retry_or_pending"
+    {
+      "result": "acknowledged",
+      "calls": [
+        "effect:evt-1",
+        "ack:evt-1"
+      ]
+    },
+    {
+      "result": "acknowledged",
+      "calls": [
+        "ack:evt-2"
+      ]
+    },
+    {
+      "result": "effect_failed",
+      "calls": [
+        "effect:evt-3"
+      ]
+    }
   ],
   "private_input": [
     {
-      "Published": true,
-      "HandlerCommitted": false,
-      "Acked": true
+      "EventID": "evt-4",
+      "AlreadyProcessed": false,
+      "EffectFails": false,
+      "AckFails": true
     },
     {
-      "Published": true,
-      "HandlerCommitted": true,
-      "Acked": false
-    },
-    {
-      "Published": false,
-      "HandlerCommitted": false,
-      "Acked": false
+      "EventID": "evt-5",
+      "AlreadyProcessed": true,
+      "EffectFails": true,
+      "AckFails": true
     }
   ],
   "private_expected": [
-    "unsafe_ack",
-    "redelivery_possible",
-    "not_delivered"
+    {
+      "result": "effect_committed_ack_unknown",
+      "calls": [
+        "effect:evt-4",
+        "ack:evt-4"
+      ]
+    },
+    {
+      "result": "effect_committed_ack_unknown",
+      "calls": [
+        "ack:evt-5"
+      ]
+    }
   ]
 }

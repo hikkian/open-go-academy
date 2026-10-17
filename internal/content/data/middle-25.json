@@ -53,9 +53,8 @@
       "id": "middle-25-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "go-core",
+        "architecture"
       ],
       "difficulty": "easy",
       "title": "Узкий интерфейс чтения и простое правило",
@@ -83,9 +82,8 @@
       "id": "middle-25-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "go-core",
+        "architecture"
       ],
       "difficulty": "medium",
       "title": "Use case: переименование и отказ записи",
@@ -113,9 +111,8 @@
       "id": "middle-25-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "go-core",
+        "architecture"
       ],
       "difficulty": "hard",
       "title": "Две зависимости и частичный отказ",

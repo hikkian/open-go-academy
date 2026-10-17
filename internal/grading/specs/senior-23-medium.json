@@ -18,9 +18,27 @@
       "benefit": "lower latency",
       "cost": "more writes",
       "revisitTrigger": ""
+    },
+    {
+      "benefit": "",
+      "cost": "",
+      "revisitTrigger": "x"
+    },
+    {
+      "benefit": "b",
+      "cost": "",
+      "revisitTrigger": "x"
+    },
+    {
+      "benefit": "b",
+      "cost": "c",
+      "revisitTrigger": "x"
     }
   ],
   "private_expected": [
-    false
+    false,
+    false,
+    false,
+    true
   ]
 }

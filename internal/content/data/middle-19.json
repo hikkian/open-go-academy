@@ -38,9 +38,8 @@
       "id": "middle-19-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Delay — локальное правило",
@@ -68,9 +67,8 @@
       "id": "middle-19-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Retry policy — ветви политики",
@@ -98,9 +96,8 @@
       "id": "middle-19-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Delivery transition — отказ и граница гарантии",

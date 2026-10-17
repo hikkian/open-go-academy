@@ -58,9 +58,8 @@
       "id": "senior-08-easy",
       "kind": "function",
       "skills": [
-        "systems-design",
         "reliability",
-        "reliability"
+        "distributed"
       ],
       "difficulty": "easy",
       "title": "DeadlineState",
@@ -88,9 +87,8 @@
       "id": "senior-08-medium",
       "kind": "function",
       "skills": [
-        "systems-design",
         "reliability",
-        "reliability"
+        "distributed"
       ],
       "difficulty": "medium",
       "title": "Enqueue",
@@ -118,9 +116,8 @@
       "id": "senior-08-hard",
       "kind": "function",
       "skills": [
-        "systems-design",
         "reliability",
-        "reliability"
+        "distributed"
       ],
       "difficulty": "hard",
       "title": "Ready",

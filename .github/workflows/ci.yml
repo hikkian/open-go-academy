@@ -14,8 +14,10 @@ jobs:
         with:
           node-version: '24.18.0'
       - run: go test ./... && go vet ./... && go test -race ./... && go -C content/projects/p1/reference test ./... && go -C content/projects/p1/reference vet ./...
+      - run: python3 -m unittest discover -s scripts -p 'test_m11_source_fingerprint.py'
       - run: npm ci && cd web && npm ci && npm run typecheck && npm run build
       - run: npx playwright install --with-deps chromium
+      - run: python3 scripts/render-project-progress.py && npm run test:progress
       - run: npm run e2e -- --grep 'profile, roadmap|failed draft|course search|project edits'
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()

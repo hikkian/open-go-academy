@@ -1,44 +1,51 @@
 {
   "id": "middle-28-hard",
-  "signature": "func CanStart(dbConfigured, repositoryWired, handlerWired bool) bool",
-  "allowed_imports": [],
-  "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { DbConfigured bool `json:\"dbConfigured\"`; RepositoryWired bool `json:\"repositoryWired\"`; HandlerWired bool `json:\"handlerWired\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]),&cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _,in:=range cases { if err:=enc.Encode(CanStart(in.DbConfigured, in.RepositoryWired, in.HandlerWired)); err!=nil { panic(err) } } }\n",
+  "signature": "func NewTaskService(repo TaskRepository) (*TaskService, error)",
+  "allowed_imports": [
+    "context"
+  ],
+  "driver": "package main\nimport(\"context\";\"encoding/json\";\"errors\";\"fmt\";\"os\")\ntype Task struct{ ID string `json:\"id\"`; Repository string `json:\"repository\"` }\ntype TaskRepository interface{ Get(context.Context,string)(Task,error) }\nvar ErrRepositoryMissing=errors.New(\"repository missing\")\ntype input struct{ HasRepository bool `json:\"hasRepository\"`; ID string `json:\"id\"`; RepoID string `json:\"repoID\"`; Fail bool `json:\"fail\"` }\ntype graderRepo struct{ name string; calls int; gotID string; gotContext context.Context; fail bool; sentinel error }\nfunc(r *graderRepo)Get(ctx context.Context,id string)(Task,error){r.calls++;r.gotID=id;r.gotContext=ctx;if r.fail{return Task{},r.sentinel};return Task{ID:id,Repository:r.name},nil}\nfunc main(){var xs []input;if e:=json.Unmarshal([]byte(os.Args[1]),&xs);e!=nil{panic(e)};w:=json.NewEncoder(os.Stdout);for _,x:=range xs{ctx:=context.WithValue(context.Background(),struct{}{},\"same-context\");repo:=&graderRepo{name:x.RepoID,fail:x.Fail,sentinel:errors.New(\"db unavailable\")};var dep TaskRepository;if x.HasRepository{dep=repo};service,err:=NewTaskService(dep);if err!=nil{if e:=w.Encode(fmt.Sprintf(\"constructor_error|missing=%t|calls=%d\",errors.Is(err,ErrRepositoryMissing),repo.calls));e!=nil{panic(e)};continue};task,gotErr:=service.Get(ctx,x.ID);sameCtx:=repo.gotContext==ctx;errorOK:=gotErr!=nil&&errors.Is(gotErr,repo.sentinel);if e:=w.Encode(fmt.Sprintf(\"task:%s|%s|calls=%d|id=%s|ctx=%t|error=%t\",task.ID,task.Repository,repo.calls,repo.gotID,sameCtx,errorOK));e!=nil{panic(e)}}}\n",
   "public_input": [
     {
-      "dbConfigured": true,
-      "repositoryWired": true,
-      "handlerWired": true
+      "hasRepository": true,
+      "id": "task-17",
+      "repoID": "repo-1",
+      "fail": false
+    },
+    {
+      "hasRepository": true,
+      "id": "task-18",
+      "repoID": "repo-2",
+      "fail": true
     }
   ],
   "public_expected": [
-    true
+    "task:task-17|repo-1|calls=1|id=task-17|ctx=true|error=false",
+    "task:||calls=1|id=task-18|ctx=true|error=true"
   ],
   "private_input": [
     {
-      "dbConfigured": false,
-      "repositoryWired": true,
-      "handlerWired": true
+      "hasRepository": false,
+      "id": "ignored",
+      "repoID": "repo-x",
+      "fail": false
     },
     {
-      "dbConfigured": true,
-      "repositoryWired": false,
-      "handlerWired": true
+      "hasRepository": true,
+      "id": "",
+      "repoID": "repo-3",
+      "fail": false
     },
     {
-      "dbConfigured": true,
-      "repositoryWired": true,
-      "handlerWired": false
-    },
-    {
-      "dbConfigured": false,
-      "repositoryWired": false,
-      "handlerWired": false
+      "hasRepository": true,
+      "id": "../raw ID ",
+      "repoID": "repo-4",
+      "fail": false
     }
   ],
   "private_expected": [
-    false,
-    false,
-    false,
-    false
+    "constructor_error|missing=true|calls=0",
+    "task:|repo-3|calls=1|id=|ctx=true|error=false",
+    "task:../raw ID |repo-4|calls=1|id=../raw ID |ctx=true|error=false"
   ]
 }

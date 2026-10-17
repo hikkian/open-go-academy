@@ -18,9 +18,45 @@
       "shadowMatched": true,
       "rollbackTested": false,
       "ownerApproved": true
+    },
+    {
+      "shadowMatched": false,
+      "rollbackTested": true,
+      "ownerApproved": true
+    },
+    {
+      "shadowMatched": true,
+      "rollbackTested": true,
+      "ownerApproved": false
+    },
+    {
+      "shadowMatched": false,
+      "rollbackTested": false,
+      "ownerApproved": false
+    },
+    {
+      "shadowMatched": false,
+      "rollbackTested": false,
+      "ownerApproved": true
+    },
+    {
+      "shadowMatched": false,
+      "rollbackTested": true,
+      "ownerApproved": false
+    },
+    {
+      "shadowMatched": true,
+      "rollbackTested": false,
+      "ownerApproved": false
     }
   ],
   "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
     false
   ]
 }

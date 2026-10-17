@@ -18,9 +18,27 @@
       "reproduced": true,
       "independentReview": false,
       "boundedClaim": true
+    },
+    {
+      "reproduced": false,
+      "independentReview": false,
+      "boundedClaim": false
+    },
+    {
+      "reproduced": false,
+      "independentReview": true,
+      "boundedClaim": true
+    },
+    {
+      "reproduced": true,
+      "independentReview": true,
+      "boundedClaim": false
     }
   ],
   "private_expected": [
-    "needs_review"
+    "needs_review",
+    "overclaim",
+    "not_reproduced",
+    "overclaim"
   ]
 }

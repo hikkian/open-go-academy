@@ -118,6 +118,9 @@ func loadLessons(ids []string) (*Catalog, error) {
 			return nil, fmt.Errorf("lesson %s has empty body", l.ID)
 		}
 		for _, ex := range l.Exercises {
+			if err := validateExerciseSkills(ex); err != nil {
+				return nil, err
+			}
 			if ex.Kind != "" && ex.Kind != "function" {
 				return nil, fmt.Errorf("exercise %s has unsupported kind", ex.ID)
 			}

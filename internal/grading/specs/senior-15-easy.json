@@ -16,9 +16,19 @@
     {
       "version": 4,
       "supported": 3
+    },
+    {
+      "version": 0,
+      "supported": 3
+    },
+    {
+      "version": 3,
+      "supported": 3
     }
   ],
   "private_expected": [
-    "unsupported"
+    "unsupported",
+    "invalid",
+    "accepted"
   ]
 }

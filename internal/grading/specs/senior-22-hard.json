@@ -18,9 +18,27 @@
       "blockers": 1,
       "testsGreen": 1,
       "ownerApproved": 1
+    },
+    {
+      "blockers": -1,
+      "testsGreen": 1,
+      "ownerApproved": 1
+    },
+    {
+      "blockers": 0,
+      "testsGreen": 2,
+      "ownerApproved": 1
+    },
+    {
+      "blockers": 0,
+      "testsGreen": 1,
+      "ownerApproved": 0
     }
   ],
   "private_expected": [
+    false,
+    false,
+    false,
     false
   ]
 }

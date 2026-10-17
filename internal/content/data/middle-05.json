@@ -38,8 +38,7 @@
       "id": "middle-05-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "select, таймаут и отмена — easy",
@@ -67,8 +66,7 @@
       "id": "middle-05-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "select, таймаут и отмена — medium",
@@ -96,8 +94,7 @@
       "id": "middle-05-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "select, таймаут и отмена — hard",

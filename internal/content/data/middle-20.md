@@ -10,7 +10,7 @@
 
 RabbitMQ разделяет приём маршрута и хранение: publisher отправляет сообщение в exchange (обменник), exchange применяет binding (правило маршрутизации) к queue (очереди). Direct exchange сравнивает routing key и binding key как точные строки. Topic exchange имеет отдельные wildcard-правила; их нельзя имитировать сравнением строк из этого упражнения. Пустой ключ — ошибка выбранной локальной модели. Отсутствие совпавшего binding означает unrouted (не маршрутизировано), а не «сообщение сохранено».
 
-Easy проверяет только наличие трёх элементов изолированной топологии. Medium моделирует точное совпадение direct key. Hard отличает подтверждённую публикацию от неопределённой: publisher confirm говорит о принятии брокером согласно протоколу, но не подтверждает, что consumer обработал сообщение; returned с mandatory публикацией сигнализирует, что маршрут не найден. При потере соединения до confirm результат unknown (неизвестен), поэтому слепой повтор может создать дубликат.
+Easy проверяет только наличие трёх элементов изолированной топологии. Medium моделирует точное совпадение direct key. Hard отличает подтверждённую публикацию от неопределённой: publisher confirm говорит о принятии брокером согласно протоколу, но не подтверждает, что consumer обработал сообщение; returned=true допустим только при mandatory=true и сигнализирует, что маршрут не найден. Несовместимая пара mandatory=false, returned=true классифицируется как invalid, а не как ответ брокера. Проверяй это и при brokerConfirm=false: сначала отбрасывай противоречивое сочетание и только затем применяй confirm-политику; иначе две входные комбинации будут ошибочно помечены как unknown. При потере соединения до confirm результат unknown (неизвестен), поэтому слепой повтор может создать дубликат.
 
 В реальном приложении тестовая топология должна иметь уникальный vhost или префикс ресурсов. Очистка обязана удалять только собственную очередь и exchange, никогда общую среду. Интеграционный тест поднимает закреплённую версию RabbitMQ, создаёт topology, отправляет сообщения с routed и unrouted key, проверяет confirm/return и затем чистит свои объекты. Три локальные функции не открывают сокет и не доказывают настройку durable queue, consumer ack или восстановление брокера.
 
@@ -61,7 +61,7 @@ package main
 import "fmt"
 
 func PublishOutcomeHard(mandatory, brokerConfirm, returned bool) string {
-	if returned { return "unrouted" }; if !brokerConfirm { return "unknown" }; return "confirmed"
+	if returned && !mandatory { return "invalid" }; if returned { return "unrouted" }; if !brokerConfirm { return "unknown" }; return "confirmed"
 }
 
 func main() { fmt.Println(PublishOutcomeHard(true, true, false)) }
@@ -82,7 +82,7 @@ func main() { fmt.Println(PublishOutcomeHard(true, true, false)) }
 
 ## Практика и самопроверка
 
-Easy проверяет состав топологии; Medium различает точное совпадение direct routing key; Hard отделяет confirm, returned и unknown. Не трактуй topic wildcard как прямое равенство. Интеграционный сценарий должен использовать изолированный vhost и проверять routed/unrouted публикацию, confirm и очистку только собственных ресурсов.
+Easy проверяет состав топологии; Medium различает точное совпадение direct routing key; Hard отделяет invalid input, confirm, returned и unknown; returned без mandatory считается противоречивым входом локальной модели. Не трактуй topic wildcard как прямое равенство. Интеграционный сценарий должен использовать изолированный vhost и проверять routed/unrouted публикацию, confirm и очистку только собственных ресурсов.
 
 ## Итог и повторение
 

@@ -20,7 +20,7 @@ Easy принимает решение discard до commit или publish пос
 
 **Medium — middle-17-medium.** Добавьте независимый сигнал или состояние из условия. Решайте ветви в заданном порядке: сначала невалидное состояние, затем уже совершённый эффект/отмена, затем доступность ресурса, затем временной лимит и только после этого повтор или отказ. Этот порядок важен там, где две причины истинны одновременно. Проверьте конфликтующие входы из public/private vectors.
 
-**Hard — middle-17-hard.** Разберите окно сбоя, неизвестный результат либо ограниченный отказ. Запишите, что система знает до сбоя и что может подтвердить после перезапуска. Не выводите «ровно один раз» из локальной категории: при неопределённом подтверждении реальная система должна повторить безопасно либо запросить сверку. Решение из функции — лишь политика для заданных фактов.
+**Hard — middle-17-hard.** Передайте relay fake-функции publish и markPublished. Пока транзакция не committed, обе функции должны остаться вызванными ноль раз. После commit публикация получает исходный event ID; отметка вызывается лишь после принятия публикации и с тем же ID. Если обе операции успешны, верните `complete`; сбой отметки возвращает `duplicate_risk`. Предусловия: eventID непустой, callback-ы не nil. Grader наблюдает порядок и аргументы fake-вызовов; это не тест PostgreSQL или брокера.
 
 ## Три исполняемых примера
 
@@ -57,15 +57,19 @@ func main() { fmt.Println(OutboxActionMedium(false, false, false)) }
 package main
 import "fmt"
 
-
-func OutboxCrashHard(committed bool, brokerAccepted bool, rowMarked bool) string {
+func OutboxCrashHard(committed bool, eventID string, publish func(string) bool, markPublished func(string) bool) string {
 	if !committed { return "discard" }
-	if !brokerAccepted { return "publish" }
-	if !rowMarked { return "retry_may_duplicate" }
+	if !publish(eventID) { return "retry_publish" }
+	if !markPublished(eventID) { return "duplicate_risk" }
 	return "complete"
 }
 
-func main() { fmt.Println(OutboxCrashHard(false, false, false)) }
+func main() {
+	calls := []string{}
+	publish := func(id string) bool { calls = append(calls, "publish:"+id); return true }
+	mark := func(id string) bool { calls = append(calls, "mark:"+id); return true }
+	fmt.Println(OutboxCrashHard(true, "evt-c", publish, mark), calls)
+}
 ```
 
 ## Как читать примеры и проверять выводы

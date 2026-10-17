@@ -38,8 +38,7 @@
       "id": "middle-07-easy",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "easy",
       "title": "RWMutex, Once и атомарная операция — easy",
@@ -67,8 +66,7 @@
       "id": "middle-07-medium",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "medium",
       "title": "RWMutex, Once и атомарная операция — medium",
@@ -96,8 +94,7 @@
       "id": "middle-07-hard",
       "kind": "function",
       "skills": [
-        "go-core",
-        "testing"
+        "concurrency"
       ],
       "difficulty": "hard",
       "title": "RWMutex, Once и атомарная операция — hard",

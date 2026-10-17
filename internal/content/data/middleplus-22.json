@@ -58,9 +58,8 @@
       "id": "middleplus-22-easy",
       "kind": "function",
       "skills": [
-        "reliability",
-        "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Easy: canary rollout, остановка и rollback — классификация",
@@ -84,9 +83,8 @@
       "id": "middleplus-22-medium",
       "kind": "function",
       "skills": [
-        "reliability",
-        "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Medium: canary rollout, остановка и rollback — политика",
@@ -110,9 +108,8 @@
       "id": "middleplus-22-hard",
       "kind": "function",
       "skills": [
-        "reliability",
-        "performance",
-        "distributed-systems"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Hard: canary rollout, остановка и rollback — проверка инварианта",

@@ -48,9 +48,7 @@
       "id": "senior-15-easy",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "architecture",
-        "reliability"
+        "architecture"
       ],
       "difficulty": "easy",
       "title": "Easy: P5: интерфейсы и контракты — рабочая запись",
@@ -79,9 +77,7 @@
       "id": "senior-15-medium",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "architecture",
-        "reliability"
+        "architecture"
       ],
       "difficulty": "medium",
       "title": "Medium: P5: интерфейсы и контракты — decision artifact",
@@ -110,9 +106,7 @@
       "id": "senior-15-hard",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "architecture",
-        "reliability"
+        "architecture"
       ],
       "difficulty": "hard",
       "title": "Hard: P5: интерфейсы и контракты — review пакет",

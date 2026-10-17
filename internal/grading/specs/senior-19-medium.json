@@ -16,9 +16,19 @@
     {
       "commanderAssigned": false,
       "mitigationKnown": true
+    },
+    {
+      "commanderAssigned": false,
+      "mitigationKnown": false
+    },
+    {
+      "commanderAssigned": true,
+      "mitigationKnown": false
     }
   ],
   "private_expected": [
-    "assign_commander"
+    "assign_commander",
+    "assign_commander",
+    "stabilize_and_gather"
   ]
 }

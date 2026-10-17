@@ -16,9 +16,19 @@
     {
       "source": "",
       "measurable": "p99_ms"
+    },
+    {
+      "source": "",
+      "measurable": ""
+    },
+    {
+      "source": "customer",
+      "measurable": ""
     }
   ],
   "private_expected": [
-    "unknown_source"
+    "unknown_source",
+    "unknown_source",
+    "needs_measurement"
   ]
 }

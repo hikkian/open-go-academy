@@ -1,8 +1,8 @@
 package main
 
-func OutboxCrashHard(committed bool, brokerAccepted bool, rowMarked bool) string {
+func OutboxCrashHard(committed bool, eventID string, publish func(string) bool, markPublished func(string) bool) string {
 	if !committed { return "discard" }
-	if !brokerAccepted { return "publish" }
-	if !rowMarked { return "retry_may_duplicate" }
+	if !publish(eventID) { return "retry_publish" }
+	if !markPublished(eventID) { return "duplicate_risk" }
 	return "complete"
 }

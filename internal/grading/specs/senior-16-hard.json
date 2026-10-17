@@ -18,9 +18,45 @@
       "sameWorkload": true,
       "stateMeasured": false,
       "failureTested": true
+    },
+    {
+      "sameWorkload": false,
+      "stateMeasured": true,
+      "failureTested": true
+    },
+    {
+      "sameWorkload": true,
+      "stateMeasured": true,
+      "failureTested": false
+    },
+    {
+      "sameWorkload": false,
+      "stateMeasured": false,
+      "failureTested": false
+    },
+    {
+      "sameWorkload": false,
+      "stateMeasured": false,
+      "failureTested": true
+    },
+    {
+      "sameWorkload": false,
+      "stateMeasured": true,
+      "failureTested": false
+    },
+    {
+      "sameWorkload": true,
+      "stateMeasured": false,
+      "failureTested": false
     }
   ],
   "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
     false
   ]
 }

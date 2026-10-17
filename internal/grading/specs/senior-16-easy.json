@@ -16,9 +16,19 @@
     {
       "stateful": true,
       "coordinationAvailable": true
+    },
+    {
+      "stateful": false,
+      "coordinationAvailable": true
+    },
+    {
+      "stateful": true,
+      "coordinationAvailable": false
     }
   ],
   "private_expected": [
-    "partition_candidate"
+    "partition_candidate",
+    "replicas_candidate",
+    "state_boundary_first"
   ]
 }

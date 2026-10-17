@@ -16,9 +16,24 @@
     {
       "impact": 1,
       "suspected": true
+    },
+    {
+      "impact": -1,
+      "suspected": true
+    },
+    {
+      "impact": 3,
+      "suspected": true
+    },
+    {
+      "impact": 2,
+      "suspected": false
     }
   ],
   "private_expected": [
-    "critical_review"
+    "critical_review",
+    "invalid",
+    "critical_review",
+    "routine"
   ]
 }

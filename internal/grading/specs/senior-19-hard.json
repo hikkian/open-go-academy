@@ -18,9 +18,45 @@
       "timeline": true,
       "currentImpact": false,
       "nextAction": true
+    },
+    {
+      "timeline": false,
+      "currentImpact": true,
+      "nextAction": true
+    },
+    {
+      "timeline": true,
+      "currentImpact": true,
+      "nextAction": false
+    },
+    {
+      "timeline": false,
+      "currentImpact": false,
+      "nextAction": false
+    },
+    {
+      "timeline": false,
+      "currentImpact": false,
+      "nextAction": true
+    },
+    {
+      "timeline": false,
+      "currentImpact": true,
+      "nextAction": false
+    },
+    {
+      "timeline": true,
+      "currentImpact": false,
+      "nextAction": false
     }
   ],
   "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
     false
   ]
 }

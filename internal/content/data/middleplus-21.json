@@ -59,8 +59,7 @@
       "kind": "function",
       "skills": [
         "reliability",
-        "performance",
-        "distributed-systems"
+        "performance"
       ],
       "difficulty": "easy",
       "title": "Easy: sli, slo и error budget — классификация",
@@ -86,8 +85,7 @@
       "kind": "function",
       "skills": [
         "reliability",
-        "performance",
-        "distributed-systems"
+        "performance"
       ],
       "difficulty": "medium",
       "title": "Medium: sli, slo и error budget — политика",
@@ -113,8 +111,7 @@
       "kind": "function",
       "skills": [
         "reliability",
-        "performance",
-        "distributed-systems"
+        "performance"
       ],
       "difficulty": "hard",
       "title": "Hard: sli, slo и error budget — проверка инварианта",

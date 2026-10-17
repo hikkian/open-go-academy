@@ -38,9 +38,8 @@
       "id": "middle-23-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Version ordering — локальное правило",
@@ -68,9 +67,8 @@
       "id": "middle-23-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Ordered event policy — ветви политики",
@@ -98,9 +96,8 @@
       "id": "middle-23-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Projection transition — отказ и граница гарантии",

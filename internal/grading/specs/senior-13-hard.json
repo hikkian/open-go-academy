@@ -18,9 +18,51 @@
       "requirements": true,
       "risks": true,
       "rollback": false
+    },
+    {
+      "requirements": false,
+      "risks": true,
+      "rollback": true
+    },
+    {
+      "requirements": true,
+      "risks": false,
+      "rollback": true
+    },
+    {
+      "requirements": true,
+      "risks": true,
+      "rollback": false
+    },
+    {
+      "requirements": false,
+      "risks": false,
+      "rollback": false
+    },
+    {
+      "requirements": false,
+      "risks": false,
+      "rollback": true
+    },
+    {
+      "requirements": false,
+      "risks": true,
+      "rollback": false
+    },
+    {
+      "requirements": true,
+      "risks": false,
+      "rollback": false
     }
   ],
   "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
     false
   ]
 }

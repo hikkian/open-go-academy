@@ -16,9 +16,24 @@
     {
       "openRisks": 0,
       "reviewerSigned": 0
+    },
+    {
+      "openRisks": -1,
+      "reviewerSigned": 1
+    },
+    {
+      "openRisks": 1,
+      "reviewerSigned": 2
+    },
+    {
+      "openRisks": 0,
+      "reviewerSigned": 1
     }
   ],
   "private_expected": [
-    "not_reviewed"
+    "not_reviewed",
+    "invalid",
+    "invalid",
+    "reviewed_no_listed_risks"
   ]
 }

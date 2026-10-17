@@ -48,8 +48,6 @@
       "id": "senior-18-easy",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "architecture",
         "reliability"
       ],
       "difficulty": "easy",
@@ -79,8 +77,6 @@
       "id": "senior-18-medium",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "architecture",
         "reliability"
       ],
       "difficulty": "medium",
@@ -110,8 +106,6 @@
       "id": "senior-18-hard",
       "kind": "function",
       "skills": [
-        "systems-design",
-        "architecture",
         "reliability"
       ],
       "difficulty": "hard",

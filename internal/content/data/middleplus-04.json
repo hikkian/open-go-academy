@@ -38,9 +38,7 @@
       "id": "middleplus-04-easy",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "easy",
       "title": "Easy: вычисли долю CPU samples",
@@ -64,9 +62,7 @@
       "id": "middleplus-04-medium",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "medium",
       "title": "Medium: проверь profile counts",
@@ -89,9 +85,7 @@
       "id": "middleplus-04-hard",
       "kind": "function",
       "skills": [
-        "performance",
-        "sql",
-        "reliability"
+        "performance"
       ],
       "difficulty": "hard",
       "title": "Hard: выбери hotspot по flat threshold",

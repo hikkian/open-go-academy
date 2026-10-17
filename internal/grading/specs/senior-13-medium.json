@@ -18,9 +18,21 @@
       "option": "single-db",
       "evidence": "",
       "revisit": "p99>300ms"
+    },
+    {
+      "option": "",
+      "evidence": "",
+      "revisit": ""
+    },
+    {
+      "option": "x",
+      "evidence": "e",
+      "revisit": ""
     }
   ],
   "private_expected": [
-    "assumption"
+    "assumption",
+    "missing_option",
+    "no_revisit_trigger"
   ]
 }

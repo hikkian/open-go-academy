@@ -18,9 +18,33 @@
       "errorPercent": 1,
       "threshold": 3,
       "sampleCount": 10
+    },
+    {
+      "errorPercent": -1,
+      "threshold": 3,
+      "sampleCount": 100
+    },
+    {
+      "errorPercent": 3,
+      "threshold": 3,
+      "sampleCount": 100
+    },
+    {
+      "errorPercent": 4,
+      "threshold": 3,
+      "sampleCount": 100
+    },
+    {
+      "errorPercent": 0,
+      "threshold": 101,
+      "sampleCount": 100
     }
   ],
   "private_expected": [
+    false,
+    false,
+    true,
+    false,
     false
   ]
 }

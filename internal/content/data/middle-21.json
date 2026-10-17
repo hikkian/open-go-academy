@@ -38,9 +38,8 @@
       "id": "middle-21-easy",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "easy",
       "title": "Ttl clamp — локальное правило",
@@ -68,9 +67,8 @@
       "id": "middle-21-medium",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "medium",
       "title": "Stale read policy — ветви политики",
@@ -98,9 +96,8 @@
       "id": "middle-21-hard",
       "kind": "function",
       "skills": [
-        "backend",
-        "testing",
-        "go-core"
+        "distributed",
+        "reliability"
       ],
       "difficulty": "hard",
       "title": "Cache outage policy — отказ и граница гарантии",

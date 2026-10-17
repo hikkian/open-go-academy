@@ -18,9 +18,45 @@
       "hasOwner": true,
       "hasErrors": false,
       "hasVersionPolicy": true
+    },
+    {
+      "hasOwner": false,
+      "hasErrors": true,
+      "hasVersionPolicy": true
+    },
+    {
+      "hasOwner": true,
+      "hasErrors": true,
+      "hasVersionPolicy": false
+    },
+    {
+      "hasOwner": false,
+      "hasErrors": false,
+      "hasVersionPolicy": false
+    },
+    {
+      "hasOwner": false,
+      "hasErrors": false,
+      "hasVersionPolicy": true
+    },
+    {
+      "hasOwner": false,
+      "hasErrors": true,
+      "hasVersionPolicy": false
+    },
+    {
+      "hasOwner": true,
+      "hasErrors": false,
+      "hasVersionPolicy": false
     }
   ],
   "private_expected": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
     false
   ]
 }

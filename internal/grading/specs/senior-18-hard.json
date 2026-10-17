@@ -16,9 +16,24 @@
     {
       "samples": 0,
       "failed": 0
+    },
+    {
+      "samples": -1,
+      "failed": 0
+    },
+    {
+      "samples": 10,
+      "failed": 11
+    },
+    {
+      "samples": 10,
+      "failed": 0
     }
   ],
   "private_expected": [
-    "unknown"
+    "unknown",
+    "invalid",
+    "invalid",
+    "no_failure_observed"
   ]
 }

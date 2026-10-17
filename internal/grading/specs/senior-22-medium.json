@@ -16,9 +16,19 @@
     {
       "actionable": true,
       "evidence": false
+    },
+    {
+      "actionable": false,
+      "evidence": false
+    },
+    {
+      "actionable": false,
+      "evidence": true
     }
   ],
   "private_expected": [
-    "needs_evidence"
+    "needs_evidence",
+    "question",
+    "question"
   ]
 }

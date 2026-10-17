@@ -16,9 +16,29 @@
     {
       "demand": 90,
       "testedCapacity": 100
+    },
+    {
+      "demand": -1,
+      "testedCapacity": 100
+    },
+    {
+      "demand": 101,
+      "testedCapacity": 100
+    },
+    {
+      "demand": 80,
+      "testedCapacity": 100
+    },
+    {
+      "demand": 100,
+      "testedCapacity": 100
     }
   ],
   "private_expected": [
+    "near_tested_limit",
+    "invalid",
+    "exceeds_test",
+    "near_tested_limit",
     "near_tested_limit"
   ]
 }

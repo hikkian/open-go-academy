@@ -1,3 +1,13 @@
+# Актуальная проверка — 2026-10-18
+
+M0–M10 закрыты; M11/M12/M13 продолжаются. Актуальные исходники, scoped проверки и работающие final gates перечислены в [handoff](../AGENT_HANDOFF.md). Новые curriculum/rank/rubric/skill изменения имеют независимое review и targeted regressions; полный88gate и full browser acceptance ещё выполняются, поэтому final PASS не заявляется.
+
+Local load/restart/security-boundary probe — [PASS JSON](validation/m12-local-load-20261018.json):120reads200,119writes200/21quota429, baseline profile/Zero/no awards/XP0, accepted whole bundle, SQLite integrity/restart. Проверка локальная, не публичный SLO.
+
+Ниже сохранён исторический журнал. Старое указание «current tree» относится к дате соответствующей записи, а не к HEAD2026-10-18.
+
+---
+
 # Проверка Open Go Academy — 2026-10-15
 
 ## Проверенная область

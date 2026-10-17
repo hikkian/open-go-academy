@@ -16,9 +16,29 @@
     {
       "capacity": 100,
       "demand": 90
+    },
+    {
+      "capacity": 0,
+      "demand": 0
+    },
+    {
+      "capacity": 100,
+      "demand": 101
+    },
+    {
+      "capacity": 100,
+      "demand": 80
+    },
+    {
+      "capacity": 100,
+      "demand": 100
     }
   ],
   "private_expected": [
+    "low_headroom",
+    "invalid",
+    "over_limit",
+    "low_headroom",
     "low_headroom"
   ]
 }

@@ -16,9 +16,24 @@
     {
       "severity": 2,
       "dataBoundary": false
+    },
+    {
+      "severity": -1,
+      "dataBoundary": true
+    },
+    {
+      "severity": 3,
+      "dataBoundary": false
+    },
+    {
+      "severity": 2,
+      "dataBoundary": false
     }
   ],
   "private_expected": [
+    "normal",
+    "invalid",
+    "high",
     "normal"
   ]
 }
