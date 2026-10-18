@@ -1,5 +1,14 @@
 # Актуальная проверка — 2026-10-18
 
+## Последний текущий source checkpoint — `e4ac92a` (2026-10-18)
+
+- M11 **DONE**. `python3 scripts/check_m11_acceptance.py --report docs/validation/m11-current-tree-acceptance-20261018-v7.txt --log artifacts/m11-full-final-v7-20261018.log --cache-dir /tmp/oga-m11-v7-20261018` — **PASS, 88/88**, 2815.381s; source fingerprint до и после `sha256:dd28be0d31ffba7ea087bc52a928e673cbc515ceafce756f5506416a1a07886d`; log SHA-256 `abf0880c69155e94a8ea2af2eb06780f391a2876645c1b7319b8ca16e229dce7`. Исправление backoff подняло текущий Middle exam до v1.0.1, legacy v1.0.0 остался доступен для старых попыток.
+- `make test` — **PASS, exit 0** после backoff/reference/version compatibility fix: Go unit/integration/reference, vet, whole-tree race, Python gates, TypeScript и production build.
+- Current-tree desktop/mobile E2E — **PASS 50 / 10 intentional skips / 0 failures**, 10.9m, с реальными изолированными P1–P5 runner flows. Evidence: [E2E v7](validation/e2e-current-tree-20261018-v7.txt); Playwright report hash указан внутри.
+- `make sandbox-test` — **PASS, exit 0**; `TestSandboxIntegration` 174.833s, rootless cgroup and host-boundary probes. Log `artifacts/m12-final-post-m11-20261018.log`, SHA-256 `89ab0a3abfd9df964c586978c18ba63224d3dcb6068de74135be625cd256a51c`.
+- `npm run test:progress` — **PASS** desktop/light и mobile/dark, axe violations 0, horizontal overflow 0; generated screenshots визуально inspected. Dashboard показывает 12/14 checkpoints (86%) и оставшиеся M12/M13.
+- M12/M13 остаются открыты: literal `cgroup.events populated=0`, полный host mount/PID-1 mapping и DNS/external-network behavior не подтверждены; нужно повторить fresh-source M13/Gitleaks. LICENSE/NOTICE choice требует решения владельца, другая ОС не тестировалась. Эти границы не утверждаются как observed escapes.
+
 ## Повторный checkpoint после аудита 2026-10-18
 
 - `make sandbox-test` — **PASS, exit 0** (`artifacts/sandbox-test-final-20261018.exit`). 13 rootless runner integration cases прошли; затем фиксированный cgroup probe подтвердил `memory.events: oom_kill=1`, memory child exit 137 и `pids.events: max=3`, PID `EAGAIN`, очистку 33 children, exit 0 (`docs/validation/m12-sandbox-cgroup-20261018.txt`). После запуска осталось 0 контейнеров с точным label `academy.install=m12-probe`. Это локальное доказательство S05, не public-hosting certification.

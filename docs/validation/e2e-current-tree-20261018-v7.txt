@@ -1,0 +1,13 @@
+Open Go Academy — current-tree desktop/mobile E2E acceptance v7
+Date: 2026-10-18 (Asia/Atyrau)
+Commit under test: `e4ac92a` (source unchanged during the run; documentation/progress metadata was refreshed)
+
+Command: `ACADEMY_E2E_RUNNER=1 ACADEMY_E2E_PROJECT_RUNNER=1 ACADEMY_E2E_P3_RUNNER=1 npm run e2e -- --reporter=list`, with separately started basic and project runner daemons, private Unix sockets under a fresh `/tmp/oga-e2e-v7-*` directory and a disposable SQLite DB in that same directory.
+
+Result: **PASS — 50 passed, 10 intentional skips, 0 failures, 10.9 minutes, exit 0.** Playwright ran one worker across desktop and mobile Chromium. Real Go editor/grading and P1/P2/P3/P4/P5 project flows used local isolated runner processes; project completion did not award a rank. Tutor UI used test providers; no external or paid model call was made. Runner processes were terminated and the temporary DB/socket directory removed by the harness.
+
+Playwright HTML report: `artifacts/playwright-report/index.html`, SHA-256 `ea3c032700c768b3f81bd1759f4e02a8f032f8dd1c6f31944d7e96bba11ef864`.
+Runner startup log: `artifacts/e2e-v7-runner.log`, SHA-256 `6e976131148886b83c84a9ef3f05524fd3bba3e1e69020882b3ad0bb3cb6a2e5`.
+The Playwright list output is retained in the run transcript; the HTML report preserves the per-test results.
+
+The E2E server binds only `127.0.0.1:8081`. All API data, runner sockets and project state were disposable local fixtures. No public service was used.

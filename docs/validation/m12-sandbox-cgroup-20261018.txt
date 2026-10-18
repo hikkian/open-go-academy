@@ -3,7 +3,7 @@ Scope: corroborates the same policy flags as internal/runner; not an end-to-end 
 Image: docker.io/library/golang@sha256:3b15ba438c60ab8fabe5fee3b11025c0049e358b31feff384648f11fc8e335f8
 Policy flags (read from current policy()): run --rm --pull=never --name --label academy.runner=true --network=none --http-proxy=false --stop-timeout=0 --read-only --cap-drop=ALL --security-opt=no-new-privileges --user=65532:65532 --memory=768m --memory-swap=768m --pids-limit=128 --cpus=1 --tmpfs=/tmp:rw,noexec,nosuid,nodev,size=128m --tmpfs=/work:rw,nosuid,nodev,size=192m --workdir=/work --env=CGO_ENABLED=0 --env=GOTOOLCHAIN=local --env=GOPROXY=off --env=GOSUMDB=off --tmpfs=/cache:rw,nosuid,nodev,size=192m --shm-size=16m --env=GOCACHE=/cache --env=HOME=/tmp --env=GOMAXPROCS=2
 Prerequisites: rootless=true, cgroups=v2; local pinned image present; no network or host mounts.
-memory: PASS (0.6s)
+memory: PASS (0.5s)
   allocated=8MiB
   allocated=16MiB
   allocated=24MiB
@@ -98,10 +98,10 @@ memory: PASS (0.6s)
   allocated=736MiB
   allocated=744MiB
   allocated=752MiB
+  Killed
   child_exit=137
   PROBE_EVENTS_BEGIN
   memory_events:
-  Killed
   low 0
   high 0
   max 0
@@ -112,7 +112,7 @@ memory: PASS (0.6s)
   pids_events:
   max 0
   PROBE_EVENTS_END
-pids: PASS (0.2s)
+pids: PASS (0.1s)
   spawn_error=fork/exec /proc/self/exe: resource temporarily unavailable
   children_cleaned=34
   eagain=true
@@ -127,5 +127,5 @@ pids: PASS (0.2s)
   oom_group_kill 0
   sock_throttled 0
   pids_events:
-  max 6
+  max 4
   PROBE_EVENTS_END
