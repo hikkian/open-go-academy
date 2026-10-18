@@ -25,7 +25,7 @@ test('expanded local course publishes and renders Middle through Senior lessons'
  const seniorLesson=lessons.find((lesson:any)=>lesson.id==='senior-23');expect(seniorLesson).toBeTruthy();
  await senior.getByRole('button',{name:new RegExp(seniorLesson.title.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'))}).click();
  await expect(page.getByLabel('Go-код',{exact:true})).toBeVisible();
- await expect(page.getByText(/P5 defense|независимую проверку/)).toBeVisible();
+ await expect(page.getByRole('heading',{name:'P5 defense и независимый review',exact:true})).toBeVisible();
  const axe=await new AxeBuilder({page}).analyze();expect(axe.violations.map(v=>v.id)).toEqual([]);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
  await page.screenshot({path:`artifacts/${info.project.name}-senior-course.png`,fullPage:true});

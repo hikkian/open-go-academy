@@ -61,7 +61,7 @@ test('P3 ручные критерии доступны с клавиатуры 
   expect(writeCount()).toBe(0);
 
   const axe = await new AxeBuilder({page}).analyze();
-  expect(axe.violations.map(v => ({id: v.id, targets: v.nodes.map(n => n.target)}))).toEqual([]);
+  expect(axe.violations.map(v => ({id: v.id, nodes: v.nodes.map(n => ({target: n.target, html: n.html, summary: n.failureSummary}))}))).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.screenshot({path: `artifacts/${info.project.name}-project-manual-rubric.png`, fullPage: true});
 });

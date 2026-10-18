@@ -1,0 +1,13 @@
+Open Go Academy — current-tree browser E2E acceptance
+Date: 2026-10-18. Disposable API database and isolated runner sockets under `/tmp`; rootless local OCI only. No user database/profile, public service, or AI model/API was used.
+
+Command:
+`ACADEMY_E2E_RUNNER=1 ACADEMY_E2E_PROJECT_RUNNER=1 ACADEMY_E2E_P3_RUNNER=1 ACADEMY_RUNNER_SOCKET=/tmp/oga-e2e-current-20261018/runner.sock ACADEMY_PROJECT_RUNNER_SOCKET=/tmp/oga-e2e-current-20261018/project-runner.sock ACADEMY_DB=/tmp/oga-e2e-current-20261018/data/final-full.db npm run e2e`
+
+Result: **PASS — 50 passed, 10 intentional skips, 0 failed, 10.6 minutes, exit 0.** Full log: `artifacts/e2e-final-current-tree-20261018.log`; exit code: `artifacts/e2e-final-current-tree-20261018.exit`.
+
+Coverage included the expanded 128-lesson catalog; real isolated Go compile/run/grading and Zero exam award boundaries; P2 PostgreSQL, P3 TaskFlow and P4/P5 project submissions; exact review/credential boundaries; responsive layouts, themes and axe; Tutor no-AI, consent, conversation history and provider settings; passport and reviewer flows. P1 real evaluation took 3.4m, P3 real submission 37.0s, P4/P5 independent submissions 39.5s. P4/P5 machine evidence never awarded a rank. The 10 skips are intentionally desktop-only expensive runner/exam repetitions or mobile duplicates; mobile reader/workspace/accessibility coverage ran.
+
+This rerun also closed the previous failures: P5 reference no longer uses process-exit APIs forbidden by assessment guard; `.editor-loading` text now meets contrast on the dark editor surface; the expanded-course test locates the exact P5 heading. Each fix passed a focused regression before this full run.
+
+After the run the scoped runner processes were stopped, and no `academy`-named Podman containers remained. Screenshots are saved in ignored `artifacts/`.
