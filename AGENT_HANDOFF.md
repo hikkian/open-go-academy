@@ -1,6 +1,6 @@
 # Open Go Academy — точка продолжения
 
-Обновлено **2026-10-18 11:43 Asia/Atyrau**. Репозиторий `master`, HEAD `f52c609`, рабочее дерево было чистым до этого handoff update. M12 responsive fixes/a11y tests и M13 cache-only license evidence зафиксированы в `34628a9`, `be2497a`, `dbf1149`, `c76d088`, `f52c609`. All-88 gate v3 выполняется на `sha256:c9c85f0f9b6d2622bc29cefad12e2feac1b349950f1b7c3e579a05ed556af2c0`; log дошёл до Senior-15, итогового отчёта пока нет, fingerprint не менялся. Cgroup probe прошёл 10/10 unit tests + независимый code review, но rootless integration ещё не запускалась. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
+Обновлено **2026-10-18 12:42 Asia/Atyrau**. Локальный `master`, remote нет. All-88 gate v3 завершился PASS на `sha256:c9c85f0f9b6d2622bc29cefad12e2feac1b349950f1b7c3e579a05ed556af2c0`: scope 88/88, exit 0, 3097.044s, start/end hashes совпадают; evidence `docs/validation/m11-current-tree-acceptance-20261018-v3.txt`. M11 остаётся IN PROGRESS до педагогической/ранговой сверки и общего регрессионного прогона. Cgroup probe: 10/10 unit tests и reviewer approval, фактическая rootless integration ещё не выполнена. Последний usage check: 100% primary, 31% weekly, ordinaryUsageAllowed=true; до reset примерно 1ч14м. Сбросные кредиты не использовать. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
 
 ## Продукт и доверительные границы
 
@@ -35,7 +35,7 @@
 
 Попытка v1 на fingerprint `sha256:6ba40b...` прервана после двух M28 findings; её отчёт — `docs/validation/m11-current-tree-acceptance-20261018.txt`, статус `INTERRUPTED`. Это не PASS.
 
-Gate v2 завершился **PASS на all-88 candidate set** за 3009.434s на прежнем fingerprint `sha256:7600aec0f32445b13ff22d2d088c6b402a5a744fca5399930d3112d74a7911db` (`docs/validation/m11-current-tree-acceptance-20261018-v2.txt`). Он не подтверждает финальный кандидат после педагогических исправлений и локального включения 128 lessons. Текущий проверяемый fingerprint — `sha256:c9c85f0f9b6d2622bc29cefad12e2feac1b349950f1b7c3e579a05ed556af2c0`; `make test` уже прошёл на этом tree. Следующий M11 step — commit и полный all-88 gate v3 с новым scope `all 88 advanced lessons`.
+Gate v2 завершился **PASS** за 3009.434s на прежнем fingerprint `sha256:7600aec0…a7911db` (`docs/validation/m11-current-tree-acceptance-20261018-v2.txt`), не подтверждал поздние педагогические/manifest правки. **Gate v3 завершился PASS** на fingerprint `sha256:c9c85f0f9b6d2622bc29cefad12e2feac1b349950f1b7c3e579a05ed556af2c0`: all 88 advanced lessons, exit0, 3097.044s, matching start/finish fingerprints, report `docs/validation/m11-current-tree-acceptance-20261018-v3.txt`, log `artifacts/m11-full-final-v3-20261018.log`. Это закрывает технический all-88 gate, но не самостоятельную педагогику/governance, M12/M13.
 
 Предыдущий gate v2 воспроизводится командой:
 
@@ -50,16 +50,16 @@ python3 scripts/check_m11_acceptance.py \
 
 ## Следующие шаги
 
-1. Дождаться session `56253` и проверить v3: PASS, exit0, `Scope: all 88 advanced lessons`, равные fingerprints `c9c85f0f…af2c0`. Не менять fingerprinted M11 paths пока gate идёт.
-2. После результата обновить renderer и прогнать `npm run test:progress`.
-3. Запустить полный `make test` после последней guard и Tutor retrieval правок; затем full desktop/mobile E2E с `ACADEMY_E2E_RUNNER=1 ACADEMY_E2E_PROJECT_RUNNER=1 ACADEMY_E2E_P3_RUNNER=1` (без P3 флага suite пропускает реальный P3).
-4. Исправить M12 P2 слабые memory/PID assertions после gate, наблюдать реальные `memory.events`/`pids.events` и cleanup, повторить `make sandbox-test` и failure recovery.
+1. Запустить полный `make test` после projectrunner guard и новых M12/M13 regression tests.
+2. `make sandbox-test`: выполнить фактический cgroup probe, проверить `memory.events`/`pids.events`, EAGAIN, exit status, cleanup и отсутствие orphan containers; заменить слабые memory/PID assertions в `internal/runner/runner_test.go`.
+3. Изменение `internal/runner` делает v3 fingerprint устаревшим: повторить полный all-88 gate v4. Затем full desktop/mobile E2E с `ACADEMY_E2E_RUNNER=1 ACADEMY_E2E_PROJECT_RUNNER=1 ACADEMY_E2E_P3_RUNNER=1` (без P3 флага suite пропускает реальную интеграцию P3).
+4. Закрыть независимую педагогику/ранговую traceability M11; далее полный M12 security/accessibility/load audit и M13 clean-source/bootstrap/recovery/NOTICE. Не публиковать и не выбирать лицензию за владельца.
 5. Завершить M11 traceability, M12 угрозы/resource-abuse/restart/responsive/theme/a11y, затем M13 clean archive/bootstrap/recovery, requirement matrix, Gitleaks, dependency notices и runbook. Не публиковать и не выбирать лицензию за владельца.
 6. Cache-only report готов: `docs/validation/m13-license-inventory-20261018.json`; сканер и tests добавлены в `make test`. Дальше выполнить text-level SPDX/legal review для найденных текстов и подготовить NOTICE только после верификации; неизвестные/uncached Go модули не выдавать за подтверждённые. Root LICENSE/NOTICE отсутствуют, manifests UNLICENSED; проектную лицензию выбирает владелец.
 7. Обновить план/progress/handoff, `git diff --check`, локальный checkpoint. M11–M13 не закрывать без фактического gate evidence.
 
 ## Лимиты и безопасность
 
-Последний `get_usage_limits` **2026-10-18 11:43 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **98%**, weekly **31%**; бесплатный reset credit доступен, но не использован, покупок/сбросов не делать. Primary reset **2026-10-18 13:55:42**, weekly reset **2026-10-25 03:38:23 Asia/Atyrau**. При следующем запуске проверить лимиты до любой большой задачи; продолжать после reset без покупки credits. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate.
+Последний `get_usage_limits` **2026-10-18 12:41 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **100%**, weekly **31%**; бесплатный reset credit доступен, но не использован, покупок/сбросов не делать. Primary reset **2026-10-18 13:55:42**, weekly reset **2026-10-25 03:38:23 Asia/Atyrau**. При следующем запуске проверить лимиты до любой большой задачи; продолжать после reset без покупки credits. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate.
 
 Работать только в репозитории. Не читать/удалять/коммитить `.data/academy.db`, `session.secret`, `issuer.key`; не останавливать пользовательские сервисы на 8380/8080; QA DB/keys только disposable. Не публиковать, не тратить деньги, не включать public multi-tenant execution. Чат оставить открытым.
