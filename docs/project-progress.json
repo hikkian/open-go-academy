@@ -111,7 +111,7 @@
       "value": 2,
       "max": 2,
       "unit": "этапа",
-      "detail": "M12 DONE в ограниченном Linux/rootless Podman/cgroup v2 режиме с перечисленными непроверенными host PID1/full mount, external DNS и literal cgroup populated=0. M13 DONE: чистый source archive прошёл bootstrap/test/build/project-runtime/recovery и desktop/mobile E2E 50/10/0; Gitleaks source/history без находок, npm audit 0 vulnerabilities. Независимый source-only notice review не выявил блокирующих пропусков. MIT лицензирует код, CC BY 4.0 — оригинальные учебные материалы; обучение бесплатное, рекомендованный кредит — Open Go Academy. Репозиторий опубликован: `https://github.com/hikkian/open-go-academy`; native Windows/macOS не тестировались, public runner выключен. Подробные hashes и caveats: `docs/validation/m13-clean-source-acceptance-20261018-v7.txt`."
+      "detail": "M12 DONE в ограниченном Linux/rootless Podman/cgroup v2 режиме с перечисленными непроверенными host PID1/full mount, external DNS и literal cgroup populated=0. M13 DONE: чистый source archive прошёл bootstrap/test/build/project-runtime/recovery и desktop/mobile E2E 50/10/0; Gitleaks source/history без находок, npm audit 0 vulnerabilities. Ubuntu CI обнаружил и помог исправить mobile editor overflow; целевой Playwright, полный локальный `make test` и GitHub Actions foundation run 39154156870 PASS. MIT лицензирует код, CC BY 4.0 — оригинальные учебные материалы; обучение бесплатное, рекомендованный кредит — Open Go Academy. Репозиторий опубликован: `https://github.com/hikkian/open-go-academy`; native Windows/macOS не тестировались, public runner выключен. Подробные hashes и caveats: `docs/validation/m13-clean-source-acceptance-20261018-v7.txt`."
     },
     {
       "title": "Необязательный ИИ-наставник",

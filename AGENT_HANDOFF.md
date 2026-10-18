@@ -1,6 +1,6 @@
 # Open Go Academy — точка продолжения
 
-Обновлено **2026-10-18 23:06 Asia/Atyrau**. Репозиторий опубликован: `https://github.com/hikkian/open-go-academy`, ветка `master`; M0–M13 **DONE** в задокументированном Linux/rootless scope. По запросу владельца все 73 исходных коммита переписаны на профиль Alisher Sharipov и его GitHub noreply; Gmail не использовался, `Co-authored-by` отсутствует. Дерево файлов и сообщения сохранены, кроме одной точной Gitleaks fingerprint записи в `.gitleaksignore`. Source/history Gitleaks после переписывания — PASS; GitHub API показывает все 74 коммита под аккаунтом владельца. Резерв прежней истории — ignored `artifacts/history-before-account-attribution.bundle`, локально и не опубликован. Clean-source M13 acceptance v7: `docs/validation/m13-clean-source-acceptance-20261018-v7.txt`; публикация/атрибуция: `docs/validation/m13-github-publication-20261018.txt`. README, progress, traceability, validation report и handoff теперь сообщают о публикации. `npm run test:progress` desktop/light + mobile/dark — PASS; docs diff и push ещё требуют завершения. После публикации GitHub Actions foundation workflow запущен; проверь latest run. MIT для кода, CC BY 4.0 для оригинального курса; рекомендуемый кредит «Учебные материалы подготовлены проектом Open Go Academy (2026)». Public multi-tenant runner выключен; native Windows/macOS не проверялись.
+Обновлено **2026-10-18 23:37 Asia/Atyrau**. Репозиторий опубликован: `https://github.com/hikkian/open-go-academy`, ветка `master`; M0–M13 **DONE** для задокументированного Linux/rootless scope. В истории GitHub все авторы/коммиттеры — Alisher Sharipov с private noreply; Gmail не использовался, `Co-authored-by` отсутствует. 73 исходных коммита переписаны на профиль владельца; содержимое и сообщения сохранены, затем добавлены точный Gitleaks fingerprint, documentation sync, overflow diagnostics и mobile layout fix. Резерв старой истории хранится локально в ignored `artifacts/history-before-account-attribution.bundle`. M13 clean-source evidence: `docs/validation/m13-clean-source-acceptance-20261018-v7.txt`; publication/author evidence: `docs/validation/m13-github-publication-20261018.txt`. GitHub Actions foundation run `39154156870` на code checkpoint `87c31f1` завершился **PASS за 8m14s**, включая исправленную mobile UI-проверку. Local mobile Playwright 1/1, `make test`, `npm run test:progress` desktop/light + mobile/dark (axe0/overflow0), Gitleaks source/history — PASS. README/progress/traceability/validation/handoff синхронизированы с публикацией; остаётся commit/push документационного обновления, затем при желании проверить повторный remote run. MIT code + CC BY 4.0 course, recommended credit «Учебные материалы подготовлены проектом Open Go Academy (2026)». Public multi-tenant runner выключен; native Windows/macOS не проверялись.
 
 ## Продукт и доверительные границы
 
@@ -52,8 +52,8 @@ python3 scripts/check_m11_acceptance.py \
 
 ## Следующие шаги
 
-1. Выполнить `git diff --check`, зафиксировать и отправить обновлённые документы с текущим owner attribution.
-2. Проверить последний GitHub Actions foundation run; записать remote результат отдельно от уже пройденной local acceptance.
+1. Зафиксировать и отправить текущую документационную сводку с авторством владельца.
+2. Remote foundation workflow `39154156870` на code checkpoint `87c31f1` PASS; следующая документационная версия может запустить ещё один remote workflow, его результат проверить при продолжении.
 3. Сохранять ограничения: public multi-tenant runner выключен, Windows/macOS и binary/web bundle не проверены.
 
 ## Лимиты и безопасность

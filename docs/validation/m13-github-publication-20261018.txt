@@ -20,3 +20,11 @@ Final verification after the rewrite:
 - GitHub Actions foundation workflows were triggered by the public pushes. Their remote result is not implied by the local M13 acceptance; check the repository Actions page for the latest run status.
 
 Project licenses remain MIT for platform code and CC BY 4.0 for original course materials. Recommended course credit remains project-level: “Учебные материалы подготовлены проектом Open Go Academy (2026)”. Public multi-tenant Go execution remains disabled; native Windows/macOS remain unvalidated.
+
+## Follow-up quality fix — 2026-10-18
+
+The first Ubuntu-hosted browser workflow detected a mobile-only horizontal overflow in the lesson editor's four-button action row. The actions now use a two-column grid at mobile widths; no document-level overflow remains. The Playwright assertion reports viewport width and offending elements when it fails.
+
+- Targeted local mobile Playwright: 1 passed; axe clean, overflow assertion passes. Full local `make test`: PASS, including Go test/vet/race, TypeScript and Vite production build.
+- GitHub Actions foundation workflow at `87c31f1`: **PASS in 8m14s**. All steps passed, including whole-tree Go tests/vet/race, npm install/typecheck/build, progress axe/overflow checks and selected desktop/mobile Playwright E2E cases. Run: https://github.com/hikkian/open-go-academy/actions/runs/39154156870.
+- The public branch now has 77 commits, each attributed by GitHub to Alisher Sharipov. No `Co-authored-by` trailer is present; the Gmail address was not used.
