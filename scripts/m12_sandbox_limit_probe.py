@@ -181,20 +181,21 @@ def validate_output(kind: str, output: str, returncode: int) -> None:
     max_count = re.search(r"^max\s+(\d+)$", pids.group(1), re.M)
     if not oom or not max_count:
         raise ValueError(f"{kind}: malformed cgroup event counters")
+    exits = re.findall(r"^child_exit=(\d+)$", output, re.M)
+    expected_exit = "137" if kind == "memory" else "0"
+    if len(exits) != 1 or exits[0] != expected_exit:
+        raise ValueError(f"{kind}: expected exactly one child_exit={expected_exit} result")
     if kind == "memory":
         if int(oom.group(1)) < 1:
             raise ValueError("memory: expected memory.events oom_kill > 0")
-        if "child_exit=137" not in output:
-            raise ValueError("memory: expected fixture killed by container memory limit")
     else:
-        child_exit = re.search(r"^child_exit=(\d+)$", output, re.M)
-        if not child_exit or child_exit.group(1) != "0":
-            raise ValueError("pids: expected fixture child_exit=0 after child cleanup")
         if int(max_count.group(1)) < 1:
             raise ValueError("pids: expected pids.events max > 0")
         if "spawn_error=" not in output or "temporarily unavailable" not in output:
             raise ValueError("pids: expected process creation failure EAGAIN")
-        if "children_cleaned=" not in output or "eagain=true" not in output:
+        cleaned = re.findall(r"^children_cleaned=([1-9][0-9]*)$", output, re.M)
+        eagain = re.findall(r"^eagain=true$", output, re.M)
+        if len(cleaned) != 1 or len(eagain) != 1:
             raise ValueError("pids: fixture did not report EAGAIN and child cleanup")
     if returncode != 0:
         raise ValueError(f"{kind}: wrapper/container exited {returncode}")

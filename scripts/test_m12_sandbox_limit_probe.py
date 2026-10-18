@@ -64,6 +64,10 @@ PROBE_EVENTS_END
 """
         probe.validate_output("memory", memory, 0)
         probe.validate_output("pids", pids, 0)
+        with self.assertRaisesRegex(ValueError, "exactly one child_exit=137"):
+            probe.validate_output("memory", memory.replace("child_exit=137\n", ""), 0)
+        with self.assertRaisesRegex(ValueError, "exactly one child_exit=137"):
+            probe.validate_output("memory", memory + "child_exit=137\n", 0)
         with self.assertRaisesRegex(ValueError, "oom_kill"):
             probe.validate_output("memory", memory.replace("oom_kill 1", "oom_kill 0"), 0)
         with self.assertRaisesRegex(ValueError, "pids.events max"):
@@ -74,6 +78,10 @@ PROBE_EVENTS_END
             probe.validate_output("pids", pids.replace("child_exit=0\n", ""), 0)
         with self.assertRaisesRegex(ValueError, "child_exit=0"):
             probe.validate_output("pids", pids.replace("child_exit=0", "child_exit=137"), 0)
+        with self.assertRaisesRegex(ValueError, "child cleanup"):
+            probe.validate_output("pids", pids.replace("children_cleaned=126", "children_cleaned=0"), 0)
+        with self.assertRaisesRegex(ValueError, "child cleanup"):
+            probe.validate_output("pids", pids.replace("eagain=true", "prefix eagain=true"), 0)
 
     def test_cleanup_is_exactly_scoped_to_generated_probe_name(self):
         name = "oga-m12-probe-" + "a" * 32

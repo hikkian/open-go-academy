@@ -1,6 +1,6 @@
 # Open Go Academy — точка продолжения
 
-Обновлено **2026-10-18 11:18 Asia/Atyrau**. Локальный репозиторий `master`, remote нет. Source candidate закоммичен (`181b671` включает Tutor retrieval regression); рабочее дерево содержит M12 responsive CSS + test и M13 cache-only inventory/test, а также docs/progress. Эти изменения не входят в M11 fingerprint. Добавлены непроверенные Windows/WSL и macOS/Linux VM инструкции. Full gate v3 идёт на fingerprint `c9c85f0f…af2c0`, лог дошёл до Middle-35; результата ещё нет. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
+Обновлено **2026-10-18 11:29 Asia/Atyrau**. Локальный репозиторий `master`, remote нет; checkpoint `34628a9` содержит M12 responsive fixes/test и M13 cache-only license inventory/docs. Сейчас рабочее дерево меняет только progress JSON/HTML и строгие regression tests для нового cgroup probe; fingerprinted M11 source неизменён. Full gate v3 идёт на `c9c85f0f…af2c0`, лог дошёл до Middle+13, результата ещё нет. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
 
 ## Продукт и доверительные границы
 
@@ -60,6 +60,6 @@ python3 scripts/check_m11_acceptance.py \
 
 ## Лимиты и безопасность
 
-Последний `get_usage_limits` **2026-10-18 11:09 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **73%**, weekly **27%**, reset credit доступен, но не использован. Primary reset **2026-10-18 13:55:42**, weekly reset **2026-10-25 03:38:23 Asia/Atyrau**. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate.
+Последний `get_usage_limits` **2026-10-18 11:28 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **88%**, weekly **29%**; бесплатный reset credit доступен, но не использован, покупок/сбросов не делать. Primary reset **2026-10-18 13:55:42**, weekly reset **2026-10-25 03:38:23 Asia/Atyrau**. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate.
 
 Работать только в репозитории. Не читать/удалять/коммитить `.data/academy.db`, `session.secret`, `issuer.key`; не останавливать пользовательские сервисы на 8380/8080; QA DB/keys только disposable. Не публиковать, не тратить деньги, не включать public multi-tenant execution. Чат оставить открытым.
