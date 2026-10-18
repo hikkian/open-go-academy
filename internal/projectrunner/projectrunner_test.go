@@ -77,8 +77,10 @@ func TestP4P5SubmitRejectsGoTestProcessHijacks(t *testing.T) {
 		}
 		for _, tc := range []struct{ name, file, source string }{
 			{"init early exit", "main.go", "package main\nimport \"os\"\nfunc init(){ os.Exit(0) }\n"},
+			{"dot-import early exit", "main.go", "package main\nimport . \"os\"\nvar _ = func() int { Exit(0); return 0 }()\n"},
 			{"test main", "early_test.go", "package main\nimport \"testing\"\nfunc TestMain(m *testing.M) {}\n"},
 			{"test exit", "early_test.go", "package main\nimport (\"os\"; \"testing\")\nfunc TestEarly(t *testing.T){ os.Exit(0) }\n"},
+			{"dot-import syscall exit", "early_test.go", "package main\nimport ( . \"syscall\"; \"testing\")\nfunc TestEarly(t *testing.T){ Exit(0) }\n"},
 			{"test goexit", "early_test.go", "package main\nimport (\"runtime\"; \"testing\")\nfunc TestEarly(t *testing.T){ runtime.Goexit() }\n"},
 		} {
 			t.Run(projectID+"/"+tc.name, func(t *testing.T) {

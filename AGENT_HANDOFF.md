@@ -1,6 +1,6 @@
 # Open Go Academy — точка продолжения
 
-Обновлено **2026-10-18 09:46 Asia/Atyrau**. Локальный репозиторий `master`, remote нет. Текущее состояние сохранено в локальном Git `HEAD`; remote нет. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
+Обновлено **2026-10-18 09:55 Asia/Atyrau**. Локальный репозиторий `master`, remote нет. Текущее состояние сохранено в локальном Git `HEAD`; remote нет. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
 
 ## Продукт и доверительные границы
 
@@ -23,12 +23,13 @@
 - Root/web `npm audit --audit-level=low` — 0 vulnerabilities. Gitleaks v8.30.1 staged-diff и 27-commit history scans PASS; один false positive про public reviewer-key fingerprint UI text исключён точным fingerprint в `.gitleaksignore`. Нужен повтор scan на final clean archive. Evidence: `docs/validation/secret-scan-20261018.txt`.
 - `python3 scripts/recovery-check.py` — PASS on disposable local DB: online backup/restore, API restart, profile/theme/draft/migration persistence. `govulncheck v1.9.0 ./...` — `No vulnerabilities found.`
 - Full browser на предыдущем checkpoint: 40 PASS, 10 intentional SKIP; после M28/M+21 fixes full browser suite нужно повторить. Полный runner sandbox test ещё запустить.
+- M12 source review выявил P2 узкое место: AST-guard доверенного P4/P5 assessment тестирования не замечал bare `Exit`/`Goexit` через dot-import стандартных process-пакетов. Исправлено запретом соответствующих идентификаторов; regression cases только парсятся, не исполняются. `./scripts/go.sh test ./internal/projectrunner`, `vet`, `test -race`, затем полный `make test` — PASS.
 
 ## Активный M11 acceptance v2
 
 Попытка v1 на fingerprint `sha256:6ba40b...` прервана после двух M28 findings; её отчёт — `docs/validation/m11-current-tree-acceptance-20261018.txt`, статус `INTERRUPTED`. Это не PASS.
 
-Текущий full gate v2 — **exec session 55884**, исходный fingerprint `sha256:7600aec0f32445b13ff22d2d088c6b402a5a744fca5399930d3112d74a7911db`, лог дошёл до Middle-27. Команда:
+Текущий full gate v2 — **exec session 55884**, исходный fingerprint `sha256:7600aec0f32445b13ff22d2d088c6b402a5a744fca5399930d3112d74a7911db`, лог дошёл до Middle+02. Изменения в `internal/projectrunner/` не входят в M11 fingerprint. Команда:
 
 ```sh
 python3 scripts/check_m11_acceptance.py \
@@ -43,7 +44,7 @@ python3 scripts/check_m11_acceptance.py \
 
 1. Дождаться M11 gate v2; проверить PASS/exit0 и совпадающие исходный/конечный fingerprint. Gate ещё выполняется; не прерывать и не менять fingerprint-входы.
 2. Исправить документированные педагогические замечания, сверяя упражнения/JSON с реально исполняемыми возможностями runner; добавить конкретные наблюдаемые навыки и terminology. Запустить полный gate заново на итоговом содержимом и обновить outcome/evidence traceability.
-3. После окончательного M11 дерева выполнить полный desktop/mobile Playwright E2E с актуальным dist, затем `make sandbox-test`, актуальный `govulncheck`, repeat load/restart only if runtime code changes, screenshots/themes/a11y inspection. Сохранить доказательства.
+3. После M11 педагогических исправлений выполнить полный `make test`, desktop/mobile Playwright E2E с актуальным dist, `make sandbox-test`, актуальный `govulncheck`, repeat load/restart only if runtime code changes, screenshots/themes/a11y inspection. Сохранить доказательства.
 4. Закрыть содержательную/педагогическую вычитку всех 88 draft bundles и traceability course→skill→project→exam→rank; не публиковать автоматически.
 4. M12: завершить threat/failure/resource-abuse, persistence/restart, viewport/theme, accessibility/dependency/security audit и остаточные ограничения в `docs/VALIDATION_REPORT.md`.
 5. M13: clean archive/bootstrap/recovery на окончательном commit, requirement matrix, повтор Gitleaks для clean archive, dependency license/third-party notice review, runbook. Проектная LICENSE не выбрана владельцем; не выдумывать лицензию и не публиковать без разрешения.

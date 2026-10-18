@@ -10,6 +10,7 @@ import (
 	"go/token"
 	"path"
 	"regexp"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -250,6 +251,22 @@ func ValidateAssessmentProcessHooks(files map[string]string) error {
 		if err != nil {
 			return fmt.Errorf("invalid Go source %s", name)
 		}
+		dotImportedProcessHooks := map[string]bool{}
+		for _, im := range file.Imports {
+			if im.Name == nil || im.Name.Name != "." {
+				continue
+			}
+			importPath, err := strconv.Unquote(im.Path.Value)
+			if err != nil {
+				continue
+			}
+			switch importPath {
+			case "os", "syscall":
+				dotImportedProcessHooks["Exit"] = true
+			case "runtime":
+				dotImportedProcessHooks["Goexit"] = true
+			}
+		}
 		allowedMainExit := map[ast.Node]bool{}
 		for _, decl := range file.Decls {
 			fn, ok := decl.(*ast.FuncDecl)
@@ -267,6 +284,10 @@ func ValidateAssessmentProcessHooks(files map[string]string) error {
 		}
 		var processExit bool
 		ast.Inspect(file, func(node ast.Node) bool {
+			if ident, ok := node.(*ast.Ident); ok && dotImportedProcessHooks[ident.Name] {
+				processExit = true
+				return true
+			}
 			selector, ok := node.(*ast.SelectorExpr)
 			if !ok {
 				return true
