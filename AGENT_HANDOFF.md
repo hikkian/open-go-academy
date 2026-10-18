@@ -1,6 +1,6 @@
 # Open Go Academy — точка продолжения
 
-Обновлено **2026-10-18 10:55 Asia/Atyrau**. Локальный репозиторий `master`, remote нет. Working tree содержит финальный M11 candidate; `make test` прошёл, полный source-fingerprinted gate v3 ещё не запускался. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
+Обновлено **2026-10-18 10:59 Asia/Atyrau**. Локальный репозиторий `master`, remote нет. M11 candidate закоммичен; full gate v3 идёт на source fingerprint `c9c85f0f…af2c0`. В working tree осталась точечная M12 AST-guard правка после независимого code review. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
 
 ## Продукт и доверительные границы
 
@@ -25,7 +25,7 @@
 - Root/web `npm audit --audit-level=low` — 0 vulnerabilities. Gitleaks v8.30.1 staged-diff и 27-commit history scans PASS; один false positive про public reviewer-key fingerprint UI text исключён точным fingerprint в `.gitleaksignore`. Нужен повтор scan на final clean archive. Evidence: `docs/validation/secret-scan-20261018.txt`.
 - `python3 scripts/recovery-check.py` — PASS on disposable local DB: online backup/restore, API restart, profile/theme/draft/migration persistence. `govulncheck v1.9.0 ./...` — `No vulnerabilities found.`
 - Full browser на предыдущем checkpoint: 40 PASS, 10 intentional SKIP; после M11/content/manifest правок полный desktop/mobile suite нужно повторить. `make sandbox-test` **PASS144.479s** после P4/P5 AST-guard fix: 13 rootless runner integration cases + admission/cleanup regressions.
-- M12 source review выявил P2 узкое место: AST-guard доверенного P4/P5 assessment тестирования не замечал bare `Exit`/`Goexit` через dot-import и сохранял исключение для пользовательской `main()`. Исправлено: запрещены process-exit hooks, dot-import и стандартные `syscall`-вызовы выхода, исключения для `main` нет. Regression cases лишь парсятся. Unit/vet/race по `internal/projectrunner` и полный `make test` после исправления — PASS.
+- M12 independent code review нашёл пропущенный `syscall.Exec` и ложное отклонение полей вроде `state.Exit` из-за сравнения только имени селектора. Guard исправлен: связывает запрещённые API с импортированным стандартным пакетом, отказывает dot-import os/runtime/syscall, запрещает process-exit APIs включая `syscall.Exec`, пропускает одноимённые пользовательские поля/методы. AST-only regression tests, focused projectrunner test/vet/race — PASS; полный `make test` после этого последнего изменения ещё нужен. `internal/projectrunner` не входит в M11 fingerprint.
 
 ## M11 acceptance checkpoints
 
@@ -56,6 +56,6 @@ python3 scripts/check_m11_acceptance.py \
 
 ## Лимиты и безопасность
 
-Последний `get_usage_limits` **2026-10-18 10:55 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **63%**, weekly **26%**, reset credit не использован. Primary reset **2026-10-18 13:55:42**, weekly reset **2026-10-25 03:38:23 Asia/Atyrau**. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate.
+Последний `get_usage_limits` **2026-10-18 10:56 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **65%**, weekly **26%**, reset credit не использован. Primary reset **2026-10-18 13:55:42**, weekly reset **2026-10-25 03:38:23 Asia/Atyrau**. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate.
 
 Работать только в репозитории. Не читать/удалять/коммитить `.data/academy.db`, `session.secret`, `issuer.key`; не останавливать пользовательские сервисы на 8380/8080; QA DB/keys только disposable. Не публиковать, не тратить деньги, не включать public multi-tenant execution. Чат оставить открытым.

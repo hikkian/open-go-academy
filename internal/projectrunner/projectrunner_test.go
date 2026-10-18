@@ -83,6 +83,7 @@ func TestP4P5SubmitRejectsGoTestProcessHijacks(t *testing.T) {
 			{"test exit", "early_test.go", "package main\nimport (\"os\"; \"testing\")\nfunc TestEarly(t *testing.T){ os.Exit(0) }\n"},
 			{"dot-import syscall exit", "early_test.go", "package main\nimport ( . \"syscall\"; \"testing\")\nfunc TestEarly(t *testing.T){ Exit(0) }\n"},
 			{"aliased syscall raw exit", "early_test.go", "package main\nimport sc \"syscall\"\nvar _ = sc.RawSyscall(sc.SYS_EXIT, 0, 0, 0)\n"},
+			{"aliased syscall exec", "early_test.go", "package main\nimport sc \"syscall\"\nvar _ = sc.Exec(\"/bin/true\", []string{\"true\"}, nil)\n"},
 			{"dot-import syscall raw exit", "early_test.go", "package main\nimport . \"syscall\"\nvar _ = RawSyscall(SYS_EXIT, 0, 0, 0)\n"},
 			{"test goexit", "early_test.go", "package main\nimport (\"runtime\"; \"testing\")\nfunc TestEarly(t *testing.T){ runtime.Goexit() }\n"},
 			{"dot-import runtime goexit", "early_test.go", "package main\nimport ( . \"runtime\"; \"testing\")\nfunc TestEarly(t *testing.T){ Goexit() }\n"},
@@ -98,6 +99,17 @@ func TestP4P5SubmitRejectsGoTestProcessHijacks(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestValidateAssessmentProcessHooksAllowsUserMembersNamedLikeProcessFunctions(t *testing.T) {
+	files := map[string]string{"main.go": `package main
+type State struct { Exit int; Goexit int; Exec int }
+func (s State) Syscall() int { return s.Exit }
+func main() { state := State{Exit: 1}; _ = state.Exit; _ = state.Goexit; _ = state.Exec; _ = state.Syscall() }
+`}
+	if err := ValidateAssessmentProcessHooks(files); err != nil {
+		t.Fatalf("user-defined fields and methods named like process APIs must be allowed: %v", err)
 	}
 }
 

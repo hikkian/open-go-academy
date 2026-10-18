@@ -251,8 +251,7 @@ func ValidateAssessmentProcessHooks(files map[string]string) error {
 		if err != nil {
 			return fmt.Errorf("invalid Go source %s", name)
 		}
-		dotImportedProcessHooks := map[string]bool{}
-		syscallAliases := map[string]bool{}
+		importAliases := map[string]string{}
 		for _, im := range file.Imports {
 			importPath, err := strconv.Unquote(im.Path.Value)
 			if err != nil {
@@ -262,23 +261,11 @@ func ValidateAssessmentProcessHooks(files map[string]string) error {
 			if im.Name != nil {
 				alias = im.Name.Name
 			}
-			switch importPath {
-			case "os":
-				if alias == "." {
-					dotImportedProcessHooks["Exit"] = true
-				}
-			case "syscall":
-				if alias == "." {
-					for _, name := range []string{"Exit", "Syscall", "Syscall6", "RawSyscall", "RawSyscall6"} {
-						dotImportedProcessHooks[name] = true
-					}
-				} else if alias != "_" {
-					syscallAliases[alias] = true
-				}
-			case "runtime":
-				if alias == "." {
-					dotImportedProcessHooks["Goexit"] = true
-				}
+			if (importPath == "os" || importPath == "runtime" || importPath == "syscall") && alias == "." {
+				return fmt.Errorf("%s не может использовать dot-import %s при проверке P4/P5", name, importPath)
+			}
+			if alias != "_" && alias != "." {
+				importAliases[alias] = importPath
 			}
 		}
 		for _, decl := range file.Decls {
@@ -289,22 +276,32 @@ func ValidateAssessmentProcessHooks(files map[string]string) error {
 		}
 		var processExit bool
 		ast.Inspect(file, func(node ast.Node) bool {
-			if ident, ok := node.(*ast.Ident); ok && dotImportedProcessHooks[ident.Name] {
-				processExit = true
-				return true
-			}
 			selector, ok := node.(*ast.SelectorExpr)
 			if !ok {
 				return true
 			}
-			if ident, ok := selector.X.(*ast.Ident); ok && syscallAliases[ident.Name] {
-				switch selector.Sel.Name {
-				case "Syscall", "Syscall6", "RawSyscall", "RawSyscall6":
+			ident, ok := selector.X.(*ast.Ident)
+			if !ok {
+				return true
+			}
+			importPath, importedPackage := importAliases[ident.Name]
+			if !importedPackage {
+				return true
+			}
+			switch importPath {
+			case "os":
+				if selector.Sel.Name == "Exit" {
 					processExit = true
 				}
-			}
-			if selector.Sel.Name == "Exit" || selector.Sel.Name == "Goexit" {
-				processExit = true
+			case "runtime":
+				if selector.Sel.Name == "Goexit" {
+					processExit = true
+				}
+			case "syscall":
+				switch selector.Sel.Name {
+				case "Exit", "Exec", "Syscall", "Syscall6", "RawSyscall", "RawSyscall6":
+					processExit = true
+				}
 			}
 			return true
 		})
