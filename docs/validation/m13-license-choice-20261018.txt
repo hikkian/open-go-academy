@@ -1,0 +1,15 @@
+# M13 — решение владельца по лицензиям
+
+Дата: 2026-10-18. По выбору владельца проекта применены:
+
+- **MIT** — platform source, tests, scripts and executable examples. Полный текст: [`LICENSE`](../../LICENSE); npm manifests and lockfile root metadata are set to `MIT`.
+- **CC BY 4.0** — original instructional prose, exercise wording, glossary entries and course illustrations. Attribution is project-level: **Open Go Academy (2026)**, without naming an individual author or claiming that one person wrote every element. Scope and attribution guidance: [`COURSE_LICENSE.md`](../../COURSE_LICENSE.md); short notice: [`NOTICE`](../../NOTICE).
+
+The choice does not relicense third-party dependencies/assets or grant rights beyond what Open Go Academy is authorized to license. Review of the source archive found one vendored third-party asset, the DejaVu Sans font, with its original license/attribution beside the file. Go/npm packages are lockfile dependencies fetched separately, not vendored source. The cache-only inventory is metadata observation, not legal interpretation. A future binary, installer or bundled-web distribution still needs a notice bundle generated from the exact linked dependencies; no such artifact is being distributed now. The repository was not published.
+
+Primary license sources:
+
+- MIT identifier/text in the SPDX license list: <https://spdx.org/licenses/MIT.html>
+- CC BY 4.0 deed and complete legal code: <https://creativecommons.org/licenses/by/4.0/> and <https://creativecommons.org/licenses/by/4.0/legalcode.en>
+
+Authorship note: the public-facing course credits Open Go Academy as project publisher/maintainer. It does not name an individual author and does not make an AI-authorship claim. Copyright treatment of AI-generated material can depend on jurisdiction and human contributions; the license grant is limited to rights the project actually holds.

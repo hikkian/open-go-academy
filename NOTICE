@@ -1,0 +1,19 @@
+Open Go Academy
+Copyright (c) 2026 Open Go Academy
+
+Software source, tests, scripts and executable code examples are licensed under
+the MIT License; see LICENSE.
+
+Original instructional prose, exercise wording, glossaries and course
+illustrations are licensed under Creative Commons Attribution 4.0 International
+(CC BY 4.0); see COURSE_LICENSE.md.
+
+Third-party dependencies, assets and data are not relicensed by these notices.
+Their original licenses and notices continue to apply. The cache-only inventory
+in docs/validation/m13-license-inventory-e2bad43-20261018.json records metadata
+observations and is not a legal interpretation.
+
+The only currently vendored third-party asset is DejaVu Sans at
+internal/credentialrender/assets/DejaVuSans.ttf. Its bundled license and
+attribution are preserved in internal/credentialrender/assets/LICENSE-DejaVu.txt.
+See THIRD_PARTY_NOTICES.md for source-distribution scope and future bundle notes.

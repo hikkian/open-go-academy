@@ -1,9 +1,9 @@
 {
   "updated_at": "2026-10-18",
-  "phase": "M12 — финальный аудит безопасности, производительности и доступности",
-  "phase_note_suffix": " M11 complete. Остались M12 с ограниченными недостающими boundary-probes и M13 с чистым source acceptance, license/NOTICE и выпускной проверкой.",
+  "phase": "M13 — финальная чистая сборка и выпускная приёмка",
+  "phase_note_suffix": " M12 завершён в заявленном local Linux/rootless режиме. Для M13 выбраны MIT и CC BY 4.0 с проектной атрибуцией; clean archive после новых license files и third-party notices/legal review ещё проверяются.",
   "m11_review_detail": "M11 acceptance закрыта: all-88 gate v7 PASS на fingerprint sha256:dd28be0d…a07886d за 2815.381 s; full make test PASS; desktop/mobile E2E v8 PASS 50/10/0. Независимые аудиты охватили Middle01–40, Middle+01–24 и Senior01–24; пять найденных P2 исправлены и перепроверены. Middle exam 1.0.1 корректно насыщает backoff; точная legacy 1.0.0 сохранена для старых попыток. Human-review ограничения рангов и сертификатов сохранены.",
-  "phase_note": "Для Middle, Middle+ и Senior опубликовано локально 88/88 глав; полные наборы подготовлены: 88/88. Автоматическая проверка текущих исходников прошла; остаются аудит и выпуск. M11 complete. Остались M12 с ограниченными недостающими boundary-probes и M13 с чистым source acceptance, license/NOTICE и выпускной проверкой.",
+  "phase_note": "Для Middle, Middle+ и Senior опубликовано локально 88/88 глав; полные наборы подготовлены: 88/88. Автоматическая проверка текущих исходников прошла; остаются аудит и выпуск. M12 завершён в заявленном local Linux/rootless режиме. Для M13 выбраны MIT и CC BY 4.0 с проектной атрибуцией; clean archive после новых license files и third-party notices/legal review ещё проверяются.",
   "milestones": [
     {
       "id": "M0",
@@ -68,7 +68,7 @@
     {
       "id": "M12",
       "title": "Полный аудит, производительность и доступность",
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": "M13",
@@ -108,10 +108,10 @@
     },
     {
       "title": "Финальный аудит и подготовка выпуска",
-      "value": 0,
+      "value": 1,
       "max": 2,
       "unit": "этапа",
-      "detail": "M12: rootless make sandbox-test подтвердил OOM/PID-лимиты, блокировку доступа к host sentinel/listener/socket, отказ опасных syscall, общий лимит stdout/stderr, ENOSPC при записи файлов, очистку после завершения родителя/потомка, изоляцию одинаковых имён файлов и отказ неподдерживаемого runtime. Тесты S08/S12 проверяют размер и дубликаты JSON, а также cross-site запросы. Остались: полная видимость host mount/PID mapping (S01), DNS/external network (S02), literal cgroup populated=0 (S04). M13 clean-source technical acceptance v6 на e2bad43 прошла: bootstrap/test/build/project-runtime/recovery/E2E/Gitleaks source/history. Остались legal owner decision и native non-Linux validation. Выбор LICENSE/NOTICE владельцем и проверка другой ОС ещё не завершены. Последний full E2E v8 прошёл 50/10/0; полный rootless make sandbox-test прошёл за 174.833s. Найденный мобильный overflow в уроке Middle исправлен; документ теперь 390/390 px, Playwright проверяет clientWidth. Полный make test и E2E v8 прошли 50/10/0; остаются только границы sandbox и выпускная приёмка. Новый `m12_sandbox_namespace_probe.py` подтвердил разные PID/mount namespace, отличающиеся mountinfo и только loopback routes; прямой host PID-1 и DNS-запросы не проверялись. Probe отчётливо указывает, что cgroup events исчезает до наблюдения populated=0."
+      "detail": "M12 DONE в ограниченном Linux/rootless Podman/cgroup v2 режиме: полный make test, sandbox-test, desktop/mobile E2E v8, visual/a11y и bounded namespace/route probes PASS. Открыто отображены непроверенные direct host PID1/full mount list, внешний DNS и literal cgroup populated=0; public multi-tenant runner выключен. Владелец выбрал MIT для software и CC BY 4.0 для original course text; `LICENSE`, `COURSE_LICENSE.md`, `NOTICE`, npm manifests и README отражают бесплатное обучение и рекомендованный кредит «Учебные материалы подготовлены проектом Open Go Academy (2026)», не называя отдельного автора и не утверждая происхождение каждого фрагмента. Clean-source v6 acceptance прошла до license diff; нужна свежая acceptance после лицензионных файлов. Остались third-party notice/legal review и финальная фиксация поддерживаемой платформы."
     },
     {
       "title": "Необязательный ИИ-наставник",
@@ -122,10 +122,10 @@
     }
   ],
   "forecast": {
-    "range": "Предварительный ориентир: ещё 2–6 недель активной разработки.",
-    "calendar_window": "Ориентир при регулярной работе: 1 ноября–13 декабря 2026. Это плановый диапазон, не обещанная дата.",
-    "confidence": "Низкая: остаются непроверенные границы sandbox, выпускной/legal review и новые findings могут расширить объём.",
-    "basis": "M11 закрыт all-88 gate и browser regression; M12 прошёл full current source tests, sandbox probes и E2E, но direct host PID-1/full mount, actual DNS/external request и literal cgroup populated=0 остаются не подтверждены. M13 clean-source technical acceptance v6 прошла на e2bad43; остаются license/NOTICE terms owner choice, legal text review, other-OS validation, and final history scan after evidence commit.",
+    "range": "Предварительный ориентир: ещё 1–4 недели активной разработки/проверки.",
+    "calendar_window": "Ориентир при регулярной работе: 25 октября–15 ноября 2026. Это плановый диапазон, не обещанная дата.",
+    "confidence": "Низкая: остаются third-party/legal review, повторная clean-source приёмка и решение по нативной поддержке ОС.",
+    "basis": "M11 и M12 закрыты для заявленного local Linux/rootless режима. MIT/CC BY 4.0 выбраны владельцем и применены с кредитом проекта Open Go Academy; clean-source technical M13 v6 predates these files. Остались повторная clean archive test/E2E/secret scans, third-party NOTICE text review и точное описание поддерживаемой Linux-only области; native non-Linux validation не выполнена.",
     "constraints": "Доступность лимитов и результаты повторных проверок влияют на календарный срок. Оценка пересматривается после закрытия крупных этапов."
   },
   "m11_acceptance": {

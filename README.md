@@ -41,7 +41,11 @@ make e2e
 
 API допускает только loopback. Runner — отдельный процесс с Unix socket 0600, image по digest, uid65532, read-only root, network none, capabilities drop, no-new-privileges, seccomp, cgroups и ограниченный tmpfs. Контейнер делит ядро с host; это локальный учебный режим, не проверенная защита публичного multi-tenant сервиса. [Модель угроз](docs/architecture/THREAT_MODEL.md).
 
-Поддержка Windows/macOS и hosted PostgreSQL пока не проверена. Лицензия кода и учебных материалов ещё не выбрана владельцем; пакеты помечены UNLICENSED. Публикации и платной инфраструктуры нет. Исследование версий: [ADR](docs/architecture/ADR-0001-tech-stack.md) и [матрица](docs/research/VERSION_MATRIX.md). Обновления требуют регрессионной проверки, lockfiles сохраняются.
+Native-поддержка Windows/macOS и hosted PostgreSQL не проверена; Windows/macOS инструкции описывают экспериментальные Linux VM/WSL маршруты. Публичный multi-tenant runner не включён. Исследование версий: [ADR](docs/architecture/ADR-0001-tech-stack.md) и [матрица](docs/research/VERSION_MATRIX.md). Обновления требуют регрессионной проверки, lockfiles сохраняются.
+
+## Лицензии
+
+Платформа задумана для бесплатного и открытого обучения: исходный код, тесты, скрипты и исполняемые примеры распространяются по [MIT](LICENSE), а оригинальные учебные тексты, задания, глоссарии и иллюстрации — по [CC BY 4.0](COURSE_LICENSE.md). Курс не требует платного ИИ или внешнего аккаунта. Рекомендуемый кредит курса: «Учебные материалы подготовлены проектом Open Go Academy (2026)»; личный автор или происхождение каждого фрагмента не заявляются. Третьи стороны сохраняют собственные лицензии и уведомления; см. [NOTICE](NOTICE) и [cache-only inventory](docs/validation/m13-license-inventory-e2bad43-20261018.json), который фиксирует метаданные, но не заменяет проверку прав/обязательств. Публичная публикация в GitHub ещё не выполнялась.
 
 Необязательные инструкции для [Windows через WSL 2](docs/INSTALL_WINDOWS_WSL.md) и [macOS через Linux VM](docs/INSTALL_MACOS.md) описывают непроверенные маршруты и условия, при которых sandbox должен оставаться выключенным. Они не расширяют список валидированных платформ.
 
