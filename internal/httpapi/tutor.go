@@ -31,6 +31,34 @@ type TutorSettings struct {
 	DailyBudget, MaxOutputTokens                                 int
 }
 
+type tutorReservationEstimator interface {
+	MaxReservation(tutor.Request) int
+}
+
+func estimateTutorReservation(executor TutorExecutor, request tutor.Request, maxOutputTokens int) int {
+	if estimator, ok := executor.(tutorReservationEstimator); ok {
+		return estimator.MaxReservation(request)
+	}
+	// Mirrors Gateway's byte-based token estimate and three-attempt retry/fallback
+	// ceiling for test or alternate executors without an estimator.
+	maxInt := int(^uint(0) >> 1)
+	bodyBytes := len(request.Message) + len(request.Context) + 4096
+	for _, item := range request.History {
+		if len(item.Content) > maxInt-bodyBytes {
+			return maxInt
+		}
+		bodyBytes += len(item.Content)
+	}
+	if maxOutputTokens < 0 || maxOutputTokens > maxInt/3 || bodyBytes > maxInt-3-maxOutputTokens*3 {
+		return maxInt
+	}
+	perAttempt := (bodyBytes+3)/4 + maxOutputTokens
+	if perAttempt > maxInt/3 {
+		return maxInt
+	}
+	return perAttempt * 3
+}
+
 type tutorLocalRuntime struct {
 	mu           sync.RWMutex
 	baseExecutor TutorExecutor
@@ -134,7 +162,7 @@ func (a *API) prepareCloudTutor(rt *tutorLocalRuntime, config tutor.CloudProvide
 	if err != nil {
 		return nil, TutorSettings{}, tutor.CloudProviderConfig{}, err
 	}
-	c := tutor.Config{Endpoint: config.Endpoint, APIKey: config.APIKey, EconomyModel: config.Model, AdvancedModel: config.AdvancedModel, AllowCloud: true, MaxOutputTokens: rt.baseSettings.MaxOutputTokens}
+	c := tutor.Config{Endpoint: config.Endpoint, APIKey: config.APIKey, EconomyModel: config.Model, AdvancedModel: config.AdvancedModel, FallbackModel: rt.baseConfig.FallbackModel, AllowCloud: true, MaxOutputTokens: rt.baseSettings.MaxOutputTokens}
 	g, err := tutor.New(c)
 	if err != nil {
 		return nil, TutorSettings{}, tutor.CloudProviderConfig{}, err
@@ -175,7 +203,7 @@ func (a *API) prepareLocalTutor(rt *tutorLocalRuntime, config tutor.LocalProvide
 	if err != nil {
 		return nil, TutorSettings{}, tutor.LocalProviderConfig{}, err
 	}
-	c := tutor.Config{Endpoint: config.Endpoint, EconomyModel: config.Model, AdvancedModel: config.AdvancedModel, MaxOutputTokens: rt.baseSettings.MaxOutputTokens}
+	c := tutor.Config{Endpoint: config.Endpoint, EconomyModel: config.Model, AdvancedModel: config.AdvancedModel, FallbackModel: rt.baseConfig.FallbackModel, MaxOutputTokens: rt.baseSettings.MaxOutputTokens}
 	g, err := tutor.New(c)
 	if err != nil {
 		return nil, TutorSettings{}, tutor.LocalProviderConfig{}, err
@@ -214,7 +242,7 @@ func (a *API) activateLocalTutor(rt *tutorLocalRuntime, config tutor.LocalProvid
 
 var tutorModes = []string{"explain", "simpler", "deeper", "example", "hint", "debug", "review", "quiz", "interview", "architecture", "study-plan"}
 
-const tutorPrivacy = "Настроенная модель не обучена и не дообучена этим проектом на запросах студентов. Провайдер обрабатывает только выбранный вами контекст по собственным правилам хранения и обработки: вопрос; до 24 КиБ открытых текстов курса (при выбранном уроке сначала его глава, затем до двух релевантных опубликованных глав; без него — до трёх релевантных опубликованных глав); и только при отдельных переключателях — код редактора, структурированную браузерную диагностику (включая stdout/stderr, до 4 КиБ) и краткую серверную сводку прогресса. Имя, история попыток, эталонные решения, скрытые тесты и ответы самопроверки/экзамена не отправляются. Автоматическое скрытие секретов не гарантирует их распознавание: проверьте выбранные поля перед отправкой. Браузерная диагностика — недоверенные данные, а не доказательство запуска. Ответ модели не подтверждает выполнение кода, экзамен или ранг. Подписка Codex не оплачивает API провайдера; стоимость зависит от провайдера и его тарифа."
+const tutorPrivacy = "Настроенная модель не обучена и не дообучена этим проектом на запросах студентов. Провайдер обрабатывает только выбранный вами контекст по собственным правилам хранения и обработки: вопрос; до 56 КиБ открытых текстов курса (при выбранном уроке сначала его глава, затем до двух релевантных опубликованных глав; без него — до трёх релевантных опубликованных глав). Для режимов quiz/interview можно отдельно согласиться на передачу до четырёх предыдущих пар сообщений текущей вкладки; они показываются в предпросмотре и не сохраняются сервером. Только при отдельных переключателях — код редактора, структурированную браузерную диагностику (включая stdout/stderr, до 4 КиБ) и краткую серверную сводку прогресса. Профильное имя, история попыток, эталонные решения, скрытые тесты и ответы самопроверки/экзамена не отправляются. Автоматическое скрытие секретов не гарантирует их распознавание: проверьте выбранные поля перед отправкой. Браузерная диагностика — недоверенные данные, а не доказательство запуска. Ответ модели не подтверждает выполнение кода, экзамен или ранг. Подписка Codex не оплачивает API провайдера; стоимость зависит от провайдера и его тарифа."
 
 const cloudTutorPrivacy = "Облачный ИИ-наставник использует выбранный вами внешний HTTPS-провайдер. Он получает только контекст, выбранный для конкретного запроса, и обрабатывает его по собственной политике хранения и использования данных; проверьте эту политику перед подключением. API-ключ хранится только на сервере и не возвращается браузеру. Сохранение настроек не проверяет соединение и не вызывает модель; запрос отправляется только после отдельного явного согласия в чате. Оплата API выставляется провайдером отдельно и не покрывается подпиской Codex."
 
@@ -391,6 +419,7 @@ func (a *API) tutorRoutes(mux *http.ServeMux) {
 		var q struct {
 			Mode             string          `json:"mode"`
 			Message          string          `json:"message"`
+			History          []tutor.Message `json:"history"`
 			LessonID         string          `json:"lesson_id"`
 			ProviderRevision string          `json:"provider_revision"`
 			Source           string          `json:"source"`
@@ -400,7 +429,7 @@ func (a *API) tutorRoutes(mux *http.ServeMux) {
 			Diagnostics      json.RawMessage `json:"diagnostics"`
 			ShareProgress    bool            `json:"share_progress"`
 		}
-		r.Body = http.MaxBytesReader(w, r.Body, 16<<10)
+		r.Body = http.MaxBytesReader(w, r.Body, 40<<10)
 		raw, readErr := io.ReadAll(r.Body)
 		decoder := json.NewDecoder(strings.NewReader(string(raw)))
 		decoder.DisallowUnknownFields()
@@ -420,6 +449,23 @@ func (a *API) tutorRoutes(mux *http.ServeMux) {
 		if !known || !q.Consent || strings.TrimSpace(q.Message) == "" || !utf8.ValidString(q.Message) || utf8.RuneCountInString(q.Message) > 2000 || len(q.Source) > 8192 || !utf8.ValidString(q.Source) || (!q.ShareCode && q.Source != "") || len(q.Diagnostics) > 4096 {
 			fail(w, 422, "выбери режим, введи вопрос до 2000 символов и подтверди согласие; код до 8 КиБ требует отдельного разрешения")
 			return
+		}
+		if len(q.History) > tutor.MaxHistoryMessages || (len(q.History) != 0 && q.Mode != "quiz" && q.Mode != "interview") ||
+			(len(q.History) != 0 && (len(q.History)%2 != 0 || q.History[0].Role != "user" || q.History[len(q.History)-1].Role != "assistant")) {
+			fail(w, 422, "история беседы должна содержать не более четырёх завершённых пар сообщений")
+			return
+		}
+		historyBytes := 0
+		for i, turn := range q.History {
+			if turn.Content == "" || !utf8.ValidString(turn.Content) || utf8.RuneCountInString(turn.Content) > 2000 || (turn.Role != "user" && turn.Role != "assistant") || (i > 0 && turn.Role == q.History[i-1].Role) {
+				fail(w, 422, "сообщения истории должны чередоваться и быть корректными текстовыми данными")
+				return
+			}
+			historyBytes += len(turn.Content)
+			if historyBytes > tutor.MaxHistoryBytes {
+				fail(w, 422, "история беседы превышает 12 КиБ")
+				return
+			}
 		}
 		executor, settings, revision := a.TutorSnapshot()
 		if executor == nil {
@@ -496,9 +542,8 @@ func (a *API) tutorRoutes(mux *http.ServeMux) {
 			fail(w, 429, "предыдущий запрос Tutor ещё выполняется")
 			return
 		}
-		// Reserve the maximum of four provider attempts, counting UTF-8 bytes as tokens.
-		// Retries/timeouts have uncertain billing and consume this entire conservative reserve.
-		reserve := 4 * (len(q.Message) + len(contextText) + 4096 + settings.MaxOutputTokens)
+		request := tutor.Request{Mode: q.Mode, Message: tutor.Redact(q.Message), Context: tutor.Redact(contextText), History: q.History}
+		reserve := estimateTutorReservation(executor, request, settings.MaxOutputTokens)
 		day := time.Now().UTC().Format("2006-01-02")
 		id, err := a.Store.ReserveAI(day, reserve, settings.DailyBudget)
 		if errors.Is(err, store.ErrAIBudget) {
@@ -511,7 +556,7 @@ func (a *API) tutorRoutes(mux *http.ServeMux) {
 		}
 		ctx, cancel := context.WithTimeout(r.Context(), 65*time.Second)
 		defer cancel()
-		result, callErr := executor.Complete(ctx, tutor.Request{Mode: q.Mode, Message: tutor.Redact(q.Message), Context: tutor.Redact(contextText)})
+		result, callErr := executor.Complete(ctx, request)
 		if err = a.Store.FinishAI(id, result.InputTokens, result.OutputTokens, result.Estimated || callErr != nil, callErr == nil); err != nil {
 			fail(w, 500, "расход не подтверждён; резерв сохранён, повторная отправка может увеличить расход")
 			return
@@ -589,21 +634,28 @@ func tutorLessonContext(lesson content.Lesson) string {
 			}
 		}
 	}
-	const limit = 24 << 10
+	const limit = maxTutorLessonContext
 	header := fmt.Sprintf("Открытый материал курса — источник истины для этой темы. Урок %s: %s\nТекущая тема: %s\nРанг/модуль: %s / %s\nЦелевая версия Go для совместимости курса: %s (это главный target для примеров урока).\nПроверенный срез upstream: последний minor Go 1.27 — Go 1.27.2, релиз 2026-10-08; проверено 2026-10-18. История релизов: https://go.dev/doc/devel/release ; заметки: https://go.dev/doc/go1.27 . Этот срез устаревает после даты проверки; модель не обращается к сети.\nЦелевые навыки: %s\n", lesson.ID, lesson.Title, lesson.Title, lesson.Rank, lesson.Module, lesson.GoVersion, strings.Join(skills, ", "))
-	text := clipTutorUTF8(header, limit)
-	body := "\nПолный открытый текст урока:\n" + lesson.Body
-	text += clipTutorUTF8(body, limit-len(text))
-	remaining := limit - len(text)
 	metadata := "\nЦели урока:\n" + strings.Join(lesson.LearningOutcomes, "\n") + "\nСловарь:\n"
 	for _, entry := range lesson.Glossary {
 		metadata += fmt.Sprintf("%s — %s: %s\n", entry.Term, entry.Translation, entry.Definition)
 	}
-	text += clipTutorUTF8(metadata, remaining)
-	return text
+	text := clipTutorUTF8(header, 3<<10)
+	text += clipTutorUTF8(metadata, min(8<<10, limit-len(text)))
+	remaining := limit - len(text)
+	if len(lesson.Body) <= remaining {
+		text += "\nПолный открытый текст урока:\n" + lesson.Body
+	} else {
+		text += "\nРелевантные фрагменты открытого урока (текст сокращён; цели и словарь приведены отдельно):\n"
+		text += tutorLessonExcerptBody(lesson.Body, nil, max(0, limit-len(text)))
+	}
+	return clipTutorUTF8(text, limit)
 }
 
-const maxTutorCourseContext = 24 << 10
+const (
+	maxTutorLessonContext = 44 << 10
+	maxTutorCourseContext = 56 << 10
+)
 
 func tutorCourseContext(c *content.Catalog, query, currentID string) (string, []map[string]string) {
 	if c == nil {
@@ -664,7 +716,7 @@ func tutorCourseContext(c *content.Catalog, query, currentID string) (string, []
 	}
 	usedLessons := make([]content.Lesson, 0, len(selected))
 	for i, lesson := range selected {
-		block := tutorLessonContext(lesson)
+		block := tutorLessonContextForQuery(lesson, queryTokens)
 		if i > 0 {
 			block = "\n\nРелевантный опубликованный материал курса:\n" + tutorLessonExcerpt(lesson, queryTokens, 8<<10)
 		}
@@ -772,7 +824,11 @@ func tutorContainsToken(set map[string]bool, query string) bool {
 
 func tutorLessonExcerpt(lesson content.Lesson, query map[string]bool, limit int) string {
 	meta := fmt.Sprintf("Урок %s: %s; ранг/модуль %s/%s; закреплённый Go %s.\n", lesson.ID, lesson.Title, lesson.Rank, lesson.Module, lesson.GoVersion)
-	paragraphs := strings.Split(lesson.Body, "\n\n")
+	return clipTutorUTF8(meta+tutorLessonExcerptBody(lesson.Body, query, max(0, limit-len(meta))), limit)
+}
+
+func tutorLessonExcerptBody(body string, query map[string]bool, limit int) string {
+	paragraphs := strings.Split(body, "\n\n")
 	type section struct {
 		text  string
 		score int
@@ -796,7 +852,6 @@ func tutorLessonExcerpt(lesson content.Lesson, query map[string]bool, limit int)
 	}
 	sort.SliceStable(sections, func(i, j int) bool { return sections[i].score > sections[j].score })
 	var selected strings.Builder
-	selected.WriteString(meta)
 	for _, s := range sections {
 		if selected.Len() >= limit {
 			break
@@ -805,6 +860,16 @@ func tutorLessonExcerpt(lesson content.Lesson, query map[string]bool, limit int)
 		selected.WriteString(part)
 	}
 	return selected.String()
+}
+
+func tutorLessonContextForQuery(lesson content.Lesson, query map[string]bool) string {
+	base := tutorLessonContext(lesson)
+	marker := "\nРелевантные фрагменты открытого урока (текст сокращён; цели и словарь приведены отдельно):\n"
+	if i := strings.Index(base, marker); i >= 0 {
+		prefix := base[:i+len(marker)]
+		return clipTutorUTF8(prefix+tutorLessonExcerptBody(lesson.Body, query, maxTutorLessonContext-len(prefix)), maxTutorLessonContext)
+	}
+	return base
 }
 
 func clipTutorUTF8(text string, limit int) string {

@@ -1,0 +1,17 @@
+Open Go Academy — M8 Tutor context, budget and conversation regression
+Date: 2026-10-18; local mock providers only. No external/cloud API, real user model, or paid request was used.
+
+Findings fixed from a read-only AI Tutor audit:
+- A published long lesson (`senior-02`) and retrieved course material no longer fail the default 100,000-token daily budget. The API test sends its full request to a loopback mock with no provider usage metadata and receives HTTP 200; conservative reservation is released/accounted within the configured budget.
+- Lesson context now reserves space for learning outcomes and glossary before adding the full open lesson. If the body does not fit, relevant paragraphs are selected by the current question; the aggregate published-course context is capped at 56 KiB. A regression checks the actual long lesson and retrieval of SQL material.
+- Quiz/interview can continue a conversation using up to four complete user/assistant pairs. The client previews the exact retained history, sends it only with per-request consent, keeps it in the current tab, and can clear it. The API rejects unsupported roles, unpaired or wrong-mode history, oversized messages/history, and non-consented calls before provider dispatch. Text remains untrusted and has no assessment authority.
+- A provider selected in UI preserves an operator-configured same-endpoint fallback model; loopback test confirms two primary retries followed by the fallback.
+
+Validation performed:
+- `sh scripts/go.sh test -race -count=1 -timeout=3m ./internal/tutor ./internal/httpapi` — PASS; tutor 1.173s, httpapi 49.644s. Log: `artifacts/tutor-race-current-20261018.log`; exit: `artifacts/tutor-race-current-20261018.exit`.
+- `sh scripts/go.sh vet ./internal/tutor ./internal/httpapi` — PASS.
+- Focused Tutor and long-course API tests, including `TestTutorLongPublishedLessonFitsDefaultBudgetAndPreservesQuizHistory` and `TestTutorUIProviderOverridePreservesConfiguredFallback` — PASS.
+- `cd web && npm run typecheck && npm run build` — PASS (Vite 8.3.4 production build).
+- `npx playwright test tests/tutor.spec.ts --grep 'quiz history' --project=desktop --project=mobile` — 2/2 PASS; axe violations 0 at the consent preview; mock API only, no model call. Screenshots were visually inspected: `artifacts/tutor-history-desktop.png`, `artifacts/tutor-history-mobile.png`.
+
+Limitations: context retrieval is deterministic lexical matching, not a vector database; a request includes a bounded selection of published course text, not every lesson at once. Compatibility with a particular Ollama/LM Studio/llama.cpp build and Russian answer quality against an actual local model remain untested until the owner connects one. The Tutor remains optional; no-AI course, runner, projects and exams work independently.

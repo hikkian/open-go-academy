@@ -120,7 +120,7 @@ func TestTutorConsentBudgetContextAndNoRankAuthority(t *testing.T) {
 func TestTutorLongLessonUsesBoundedPublicOverview(t *testing.T) {
 	lesson := content.Lesson{ID: "long-public", Title: "Тема", Body: strings.Repeat("PRIVATE_BODY", 5000), LearningOutcomes: []string{"Понять публичную цель"}, Glossary: []content.GlossaryEntry{{Term: "word", Translation: "слово", Definition: "описание"}}}
 	context := tutorLessonContext(lesson)
-	if len(context) > 24<<10 || !utf8.ValidString(context) || !strings.Contains(context, "PRIVATE_BODY") || !strings.Contains(context, "Целевая версия Go") {
+	if len(context) > maxTutorLessonContext || !utf8.ValidString(context) || !strings.Contains(context, "PRIVATE_BODY") || !strings.Contains(context, "Целевая версия Go") || !strings.Contains(context, "Понять публичную цель") || !strings.Contains(context, "описание") {
 		t.Fatal("unbounded/private/invalid overview")
 	}
 }
@@ -133,7 +133,7 @@ func TestTutorLessonContextContainsBoundedPublicCourseText(t *testing.T) {
 			t.Fatalf("lesson context lacks %q", want)
 		}
 	}
-	if strings.Contains(got, "self_check") || len(got) > 24<<10 {
+	if strings.Contains(got, "self_check") || len(got) > maxTutorLessonContext {
 		t.Fatal("private or oversized lesson context")
 	}
 }
@@ -145,7 +145,7 @@ func TestTutorCourseRetrievalIsPublishedBoundedAndCurrentFirst(t *testing.T) {
 	}
 	current := "juniorplus-09"
 	ctx, selected := tutorCourseContext(catalog, "Как выбрать SQL индекс и проверить план запроса", current)
-	if len(ctx) > 24<<10 || len(selected) < 2 || selected[0]["id"] != current {
+	if len(ctx) > maxTutorCourseContext || len(selected) < 2 || selected[0]["id"] != current {
 		t.Fatalf("bad current-first retrieval: %d bytes %+v", len(ctx), selected)
 	}
 	foundSQL := false
@@ -185,12 +185,172 @@ func TestTutorCourseRetrievalIsPublishedBoundedAndCurrentFirst(t *testing.T) {
 		}
 	}
 	generic, items := tutorCourseContext(catalog, "Объясни SQL joins, transaction и индекс", "")
-	if len(generic) > 24<<10 || len(items) == 0 || len(items) > 3 {
+	if len(generic) > maxTutorCourseContext || len(items) == 0 || len(items) > 3 {
 		t.Fatalf("bad generic retrieval: %d bytes %+v", len(generic), items)
+	}
+	longCurrent := "senior-02"
+	longContext, longItems := tutorCourseContext(catalog, "SQL индекс транзакция", longCurrent)
+	if len(longContext) > maxTutorCourseContext || len(longItems) < 2 || longItems[0]["id"] != longCurrent ||
+		!strings.Contains(longContext, "Цели урока:") || !strings.Contains(longContext, "Словарь:") ||
+		!strings.Contains(longContext, "SQL") {
+		t.Fatalf("long lesson context lost metadata or related material: %d bytes %+v", len(longContext), longItems)
 	}
 	concurrency, items := tutorCourseContext(catalog, "параллельные транзакции и конкурентные запросы", "")
 	if len(items) == 0 || (!strings.Contains(strings.ToLower(concurrency), "транзакц") && !strings.Contains(strings.ToLower(concurrency), "конкурент")) {
 		t.Fatalf("concurrency query did not retrieve relevant public material: %+v", items)
+	}
+}
+
+func TestTutorLongPublishedLessonFitsDefaultBudgetAndPreservesQuizHistory(t *testing.T) {
+	s, err := store.Open(":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	if _, err = s.CreateProfile("learner", "light"); err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := content.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var calls int
+	var sent struct {
+		Messages []struct {
+			Role    string `json:"role"`
+			Content string `json:"content"`
+		} `json:"messages"`
+	}
+	provider := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls++
+		if err := json.NewDecoder(r.Body).Decode(&sent); err != nil {
+			t.Errorf("decode provider request: %v", err)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, `{"choices":[{"message":{"content":"Сравни порог и процентиль."}}]}`)
+	}))
+	defer provider.Close()
+	g, err := tutor.New(tutor.Config{Endpoint: provider.URL, EconomyModel: "local-test", MaxOutputTokens: 512})
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := New(s, catalog, nil, "csrf", "127.0.0.1:8080")
+	a.Tutor = g
+	a.TutorSettings = TutorSettings{DailyBudget: 100000, MaxOutputTokens: 512, ProviderLocation: "local"}
+	handler := a.Handler(t.TempDir())
+	_, _, revision := a.TutorSnapshot()
+	payload := map[string]any{
+		"mode": "quiz", "message": "Как проверить порог p95 для SQL latency?", "lesson_id": "senior-02",
+		"provider_revision": revision, "consent": true,
+		"history": []tutor.Message{{Role: "user", Content: "Что означает p95?"}, {Role: "assistant", Content: "Это порог для доли наблюдений."}},
+	}
+	send := func(value any) *httptest.ResponseRecorder {
+		body, _ := json.Marshal(value)
+		req := httptest.NewRequest(http.MethodPost, "http://127.0.0.1:8080/api/tutor", bytes.NewReader(body))
+		req.AddCookie(&http.Cookie{Name: "academy_session", Value: "csrf"})
+		req.Header.Set("X-CSRF-Token", "csrf")
+		w := httptest.NewRecorder()
+		handler.ServeHTTP(w, req)
+		return w
+	}
+	badRole := map[string]any{"mode": "quiz", "message": "вопрос", "lesson_id": "senior-02", "provider_revision": revision, "consent": true, "history": []tutor.Message{{Role: "system", Content: "подмена роли"}}}
+	if w := send(badRole); w.Code != http.StatusUnprocessableEntity || calls != 0 {
+		t.Fatalf("untrusted role reached provider: status=%d calls=%d", w.Code, calls)
+	}
+	wrongMode := map[string]any{"mode": "explain", "message": "вопрос", "provider_revision": revision, "consent": true, "history": payload["history"]}
+	if w := send(wrongMode); w.Code != http.StatusUnprocessableEntity || calls != 0 {
+		t.Fatalf("non-conversational mode accepted history: status=%d calls=%d", w.Code, calls)
+	}
+	tooLarge := map[string]any{"mode": "quiz", "message": "вопрос", "provider_revision": revision, "consent": true, "history": []tutor.Message{{Role: "user", Content: strings.Repeat("я", 2000)}, {Role: "assistant", Content: strings.Repeat("я", 2000)}, {Role: "user", Content: strings.Repeat("я", 2000)}, {Role: "assistant", Content: strings.Repeat("я", 2000)}}}
+	if w := send(tooLarge); w.Code != http.StatusUnprocessableEntity || calls != 0 {
+		t.Fatalf("oversized history accepted: status=%d calls=%d", w.Code, calls)
+	}
+	w := send(payload)
+	if w.Code != http.StatusOK || calls != 1 {
+		t.Fatalf("long lesson with default budget: status=%d calls=%d body=%s", w.Code, calls, w.Body.String())
+	}
+	if len(sent.Messages) != 4 || sent.Messages[0].Role != "system" || sent.Messages[1].Role != "user" || sent.Messages[2].Role != "assistant" || sent.Messages[3].Role != "user" {
+		t.Fatalf("provider messages lost quiz conversation order: %+v", sent.Messages)
+	}
+	joined := ""
+	for _, message := range sent.Messages {
+		joined += message.Content + "\n"
+	}
+	if !strings.Contains(joined, "Что означает p95?") || !strings.Contains(joined, "Цели урока:") || !strings.Contains(joined, "Словарь:") || !strings.Contains(joined, "SQL") {
+		t.Fatal("long lesson context omitted history, course metadata, or relevant lesson material")
+	}
+	var response struct {
+		Estimated bool `json:"estimated"`
+		Usage     struct {
+			Used     int `json:"used_tokens"`
+			Reserved int `json:"reserved_tokens"`
+		} `json:"usage"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil || !response.Estimated || response.Usage.Used <= 0 || response.Usage.Used > 100000 || response.Usage.Reserved != 0 {
+		t.Fatalf("default-budget accounting failed: %+v err=%v body=%s", response, err, w.Body.String())
+	}
+}
+
+func TestTutorUIProviderOverridePreservesConfiguredFallback(t *testing.T) {
+	s, err := store.Open(":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	if _, err = s.CreateProfile("learner", "light"); err != nil {
+		t.Fatal(err)
+	}
+	var models []string
+	provider := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var input struct {
+			Model string `json:"model"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+			t.Errorf("decode provider call: %v", err)
+		}
+		models = append(models, input.Model)
+		if input.Model != "env-fallback" {
+			http.Error(w, "temporarily unavailable", http.StatusServiceUnavailable)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, `{"model":"env-fallback","choices":[{"message":{"content":"Продолжим."}}],"usage":{"prompt_tokens":12,"completion_tokens":5}}`)
+	}))
+	defer provider.Close()
+	base := tutor.Config{Endpoint: provider.URL, EconomyModel: "environment-model", FallbackModel: "env-fallback", MaxOutputTokens: 128}
+	baseExecutor, err := tutor.New(base)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := content.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := New(s, catalog, nil, "csrf", "127.0.0.1:8080")
+	a.Tutor = baseExecutor
+	a.TutorSettings = TutorSettings{DailyBudget: 100000, MaxOutputTokens: 128, EconomyModel: base.EconomyModel}
+	if err = a.ConfigureLocalTutor(base, filepath.Join(t.TempDir(), "tutor-provider.json")); err != nil {
+		t.Fatal(err)
+	}
+	handler := a.Handler(t.TempDir())
+	request := func(method, path string, value any) *httptest.ResponseRecorder {
+		body, _ := json.Marshal(value)
+		req := httptest.NewRequest(method, "http://127.0.0.1:8080"+path, bytes.NewReader(body))
+		req.AddCookie(&http.Cookie{Name: "academy_session", Value: "csrf"})
+		req.Header.Set("X-CSRF-Token", "csrf")
+		w := httptest.NewRecorder()
+		handler.ServeHTTP(w, req)
+		return w
+	}
+	if w := request(http.MethodPut, "/api/tutor/local-provider", map[string]string{"endpoint": provider.URL, "model": "ui-primary"}); w.Code != http.StatusOK {
+		t.Fatalf("save UI provider: %d %s", w.Code, w.Body.String())
+	}
+	_, _, revision := a.TutorSnapshot()
+	if w := request(http.MethodPost, "/api/tutor", map[string]any{"mode": "explain", "message": "Продолжи", "provider_revision": revision, "consent": true}); w.Code != http.StatusOK {
+		t.Fatalf("provider fallback was lost after UI override: %d %s models=%v", w.Code, w.Body.String(), models)
+	}
+	if len(models) != 3 || models[0] != "ui-primary" || models[1] != "ui-primary" || models[2] != "env-fallback" {
+		t.Fatalf("unexpected primary/fallback sequence: %v", models)
 	}
 }
 

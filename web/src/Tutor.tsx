@@ -5,6 +5,7 @@ import { api } from './api';
 import './Tutor.css';
 
 type Mode = 'explain' | 'simpler' | 'deeper' | 'example' | 'hint' | 'debug' | 'review' | 'quiz' | 'interview' | 'architecture' | 'study-plan';
+type TutorHistoryMessage = { role: 'assistant' | 'user'; content: string };
 type Usage = { day: string; used_tokens: number; reserved_tokens: number; requests: number; failed_requests: number; estimated_requests: number };
 type LocalProvider = { endpoint: string; model: string; advanced_model?: string };
 type CloudProvider = { endpoint: string; model: string; advanced_model?: string };
@@ -30,6 +31,8 @@ const messageLimit = 2000;
 const sourceLimit = 8 * 1024;
 
 const diagnosticsLimit = 4 * 1024;
+const historyLimit = 12 * 1024;
+const historyMessageLimit = 8;
 
 export default function Tutor({ lessonId, source, lastResult }: { lessonId?: string; source?: string; lastResult?: TutorDiagnostics | null }) {
   const [config, setConfig] = useState<TutorConfig | null>(null);
@@ -40,6 +43,7 @@ export default function Tutor({ lessonId, source, lastResult }: { lessonId?: str
   const [shareDiagnostics, setShareDiagnostics] = useState(false);
   const [shareProgress, setShareProgress] = useState(false);
   const [reply, setReply] = useState<TutorReply | null>(null);
+  const [history, setHistory] = useState<TutorHistoryMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
@@ -78,6 +82,7 @@ export default function Tutor({ lessonId, source, lastResult }: { lessonId?: str
     finally { setLoading(false); }
   };
   useEffect(() => { void loadConfig(); }, []);
+  useEffect(() => { setHistory([]); setReply(null); }, [lessonId]);
 
   const allowedModes = useMemo(() => modeOrder.filter(item => config?.modes.includes(item)), [config?.modes]);
   const sourceBytes = useMemo(() => source === undefined ? 0 : new TextEncoder().encode(source).length, [source]);
@@ -101,10 +106,13 @@ export default function Tutor({ lessonId, source, lastResult }: { lessonId?: str
     event.preventDefault();
     if (!config?.enabled || sending || localBusy || cloudBusy || !consent || !message.trim() || message.length > messageLimit || (shareCode && !canShareSource) || (shareDiagnostics && !canShareDiagnostics)) return;
     setSending(true); setError(''); setReply(null);
-    const payload = { mode, message: message.trim(), provider_revision: config.provider_revision, ...(lessonId ? { lesson_id: lessonId } : {}), ...(shareCode && source !== undefined ? { source } : {}), consent: true as const, share_code: shareCode, ...(shareDiagnostics && lastResult ? { diagnostics: lastResult } : {}), share_diagnostics: shareDiagnostics, share_progress: shareProgress };
+    const conversational = mode === 'quiz' || mode === 'interview';
+    const requestHistory = conversational ? boundedHistory(history) : [];
+    const payload = { mode, message: message.trim(), provider_revision: config.provider_revision, ...(lessonId ? { lesson_id: lessonId } : {}), ...(shareCode && source !== undefined ? { source } : {}), consent: true as const, share_code: shareCode, ...(shareDiagnostics && lastResult ? { diagnostics: lastResult } : {}), share_diagnostics: shareDiagnostics, share_progress: shareProgress, ...(requestHistory.length ? { history: requestHistory } : {}) };
     try {
       const result = await api<TutorReply>('/tutor', { method: 'POST', body: JSON.stringify(payload) });
       setReply(result);
+      if (conversational) setHistory(current => boundedHistory([...current, { role: 'user', content: message.trim() }, { role: 'assistant', content: result.text }]));
       setConfig(current => current ? { ...current, usage: result.usage } : current);
       setConsent(false);
     } catch (e) {
@@ -257,22 +265,23 @@ export default function Tutor({ lessonId, source, lastResult }: { lessonId?: str
     <section className="tutor-budget" aria-label="Лимит запросов">
       <div><strong>Дневной лимит (UTC, {config.usage.day})</strong><span>{number(config.usage.used_tokens)} использовано из {number(config.daily_budget)} токенов</span></div>
       <progress max={Math.max(1, config.daily_budget)} value={Math.min(config.daily_budget, config.usage.used_tokens + config.usage.reserved_tokens)} aria-label="Использование дневного бюджета" />
-      <p>{number(config.usage.reserved_tokens)} токенов зарезервировано · {number(config.usage.estimated_requests)} запросов с оценочным расходом · {number(config.usage.requests)} отправлено · {number(config.usage.failed_requests)} не завершилось. На запрос резервируется запас до четырёх вызовов провайдера. Ошибка или тайм-аут списывает резерв целиком; ручная повторная отправка создаёт новый резерв. Это счётчик токенов, а не цена в деньгах. Свободно примерно {number(remainingTokens)} токенов; лимит проверяется до обращения к провайдеру.</p>
+      <p>{number(config.usage.reserved_tokens)} токенов зарезервировано · {number(config.usage.estimated_requests)} запросов с оценочным расходом · {number(config.usage.requests)} отправлено · {number(config.usage.failed_requests)} не завершилось. На запрос резервируется запас до трёх вызовов провайдера. Ошибка или тайм-аут списывает резерв целиком; ручная повторная отправка создаёт новый резерв. Это счётчик токенов, а не цена в деньгах. Свободно примерно {number(remainingTokens)} токенов; лимит проверяется до обращения к провайдеру.</p>
     </section>
     {!config.enabled ? <section className="tutor-disabled"><h2>Наставник сейчас недоступен</h2><p>ИИ-запросы отключены в настройках этого учебного сервиса. Все материалы курса, редактор и проверки заданий продолжают работать без ИИ.</p><p>Подключи локальный провайдер без API-ключа или облачный с отдельным ключом. Настройка облака не отправляет запрос; первый вызов произойдёт только после согласия в чате.</p></section> : <form className="tutor-form" onSubmit={send}>
       <label className="tutor-label" htmlFor="tutor-mode">Чем помочь</label>
       <select id="tutor-mode" value={mode} onChange={event => { setMode(event.target.value as Mode); setConsent(false); }} disabled={sending || allowedModes.length === 0}>{allowedModes.map(item => <option key={item} value={item}>{modeInfo[item].label}</option>)}</select>
       <p className="tutor-mode-help">{modeInfo[mode].description}</p>
+      {(mode === 'quiz' || mode === 'interview') && <div className="tutor-history-controls"><p>Вопросы и ответы этой вкладочной беседы можно передать наставнику вместе с каждым запросом после отдельного согласия ниже. История ограничена 8 сообщениями и 12 КиБ.</p><button type="button" className="tutor-button secondary" onClick={() => { setHistory([]); setReply(null); setConsent(false); }} disabled={sending}>Начать новый диалог</button></div>}
       {allowedModes.length === 0 && <p className="tutor-unavailable" role="status">Сервер не включил режимы наставника. Проверь настройки позже.</p>}
       <label className="tutor-label" htmlFor="tutor-message">Твой вопрос</label>
       <textarea id="tutor-message" rows={5} maxLength={messageLimit} value={message} onChange={event => { setMessage(event.target.value); setConsent(false); }} placeholder="Например: объясни, почему функция возвращает значение типа int" disabled={sending || allowedModes.length === 0} required />
       <div className="tutor-count" aria-live="polite">{message.length} / {messageLimit} символов</div>
-      <p className="tutor-context-note">{lessonId ? <>К контексту добавится ограниченный публичный текст открытого урока <code>{lessonId}</code> (до 24 КиБ), точная версия курса Go, цели и словарь; сервер может найти ещё до двух релевантных опубликованных уроков.</> : 'Без открытого урока сервер может найти до трёх релевантных опубликованных уроков по вопросу.'} Черновики, приватные ответы и скрытые тесты не используются.</p>
+      <p className="tutor-context-note">{lessonId ? <>К контексту добавится ограниченный публичный текст открытого урока <code>{lessonId}</code> (до 56 КиБ), точная версия курса Go, цели и словарь; сервер может найти ещё до двух релевантных опубликованных уроков.</> : 'Без открытого урока сервер может найти до трёх релевантных опубликованных уроков по вопросу.'} Черновики, приватные ответы и скрытые тесты не используются.</p>
       {source !== undefined && <label className="tutor-consent tutor-code-choice"><input type="checkbox" checked={shareCode} onChange={event => { setShareCode(event.target.checked); setConsent(false); }} disabled={sending || !canShareSource} /><span><strong>Передать код редактора</strong><small>{canShareSource ? `${number(sourceBytes)} байт будут отправлены провайдеру вместе с вопросом.` : `Код занимает ${number(sourceBytes)} байт и превышает лимит 8 КиБ; отправка кода недоступна.`}</small></span></label>}
       <label className="tutor-consent tutor-code-choice"><input type="checkbox" checked={shareDiagnostics} onChange={event => { setShareDiagnostics(event.target.checked); setConsent(false); }} disabled={sending || !canShareDiagnostics} /><span><strong>Передать вывод/диагностику последнего запуска</strong><small>{!lastResult ? 'Сначала запусти или проверь задание.' : canShareDiagnostics ? `Будут переданы только статус, код завершения, stdout, stderr и количество проверок (${number(diagnosticsBytes)} из ${number(diagnosticsLimit)} байт).` : `Диагностика занимает ${number(diagnosticsBytes)} байт и превышает лимит 4 КиБ.`}</small></span></label>
       {lastResult && <details className="tutor-preview"><summary>Предпросмотр диагностики</summary><pre>{diagnosticsJSON}</pre></details>}
       <label className="tutor-consent tutor-code-choice"><input type="checkbox" checked={shareProgress} onChange={event => { setShareProgress(event.target.checked); setConsent(false); }} disabled={sending} /><span><strong>Передать краткий прогресс и навыки</strong><small>Если включить, сервер сам сформирует краткий снимок учебного прогресса. Браузер не отправляет список уроков, оценок или навыков.</small></span></label>
-      <details className="tutor-preview"><summary>Посмотреть, что будет отправлено</summary><dl><dt>Режим</dt><dd>{modeInfo[mode]?.label || mode}</dd><dt>Место обработки</dt><dd>{providerLocation}{config.provider_label ? ` · ${config.provider_label}` : ''}</dd><dt>Сообщение</dt><dd className="tutor-preview-text">{message.trim() || 'Пока не заполнено'}</dd><dt>Контекст курса</dt><dd>{lessonId ? <>Публичный текст открытого урока <code>{lessonId}</code> (до 24 КиБ), точная версия курса Go, цели и словарь, плюс до двух релевантных опубликованных уроков.</> : 'До трёх релевантных опубликованных уроков по вопросу.'} Черновики, приватные ответы и скрытые тесты не используются.</dd>{source !== undefined && <><dt>Код редактора</dt><dd>{shareCode ? <pre>{source}</pre> : 'Не будет отправлен: отдельный opt-in выключен.'}</dd></>}{lastResult && <><dt>Диагностика</dt><dd>{shareDiagnostics ? 'Будет отправлен показанный выше краткий результат.' : 'Не будет отправлена: отдельный opt-in выключен.'}</dd></>}<dt>Прогресс</dt><dd>{shareProgress ? 'Браузер просит сервер добавить краткий снимок прогресса.' : 'Не будет добавлен: отдельный opt-in выключен.'}</dd></dl></details>
+      <details className="tutor-preview"><summary>Посмотреть, что будет отправлено</summary><dl><dt>Режим</dt><dd>{modeInfo[mode]?.label || mode}</dd><dt>Место обработки</dt><dd>{providerLocation}{config.provider_label ? ` · ${config.provider_label}` : ''}</dd><dt>Сообщение</dt><dd className="tutor-preview-text">{message.trim() || 'Пока не заполнено'}</dd>{(mode === 'quiz' || mode === 'interview') && <><dt>История беседы</dt><dd>{history.length ? <ol>{boundedHistory(history).map((item, i) => <li key={`${i}-${item.role}`}><strong>{item.role === 'assistant' ? 'Наставник' : 'Ты'}:</strong> {item.content}</li>)}</ol> : 'Предыдущих сообщений нет.'} {history.length ? 'История будет передана только с этим запросом после согласия ниже.' : 'История пока не будет отправлена.'}</dd></>}<dt>Контекст курса</dt><dd>{lessonId ? <>Публичный текст открытого урока <code>{lessonId}</code> (до 56 КиБ), точная версия курса Go, цели и словарь, плюс до двух релевантных опубликованных уроков.</> : 'До трёх релевантных опубликованных уроков по вопросу.'} Черновики, приватные ответы и скрытые тесты не используются.</dd>{source !== undefined && <><dt>Код редактора</dt><dd>{shareCode ? <pre>{source}</pre> : 'Не будет отправлен: отдельный opt-in выключен.'}</dd></>}{lastResult && <><dt>Диагностика</dt><dd>{shareDiagnostics ? 'Будет отправлен показанный выше краткий результат.' : 'Не будет отправлена: отдельный opt-in выключен.'}</dd></>}<dt>Прогресс</dt><dd>{shareProgress ? 'Браузер просит сервер добавить краткий снимок прогресса.' : 'Не будет добавлен: отдельный opt-in выключен.'}</dd></dl></details>
       <label className="tutor-consent"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} disabled={sending || localBusy || cloudBusy} /><span><strong>Я прочитал сведения о передаваемых данных и согласен отправить этот запрос.</strong><small>Согласие действует для версии текущего провайдера. Запрос может расходовать дневной лимит и учитываться у выбранного провайдера согласно его правилам.</small></span></label>
       {error && <p className="tutor-error" role="alert">{error}</p>}
       <div className="tutor-submit-row"><span>Максимальный ответ: {number(config.max_output_tokens)} токенов. ИИ не запускает код и не подтверждает учебный ранг.</span><button className="tutor-button" disabled={sending || localBusy || cloudBusy || !consent || !message.trim() || message.length > messageLimit || allowedModes.length === 0 || (shareCode && !canShareSource) || (shareDiagnostics && !canShareDiagnostics)}>{sending ? 'Ждём ответ…' : 'Отправить запрос'}</button></div>
@@ -288,6 +297,36 @@ function isApiStatus(error: unknown, status: number) {
 }
 function providerFingerprint(config: TutorConfig) {
   return [config.provider_revision, config.enabled, config.provider_location, config.provider_label, config.models.economy, config.models.advanced, config.local_provider?.endpoint, config.local_provider?.model, config.local_provider?.advanced_model, config.cloud_provider?.endpoint, config.cloud_provider?.model, config.cloud_provider?.advanced_model].join('|');
+}
+function boundedHistory(history: TutorHistoryMessage[]): TutorHistoryMessage[] {
+  const pairs: [TutorHistoryMessage, TutorHistoryMessage][] = [];
+  for (let i = 0; i + 1 < history.length; i++) {
+    if (history[i].role === 'user' && history[i + 1].role === 'assistant') {
+      pairs.push([
+        { role: 'user', content: Array.from(history[i].content).slice(0, 2000).join('') },
+        { role: 'assistant', content: Array.from(history[i + 1].content).slice(0, 2000).join('') },
+      ]);
+      i++;
+    }
+  }
+  const selected: TutorHistoryMessage[] = [];
+  for (const pair of pairs.slice(-historyMessageLimit / 2).reverse()) {
+    let fitted = pair;
+    const candidate = [...fitted, ...selected];
+    if (new TextEncoder().encode(JSON.stringify(candidate)).length > historyLimit) {
+      let low = 1, high = 2000, best = 0;
+      while (low <= high) {
+        const limit = Math.floor((low + high) / 2);
+        const clipped = pair.map(item => ({ ...item, content: Array.from(item.content).slice(0, limit).join('') })) as [TutorHistoryMessage, TutorHistoryMessage];
+        if (new TextEncoder().encode(JSON.stringify([...clipped, ...selected])).length <= historyLimit) { best = limit; low = limit + 1; }
+        else high = limit - 1;
+      }
+      if (!best) break;
+      fitted = pair.map(item => ({ ...item, content: Array.from(item.content).slice(0, best).join('') })) as [TutorHistoryMessage, TutorHistoryMessage];
+    }
+    selected.unshift(...fitted);
+  }
+  return selected;
 }
 const localInputStyle = { width: '100%', minWidth: 0, padding: '10px 11px', border: '1px solid var(--line)', borderRadius: 6, background: 'var(--paper)', color: 'var(--ink)', font: '12px/1.6 Inter, ui-sans-serif, system-ui, sans-serif' };
 function loopbackEndpointError(value: string): string {

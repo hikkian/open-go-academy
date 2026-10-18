@@ -70,3 +70,9 @@ Reviewer не запускал UI browser/E2E, network interception remote image
 ```
 
 PASS: tutor0.158s, store0.173s, httpapi0.028s; cmd/api успешно собирается, собственных tests нет. Startup повторно проверен: trim endpoint до New/Parse, проверка env budget1..1000000/output1..1024, key только gateway, browser settings только label/models/limits, nil Tutor по умолчанию. M7 verdict и его доказательства в EXAM_REVIEW.md этим M8 проходом не изменялись.
+
+## Follow-up 2026-10-18: long-course and interactive Tutor
+
+Независимый audit рабочего дерева нашёл и implementation закрыла три новые functional gaps, не затронутые старым обзором: (1) 24-KiB контекст плюс резерв по UTF-8 bytes превышал default budget100000 и блокировал часть длинных глав; (2) сначала обрезался body, поэтому исчезали цели/словарь и релевантные главы; (3) quiz/interview не передавали предыдущий вопрос и ответ. Исправленный сериализованный request reservation учитывает system/context/history/last message, output и максимум три вызова. Retrieval ограничен56KiB опубликованного курса; для текущей длинной главы отдельно сохраняются metadata и query-relevant excerpt. Quiz/interview history — максимум четыре завершённых пары / 12KiB; preview, per-request consent, memory-only tab lifetime, clearing on new conversation or lesson, and untrusted role content.
+
+Заодно UI-selected local/cloud provider больше не теряет operator-configured fallback model. Evidence всех точных тестов и visual review: `../validation/tutor-context-history-20261018.txt`. Тесты используют только loopback synthetic providers; реальный модельный сервер и cloud API не вызывались. Это проверяет передачу контекста и consent, не доказывает factual quality конкретной модели. Старый абзац «4 попытки и UTF-8 bytes» выше относится к первоначальному implementation; фактический текущий резерв теперь сериализуется и ограничен тремя попытками.

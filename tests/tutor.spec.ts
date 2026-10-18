@@ -2,6 +2,55 @@ import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 async function enter(page:any){await page.goto('/');await expect.poll(async()=>await page.getByLabel('Твоё имя').isVisible()||await page.getByRole('heading',{name:'Твоя практика начинается здесь.'}).isVisible()).toBe(true);if(await page.getByLabel('Твоё имя').isVisible()){await page.getByLabel('Твоё имя').fill('Ученик');await page.getByRole('button',{name:'Создать профиль'}).click()};await page.getByRole('button',{name:'ИИ-наставник',exact:true}).click()}
 test('tutor privacy and no-AI remain usable',async({page},info)=>{await enter(page);await expect(page.getByRole('heading',{name:'ИИ-наставник',exact:true})).toBeVisible();if(process.env.ACADEMY_E2E_TUTOR!=='1')await expect(page.getByRole('heading',{name:'Наставник сейчас недоступен'})).toBeVisible();const scan=await new AxeBuilder({page}).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await page.screenshot({path:`artifacts/${info.project.name}-tutor.png`,fullPage:true})});
+test('quiz history is previewed, consented per request, and reset without model calls',async({page},info)=>{
+ const usage={day:'2026-10-18',used_tokens:0,reserved_tokens:0,requests:0,failed_requests:0,estimated_requests:0};
+ const posted:any[]=[];
+ await page.route('**/api/tutor',async route=>{
+  if(route.request().method()==='GET') return route.fulfill({json:{enabled:true,provider_revision:'test-revision',provider_location:'local',provider_label:'mock',models:{economy:'mock',advanced:'mock'},daily_budget:100000,max_output_tokens:512,usage,modes:['quiz','interview'],privacy_notice:'test'}});
+  if(route.request().method()==='POST') { posted.push(route.request().postDataJSON()); return route.fulfill({json:{text:posted.length===3?'🙂'.repeat(3000):'Вопрос наставника',model:'mock',input_tokens:1,output_tokens:1,estimated:true,cached:false,usage}}); }
+  return route.continue();
+ });
+ await enter(page);
+ await page.getByLabel('Чем помочь').selectOption('quiz');
+ const question=page.getByLabel('Твой вопрос',{exact:true});
+ await question.fill('Что делает цикл for?');
+ const consent=page.getByRole('checkbox',{name:/Я прочитал/});
+ await expect(page.getByRole('button',{name:'Отправить запрос',exact:true})).toBeDisabled();
+ await consent.check();
+ await page.getByRole('button',{name:'Отправить запрос',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Ответ наставника'})).toBeVisible();
+ expect(posted[0].history).toBeUndefined();
+ await question.fill('Почему цикл повторяется?');
+ await page.getByText('Посмотреть, что будет отправлено').click();
+ await expect(page.getByText(/Наставник: Вопрос наставника/)).toBeVisible();
+ await consent.check();
+ await page.getByRole('button',{name:'Отправить запрос',exact:true}).click();
+ await expect.poll(()=>posted.length).toBe(2);
+ expect(posted[1].history).toEqual([{role:'user',content:'Что делает цикл for?'},{role:'assistant',content:'Вопрос наставника'}]);
+ expect(posted[1].message).toBe('Почему цикл повторяется?');
+ const a11y=await new AxeBuilder({page}).analyze();
+ expect(a11y.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ await page.screenshot({path:`artifacts/tutor-history-${info.project.name}.png`,fullPage:true});
+ await page.getByRole('button',{name:'Начать новый диалог'}).click();
+ await expect(page.getByText('Предыдущих сообщений нет.')).toBeVisible();
+ await question.fill('🙂'.repeat(1000));
+ await consent.check();
+ await page.getByRole('button',{name:'Отправить запрос',exact:true}).click();
+ await expect.poll(()=>posted.length).toBe(3);
+ expect(posted[2].history).toBeUndefined();
+ await question.fill('Продолжи разговор');
+ await consent.check();
+ await page.getByRole('button',{name:'Отправить запрос',exact:true}).click();
+ await expect.poll(()=>posted.length).toBe(4);
+ const bounded=posted[3].history;
+ expect(bounded).toHaveLength(2);
+ expect(bounded.map((item:any)=>item.role)).toEqual(['user','assistant']);
+ expect(Array.from(bounded[0].content).length).toBeLessThanOrEqual(2000);
+ expect(Array.from(bounded[1].content).length).toBeLessThanOrEqual(2000);
+ expect(new TextEncoder().encode(JSON.stringify(bounded)).length).toBeLessThanOrEqual(12*1024);
+ expect(bounded[1].content).not.toContain('�');
+});
 test('local OpenAI-compatible provider settings persist without downloading or calling a model',async({page})=>{
  await enter(page);
  await expect(page.getByRole('heading',{name:'Свой локальный ИИ-провайдер'})).toBeVisible();

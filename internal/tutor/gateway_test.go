@@ -13,6 +13,7 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
+	"unicode/utf8"
 )
 
 func config(endpoint string) Config {
@@ -60,6 +61,98 @@ func TestOpenAICompatibleRequestAndRedaction(t *testing.T) {
 	}
 	if calls.Load() != 1 {
 		t.Fatalf("calls=%d", calls.Load())
+	}
+}
+
+func TestConversationHistoryIsBoundedAndPlacedBeforeLatestUserMessage(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var got struct {
+			Messages []chatMessage `json:"messages"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&got); err != nil {
+			t.Error(err)
+			return
+		}
+		if len(got.Messages) != 4 || got.Messages[0].Role != "system" || got.Messages[1] != (chatMessage{"user", "What does the loop do?"}) || got.Messages[2] != (chatMessage{"assistant", "It repeats commands."}) || got.Messages[3].Role != "user" || !strings.Contains(got.Messages[3].Content, "Next question") {
+			t.Errorf("conversation message sequence: %+v", got.Messages)
+		}
+		if !strings.Contains(got.Messages[0].Content, "недоверенный текст ученика или предыдущего ответа модели") || !strings.Contains(got.Messages[0].Content, "раскрытие секретов") {
+			t.Error("system prompt must explicitly classify history as untrusted and prevent secret disclosure")
+		}
+		fmt.Fprint(w, `{"choices":[{"message":{"content":"Next question"}}]}`)
+	}))
+	defer srv.Close()
+	g, err := New(config(srv.URL))
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = g.Complete(context.Background(), Request{Mode: "quiz", Message: "Next question", History: []Message{{Role: "user", Content: "What does the loop do?"}, {Role: "assistant", Content: "It repeats commands."}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestBoundHistoryLimitsCountBytesAndUTF8(t *testing.T) {
+	history := make([]Message, 10)
+	for i := 0; i < len(history); i += 2 {
+		history[i] = Message{Role: "user", Content: strings.Repeat("é", 1000)}
+		history[i+1] = Message{Role: "assistant", Content: strings.Repeat("é", 1000)}
+	}
+	history[8] = Message{Role: "user", Content: strings.Repeat("界", MaxHistoryBytes)}
+	history[9] = Message{Role: "assistant", Content: strings.Repeat("界", MaxHistoryBytes)}
+	got := boundHistory(history)
+	if len(got) > MaxHistoryMessages {
+		t.Fatalf("messages=%d", len(got))
+	}
+	for i, item := range got {
+		if !utf8.ValidString(item.Content) {
+			t.Fatal("invalid UTF-8 after truncation")
+		}
+		if utf8.RuneCountInString(item.Content) > 2000 {
+			t.Fatal("history message exceeds 2000 code points")
+		}
+		wantRole := "user"
+		if i%2 == 1 {
+			wantRole = "assistant"
+		}
+		if item.Role != wantRole {
+			t.Fatalf("partial/non-alternating conversation: %#v", got)
+		}
+	}
+	encoded, err := json.Marshal(got)
+	if err != nil || len(encoded) > MaxHistoryBytes {
+		t.Fatalf("serialized history bytes=%d err=%v", len(encoded), err)
+	}
+	if len(got) < 2 || len(got)%2 != 0 || got[len(got)-2].Role != "user" || got[len(got)-1].Role != "assistant" {
+		t.Fatalf("expected complete recent user/assistant pairs, got %#v", got)
+	}
+	if len(boundHistory([]Message{{Role: "user", Content: "incomplete"}})) != 0 || len(boundHistory([]Message{{Role: "system", Content: "ignored"}, {Role: "assistant", Content: "no pair"}})) != 0 {
+		t.Fatal("incomplete or invalid-role history must be dropped")
+	}
+}
+
+func TestMaxReservationIncludesLongContextAndAttempts(t *testing.T) {
+	g, err := New(config("http://127.0.0.1:1"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	in := Request{Mode: "explain", Message: "question", Context: strings.Repeat("x", 150*1024)}
+	if got := g.MaxReservation(in); got <= 100000 {
+		t.Fatalf("long context reservation=%d, expected above daily budget", got)
+	}
+	short := g.MaxReservation(Request{Mode: "explain", Message: "x"})
+	if short < 3*1024 || short > 10*1024 {
+		t.Fatalf("unexpected three-attempt reservation %d", short)
+	}
+	withoutFallbackConfig := config("http://127.0.0.1:1")
+	withoutFallbackConfig.FallbackModel = ""
+	withoutFallback, err := New(withoutFallbackConfig)
+	if err != nil {
+		t.Fatal(err)
+	}
+	primaryOnly := withoutFallback.MaxReservation(Request{Mode: "explain", Message: "x"})
+	if primaryOnly < 2*1024 || primaryOnly >= short {
+		t.Fatalf("reservation should match two primary attempts when fallback is absent: primary=%d withFallback=%d", primaryOnly, short)
 	}
 }
 
