@@ -70,6 +70,24 @@ func TestAPIProfilePersistenceAndBoundaries(t *testing.T) {
 	if w := request("GET", "/api/profile", "", false, "127.0.0.1:8080", ""); w.Code != 200 || !strings.Contains(w.Body.String(), `"name":"Ada"`) || strings.Contains(w.Body.String(), "Mallory") {
 		t.Fatalf("cross-site mutation changed the local profile: %d %s", w.Code, w.Body)
 	}
+	oversized := httptest.NewRequest("POST", "http://127.0.0.1:8080/api/profile", strings.NewReader(`{"name":"Mallory","theme":"dark"}`+strings.Repeat(" ", (512<<10)+1)))
+	oversized.AddCookie(&http.Cookie{Name: "academy_session", Value: "secret"})
+	oversized.Header.Set("Origin", "http://127.0.0.1:8080")
+	oversized.Header.Set("X-CSRF-Token", "secret")
+	oversizedResponse := httptest.NewRecorder()
+	h.ServeHTTP(oversizedResponse, oversized)
+	if oversizedResponse.Code != http.StatusBadRequest {
+		t.Fatalf("oversized profile request was not rejected: %d %s", oversizedResponse.Code, oversizedResponse.Body)
+	}
+	duplicateKey := httptest.NewRequest("POST", "http://127.0.0.1:8080/api/profile", strings.NewReader(`{"name":"Mallory","theme":"light","theme":"dark"}`))
+	duplicateKey.AddCookie(&http.Cookie{Name: "academy_session", Value: "secret"})
+	duplicateKey.Header.Set("Origin", "http://127.0.0.1:8080")
+	duplicateKey.Header.Set("X-CSRF-Token", "secret")
+	duplicateKeyResponse := httptest.NewRecorder()
+	h.ServeHTTP(duplicateKeyResponse, duplicateKey)
+	if duplicateKeyResponse.Code != http.StatusBadRequest {
+		t.Fatalf("duplicate JSON object key was not rejected: %d %s", duplicateKeyResponse.Code, duplicateKeyResponse.Body)
+	}
 	if w := request("PUT", "/api/drafts/hello", `{"files":{"../evil.go":"x"}}`, true, "127.0.0.1:8080", ""); w.Code != 422 {
 		t.Fatal("unsafe file accepted")
 	}

@@ -6,6 +6,7 @@ import (
 	"academy/internal/projectrunner"
 	"academy/internal/runner"
 	"academy/internal/store"
+	"bytes"
 	"context"
 	"crypto/ed25519"
 	"crypto/rand"
@@ -128,7 +129,14 @@ func decode(w http.ResponseWriter, r *http.Request, v any) error {
 		limit = 1 << 20
 	}
 	r.Body = http.MaxBytesReader(w, r.Body, limit)
-	d := json.NewDecoder(r.Body)
+	raw, err := io.ReadAll(r.Body)
+	if err != nil {
+		return err
+	}
+	if err := rejectDuplicateJSONKeys(raw); err != nil {
+		return err
+	}
+	d := json.NewDecoder(bytes.NewReader(raw))
 	d.DisallowUnknownFields()
 	if err := d.Decode(v); err != nil {
 		return err
@@ -139,6 +147,67 @@ func decode(w http.ResponseWriter, r *http.Request, v any) error {
 	}
 	return nil
 }
+
+func rejectDuplicateJSONKeys(raw []byte) error {
+	d := json.NewDecoder(bytes.NewReader(raw))
+	var parseValue func() error
+	parseValue = func() error {
+		token, err := d.Token()
+		if err != nil {
+			return err
+		}
+		delim, ok := token.(json.Delim)
+		if !ok {
+			return nil
+		}
+		switch delim {
+		case '{':
+			seen := make(map[string]struct{})
+			for d.More() {
+				keyToken, err := d.Token()
+				if err != nil {
+					return err
+				}
+				key, ok := keyToken.(string)
+				if !ok {
+					return errors.New("invalid JSON object key")
+				}
+				if _, duplicate := seen[key]; duplicate {
+					return errors.New("duplicate JSON object key")
+				}
+				seen[key] = struct{}{}
+				if err := parseValue(); err != nil {
+					return err
+				}
+			}
+			end, err := d.Token()
+			if err != nil || end != json.Delim('}') {
+				return errors.New("invalid JSON object")
+			}
+		case '[':
+			for d.More() {
+				if err := parseValue(); err != nil {
+					return err
+				}
+			}
+			end, err := d.Token()
+			if err != nil || end != json.Delim(']') {
+				return errors.New("invalid JSON array")
+			}
+		default:
+			return errors.New("invalid JSON value")
+		}
+		return nil
+	}
+	if err := parseValue(); err != nil {
+		return err
+	}
+	if _, err := d.Token(); err != io.EOF {
+		return errors.New("extra JSON")
+	}
+	return nil
+}
+
 func (a *API) Handler(staticDir string) http.Handler {
 	mux := http.NewServeMux()
 	a.projectRoutes(mux)

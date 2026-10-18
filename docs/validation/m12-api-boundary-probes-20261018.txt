@@ -1,0 +1,17 @@
+M12 S08/S12 API request-boundary regressions
+Date: 2026-10-18 (Asia/Atyrau)
+
+`internal/httpapi/api_test.go` now checks two previously missing request-boundary cases:
+- A cross-site `Sec-Fetch-Site` mutation with otherwise valid allowlisted Host, matching local Origin, session cookie and CSRF token is rejected with 403; the profile remains unchanged.
+- Profile requests larger than the 512 KiB body cap are rejected with 400, before any mutation.
+
+The API decoder now reads only the `MaxBytesReader`-bounded body, rejects duplicate object keys recursively (including nested objects/arrays), then performs its existing strict struct decode and trailing-value check. Duplicate `theme` fields return 400; state remains unchanged.
+
+Validation:
+- `sh scripts/go.sh test -count=1 ./internal/httpapi -run '^TestAPIProfilePersistenceAndBoundaries$'` — PASS.
+- `sh scripts/go.sh vet ./internal/httpapi` — PASS.
+- Full `make test` after the cross-site/body-size regressions — PASS: full Go unit/integration/reference, vet, race, Python gates, TypeScript and production build. Log `artifacts/m12-s12-current-make-test-20261018.log`, SHA256 `7ea4959581d3b7e1836a961a4dc1894f4858e92ef5173fe293856f4ae0dab168`.
+- Full `make test` after duplicate-key rejection was added — PASS, full log `artifacts/m12-s08-s12-current-make-test-20261018.log`, SHA256 `c7f606d90213173d93804f4ca52a798576589eaa7a16eab0c7a245e573576445`.
+- `git diff --check` — PASS.
+
+These changes close the specific S08 missing oversized-body/duplicate-key rejection probes and S12 cross-site Fetch Metadata regression. Other M12 evidence gaps remain in S01–S04, S06–S07, S09 and S11.

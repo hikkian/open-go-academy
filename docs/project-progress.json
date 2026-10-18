@@ -111,7 +111,7 @@
       "value": 0,
       "max": 2,
       "unit": "этапа",
-      "detail": "M12: browser/E2E 50/10/0, responsive/axe, cgroup OOM/PID and explicit Sec-Fetch-Site cross-site mutation regression pass; S01–S03/S04/S06–S09/S11 bounded threat evidence remains open. M13: clean archive 5a985b2 passed bootstrap/test/build/runtime/recovery/E2E and Gitleaks; repeat after the latest test-only S12 addition. Owner LICENSE/NOTICE decision and non-Linux validation remain."
+      "detail": "M12: current desktop/mobile E2E 50/10/0, responsive/axe, cgroup OOM/PID, S08 oversized/duplicate-key JSON rejection and S12 cross-site mutation tests pass; S01–S04/S06–S07/S09/S11 threat evidence remains. M13: clean archive 5a985b2 passed bootstrap/test/build/runtime/recovery/E2E and Gitleaks, then S08/S12 API source changes landed; refresh current clean-source gate after the remaining M12 code batch. Owner license/NOTICE decision and non-Linux validation remain."
     },
     {
       "title": "Необязательный ИИ-наставник",
