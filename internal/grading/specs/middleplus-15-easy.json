@@ -28,12 +28,17 @@
     {
       "depth": 0,
       "capacity": 0
+    },
+    {
+      "depth": 5,
+      "capacity": 4
     }
   ],
   "private_expected": [
     "queued",
     "full",
     "invalid",
-    "invalid"
+    "invalid",
+    "full"
   ]
 }

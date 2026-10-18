@@ -57,6 +57,20 @@
       "oldestSeconds": -1,
       "maxAgeSeconds": 60,
       "consumerPaused": false
+    },
+    {
+      "depth": 4,
+      "capacity": 4,
+      "oldestSeconds": 60,
+      "maxAgeSeconds": 60,
+      "consumerPaused": false
+    },
+    {
+      "depth": -1,
+      "capacity": 4,
+      "oldestSeconds": 60,
+      "maxAgeSeconds": 60,
+      "consumerPaused": true
     }
   ],
   "private_expected": [
@@ -65,6 +79,8 @@
     "full",
     "paused",
     "paused",
+    "invalid",
+    "full",
     "invalid"
   ]
 }

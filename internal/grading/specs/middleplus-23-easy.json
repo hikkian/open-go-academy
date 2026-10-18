@@ -87,6 +87,48 @@
         0
       ],
       "observed": []
+    },
+    {
+      "impact": 0,
+      "ongoing": false,
+      "eventTimes": [
+        0,
+        0
+      ],
+      "observed": [
+        true,
+        true
+      ]
+    },
+    {
+      "impact": 0,
+      "ongoing": false,
+      "eventTimes": [
+        0,
+        1
+      ],
+      "observed": [
+        true,
+        false
+      ]
+    },
+    {
+      "impact": 0,
+      "ongoing": true,
+      "eventTimes": [
+        0,
+        1
+      ],
+      "observed": [
+        false,
+        false
+      ]
+    },
+    {
+      "impact": 2,
+      "ongoing": false,
+      "eventTimes": [],
+      "observed": []
     }
   ],
   "private_expected": [
@@ -94,6 +136,10 @@
     "respond",
     "invalid",
     "invalid",
+    "invalid",
+    "review",
+    "review_gaps",
+    "respond",
     "invalid"
   ]
 }

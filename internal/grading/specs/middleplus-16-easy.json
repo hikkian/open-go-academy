@@ -38,6 +38,16 @@
       "attempt": 0,
       "maxAttempts": 0,
       "transient": true
+    },
+    {
+      "attempt": 3,
+      "maxAttempts": 3,
+      "transient": false
+    },
+    {
+      "attempt": 0,
+      "maxAttempts": 1,
+      "transient": true
     }
   ],
   "private_expected": [
@@ -45,6 +55,8 @@
     "exhausted",
     "stop",
     "invalid",
-    "invalid"
+    "invalid",
+    "stop",
+    "retry"
   ]
 }

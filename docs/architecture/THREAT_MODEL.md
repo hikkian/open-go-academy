@@ -27,6 +27,8 @@
 | S11 | Sandbox binary отсутствует, namespace запрещён, cgroup не delegated, policy invalid | Run/submit unavailable; ноль пользовательских processes на host; нет unsafe fallback |
 | S12 | Foreign Origin/Host, cross-site POST/fetch, DNS rebinding, forged client rank | Request rejected; exact Origin/Host allowlist, CSRF/session protection; server-authoritative grade |
 
+**S05: локальное подтверждение 2026-10-18.** `make sandbox-test` завершился exit 0. В текущей rootless Podman/cgroup v2 конфигурации runner memory fixture был остановлен ядром с exit 137 и `memory.events: oom_kill=1`; PID fixture получил `EAGAIN` (`resource temporarily unavailable`), очистил все 33 дочерних процесса и завершился с exit 0 при `pids.events: max=3`. Проверка воспроизводится `scripts/m12_sandbox_limit_probe.py`; итог записан в `docs/validation/m12-sandbox-cgroup-20261018.txt`. Это подтверждает текущую локальную конфигурацию и эти два сценария, не является доказательством для другого ядра/runtime, публичной multi-tenant модели или всей S01–S12 матрицы.
+
 Для S05/S06 нельзя сначала создавать необузданный host fork/memory/disk bomb. Harness предварительно создаёт и проверяет ограниченную группу, имеет внешний watchdog и host sentinel. Все tests сохраняют команды, лимиты, версии, exit status, elapsed time и cleanup evidence. Успешный hello-world не заменяет матрицу.
 
 ## Hidden tests и correctness

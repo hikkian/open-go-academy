@@ -45,12 +45,26 @@
       "committed": false,
       "observed": true,
       "retryable": true
+    },
+    {
+      "stage": "publish",
+      "committed": true,
+      "observed": true,
+      "retryable": true
+    },
+    {
+      "stage": "after_commit",
+      "committed": true,
+      "observed": true,
+      "retryable": true
     }
   ],
   "private_expected": [
     false,
     false,
     false,
+    false,
+    true,
     false
   ]
 }

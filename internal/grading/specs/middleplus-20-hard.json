@@ -100,12 +100,28 @@
         true
       ],
       "maxWait": 5
+    },
+    {
+      "arrival": [
+        0,
+        1
+      ],
+      "wait": [
+        0,
+        0
+      ],
+      "selected": [
+        true,
+        true
+      ],
+      "maxWait": 0
     }
   ],
   "private_expected": [
     false,
     true,
     false,
-    false
+    false,
+    true
   ]
 }

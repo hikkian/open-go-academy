@@ -53,6 +53,16 @@
       "workers": 1,
       "arrival": 0,
       "reservePercent": 101
+    },
+    {
+      "workers": 100,
+      "arrival": 1,
+      "reservePercent": 100
+    },
+    {
+      "workers": 100,
+      "arrival": 0,
+      "reservePercent": -1
     }
   ],
   "private_expected": [
@@ -62,6 +72,8 @@
     "within",
     "within",
     "within",
+    "over",
+    "invalid",
     "over",
     "invalid"
   ]

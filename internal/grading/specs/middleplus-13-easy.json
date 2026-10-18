@@ -28,12 +28,22 @@
     {
       "workers": 2,
       "arrival": -1
+    },
+    {
+      "workers": 1,
+      "arrival": 1
+    },
+    {
+      "workers": -1,
+      "arrival": 0
     }
   ],
   "private_expected": [
     "within",
     "over",
     "invalid",
+    "invalid",
+    "within",
     "invalid"
   ]
 }

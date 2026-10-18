@@ -56,6 +56,12 @@
       "event": "publish",
       "attempts": 0,
       "maxAttempts": 0
+    },
+    {
+      "state": "pending",
+      "event": "retry",
+      "attempts": 4,
+      "maxAttempts": 3
     }
   ],
   "private_expected": [
@@ -64,6 +70,7 @@
     "acked",
     "dead_letter",
     "absent",
+    "invalid",
     "invalid",
     "invalid"
   ]

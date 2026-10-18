@@ -65,11 +65,29 @@
       "deadlineOK": true,
       "queueAge": -1,
       "maxQueueAge": 60
+    },
+    {
+      "offered": 4,
+      "capacity": 5,
+      "critical": true,
+      "deadlineOK": false,
+      "queueAge": 999,
+      "maxQueueAge": 60
+    },
+    {
+      "offered": 8,
+      "capacity": 5,
+      "critical": false,
+      "deadlineOK": true,
+      "queueAge": 60,
+      "maxQueueAge": 60
     }
   ],
   "private_expected": [
     false,
     false,
+    false,
+    true,
     false,
     true,
     false

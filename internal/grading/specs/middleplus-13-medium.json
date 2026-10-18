@@ -44,6 +44,14 @@
     {
       "workers": 10,
       "reservePercent": 101
+    },
+    {
+      "workers": 9223372036854775807,
+      "reservePercent": 99
+    },
+    {
+      "workers": 100,
+      "reservePercent": -1
     }
   ],
   "private_expected": [
@@ -54,6 +62,8 @@
     9223372036854775807,
     9131138316486228048,
     -1,
+    -1,
+    92233720368547758,
     -1
   ]
 }

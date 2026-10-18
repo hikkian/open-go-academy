@@ -58,6 +58,13 @@
       "observed": true,
       "recovered": true,
       "retryable": false
+    },
+    {
+      "stage": "after_commit",
+      "committed": true,
+      "observed": true,
+      "recovered": false,
+      "retryable": true
     }
   ],
   "private_expected": [
@@ -65,6 +72,7 @@
     "reconcile",
     "reconcile",
     "inspect",
-    "done"
+    "done",
+    "inspect"
   ]
 }

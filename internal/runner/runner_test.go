@@ -158,8 +158,8 @@ func TestSandboxIntegration(t *testing.T) {
 	})
 	t.Run("memory-limit", func(t *testing.T) {
 		r := run(t, `package main;import "time";var blocks [][]byte;func main(){for i:=0;i<100;i++{b:=make([]byte,16<<20);for j:=range b{b[j]=1};blocks=append(blocks,b)};time.Sleep(time.Second)}`)
-		if r.Status == "ok" || r.Status == "timeout" {
-			t.Fatal("memory was not limited", r)
+		if r.Status != "error" || r.ExitCode != 137 {
+			t.Fatal("expected cgroup OOM kill exit 137, not a generic failure", r)
 		}
 	})
 	t.Run("disk-limit", func(t *testing.T) {
@@ -169,9 +169,10 @@ func TestSandboxIntegration(t *testing.T) {
 		}
 	})
 	t.Run("pid-limit", func(t *testing.T) {
-		r := run(t, `package main;import("fmt";"os/exec");func main(){for i:=0;i<150;i++{if e:=exec.Command("/bin/sleep","2").Start();e!=nil{fmt.Println("bounded");return}};fmt.Println("unbounded")}`)
-		if r.Status == "ok" && r.Stdout != "bounded\n" {
-			t.Fatal(r)
+		r := run(t, `package main;import("fmt";"os/exec");func main(){var children []*exec.Cmd;for i:=0;i<150;i++{c:=exec.Command("/bin/sleep","2");if e:=c.Start();e!=nil{for _,child:=range children{_=child.Process.Kill()};for _,child:=range children{_=child.Wait()};fmt.Printf("bounded: %v\nchildren-cleaned:%d\n",e,len(children));return};children=append(children,c)};for _,child:=range children{_=child.Process.Kill()};for _,child:=range children{_=child.Wait()};fmt.Println("unbounded")}`)
+		if r.Status != "ok" || r.ExitCode != 0 || !strings.Contains(r.Stdout, "resource temporarily unavailable") ||
+			!strings.Contains(r.Stdout, "children-cleaned:") || strings.Contains(r.Stdout, "unbounded") {
+			t.Fatal("expected PID cgroup EAGAIN after reaping children", r)
 		}
 	})
 	t.Run("format", func(t *testing.T) {

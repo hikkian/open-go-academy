@@ -92,6 +92,13 @@
       "attempts": 0,
       "maxAttempts": 3,
       "effectApplied": false
+    },
+    {
+      "state": "delivered",
+      "event": "crash",
+      "attempts": 3,
+      "maxAttempts": 3,
+      "effectApplied": true
     }
   ],
   "private_expected": [
@@ -105,6 +112,7 @@
     "dead_letter",
     "deduplicate",
     "invalid",
-    "invalid"
+    "invalid",
+    "deduplicate"
   ]
 }

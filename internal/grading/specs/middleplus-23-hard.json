@@ -131,6 +131,77 @@
       "ownerAssigned": true,
       "dueDay": 10,
       "verified": true
+    },
+    {
+      "eventTimes": [
+        0,
+        0
+      ],
+      "observed": [
+        true,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": true,
+      "dueDay": 1,
+      "verified": true
+    },
+    {
+      "eventTimes": [
+        0,
+        1
+      ],
+      "observed": [
+        true,
+        true
+      ],
+      "actionStatus": "Closed",
+      "ownerAssigned": true,
+      "dueDay": 1,
+      "verified": true
+    },
+    {
+      "eventTimes": [
+        0,
+        1
+      ],
+      "observed": [
+        true,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": true,
+      "dueDay": 1,
+      "verified": false
+    },
+    {
+      "eventTimes": [
+        0,
+        1
+      ],
+      "observed": [
+        true,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": true,
+      "dueDay": -1,
+      "verified": true
+    },
+    {
+      "eventTimes": [
+        0,
+        1
+      ],
+      "observed": [
+        true,
+        true,
+        true
+      ],
+      "actionStatus": "closed",
+      "ownerAssigned": true,
+      "dueDay": 1,
+      "verified": true
     }
   ],
   "private_expected": [
@@ -139,6 +210,11 @@
     false,
     false,
     false,
-    true
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
   ]
 }

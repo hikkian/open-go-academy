@@ -24,11 +24,21 @@
     {
       "depth": 0,
       "limit": 0
+    },
+    {
+      "depth": 1,
+      "limit": 1
+    },
+    {
+      "depth": 0,
+      "limit": 2
     }
   ],
   "private_expected": [
     "full",
     "invalid",
-    "invalid"
+    "invalid",
+    "full",
+    "admit"
   ]
 }

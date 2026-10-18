@@ -98,6 +98,25 @@ class M11CurriculumQualityTests(unittest.TestCase):
         repeated = {paragraph: ids for paragraph, ids in first_paragraphs.items() if len(ids) > 1}
         self.assertFalse(repeated, f"repeated Middle+ introductions: {repeated}")
 
+    def test_heap_and_slo_lessons_distinguish_their_evidence_contracts(self):
+        heap = read_markdown("middleplus-05")
+        self.assertIn("не строит граф ссылок", heap)
+        self.assertIn("стек", heap)
+        self.assertIn("путь удержания", heap)
+
+        slo = read_markdown("middleplus-21")
+        self.assertIn("пороговые счётчики good/total позволяют проверить именно это условие", slo)
+        self.assertIn("не позволяют восстановить точное числовое значение p95", slo)
+        self.assertIn("остаток error budget", slo)
+        meta = read_lesson("middleplus-21")
+        exercises = {item["id"]: item for item in meta["exercises"]}
+        self.assertIn("func SLOMeets(total int, failed int, maxErrorPercent int) bool",
+                      exercises["middleplus-21-medium"]["prompt"])
+        self.assertIn("func BudgetRemaining(total int, failed int, maxErrorPercent int) int",
+                      exercises["middleplus-21-hard"]["prompt"])
+        self.assertNotEqual(exercises["middleplus-21-medium"]["prompt"],
+                            exercises["middleplus-21-hard"]["prompt"])
+
     def test_targeted_first_use_glossaries_have_valid_translations(self):
         for number in (1, 2, 21, 24, 25, 30, 33):
             lesson_id = f"middle-{number:02d}"

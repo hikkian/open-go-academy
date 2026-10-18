@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import sys
 import tarfile
 import zipfile
@@ -44,22 +45,56 @@ def parse_go_mod(path: Path) -> tuple[str, list[tuple[str, str]]]:
     except (OSError, UnicodeError):
         return module, requires
     for raw in lines:
-        line = raw.split("//", 1)[0].strip()
+        # Go permits quoted strings in module directives. Strip comments only
+        # outside a quoted string, then let shlex decode the quoted tokens.
+        quote = False
+        escaped = False
+        end = len(raw)
+        for index, char in enumerate(raw):
+            if escaped:
+                escaped = False
+            elif char == "\\" and quote:
+                escaped = True
+            elif char == '"':
+                quote = not quote
+            elif not quote and raw.startswith("//", index):
+                end = index
+                break
+        line = raw[:end].strip()
         if not line:
             continue
-        if line.startswith("module "):
-            module = line[7:].strip().strip('"')
-        if line == "require (":
+        try:
+            bits = shlex.split(line, posix=True)
+        except ValueError:
+            continue
+        if bits and bits[0] == "module" and len(bits) == 2:
+            module = bits[1]
+        if bits == ["require", "("]:
             in_require = True
             continue
-        if in_require and line == ")":
+        if in_require and bits == [")"]:
             in_require = False
             continue
-        bits = line.split()
         if (in_require and len(bits) >= 2) or (bits and bits[0] == "require" and len(bits) >= 3):
             offset = 0 if in_require else 1
             requires.append((bits[offset], bits[offset + 1]))
     return module, sorted(set(requires))
+
+
+def discover_go_mods(repo: Path) -> list[Path]:
+    """Find source manifests without traversing generated or ignored roots.
+
+    Git archives do not contain .git, so discovery must be filesystem based;
+    explicitly pruning local state/build roots keeps an extracted source tree
+    and the working checkout's source inventory equivalent.
+    """
+    excluded = {".git", ".data", ".tools", "artifacts", "vendor", "node_modules", "testdata"}
+    found: list[Path] = []
+    for current, dirs, files in os.walk(repo):
+        dirs[:] = sorted(d for d in dirs if d not in excluded)
+        if "go.mod" in files:
+            found.append(Path(current) / "go.mod")
+    return sorted(found)
 
 
 def read_license_files(root: Path) -> list[dict[str, str]]:
@@ -67,7 +102,7 @@ def read_license_files(root: Path) -> list[dict[str, str]]:
     if not root.is_dir():
         return found
     for current, dirs, files in os.walk(root):
-        dirs[:] = sorted(d for d in dirs if d not in {".git", "vendor", "node_modules", "testdata"})
+        dirs[:] = sorted(d for d in dirs if d not in {".git", ".data", ".tools", "artifacts", "vendor", "node_modules", "testdata"})
         for filename in sorted(files):
             candidate = Path(current) / filename
             relative = candidate.relative_to(root).as_posix()
@@ -176,7 +211,7 @@ def npm_cache_metadata(cache: Path, integrity: str) -> tuple[str, list[dict[str,
 def make_inventory(repo: Path, go_cache: Path, npm_cache: Path, locks: list[Path]) -> dict[str, Any]:
     records: list[dict[str, Any]] = []
     seen: set[tuple[str, str, str]] = set()
-    go_mods = sorted(p for p in repo.rglob("go.mod") if not ({".git", "vendor", "node_modules"} & set(p.parts)))
+    go_mods = discover_go_mods(repo)
     cache_queue: list[tuple[str, str]] = []
     for modfile in go_mods:
         module, requires = parse_go_mod(modfile)

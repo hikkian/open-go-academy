@@ -88,6 +88,34 @@ class LicenseInventoryTests(unittest.TestCase):
         self.assertEqual(json.dumps(first, sort_keys=True), json.dumps(second, sort_keys=True))
         self.assertEqual([r["name"] for r in first["records"]], ["a/a", "example/root", "z/z"])
 
+    def test_quoted_go_module_paths_are_unquoted(self):
+        manifest = self.root / "go.mod"
+        manifest.write_text(
+            'module "example.com/course root"\n'
+            'require (\n "example.com/quoted dep" v1.2.3 // inline comment\n)\n',
+            encoding="utf-8",
+        )
+        module, requires = inventory.parse_go_mod(manifest)
+        self.assertEqual(module, "example.com/course root")
+        self.assertEqual(requires, [("example.com/quoted dep", "v1.2.3")])
+
+    def test_ignored_local_state_does_not_change_source_manifest_inventory(self):
+        (self.root / "go.mod").write_text("module example/root\n", encoding="utf-8")
+        before = inventory.make_inventory(self.root, self.cache, self.npm, [])
+
+        generated = self.root / ".data/fresh-source"
+        generated.mkdir(parents=True)
+        (generated / "go.mod").write_text("module example/ignored\n", encoding="utf-8")
+        (generated / "LICENSE").write_text("local generated data\n", encoding="utf-8")
+        # Build output roots are excluded as well, including in source archives
+        # where no Git index exists to identify tracked paths.
+        artifact = self.root / "artifacts/fresh-source"
+        artifact.mkdir(parents=True)
+        (artifact / "go.mod").write_text("module example/build-output\n", encoding="utf-8")
+
+        after = inventory.make_inventory(self.root, self.cache, self.npm, [])
+        self.assertEqual(after, before)
+
     def test_report_paths_hide_absolute_cache_roots_and_match_across_roots(self):
         def build(base):
             repo = base / "repo"

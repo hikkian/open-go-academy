@@ -65,11 +65,56 @@
       "minimumSample": 100,
       "evidenceReady": true,
       "rollbackReady": true
+    },
+    {
+      "errorPercent": 0,
+      "threshold": 0,
+      "sampleCount": 1,
+      "minimumSample": 1,
+      "evidenceReady": true,
+      "rollbackReady": true
+    },
+    {
+      "errorPercent": 100,
+      "threshold": 100,
+      "sampleCount": 1,
+      "minimumSample": 1,
+      "evidenceReady": true,
+      "rollbackReady": true
+    },
+    {
+      "errorPercent": 6,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": true,
+      "rollbackReady": true
+    },
+    {
+      "errorPercent": 1,
+      "threshold": 5,
+      "sampleCount": 99,
+      "minimumSample": 100,
+      "evidenceReady": true,
+      "rollbackReady": true
+    },
+    {
+      "errorPercent": -1,
+      "threshold": 5,
+      "sampleCount": 100,
+      "minimumSample": 100,
+      "evidenceReady": true,
+      "rollbackReady": true
     }
   ],
   "private_expected": [
     false,
     false,
+    false,
+    false,
+    false,
+    true,
+    true,
     false,
     false,
     false

@@ -1,6 +1,6 @@
 {
   "id": "middleplus-21-hard",
-  "signature": "func BudgetRemaining(total int, failed int, maxErrorPercent int) bool",
+  "signature": "func BudgetRemaining(total int, failed int, maxErrorPercent int) int",
   "allowed_imports": [],
   "driver": "package main\nimport (\"encoding/json\"; \"os\")\ntype input struct { Total int `json:\"total\"`; Failed int `json:\"failed\"`; Maxerrorpercent int `json:\"maxErrorPercent\"` }\nfunc main() { var cases []input; if err:=json.Unmarshal([]byte(os.Args[1]), &cases); err!=nil { panic(err) }; enc:=json.NewEncoder(os.Stdout); for _, in:=range cases { out:=BudgetRemaining(in.Total, in.Failed, in.Maxerrorpercent); if err:=enc.Encode(out); err!=nil { panic(err) } } }\n",
   "public_input": [
@@ -16,14 +16,19 @@
     }
   ],
   "public_expected": [
-    true,
-    false
+    0,
+    -1
   ],
   "private_input": [
     {
       "total": -1,
       "failed": 1,
       "maxErrorPercent": 2
+    },
+    {
+      "total": 100,
+      "failed": 0,
+      "maxErrorPercent": 101
     },
     {
       "total": 9223372036854775807,
@@ -49,14 +54,21 @@
       "total": 1,
       "failed": 0,
       "maxErrorPercent": 0
+    },
+    {
+      "total": 100,
+      "failed": 0,
+      "maxErrorPercent": 100
     }
   ],
   "private_expected": [
-    false,
-    false,
-    true,
-    true,
-    false,
-    true
+    -9223372036854775808,
+    -9223372036854775808,
+    -9223372036854775807,
+    0,
+    0,
+    -1,
+    0,
+    100
   ]
 }

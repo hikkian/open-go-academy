@@ -72,6 +72,22 @@
       "delayMillis": 1,
       "deadlineRemainingMillis": 20,
       "transient": true
+    },
+    {
+      "attempt": 3,
+      "maxAttempts": 3,
+      "budgetRemaining": 2,
+      "delayMillis": 1,
+      "deadlineRemainingMillis": 20,
+      "transient": false
+    },
+    {
+      "attempt": 0,
+      "maxAttempts": 3,
+      "budgetRemaining": 2,
+      "delayMillis": -1,
+      "deadlineRemainingMillis": 20,
+      "transient": true
     }
   ],
   "private_expected": [
@@ -81,6 +97,8 @@
     "deadline",
     "stop",
     "invalid",
+    "invalid",
+    "stop",
     "invalid"
   ]
 }

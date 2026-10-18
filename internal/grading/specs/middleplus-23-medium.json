@@ -73,6 +73,46 @@
       "evidenceCount": 2,
       "ownerAssigned": true,
       "dueDay": 4
+    },
+    {
+      "impact": 0,
+      "ongoing": false,
+      "mitigationReady": false,
+      "evidenceCount": 2,
+      "ownerAssigned": true,
+      "dueDay": 1
+    },
+    {
+      "impact": 0,
+      "ongoing": false,
+      "mitigationReady": false,
+      "evidenceCount": 2,
+      "ownerAssigned": true,
+      "dueDay": 0
+    },
+    {
+      "impact": 0,
+      "ongoing": false,
+      "mitigationReady": true,
+      "evidenceCount": 2,
+      "ownerAssigned": false,
+      "dueDay": 0
+    },
+    {
+      "impact": -1,
+      "ongoing": true,
+      "mitigationReady": true,
+      "evidenceCount": 2,
+      "ownerAssigned": true,
+      "dueDay": 1
+    },
+    {
+      "impact": 0,
+      "ongoing": false,
+      "mitigationReady": false,
+      "evidenceCount": -1,
+      "ownerAssigned": true,
+      "dueDay": 1
     }
   ],
   "private_expected": [
@@ -81,6 +121,11 @@
     "assign_action",
     "collect_evidence",
     "assign_action",
-    "mitigate"
+    "mitigate",
+    "track_action",
+    "assign_action",
+    "verify",
+    "invalid",
+    "invalid"
   ]
 }

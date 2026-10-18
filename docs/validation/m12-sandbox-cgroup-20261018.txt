@@ -1,0 +1,131 @@
+Open Go Academy M12 sandbox cgroup evidence probe
+Scope: corroborates the same policy flags as internal/runner; not an end-to-end API benchmark.
+Image: docker.io/library/golang@sha256:3b15ba438c60ab8fabe5fee3b11025c0049e358b31feff384648f11fc8e335f8
+Policy flags (read from current policy()): run --rm --pull=never --name --label academy.runner=true --network=none --http-proxy=false --stop-timeout=0 --read-only --cap-drop=ALL --security-opt=no-new-privileges --user=65532:65532 --memory=768m --memory-swap=768m --pids-limit=128 --cpus=1 --tmpfs=/tmp:rw,noexec,nosuid,nodev,size=128m --tmpfs=/work:rw,nosuid,nodev,size=192m --workdir=/work --env=CGO_ENABLED=0 --env=GOTOOLCHAIN=local --env=GOPROXY=off --env=GOSUMDB=off --tmpfs=/cache:rw,nosuid,nodev,size=192m --shm-size=16m --env=GOCACHE=/cache --env=HOME=/tmp --env=GOMAXPROCS=2
+Prerequisites: rootless=true, cgroups=v2; local pinned image present; no network or host mounts.
+memory: PASS (0.6s)
+  allocated=8MiB
+  allocated=16MiB
+  allocated=24MiB
+  allocated=32MiB
+  allocated=40MiB
+  allocated=48MiB
+  allocated=56MiB
+  allocated=64MiB
+  allocated=72MiB
+  allocated=80MiB
+  allocated=88MiB
+  allocated=96MiB
+  allocated=104MiB
+  allocated=112MiB
+  allocated=120MiB
+  allocated=128MiB
+  allocated=136MiB
+  allocated=144MiB
+  allocated=152MiB
+  allocated=160MiB
+  allocated=168MiB
+  allocated=176MiB
+  allocated=184MiB
+  allocated=192MiB
+  allocated=200MiB
+  allocated=208MiB
+  allocated=216MiB
+  allocated=224MiB
+  allocated=232MiB
+  allocated=240MiB
+  allocated=248MiB
+  allocated=256MiB
+  allocated=264MiB
+  allocated=272MiB
+  allocated=280MiB
+  allocated=288MiB
+  allocated=296MiB
+  allocated=304MiB
+  allocated=312MiB
+  allocated=320MiB
+  allocated=328MiB
+  allocated=336MiB
+  allocated=344MiB
+  allocated=352MiB
+  allocated=360MiB
+  allocated=368MiB
+  allocated=376MiB
+  allocated=384MiB
+  allocated=392MiB
+  allocated=400MiB
+  allocated=408MiB
+  allocated=416MiB
+  allocated=424MiB
+  allocated=432MiB
+  allocated=440MiB
+  allocated=448MiB
+  allocated=456MiB
+  allocated=464MiB
+  allocated=472MiB
+  allocated=480MiB
+  allocated=488MiB
+  allocated=496MiB
+  allocated=504MiB
+  allocated=512MiB
+  allocated=520MiB
+  allocated=528MiB
+  allocated=536MiB
+  allocated=544MiB
+  allocated=552MiB
+  allocated=560MiB
+  allocated=568MiB
+  allocated=576MiB
+  allocated=584MiB
+  allocated=592MiB
+  allocated=600MiB
+  allocated=608MiB
+  allocated=616MiB
+  allocated=624MiB
+  allocated=632MiB
+  allocated=640MiB
+  allocated=648MiB
+  allocated=656MiB
+  allocated=664MiB
+  allocated=672MiB
+  allocated=680MiB
+  allocated=688MiB
+  allocated=696MiB
+  allocated=704MiB
+  allocated=712MiB
+  allocated=720MiB
+  allocated=728MiB
+  allocated=736MiB
+  allocated=744MiB
+  allocated=752MiB
+  child_exit=137
+  PROBE_EVENTS_BEGIN
+  memory_events:
+  Killed
+  low 0
+  high 0
+  max 0
+  oom 0
+  oom_kill 1
+  oom_group_kill 0
+  sock_throttled 0
+  pids_events:
+  max 0
+  PROBE_EVENTS_END
+pids: PASS (0.2s)
+  spawn_error=fork/exec /proc/self/exe: resource temporarily unavailable
+  children_cleaned=33
+  eagain=true
+  child_exit=0
+  PROBE_EVENTS_BEGIN
+  memory_events:
+  low 0
+  high 0
+  max 0
+  oom 0
+  oom_kill 0
+  oom_group_kill 0
+  sock_throttled 0
+  pids_events:
+  max 3
+  PROBE_EVENTS_END

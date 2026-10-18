@@ -44,6 +44,18 @@
       "capacity": 4,
       "oldestSeconds": 1,
       "maxAgeSeconds": 0
+    },
+    {
+      "depth": 0,
+      "capacity": 4,
+      "oldestSeconds": 60,
+      "maxAgeSeconds": 60
+    },
+    {
+      "depth": 4,
+      "capacity": 4,
+      "oldestSeconds": 60,
+      "maxAgeSeconds": 60
     }
   ],
   "private_expected": [
@@ -51,6 +63,8 @@
     "stale",
     "full",
     "invalid",
-    "invalid"
+    "invalid",
+    "empty",
+    "full"
   ]
 }

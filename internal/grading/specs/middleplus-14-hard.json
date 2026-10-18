@@ -72,6 +72,22 @@
       "deadlineMillis": 10,
       "cancelled": true,
       "shed": false
+    },
+    {
+      "depth": 0,
+      "limit": 1,
+      "waitMillis": -1,
+      "deadlineMillis": 10,
+      "cancelled": true,
+      "shed": true
+    },
+    {
+      "depth": 1,
+      "limit": 1,
+      "waitMillis": 1,
+      "deadlineMillis": 10,
+      "cancelled": true,
+      "shed": false
     }
   ],
   "private_expected": [
@@ -81,6 +97,8 @@
     "shed",
     "cancelled",
     "cancelled",
-    "invalid"
+    "invalid",
+    "invalid",
+    "cancelled"
   ]
 }
