@@ -49,6 +49,14 @@ test('keyboard focus, reduced motion and responsive accessibility at tablet and 
 
   for (const viewport of [{ width: 768, height: 1024, label: 'tablet-768' }, { width: 1920, height: 1080, label: 'wide-1920' }]) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    for (const name of navigationNames) {
+      const bounds = await page.getByRole('button', { name, exact: true }).evaluate(el => {
+        const rect = el.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, viewport: window.innerWidth };
+      });
+      expect(bounds.left >= 0 && bounds.right <= bounds.viewport,
+        `${viewport.label}: navigation item "${name}" must not be clipped (${JSON.stringify(bounds)})`).toBe(true);
+    }
     const overflow = await page.evaluate(() => ({width: document.documentElement.scrollWidth, viewport: window.innerWidth, elements: [...document.querySelectorAll('body *')].map(el => ({tag: el.tagName, className: typeof el.className === 'string' ? el.className : '', text: (el.textContent || '').trim().slice(0, 70), right: Math.round(el.getBoundingClientRect().right)})).filter(el => el.right > window.innerWidth + 1).slice(0, 12)}));
     expect.soft(overflow.width <= overflow.viewport, `${viewport.label} horizontal overflow: ${JSON.stringify(overflow)}`).toBe(true);
     const scan = await new AxeBuilder({ page }).analyze();
