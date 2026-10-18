@@ -2,7 +2,7 @@
   "updated_at": "2026-10-18",
   "phase": "M11 — содержательная проверка курса, проектов и рангов Middle → Senior",
   "phase_note_suffix": " Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
-  "m11_review_detail": "All-88 gate v5 PASS: 88/88 advanced lessons, exit0, 2815.488s; start/end source fingerprint matches sha256:f6e44740…eaf8c5 (exact hash in acceptance report docs/validation/m11-current-tree-acceptance-20261018-v5.txt). Full make test also passes including Go vet/race and web build. Remaining: current-tree desktop/mobile E2E, independent pedagogy/rank-governance traceability, broader M12 audit and M13 legal/release gates. Public Go runner and external certificate trust are not enabled.",
+  "m11_review_detail": "All-88 gate v5 PASS: 88/88 advanced lessons, exit0, 2815.488s; source fingerprint sha256:f6e44740…eaf8c5 matches start/end (exact report docs/validation/m11-current-tree-acceptance-20261018-v5.txt). Full make test and current-tree desktop/mobile E2E PASS 50/10/0. Remaining: independent full-course pedagogy/rank-governance traceability. Public Go runner and external certificate trust are not enabled.",
   "phase_note": "Для Middle, Middle+ и Senior опубликовано локально 88/88 глав; полные наборы подготовлены: 88/88. Автоматическая проверка текущих исходников прошла; остаются аудит и выпуск. Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
   "milestones": [
     {
@@ -89,7 +89,7 @@
       "value": 88,
       "max": 88,
       "unit": "уроков",
-      "detail": "В локальном каталоге доступны 88 из 88 расширенных глав; подготовлено 88 из 88 полных наборов lesson/metadata/examples/exercises. Полная автоматическая проверка текущих исходников прошла. All-88 gate v5 PASS: 88/88 advanced lessons, exit0, 2815.488s; start/end source fingerprint matches sha256:f6e44740…eaf8c5 (exact hash in acceptance report docs/validation/m11-current-tree-acceptance-20261018-v5.txt). Full make test also passes including Go vet/race and web build. Remaining: current-tree desktop/mobile E2E, independent pedagogy/rank-governance traceability, broader M12 audit and M13 legal/release gates. Public Go runner and external certificate trust are not enabled. Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены.",
+      "detail": "В локальном каталоге доступны 88 из 88 расширенных глав; подготовлено 88 из 88 полных наборов lesson/metadata/examples/exercises. Полная автоматическая проверка текущих исходников прошла. All-88 gate v5 PASS: 88/88 advanced lessons, exit0, 2815.488s; source fingerprint sha256:f6e44740…eaf8c5 matches start/end (exact report docs/validation/m11-current-tree-acceptance-20261018-v5.txt). Full make test and current-tree desktop/mobile E2E PASS 50/10/0. Remaining: independent full-course pedagogy/rank-governance traceability. Public Go runner and external certificate trust are not enabled. Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены.",
       "id": "m11-course"
     },
     {
@@ -111,7 +111,7 @@
       "value": 0,
       "max": 2,
       "unit": "этапа",
-      "detail": "M12: tablet overflow/contrast fixes, responsive/axe checks and full desktop/mobile E2E PASS50/SKIP10/FAIL0; real cgroup OOM/PID probes and exact runner assertions pass. Broader security/load/theme/error-state checks remain open. M13: clean archive `10cd990` bootstrap/test/build/project-runtime/recovery/E2E and redacted Gitleaks archive/history scans pass; inventory has 268 records and 193 license-file observations/99 hashes. Remaining: legal license/NOTICE owner choice and non-Linux support validation."
+      "detail": "M12: current desktop/mobile E2E 50/10/0, responsive/a11y, cgroup OOM/PID tests pass; bounded threat coverage S01–S03/S06–S09/S11–S12 still open. M13: clean-source acceptance on 10cd990 passed, must rerun on current checkpoint; legal LICENSE/NOTICE decision and non-Linux platform testing remain open."
     },
     {
       "title": "Необязательный ИИ-наставник",
@@ -125,7 +125,7 @@
     "range": "Предварительный ориентир: ещё 4–8 недель активной разработки.",
     "calendar_window": "Ориентир при регулярной работе: 15 ноября–13 декабря 2026. Это плановый диапазон, не обещанная дата.",
     "confidence": "Низкая: три оставшихся этапа крупнее некоторых уже завершённых; новые результаты аудита могут увеличить объём исправлений.",
-    "basis": "Остались финальный M11 acceptance всех 88 продвинутых глав, полный аудит M12 и итоговые условия выпуска M13. Технические сценарии пяти проектов и экзаменов уже реализованы и проверяются автоматически.",
+    "basis": "Остались независимая педагогическая/ранговая traceability M11, bounded threat-coverage probes and full M12 acceptance, plus clean-source revalidation and legal/owner gates M13. Технический all-88 gate и текущий desktop/mobile E2E уже прошли.",
     "constraints": "Доступность лимитов и результаты повторных проверок влияют на календарный срок. Оценка пересматривается после закрытия крупных этапов."
   },
   "m11_acceptance": {

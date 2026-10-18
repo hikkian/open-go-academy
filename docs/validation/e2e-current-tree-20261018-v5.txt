@@ -1,0 +1,17 @@
+Open Go Academy — current-tree desktop/mobile E2E acceptance
+Date: 2026-10-18 (Asia/Atyrau)
+Source checkpoint: `d7af1f1` (M11 v5 source fingerprint `sha256:f6e44740783cba50ff9b2bc2812f7f88283a8d5caff0ef062b33e7b471aef8c5`)
+
+Environment
+- Browser matrix: 60 Playwright tests, one worker, desktop and mobile projects, local Chromium.
+- `ACADEMY_E2E_RUNNER=1`, `ACADEMY_E2E_PROJECT_RUNNER=1`, `ACADEMY_E2E_P3_RUNNER=1`.
+- Basic Go runner and combined P2/P3/P4/P5 project runner used distinct Unix sockets and their own disposable API DB under `/tmp/oga-e2e-current-v5.lerGPS`; no user database, key, socket or service was used.
+- No AI model/provider was called. Rootless Podman was used for isolated project submissions; P4/P5 evidence did not award rank.
+
+Result: **PASS — 50 passed, 10 intentional skips, 0 failed, 10.5 minutes, exit 0.**
+
+Coverage includes Go run/grade, native exam/rank boundaries, P1 actual isolated evaluation, P2 PostgreSQL actual submission, P3 TaskFlow run/test/submit/reload/snapshot, P4/P5 actual submissions, reviewer/credential trust boundaries, mobile/desktop UI, axe/accessibility, themes, Tutor privacy/no-AI and responsive layouts. Timed actual project checks: P1 3.4m, P3 38.3s, P4/P5 41.3s. The 10 skips are documented platform matrix choices for mobile duplicates and optional provider invocation.
+
+Evidence: Playwright HTML report `artifacts/playwright-report/index.html`, SHA256 `ea3c032700c768b3f81bd1759f4e02a8f032f8dd1c6f31944d7e96bba11ef864`; screenshots/traces under ignored `artifacts/playwright/` and `artifacts/`.
+
+Harness correction: an earlier attempt invoked the suite with real-runner flags but omitted runner socket/process setup; it failed because the API had no isolated runners. That attempt is not acceptance evidence. The successful run above explicitly started both runners on temporary sockets, supplied the temporary DB, verified the sockets existed, then ran the same test matrix. The temporary runner processes exited via the harness trap; exact runner install-label queries showed no leftover containers.
