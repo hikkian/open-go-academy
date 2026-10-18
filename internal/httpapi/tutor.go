@@ -2,7 +2,6 @@ package httpapi
 
 import (
 	"academy/internal/content"
-	"academy/internal/learning"
 	"academy/internal/store"
 	"academy/internal/tutor"
 	"context"
@@ -537,11 +536,10 @@ func (a *API) tutorLearningSnapshot() (map[string]any, error) {
 	if err != nil {
 		return nil, err
 	}
-	awards, err := a.Store.RankAwards("local")
+	s, _, err := a.learningSnapshot(p)
 	if err != nil {
 		return nil, err
 	}
-	s := learning.WithAwards(learning.WithCatalog(learning.Build(p), p, a.Content), awards)
 	counts := make([]map[string]any, 0, len(s.Ranks))
 	for _, rank := range s.Ranks {
 		var total, complete int
@@ -592,7 +590,7 @@ func tutorLessonContext(lesson content.Lesson) string {
 		}
 	}
 	const limit = 24 << 10
-	header := fmt.Sprintf("Открытый материал курса — источник истины для этой темы. Урок %s: %s\nТекущая тема: %s\nРанг/модуль: %s / %s\nЦелевая версия Go для совместимости курса: %s (это главный target для примеров урока).\nПроверенный срез upstream: последний minor Go 1.27 — Go 1.27.2, релиз 2026-10-08; проверено 2026-10-16. История релизов: https://go.dev/doc/devel/release ; заметки: https://go.dev/doc/go1.27 . Этот срез устаревает после даты проверки; модель не обращается к сети.\nЦелевые навыки: %s\n", lesson.ID, lesson.Title, lesson.Title, lesson.Rank, lesson.Module, lesson.GoVersion, strings.Join(skills, ", "))
+	header := fmt.Sprintf("Открытый материал курса — источник истины для этой темы. Урок %s: %s\nТекущая тема: %s\nРанг/модуль: %s / %s\nЦелевая версия Go для совместимости курса: %s (это главный target для примеров урока).\nПроверенный срез upstream: последний minor Go 1.27 — Go 1.27.2, релиз 2026-10-08; проверено 2026-10-18. История релизов: https://go.dev/doc/devel/release ; заметки: https://go.dev/doc/go1.27 . Этот срез устаревает после даты проверки; модель не обращается к сети.\nЦелевые навыки: %s\n", lesson.ID, lesson.Title, lesson.Title, lesson.Rank, lesson.Module, lesson.GoVersion, strings.Join(skills, ", "))
 	text := clipTutorUTF8(header, limit)
 	body := "\nПолный открытый текст урока:\n" + lesson.Body
 	text += clipTutorUTF8(body, limit-len(text))

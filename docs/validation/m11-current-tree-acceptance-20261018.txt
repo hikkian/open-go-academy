@@ -1,0 +1,15 @@
+M11 acceptance
+Result: INTERRUPTED
+Scope: all 88 drafts
+Started epoch: 1792296388
+Started UTC: 2026-10-18T04:06:28+00:00
+Elapsed seconds: 1332.144
+Exit code: 130
+Source fingerprint: sha256:6ba40b78408241a59513e800e0a9a49c3d74295961b1db8bb7194d6365c4b7bc
+Finished source fingerprint: sha256:6ba40b78408241a59513e800e0a9a49c3d74295961b1db8bb7194d6365c4b7bc
+Raw log: /home/alisher/Desktop/open-go-academy/artifacts/m11-full-final-20261018.log
+Raw log SHA-256: 8a63942dc5a468547ec66d8f7e8a594b6a7e8a1f1a6b8f0e0ea48135f18e5088
+Command: ACADEMY_ACCEPT_M11_DRAFTS=1 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOFLAGS=-p=1 GOMAXPROCS=2 GOCACHE=/tmp/oga-m26-20261018 sh scripts/go.sh test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v
+
+This gate executes repository-owned examples/starters and reference solutions through the pinned isolated runner.
+A passing automatic gate does not establish pedagogical completeness, reviewer identity or public sandbox safety.

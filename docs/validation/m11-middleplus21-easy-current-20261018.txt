@@ -1,0 +1,15 @@
+M11 acceptance
+Result: PASS
+Scope: middleplus-21
+Started epoch: 1792297854
+Started UTC: 2026-10-18T04:30:54+00:00
+Elapsed seconds: 31.475
+Exit code: 0
+Source fingerprint: sha256:7600aec0f32445b13ff22d2d088c6b402a5a744fca5399930d3112d74a7911db
+Finished source fingerprint: sha256:7600aec0f32445b13ff22d2d088c6b402a5a744fca5399930d3112d74a7911db
+Raw log: /home/alisher/Desktop/open-go-academy/artifacts/m11-middleplus21-easy-current-20261018.log
+Raw log SHA-256: de6d3d993df88b133c2b60ece44c09c071260139560b94d9efe1ac018132f8c6
+Command: ACADEMY_ACCEPT_M11_DRAFTS=1 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOFLAGS=-p=1 GOMAXPROCS=2 GOCACHE=/tmp/oga-m26-20261018 ACADEMY_M11_LESSON_IDS=middleplus-21 sh scripts/go.sh test -count=1 -timeout=3h ./internal/content -run '^TestM11DraftCatalogAcceptance$' -v
+
+This gate executes repository-owned examples/starters and reference solutions through the pinned isolated runner.
+A passing automatic gate does not establish pedagogical completeness, reviewer identity or public sandbox safety.

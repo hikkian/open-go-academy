@@ -63,10 +63,10 @@
       ],
       "difficulty": "easy",
       "title": "Easy: sli, slo и error budget — классификация",
-      "prompt": "Реализуйте чистую функцию `func SLOBand(total int, failed int) string`. Контракт: total<=0, failed вне [0,total] → \"invalid\"; failed=0 → \"within\", иначе \"errors\".\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент.",
+      "prompt": "Реализуйте чистую функцию `func SLOBand(total int, failed int) string`. Контракт: total<=0, failed вне [0,total] → \"invalid\"; failed=0 → \"within\", иначе \"errors\". На публичных примерах `SLOBand(100,0)` возвращает within, а `SLOBand(100,1)` — errors. Проверьте также невалидные случаи: total<=0, failed<0 и failed>total.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc SLOBand(total int, failed int) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"errors\"\n",
+      "public_output": "\"within\"\n\"errors\"\n",
       "criteria": [
         "Контракт: total<=0, failed вне [0,total] → \"invalid\"; failed=0 → \"within\", иначе \"errors\".",
         "Точная сигнатура, типы и результат контракта.",

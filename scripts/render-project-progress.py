@@ -39,23 +39,29 @@ draft_track["value"] = draft_count
 acceptance_path = ROOT / data.get("m11_acceptance_report", "docs/validation/m11-current-tree-acceptance-20261016.txt")
 current_fingerprint = source_fingerprint(ROOT)
 acceptance_passed = False
+acceptance_running = (
+    data.get("m11_acceptance", {}).get("status") == "running"
+    and data.get("m11_acceptance", {}).get("source_fingerprint") == current_fingerprint
+)
 if acceptance_path.is_file():
     evidence = acceptance_path.read_text(encoding="utf-8")
     acceptance_passed = acceptance_matches(evidence, current_fingerprint)
-data["m11_acceptance"] = {"status": "passed" if acceptance_passed else "needs_recheck",
+data["m11_acceptance"] = {"status": "passed" if acceptance_passed else ("running" if acceptance_running else "needs_recheck"),
                           "source_fingerprint": current_fingerprint}
 draft_track["title"] = "M11 — подготовленные черновики"
 draft_track["detail"] = (
     f"Подготовлены файлы {draft_count} из 88 глав. "
     + ("Полная автоматическая проверка текущих исходников прошла. "
-       if acceptance_passed else "Полную автоматическую проверку текущих исходников ещё нужно повторить. ")
+       if acceptance_passed else ("Полная fingerprint-bound проверка исходников сейчас выполняется. "
+                                  if acceptance_running else "Полную автоматическую проверку текущих исходников ещё нужно повторить. "))
     + data.get("m11_review_detail", "")
     + " Этот счётчик показывает подготовку файлов; проверка качества и публикация — отдельные условия."
 )
 data["phase_note"] = (
     f"Для Middle, Middle+ и Senior подготовлены {draft_count}/88 черновых глав. "
     + ("Автоматическая проверка текущих исходников прошла; главы ожидают педагогической приёмки."
-       if acceptance_passed else "Идёт содержательная проверка; полный автоматический прогон нужно повторить после правок.")
+       if acceptance_passed else ("Полный fingerprint-bound автоматический прогон текущего дерева выполняется."
+                                  if acceptance_running else "Полный автоматический прогон нужно повторить после правок."))
     + data.get("phase_note_suffix", "")
 )
 

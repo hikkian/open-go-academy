@@ -1,5 +1,7 @@
 # M11 pedagogical audit: Middle-27…40
 
+> Исторический review снимка до remediation. P1 arithmetic issues, M28 constructor evidence and missing project-rubric traceability have since been addressed in code/rubric v2; helper tests still do not execute a complete production system. Current disposition is in [`M11_MIDDLE_REMAINING_STATUS_20261018.md`](M11_MIDDLE_REMAINING_STATUS_20261018.md) and [`AGENT_HANDOFF.md`](../../AGENT_HANDOFF.md).
+
 **Status:** read-only review of the current draft snapshot. No candidate implementation, runner, or acceptance gate was executed. Reviewed all 14 chapter JSON/Markdown pairs, 42 exercise contracts, corresponding grading specs (public/private vectors), and the 42 checked-in reference solutions/examples. This review checks curriculum/content consistency and plausible edge-case coverage; it is not a full Go/runtime or production-security audit.
 
 ## Findings

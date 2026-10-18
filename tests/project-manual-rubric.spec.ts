@@ -40,19 +40,24 @@ async function openProject(page: import('@playwright/test').Page) {
 
 test('P3 ручные критерии доступны с клавиатуры до отправки и не исполняют содержимое API', async ({page}, info) => {
   const writeCount = await openProject(page);
-  const criteria = page.getByText('Критерии ручной приёмки', {exact: true});
-  await expect(criteria).toBeVisible();
   const details = page.locator('details.manual-rubric-details');
+  const criteria = details.locator(':scope > summary');
+  await expect(criteria).toBeVisible();
   await expect(details).not.toHaveAttribute('open', '');
   expect(writeCount()).toBe(0);
 
   await criteria.focus();
   await page.keyboard.press('Enter');
   await expect(details).toHaveAttribute('open', '');
-  for (const criterion of requirements.slice(0, -1)) await expect(details).toContainText(criterion);
+  for (const title of ['Доступ и границы tenant', 'Граф зависимостей и cleanup', 'Готовность, shutdown и telemetry', 'SLI, SLO и error budget', 'Fault injection и восстановление', 'Версии, rollback и выпуск']) {
+    await expect(details.getByText(title, {exact:true})).toBeVisible();
+  }
+  await details.locator('details').first().locator('summary').click();
+  await expect(details.locator('details').first()).toHaveAttribute('open', '');
+  await expect(details.locator('details').first()).toContainText(requirements[0].replace(/^\[[^\]]+\]\s*/, ''));
   await expect(details.locator('img')).toHaveCount(0);
-  await expect(details).toContainText('Автоматическая проверка подтверждает только выполненные программные проверки.');
-  await expect(details).toContainText('Версия критериев: p3-taskflow-v1-manual-review-v2');
+  await expect(details).toContainText('Автоматическая проверка подтверждает только программные проверки.');
+  await expect(criteria).toContainText('p3-taskflow-v1-manual-review-v2');
   expect(writeCount()).toBe(0);
 
   const axe = await new AxeBuilder({page}).analyze();

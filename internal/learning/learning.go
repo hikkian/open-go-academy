@@ -20,8 +20,8 @@ type Skill struct {
 	Title      string   `json:"title"`
 	Rank       string   `json:"rank"`
 	Level      int      `json:"level"`
-	Evidence   []string `json:"evidence"`
-	AttemptIDs []int64  `json:"attempt_ids"`
+	Evidence   []string `json:"evidence"`    // Exercise IDs or opaque IDs for verified project-review artifacts.
+	AttemptIDs []int64  `json:"attempt_ids"` // Numeric exercise attempts; project-review evidence has no exercise attempt ID.
 }
 type Snapshot struct {
 	PolicyVersion   string   `json:"policy_version"`

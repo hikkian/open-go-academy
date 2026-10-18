@@ -4,7 +4,6 @@ import (
 	"academy/internal/assessment"
 	"academy/internal/credentialrender"
 	"academy/internal/credentials"
-	"academy/internal/learning"
 	"academy/internal/projects"
 	"academy/internal/store"
 	"crypto/ed25519"
@@ -285,12 +284,11 @@ func (a *API) passport(w http.ResponseWriter, public bool) {
 		credentialError(w, err)
 		return
 	}
-	awards, err := a.Store.RankAwards("local")
+	snapshot, awards, err := a.learningSnapshot(progress)
 	if err != nil {
 		credentialError(w, err)
 		return
 	}
-	snapshot := learning.WithAwards(learning.WithCatalog(learning.Build(progress), progress, a.Content), awards)
 	verifiedTimes := map[string]time.Time{}
 	activityByDate := map[string]int{}
 	for exerciseID, attemptID := range progress.Evidence {

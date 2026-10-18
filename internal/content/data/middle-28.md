@@ -127,10 +127,11 @@ type Task struct { ID string }
 type TaskRepository interface {
     Get(context.Context, string) (Task, error)
 }
-var ErrRepositoryMissing = errors.New("task repository is required")
+type RepositoryMissingError struct{}
+func (RepositoryMissingError) Error() string { return "task repository is required" }
 type TaskService struct { repo TaskRepository }
 func NewTaskService(repo TaskRepository) (*TaskService, error) {
-    if repo == nil { return nil, ErrRepositoryMissing }
+    if repo == nil { return nil, RepositoryMissingError{} }
     return &TaskService{repo: repo}, nil
 }
 func (s *TaskService) Get(ctx context.Context, id string) (Task, error) {
@@ -142,15 +143,19 @@ func (f *fakeRepository) Get(_ context.Context, id string) (Task, error) {
     return f.result, f.err
 }
 func main() {
+    sentinel := errors.New("database unavailable")
     fake := &fakeRepository{result: Task{ID: "task-17"}}
     service, err := NewTaskService(fake)
     if err != nil { panic(err) }
     task, err := service.Get(context.Background(), "task-17")
     fmt.Printf("%s calls=%d id=%s error=%t\n", task.ID, fake.calls, fake.id, err != nil)
+    fake.err = sentinel
+    _, err = service.Get(context.Background(), "task-18")
+    fmt.Printf("calls=%d id=%s wrapped=%t\n", fake.calls, fake.id, errors.Is(err, sentinel))
 }
 ```
 
-Запуск: сохраните этот блок в `main.go` и выполните `go run .`; ожидается `task-17 calls=1 id=task-17 error=false`. Fake доказывает маршрутизацию вызова и позволяет отдельно задать ошибку. Он не проверяет SQL и поведение реального хранилища.
+Запуск: сохраните этот блок в `main.go` и выполните `go run .`; ожидается `task-17 calls=1 id=task-17 error=false` и `calls=2 id=task-18 wrapped=true`. Fake доказывает маршрутизацию вызова и сохранение исходной ошибки. Он не проверяет SQL и поведение реального хранилища.
 
 ## Практика Easy / Medium / Hard
 

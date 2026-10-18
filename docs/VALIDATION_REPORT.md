@@ -1,8 +1,20 @@
 # Актуальная проверка — 2026-10-18
 
-M0–M10 закрыты; M11/M12/M13 продолжаются. Актуальные исходники, scoped проверки и работающие final gates перечислены в [handoff](../AGENT_HANDOFF.md). Новые curriculum/rank/rubric/skill изменения имеют независимое review и targeted regressions; полный88gate и full browser acceptance ещё выполняются, поэтому final PASS не заявляется.
+M0–M10 закрыты; M11/M12/M13 продолжаются. Актуальные исходники, scoped проверки и final gates перечислены в [handoff](../AGENT_HANDOFF.md). Узкие M28 и Middle+21 acceptance gates PASS, а новый full all-88 gate v2 выполняется с fingerprint `sha256:7600aec0f32445b13ff22d2d088c6b402a5a744fca5399930d3112d74a7911db`. Предыдущий all-88 run был остановлен после M28 findings и не принят; прежний full browser suite (40 PASS, 10 intentional SKIP) тоже требует повтора на финальном дереве. Общий M11/M12/M13 PASS не заявляется.
 
-Local load/restart/security-boundary probe — [PASS JSON](validation/m12-local-load-20261018.json):120reads200,119writes200/21quota429, baseline profile/Zero/no awards/XP0, accepted whole bundle, SQLite integrity/restart. Проверка локальная, не публичный SLO.
+Local load/restart/security-boundary probe — [PASS JSON](validation/m12-local-load-20261018.json):120reads200,119writes200/21quota429 with Retry-After, baseline profile/Zero/no awards/XP0, accepted whole bundle, SQLite integrity/FK and API restart. Current p95 27.473ms GET / 7.084ms PUT on this local host. Проверка локальная, не публичный SLO.
+
+Current M13 recovery probe: `python3 scripts/recovery-check.py` — PASS. A disposable API/SQLite profile/theme/draft was backed up, restored and verified after API restart; evidence in [recovery-check](validation/recovery-check-20261018.txt). Remote backup custody/DR is not implied.
+
+`make test` после M28/M+21 fixes — PASS: Python fingerprint tests, Go unit/integration, P1 reference, vet, race, TypeScript typecheck и Vite build (`artifacts/make-test-final-current-20261018.log`). `npx playwright test tests/project-manual-rubric.spec.ts --reporter=list` — 2 PASS, mobile+desktop; keyboard-only disclosure, hostile HTML inertness, zero API writes, axe и no-overflow. Screenshots лежат в ignored `artifacts/`. Повторные root/web `npm audit --audit-level=low` — 0 vulnerabilities оба; [evidence](validation/npm-audit-root.txt), [evidence](validation/npm-audit-web.txt).
+
+Senior skill evidence regression: exact immutable P5 review quorum now grants communication only through an already-awarded Senior attempt. `/api/learning` and passport retain that evidence after a later review decision; automatic P5 and non-Senior awards do not grant it. A strong read-only reviewer found and verified fixes for current-review-supersession and quorum-size handling; focused store/learning/httpapi tests pass. Mobile skills UI labels the evidence in Russian and explains horizontal table scrolling; targeted browser axe/overflow checks pass.
+
+Codex/Go current recheck: `codex-cli 0.163.0-alpha.10.2`, stable `multi_agent` + `api_key_model_discovery`, current configured Luna builders/researcher and Sol reviewer started successfully; `sh scripts/go.sh version` reports 1.27.2. Official Go release history says 1.27.2 is latest stable on 2026-10-18. Research snapshot: [AI_CODEX](research/AI_CODEX.md), [VERSION_MATRIX](research/VERSION_MATRIX.md).
+
+Gitleaks v8.30.1 — **PASS** on staged changes and 27-commit history (`docs/validation/secret-scan-20261018.txt`). One historical false positive for the public reviewer-key fingerprint UI text is narrowly listed in `.gitleaksignore`; current staged diff has no findings. Re-run against the final clean-source archive before any release.
+
+Current `govulncheck` v1.9.0 against Go 1.27.2 — **No vulnerabilities found**; [evidence](validation/govulncheck.txt). This does not replace application review or a public-hosting threat model.
 
 Ниже сохранён исторический журнал. Старое указание «current tree» относится к дате соответствующей записи, а не к HEAD2026-10-18.
 

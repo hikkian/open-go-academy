@@ -1,5 +1,7 @@
 # Педагогический аудит Middle-13…26
 
+> Исторический review исходников до M14–26 remediation. Contracts, vectors и M28 composition с тех пор изменены; исходные P2 не описывают текущий HEAD. Текущие границы evidence и остаточная проверка: [`M11_MIDDLE14_23_STATUS_20261018.md`](M11_MIDDLE14_23_STATUS_20261018.md) и [`M11_MIDDLE_REMAINING_STATUS_20261018.md`](M11_MIDDLE_REMAINING_STATUS_20261018.md).
+
 Дата: 2026-10-16  
 Область: `internal/content/data/middle-13..26.{json,md}`, соответствующие `internal/grading/specs/middle-13..26-{easy,medium,hard}.json` и `internal/content/solutions/middle-13..26-*`.  
 Метод: чтение исходников, сопоставление outcomes → объяснение → функция → public/private vectors; ручная проверка примеров и простых мутантов. Candidate code и runner не запускались.

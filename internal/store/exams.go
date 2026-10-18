@@ -432,6 +432,18 @@ func updateProfileRankTx(tx *sql.Tx, profileID, rank string) error {
 }
 
 func validateExamEvidenceTx(tx *sql.Tx, profileID, attemptID, examID, examVersion, rank, criteriaHash, evidenceJSON string) error {
+	return validateExamEvidenceSnapshotTx(tx, profileID, attemptID, examID, examVersion, rank, criteriaHash, evidenceJSON, true)
+}
+
+// validateAwardedExamEvidenceTx verifies the immutable proof captured by an
+// already-awarded attempt. Current review selection is rechecked when a
+// pending attempt starts, is claimed, and finishes, but cannot rewrite a rank
+// award after that transaction has committed.
+func validateAwardedExamEvidenceTx(tx *sql.Tx, profileID, attemptID, examID, examVersion, rank, criteriaHash, evidenceJSON string) error {
+	return validateExamEvidenceSnapshotTx(tx, profileID, attemptID, examID, examVersion, rank, criteriaHash, evidenceJSON, false)
+}
+
+func validateExamEvidenceSnapshotTx(tx *sql.Tx, profileID, attemptID, examID, examVersion, rank, criteriaHash, evidenceJSON string, requireCurrentReviews bool) error {
 	var evidence examEvidenceSnapshot
 	if err := json.Unmarshal([]byte(evidenceJSON), &evidence); err != nil {
 		return fmt.Errorf("invalid exam evidence: %w", err)
@@ -454,7 +466,7 @@ func validateExamEvidenceTx(tx *sql.Tx, profileID, attemptID, examID, examVersio
 			return errors.New("exam rank prerequisite evidence changed")
 		}
 	}
-	return validateProjectEvidenceSnapshotTx(tx, profileID, attemptID, examID, examVersion, rank, criteriaHash, evidence)
+	return validateProjectEvidenceSnapshotTx(tx, profileID, attemptID, examID, examVersion, rank, criteriaHash, evidence, requireCurrentReviews)
 }
 
 type rankAwardEvidence struct {

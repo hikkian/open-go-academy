@@ -1,5 +1,11 @@
 # M11 quality audit and repair log
 
+## Current-state addendum — 2026-10-18
+
+The dated findings below are historical snapshots; where they say the P5/manual-review pipeline is absent or Middle-16…18/Middle-28 contracts are still helper-only, that disposition is superseded. Advanced awards now require exact course, project artifact, versioned manual-review quorum, and objective exam evidence. P3 manual rubric v2 lists M27–40 artifact criteria before submission; M28 Hard checks injected service→repository calls; Middle-16…18 Hard observe real callback/acknowledgement protocols. Senior `communication` skill comes only from the stored accepted P5 review snapshot on an awarded Senior attempt. Local signatures still prove key possession only, not identity or reviewer independence.
+
+The source-fingerprinted all-88 gate is running on the current content/grading/runner fingerprint listed in `AGENT_HANDOFF.md`; the old aggregate PASS below is historical. None of these changes completes the full pedagogical read of all 88 drafts. See current concise status in [`M11_SKILL_MAPPING_20261018.md`](M11_SKILL_MAPPING_20261018.md), [`M11_MIDDLE14_23_STATUS_20261018.md`](M11_MIDDLE14_23_STATUS_20261018.md), and [`M11_ADVANCED_REMAINING_STATUS_20261018.md`](M11_ADVANCED_REMAINING_STATUS_20261018.md).
+
 Date: 2026-10-16. This source-level curriculum review was run after the first full automated acceptance gate. The automated gate proves that examples compile/run and that graders agree with their vectors; it does not prove that a lesson is pedagogically sound or that a prompt's prose claims are possible from its function signature.
 
 ## Findings and current disposition

@@ -6,19 +6,39 @@
   "public_input": [
     {
       "total": 100,
+      "failed": 0
+    },
+    {
+      "total": 100,
       "failed": 1
     }
   ],
   "public_expected": [
+    "within",
     "errors"
   ],
   "private_input": [
     {
+      "total": 0,
+      "failed": 0
+    },
+    {
       "total": -1,
       "failed": 1
+    },
+    {
+      "total": 10,
+      "failed": -1
+    },
+    {
+      "total": 10,
+      "failed": 11
     }
   ],
   "private_expected": [
+    "invalid",
+    "invalid",
+    "invalid",
     "invalid"
   ]
 }

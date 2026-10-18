@@ -1,0 +1,4 @@
+Date: 2026-10-18
+Command: `python3 scripts/recovery-check.py`
+Result: PASS. Disposable local API/database; creates a profile/theme/draft, performs SQLite online backup, restores it, restarts API, and confirms the profile/theme/draft and migrations remain available.
+Scope: current local Linux environment only. Temporary database, keys, and server are cleaned by the script. This does not validate remote backup custody or disaster recovery of user-managed production storage.

@@ -1,10 +1,10 @@
 # Version matrix
 
-verified_at: 2026-10-17. Go release history rechecked; selected Go remains 1.27.2. Other component pins are the researched 2026-10-15 snapshot. Выбранные версии фиксируются lockfiles; latest не используется при сборке.
+verified_at: 2026-10-18. Official Go release history rechecked: Go 1.27.2 remains the latest stable patch. Local wrapper reports Go 1.27.2, Node 24.18.0. Other component pins are the researched 2026-10-15 snapshot. Выбранные версии фиксируются lockfiles; latest не используется при сборке.
 
 | Component | Selected | Source | Why |
 |---|---|---|---|
-| Go | 1.27.2 | https://go.dev/doc/devel/release | stable patch released 2026-10-08; still current at 2026-10-17 |
+| Go | 1.27.2 | https://go.dev/doc/devel/release | stable patch released 2026-10-08; still current at 2026-10-18 |
 | Node | 24.18.0 (installed) | https://nodejs.org/en/blog/release/v24.18.0 | LTS, подходит engines |
 | SQLite driver | v1.60.1 | https://proxy.golang.org/modernc.org/sqlite/@latest | pure Go local persistence |
 | react | 19.3.1 | https://registry.npmjs.org/react/latest | совместимый pinned candidate |
@@ -23,6 +23,8 @@ verified_at: 2026-10-17. Go release history rechecked; selected Go remains 1.27.
 | @types/node | 26.6.5 | https://registry.npmjs.org/@types/node/latest | совместимый pinned candidate |
 
 Актуальность проверена сетью; совместимость сборки проверяется M1. Vite 8.3.4 уточняет исследовательский ориентир 8.1.x. CodeMirror пакеты имеют независимые semver; version 6.0.2 для codemirror, lang-go 6.0.1.
+
+Go recheck (2026-10-18): official [release history](https://go.dev/doc/devel/release) lists Go 1.27.2, released 2026-10-08, as latest stable; local `sh scripts/go.sh version` reports `go version go1.27.2 linux/amd64`. Official [Go 1.27 notes](https://go.dev/doc/go1.27) remain the source for language/runtime changes. This confirms the current pin; it does not imply that every ecosystem dependency was refreshed on this date.
 
 ## Инструменты проверки и уточнения M1–M6
 

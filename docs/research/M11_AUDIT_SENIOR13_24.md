@@ -1,5 +1,7 @@
 # M11 audit: Senior-13…24 / P5 Architecture Capstone
 
+> Исторический аудит снимка 2026-10-16. С тех пор advanced-rank workflow закрепляет exact P5 artifact, manual rubric и quorum в award; Senior-13…23 vectors расширены. Это не превращает helper в оценку ADR/design/postmortem: см. текущую сверку [`M11_ADVANCED_REMAINING_STATUS_20261018.md`](M11_ADVANCED_REMAINING_STATUS_20261018.md), skill traceability и [`AGENT_HANDOFF.md`](../../AGENT_HANDOFF.md).
+
 **Дата:** 2026-10-16  
 **Область:** `internal/content/data/senior-13..24.{json,md}`, соответствующие `internal/grading/specs/senior-{13..24}-{easy,medium,hard}.json` и `internal/content/solutions/senior-{13..24}-{easy,medium,hard}/main.go`. Read-only review: candidate code и runner не запускались, исходники/учебные данные не менялись. Это педагогический и статический контрактный аудит, не проверка качества всей Senior-программы.
 

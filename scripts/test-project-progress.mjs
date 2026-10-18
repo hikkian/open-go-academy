@@ -23,6 +23,10 @@ try {
       await page.goto(new URL(`file://${target}`).href);
       await page.locator('h1').waitFor();
       const tracks = page.locator('article.track');
+      if (data.m11_acceptance?.status === 'running') {
+        assert.match(await page.locator('.updated').innerText(), /выполняется/,
+          `${name}: active fingerprint-bound gate must be visible`);
+      }
       assert.equal(await page.getByRole('heading', { name: 'M11 — подготовленные черновики', exact: true }).count(), 1,
         `${name}: preparation count must not claim completed acceptance`);
       assert.equal(await tracks.count(), data.workstreams.length, `${name}: workstream count`);

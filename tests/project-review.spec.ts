@@ -78,7 +78,7 @@ async function setupReviewPage(page: import('@playwright/test').Page) {
 test('passing evidence can export packet and import signed review with explicit trust limits', async ({page}, info) => {
   await setupReviewPage(page);
   await expect(page.getByText(/если ключ reviewer не настроен, запрос будет отклонён/)).toBeVisible();
-  await expect(page.getByText(/Личность и независимость reviewer зависят от внешней настройки/)).toBeVisible();
+  await expect(page.getByText(/Личность и независимость проверяющего зависят от внешней настройки/)).toBeVisible();
   await expect(page.getByText('rank', {exact: true})).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 
@@ -99,12 +99,12 @@ test('passing evidence can export packet and import signed review with explicit 
   const upload = page.getByLabel('Загрузить подписанное решение reviewer JSON');
   await upload.setInputFiles({name: 'signed-review.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(signedApproval))});
   const reviewRegion = page.getByRole('region', {name: 'Подписанное ручное ревью'});
-  const history = page.locator('details').filter({hasText: 'Сохранённые решения reviewer'});
+  const history = page.locator('details').filter({hasText: 'Сохранённые решения проверяющих'});
   await expect(reviewRegion.getByRole('status')).toContainText('Подписанное решение сохранено');
   await expect(reviewRegion.getByRole('status')).toContainText('review-saved-1234567890');
   await expect(reviewRegion.getByRole('status')).toContainText(reviewerKeyFingerprint);
   await expect(reviewRegion.getByRole('status')).toContainText('Fingerprint идентифицирует ключ, не человека; ранг автоматически не начислен.');
-  await expect(page.getByText(/Сохранённые решения reviewer \(1\)/)).toBeVisible();
+  await expect(page.getByText(/Сохранённые решения проверяющих \(1\)/)).toBeVisible();
   await expect(history).toContainText('review-saved-1234567890');
   await expect(history).toContainText(reviewerKeyFingerprint);
   await history.locator('summary').click();
@@ -128,8 +128,8 @@ test('passing evidence can export packet and import signed review with explicit 
   const reloadedPacketDownload = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Скачать JSON review packet'}).click();
   expect((await reloadedPacketDownload).suggestedFilename()).toContain('review-packet.json');
-  await expect(page.getByText(/Сохранённые решения reviewer \(1\)/)).toBeVisible();
-  const reloadedHistory = page.locator('details').filter({hasText: 'Сохранённые решения reviewer'});
+  await expect(page.getByText(/Сохранённые решения проверяющих \(1\)/)).toBeVisible();
+  const reloadedHistory = page.locator('details').filter({hasText: 'Сохранённые решения проверяющих'});
   await expect(reloadedHistory).toContainText('review-saved-1234567890');
   await expect(reloadedHistory).toContainText('не начисляет ранг');
   const historyAxe = await new AxeBuilder({page}).analyze();

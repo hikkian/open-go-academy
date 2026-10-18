@@ -3,6 +3,7 @@ package httpapi
 import (
 	"academy/internal/assessment"
 	"academy/internal/content"
+	"academy/internal/learning"
 	"academy/internal/projectreview"
 	"academy/internal/projectrunner"
 	"academy/internal/projects"
@@ -411,6 +412,99 @@ func TestAdvancedRankPipelineRequiresProjectReviewAndAwardsMiddleMiddlePlusSenio
 			}
 			if count != 1 {
 				t.Fatalf("rank %s awards=%d, all=%+v", tc.rank, count, awards)
+			}
+			learningResponse := request(http.MethodGet, "/api/learning", nil)
+			if learningResponse.Code != http.StatusOK {
+				t.Fatalf("learning snapshot status=%d body=%s", learningResponse.Code, learningResponse.Body.String())
+			}
+			var snapshot learning.Snapshot
+			if err := json.Unmarshal(learningResponse.Body.Bytes(), &snapshot); err != nil {
+				t.Fatal(err)
+			}
+			for _, skill := range snapshot.Skills {
+				if skill.ID != "communication" {
+					continue
+				}
+				if tc.rank == "Senior" {
+					if skill.Level != 4 || len(skill.Evidence) != 1 || len(skill.Evidence[0]) != len("sha256:")+64 {
+						t.Fatalf("Senior exact-review evidence missing from learning matrix: %+v", skill)
+					}
+					if strings.Contains(skill.Evidence[0], "reviewer") {
+						t.Fatalf("private reviewer detail leaked into evidence ID: %q", skill.Evidence[0])
+					}
+				} else if skill.Level != 0 || len(skill.Evidence) != 0 {
+					t.Fatalf("%s rank alone raised Senior communication: %+v", tc.rank, skill)
+				}
+			}
+			if tc.rank == "Senior" {
+				passport := request(http.MethodGet, "/api/passport", nil)
+				if passport.Code != http.StatusOK || !strings.Contains(passport.Body.String(), `"id":"communication","title":"Ревью и инженерное объяснение","rank":"Senior","level":4`) {
+					t.Fatalf("passport did not use verified review evidence: status=%d body=%s", passport.Code, passport.Body.String())
+				}
+				course, err := content.Load()
+				if err != nil {
+					t.Fatal(err)
+				}
+				tutorContext, err := (&API{Store: s, Content: course}).tutorLearningSnapshot()
+				if err != nil {
+					t.Fatal(err)
+				}
+				tutorJSON, err := json.Marshal(tutorContext)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var tutorSnapshot struct {
+					Skills []struct {
+						ID    string `json:"id"`
+						Level int    `json:"level"`
+					} `json:"skills"`
+				}
+				if err := json.Unmarshal(tutorJSON, &tutorSnapshot); err != nil {
+					t.Fatal(err)
+				}
+				foundTutorCommunication := false
+				for _, skill := range tutorSnapshot.Skills {
+					if skill.ID == "communication" {
+						foundTutorCommunication = true
+						if skill.Level != 2 {
+							t.Fatalf("Tutor should receive a capped coarse level for reviewed communication: %+v", skill)
+						}
+					}
+				}
+				if !foundTutorCommunication || strings.Contains(string(tutorJSON), "reviewer") || strings.Contains(string(tutorJSON), "sha256:") {
+					t.Fatalf("Tutor snapshot omits course evidence or exposes review details: %s", tutorJSON)
+				}
+				var acceptedEvidenceID []string
+				for _, skill := range snapshot.Skills {
+					if skill.ID == "communication" {
+						acceptedEvidenceID = append([]string(nil), skill.Evidence...)
+						break
+					}
+				}
+				postPipelineReview(t, request, submissionID, tc.projectID, reviewers[0], "changes_requested")
+				learningAfterNewReview := request(http.MethodGet, "/api/learning", nil)
+				if learningAfterNewReview.Code != http.StatusOK {
+					t.Fatalf("later review broke existing award evidence: status=%d body=%s", learningAfterNewReview.Code, learningAfterNewReview.Body.String())
+				}
+				var afterReview learning.Snapshot
+				if err := json.Unmarshal(learningAfterNewReview.Body.Bytes(), &afterReview); err != nil {
+					t.Fatal(err)
+				}
+				communicationStillVerified := false
+				for _, skill := range afterReview.Skills {
+					if skill.ID == "communication" {
+						communicationStillVerified = true
+						if skill.Level != 4 || strings.Join(skill.Evidence, ",") != strings.Join(acceptedEvidenceID, ",") {
+							t.Fatalf("later review changed immutable award evidence: before=%v after=%+v", acceptedEvidenceID, skill)
+						}
+					}
+				}
+				if !communicationStillVerified {
+					t.Fatal("communication evidence disappeared after later review")
+				}
+				if passportAfterNewReview := request(http.MethodGet, "/api/passport", nil); passportAfterNewReview.Code != http.StatusOK {
+					t.Fatalf("later review broke passport: status=%d body=%s", passportAfterNewReview.Code, passportAfterNewReview.Body.String())
+				}
 			}
 		})
 	}

@@ -1,61 +1,54 @@
 # Open Go Academy — точка продолжения
 
-Обновлено **2026-10-18 04:03 Asia/Atyrau**. Репозиторий локальный, ветка `master`, remote нет. Последний завершённый checkpoint до текущих изменений: `060d6fa` (ранее `c480648`, `b4d7304`). **M0–M10 DONE; M11, M12, M13 IN PROGRESS.** Не объявлять проект законченным.
+Обновлено **2026-10-18 09:43 Asia/Atyrau**. Локальный репозиторий `master`, remote нет. Текущее состояние сохранено в локальном Git `HEAD`; remote нет. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
 
-## Состояние продукта
+## Продукт и доверительные границы
 
-- 40 опубликованных глав Zero/Junior/Junior+, 120 заданий; 88 Middle/Middle+/Senior — черновики, **не публиковать автоматически**.
-- Рабочие урок/editor/Go runner/grading/drafts/progress, проекты P1–P5, шесть objective exam catalogs, local credentials, optional AI Tutor.
-- Advanced policies связывают course/prior-rank, точный P3/P4/P5 machine artifact и manual rubric/reviewer quorum (1/1/2 ключа). Без operator registry и совпадающего runner profile выдача закрыта. Политика/отзывы закреплены на Start и повторно проверяются Claim/Finish; award атомарный. `c480648` и `docs/validation/advanced-rank-pipeline-progress-20261017.txt`.
-- Подпись reviewer доказывает владение разрешённым ключом, не личность/независимость. Credentials локальные self-issued, не внешняя аттестация. Public execution не разрешён.
-- Tutor: локальный loopback OpenAI-compatible endpoint или облачный HTTPS со своим API key; курс и проверки доступны без AI. Retrieval только опубликованного курса; реальных платных вызовов не делали.
-- Панель прогресса: `docs/PROJECT_PROGRESS.html`, исходник `docs/project-progress.json`. 11/14 gates (79%) — невзвешенное число этапов, не доля работы. 88/88 теперь явно означает подготовленные черновики, а не завершённую приёмку.
+- Реализованы onboarding/profile, курс на русском, редактор/изолированный Go runner/grading, прогресс и drafts, P1–P5 workspaces, rank exams, XP/skills, локальные credentials/passport и optional AI Tutor. No-AI путь полноценный; public multi-tenant runner не включён.
+- 40 глав Zero/Junior/Junior+ опубликованы; 88 Middle/Middle+/Senior существуют как черновики. Ранги отличны от XP. Для advanced award нужны course evidence, exact project artifact, human review/quorum и все objective exam parts. Подпись доказывает владение разрешённым ключом, не личность/независимость/аккредитацию.
+- P3 manual rubric v2 виден до отправки и связывает M27–40 artifact criteria с version/hash. Автоматические project requirements не подменяются ручным review. Mobile/desktop UI tests проверяют клавиатуру, hostile HTML как текст, отсутствие лишних API writes, axe и overflow.
+- Все 13 canonical skill IDs связаны с course/project evidence или exact P5 human-review evidence уже выданного Senior award. Communication не выводится из automatic P5, а Tutor получает только coarse capped level без reviewer details. См. `docs/research/M11_SKILL_MAPPING_20261018.md`.
+- M28 Hard теперь проверяет настоящий `TaskService`→`TaskRepository` fake. Full gate v1 обнаружил standalone reference/import и starter type-tag mismatch; исправлены. Узкий gate M28 PASS31.819s: `docs/validation/m11-middle28-current-20261018.txt`.
+- Middle+21 Easy теперь показывает `within` и `errors`, а private vectors покрывают 4 invalid boundaries. Lesson/example/spec синхронизированы; scoped gate PASS31.475s: `docs/validation/m11-middleplus21-easy-current-20261018.txt`.
+- Панель прогресса `docs/PROJECT_PROGRESS.html` строится reproducibly из `docs/project-progress.json`. 88/88 — подготовка draft files, не принятие/публикация. Текущий fingerprint-bound gate показывает running. 11/14 — счётчик этапов, не процент объёма работ.
 
-## Текущие изменения 2026-10-18
+## Проверки текущего дерева
 
-- M16–18 Hard: реальные fake/callback протоколы effect→ack, replay без повторного эффекта, commit→publish→mark, unknown commit→reconcile. Grader наблюдает вызовы/ID; 9 содержательных мутантов отклоняются. Последний scoped gate PASS 100.139s; reviewer findings закрыты.
-- M20 Hard: все 8 сочетаний mandatory/confirm/returned; противоречие returned без mandatory — invalid. M22 Hard учитывает прошедшее пополнение, capacity и безопасный ceil без int64 overflow. 5000 `testing/quick` случаев с независимым `math/big` oracle, invalid dimensions, MaxInt64. Production regression отклоняет 5 мутантов; scoped M20/M22 PASS 66.887s, race/vet PASS; strong reviewer перепроверил.
-- M26: validation до Begin, Apply/Commit/Rollback, неизвестный commit outcome; Medium driver независимо проверяет trace, Hard driver добавляет trace сам. References и 3 ошибочных решения проверяются production Request/Check. Scoped gate и регрессии PASS; reviewer findings закрыты.
-- Все 88 M11 metadata получили канонические topical practice skills. Новый `internal/competency` — общий список 13 ID; loader отклоняет неизвестные/дубли/пустой mapping function. Helpers не дают communication; P5 automatic больше не даёт communication. Learning policy `learning-evidence-0.3`, ранги не менялись. Целевые content/learning tests и independent review PASS.
-- **Новые находки после старта общего gate:** M28 DI не проверял обещанный constructor; Senior13–23 sparse vectors; M+21/24 шаблонные неверные абзацы. Их исправляют ограниченные workers (см. ниже). Старое blanket замечание «нет project evidence M27–40» неверно относительно c480648; реальный пробел — явная traceability rubric.
-- P3 manual rubric теперь **v2**: обязательные M27–40 критерии DI graph, access, telemetry, SLI/SLO/error budget, fault/recovery, release/rollback evidence. API GET project отдаёт manual_review_rubric до отправки проекта; automatic project criteria/version не менялись. Старые v1 review не подходят новой policy. Root targeted API tests PASS; strong review структуры PASS. UI worker добавляет видимые критерии.
-- Новые `scripts/m11_source_fingerprint.py`, `check_m11_acceptance.py`: полный PASS принимается только при scope all88 и одинаковом source fingerprint до/после; mtime не используется. 5 Python tests PASS. Старые отчёты без fingerprint остаются историческими.
-- `docs/COURSE_AUTHORING.md`, GitHub issue/PR templates добавлены; Python gate tests включены в Makefile/CI, progress axe check в CI. Лицензия владельцем не выбрана.
+- Полный `make test` после M28/M+21 edits — **PASS**: Python fingerprint tests, Go unit/integration, P1 reference, vet/race, frontend typecheck и production build. Лог: `artifacts/make-test-final-current-20261018.log`.
+- Целевой Senior communication Playwright: **2 passed** desktop/mobile; axe, no overflow, human-review label и token privacy. P3 manual rubric UI Playwright: **2 passed** desktop/mobile; keyboard, no API writes, hostile HTML inertness, axe/no overflow.
+- `npx playwright test tests/project-review.spec.ts --reporter=list` — **2 passed** desktop/mobile after Russian reviewer-history label update; signed review flow and trust-limit UI pass.
+- `npm run test:progress` — PASS desktop light + mobile dark, 6 workstreams, axe clean/no overflow. Renderer/test теперь явно показывают running state только для совпадающего fingerprint.
+- `python3 scripts/local_load_check.py` повторён на текущем API: **120/120 GET 200**, **119 PUT 200 / 21 PUT 429** с Retry-After, draft bundle atomic, restart persistence, rank/XP baseline, SQLite integrity/FK clean. JSON: `docs/validation/m12-local-load-20261018.json`. Ограниченный local probe, не SLO.
+- Root/web `npm audit --audit-level=low` — 0 vulnerabilities. Gitleaks v8.30.1 staged-diff и 27-commit history scans PASS; один false positive про public reviewer-key fingerprint UI text исключён точным fingerprint в `.gitleaksignore`. Нужен повтор scan на final clean archive. Evidence: `docs/validation/secret-scan-20261018.txt`.
+- `python3 scripts/recovery-check.py` — PASS on disposable local DB: online backup/restore, API restart, profile/theme/draft/migration persistence. `govulncheck v1.9.0 ./...` — `No vulnerabilities found.`
+- Full browser на предыдущем checkpoint: 40 PASS, 10 intentional SKIP; после M28/M+21 fixes full browser suite нужно повторить. Полный runner sandbox test ещё запустить.
 
-## Проверки и процессы текущей сессии
+## Активный M11 acceptance v2
 
-- `GOFLAGS=-p=1 GOMAXPROCS=2 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOCACHE=/tmp/oga-m26-20261018 make test` — **PASS** для интегрированного среза до последних M28/Senior/P3 UI изменений: Go unit, P1 refs, vet, race, TS/build. Raw: `artifacts/m11-integrated-tech-20261018.log`. Повторить затронутые/общие checks после окончания workers.
-- Полный88 gate был намеренно остановлен через SIGINT после новых review findings, exit130; **не PASS и не регрессия кода**. Отчёт `docs/validation/m11-superseded-acceptance-20261018.txt`, лог `artifacts/m11-full-acceptance-20261018.log`. После окончательных правок запустить заново:
+Попытка v1 на fingerprint `sha256:6ba40b...` прервана после двух M28 findings; её отчёт — `docs/validation/m11-current-tree-acceptance-20261018.txt`, статус `INTERRUPTED`. Это не PASS.
+
+Текущий full gate v2 — **exec session 55884**, исходный fingerprint `sha256:7600aec0f32445b13ff22d2d088c6b402a5a744fca5399930d3112d74a7911db`, лог дошёл до Middle-20. Команда:
 
 ```sh
-python3 scripts/check_m11_acceptance.py --report docs/validation/m11-current-tree-acceptance-20261018.txt --log artifacts/m11-full-final-20261018.log --cache-dir /tmp/oga-m26-20261018
+python3 scripts/check_m11_acceptance.py \
+  --report docs/validation/m11-current-tree-acceptance-20261018-v2.txt \
+  --log artifacts/m11-full-final-v2-20261018.log \
+  --cache-dir /tmp/oga-m26-20261018
 ```
 
-- Full browser **50 tests запущены, результат ещё проверить**: exec session `94758`, лог `artifacts/m12-full-browser-20261018.log`. API disposable `/tmp/oga-e2e-20261018/api/academy.db`, port8081. Flags RUNNER/PROJECT_RUNNER/P3_RUNNER=1, отдельные sockets. Function runner PTY session `70597`; project runner `45536`. После browser suite остановить только эти процессы Ctrl-C, пользовательские сервисы не трогать. P3/P4/P5 native cases уже проходили в текущем логе.
-- `python3 scripts/local_load_check.py --report artifacts/m12-local-load-20261018.json` — **PASS**: 120/120 reads200, 119 draft PUT200 +21 quota429/Retry-After, целый accepted bundle, restart persistence, baseline profile, Zero/verified=false/no awards/XP0, SQLite integrity/FK PASS. Собственный temp API/keys/DB удалены. Это ограниченный local load test, не SLO или public certification.
-- `python3 -m unittest discover -s scripts -p 'test_m11_source_fingerprint.py'` — 5PASS. `npm run test:progress` — desktop/light + mobile/dark axe clean/no overflow; screenshot visually inspected, теперь `artifacts/project-progress-*-latest.png`.
-- Исторические полноценные runner/fresh-source проверки: `docs/validation/m13-clean-source-acceptance-20261016.txt`, `p3-*`, `p4-p5-*`, `m11-current-tree-acceptance-20261016.txt` (530 subtests, 2985.278s). Последний88 aggregate устарел после правок M24/M25 и сегодняшних исправлений.
+Дождаться завершения; проверить `Result`, exit code, `Scope: all 88 drafts`, и равенство source fingerprints. Любое изменение `internal/content`, `internal/grading`, `internal/runner`, `internal/competency`, `go.mod`, `go.sum` или двух M11 gate scripts делает результат STALE. Не прерывать без нужды.
 
-## Незавершённые workers / точный следующий шаг
+## Следующие шаги
 
-1. Дождаться `repair_middle28_composition`, `close_senior13_23_vectors`, `p3_manual_rubric_ui`. Они владеют непересекающимися source paths. Не потерять их изменения. Проверить сообщения/статус, targeted tests, независимый review оставшихся контрактов.
-2. UI worker **не запускать build/Playwright до завершения текущего50-test suite** (общий port8081 и web/dist). Потом typecheck/build и новые desktop/mobile rubric tests.
-3. После всех исходных правок: полный `make test`, новый88 gate с fingerprint; обновить report path в progress JSON, render/test dashboard, handoff/plan, локальный Git checkpoint. Не отмечать M11 DONE лишь за aggregate.
-4. M11: окончательная педагогическая приёмка, skill/course/project/rank traceability и публикационный gate всех88. Сверки: `docs/research/M11_*STATUS_20261018.md`, `M11_SKILL_MAPPING_20261018.md`; source-review не равен запуску или полной сертификации.
-5. M12: завершить полный security/threat, load/failure, responsive/theme/a11y audit и закрыть findings. M13: final clean-source install/recovery, SPDX/NOTICE/secret review, traceability; **владелец должен выбрать LICENSE перед release readiness**, публикации не разрешены.
+1. Дождаться M11 gate v2 и `make test`; обновить progress renderer/report с PASS либо исправить найденные ошибки и повторить.
+2. Выполнить полный desktop/mobile Playwright E2E с актуальным dist, затем `make sandbox-test`, актуальный `govulncheck`, повторный load/restart only if runtime code changes, screenshots/themes/a11y inspection. Сохранить доказательства.
+3. Закрыть содержательную/педагогическую вычитку всех 88 draft bundles и traceability course→skill→project→exam→rank; не публиковать автоматически.
+4. M12: завершить threat/failure/resource-abuse, persistence/restart, viewport/theme, accessibility/dependency/security audit и остаточные ограничения в `docs/VALIDATION_REPORT.md`.
+5. M13: clean archive/bootstrap/recovery на окончательном commit, requirement matrix, повтор Gitleaks для clean archive, dependency license/third-party notice review, runbook. Проектная LICENSE не выбрана владельцем; не выдумывать лицензию и не публиковать без разрешения.
+6. Обновить план/progress/handoff, выполнить `git diff --check`, сохранить локальный checkpoint. M11–M13 не закрывать до фактических gate criteria.
 
-## Лимиты, продолжение и безопасность
+## Лимиты и безопасность
 
-Последний check **2026-10-18 04:02 Asia/Atyrau**: ordinaryUsageAllowed=true, primary99%, weekly16%; reset credit не использован. Primary reset 2026-10-18 08:38:23, weekly 2026-10-25 03:38:23. Единственный heartbeat `open-go-academy-m13` обновлён через tool: **2026-10-18 08:39:23 Asia/Atyrau**, COUNT=1, ACTIVE; не создавать дубликаты/ежедневный repeat. При исчерпании сохранять checkpoint и переносить тот же heartbeat на ограничивающий reset+1мин. Новые узкие agents использовать `fork_turns=none` для экономии; builder/researcher gpt-6-luna, strong reviewer gpt-6.1-sol, max3children.
+Последний `get_usage_limits` **2026-10-18 09:42 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **37%**, weekly **21%**, reset credit не использован. Primary reset **2026-10-18 13:55:42**, weekly **2026-10-25 03:38:23 Asia/Atyrau**. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate. Проверять лимит перед следующим большим этапом.
 
-Работать в репозитории. `.data/academy.db`, `session.secret`, `issuer.key` — пользовательские данные/ключи: не удалять, не логировать, не коммитить. Сервис8080 и основной8380 не трогать. Не публиковать, не тратить деньги, не включать публичный multi-tenant runner. Все QA базы/ключи — disposable. Чат не архивировать.
-
-## Обновление перед checkpoint (04:06 Asia/Atyrau)
-
-Все source workers завершили редактирование. M28 typed constructor/service/fake hard и mutant regression PASS, scoped40.409s. Senior13–23 все33specs расширены, bool conjunction truth tables,4mutants/all33refs PASS; общий scoped gate ещё выполняется (агент close_senior13_23_vectors), последний transient failure был от несинхронного M28 до его завершения. M+21/24 предметные абзацы исправлены. P3 pre-submit manual rubric UI готов, typecheck PASS, build/new browser test ещё не запускались до освобождения8081. Новые файлы tests/project-manual-rubric.spec.ts и project_review_outcomes_test.go.
-
-**Новый финальный88 gate действительно запущен:** exec session30117, `artifacts/m11-full-final-20261018.log`, report `docs/validation/m11-current-tree-acceptance-20261018.txt` появится после завершения. Source fingerprint `sha256:4108ef753f3214cf7c4df2ea0b288a9ef4b377ca642be48121d14a1b78f0f4fe`. Не менять content/grading/runner/competency или fingerprint/check scripts во время этого прогона. После него сверить PASS/FAIL/STALE и source hash; report/path уже настроен в progress JSON.
-
-Full50E2E session94758 пока работает: desktop P1 PASS4.1m, P3/P4/P5 runtime PASS, далее mobile. После окончания выполнить новый UI rubric spec (2projects), web typecheck/build; остановить PTY70597/45536. Если лимит прекратит turn до этого, heartbeat08:39 должен прочитать логи/процессы, а не считать проверки завершёнными. Все API/runner процессы принадлежат только disposable QA сессии.
-
-M12 load итог скопирован в tracked `docs/validation/m12-local-load-20261018.json`; все проверкиPASS, baseline/no awards/XP и cleanup подтверждены. Общий make test PASS до последних M28/Senior/P3UI изменений; новый final make test ещё нужен. Checkpoint сохраняет реализацию, не завершённость M11/M12/M13.
+Работать только в репозитории. Не читать/удалять/коммитить `.data/academy.db`, `session.secret`, `issuer.key`; не останавливать пользовательские сервисы на 8380/8080; QA DB/keys только disposable. Не публиковать, не тратить деньги, не включать public multi-tenant execution. Чат оставить открытым.

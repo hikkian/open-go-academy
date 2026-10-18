@@ -2,7 +2,6 @@ package httpapi
 
 import (
 	"academy/internal/content"
-	"academy/internal/learning"
 	"academy/internal/projectreview"
 	"academy/internal/projectrunner"
 	"academy/internal/runner"
@@ -228,12 +227,12 @@ func (a *API) Handler(staticDir string) http.Handler {
 			fail(w, 500, "не удалось прочитать свидетельства прогресса")
 			return
 		}
-		awards, err := a.Store.RankAwards("local")
+		snapshot, _, err := a.learningSnapshot(p)
 		if err != nil {
-			fail(w, 500, "не удалось прочитать подтверждения ранга")
+			fail(w, 500, "не удалось собрать проверенные навыки и ранги")
 			return
 		}
-		write(w, 200, learning.WithAwards(learning.WithCatalog(learning.Build(p), p, a.Content), awards))
+		write(w, 200, snapshot)
 	})
 
 	mux.HandleFunc("GET /api/progress", func(w http.ResponseWriter, r *http.Request) {

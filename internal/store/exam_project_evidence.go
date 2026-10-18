@@ -279,7 +279,7 @@ func rankPolicyForAttemptTx(tx *sql.Tx, examID, examVersion string, version int)
 		PolicyHash: storedHash, CreatedAt: created}, nil
 }
 
-func validateProjectEvidenceSnapshotTx(tx *sql.Tx, profileID, attemptID, examID, examVersion, rank, criteriaHash string, evidence examEvidenceSnapshot) error {
+func validateProjectEvidenceSnapshotTx(tx *sql.Tx, profileID, attemptID, examID, examVersion, rank, criteriaHash string, evidence examEvidenceSnapshot, requireCurrentReviews bool) error {
 	if evidence.RankPolicyVersion == 0 {
 		if evidence.RankPolicyHash != "" || len(evidence.ProjectEvidence) != 0 {
 			return errors.New("exam project evidence has no registered rank policy")
@@ -387,7 +387,7 @@ func validateProjectEvidenceSnapshotTx(tx *sql.Tx, profileID, attemptID, examID,
 			if len(proof.ManualReviews) != 0 {
 				return errors.New("unexpected manual review snapshot")
 			}
-		} else if err = validateManualReviewSnapshotTx(tx, profileID, attemptID, examID, examVersion, policy, requirement, proof); err != nil {
+		} else if err = validateManualReviewSnapshotTx(tx, profileID, attemptID, examID, examVersion, policy, requirement, proof, requireCurrentReviews); err != nil {
 			return err
 		}
 	}
@@ -405,7 +405,7 @@ func validateProjectEvidenceSnapshotTx(tx *sql.Tx, profileID, attemptID, examID,
 	return nil
 }
 
-func validateManualReviewSnapshotTx(tx *sql.Tx, profileID, attemptID, examID, examVersion string, policy RankPolicy, requirement ProjectEvidenceRequirement, proof examProjectEvidenceSnapshot) error {
+func validateManualReviewSnapshotTx(tx *sql.Tx, profileID, attemptID, examID, examVersion string, policy RankPolicy, requirement ProjectEvidenceRequirement, proof examProjectEvidenceSnapshot, requireCurrent bool) error {
 	if len(proof.ManualReviews) != requirement.MinimumDistinctReviewerKeyFingerprints {
 		return fmt.Errorf("%w: manual review quorum %s is incomplete", ErrExamPrerequisites, requirement.RequirementID)
 	}
@@ -441,18 +441,20 @@ func validateManualReviewSnapshotTx(tx *sql.Tx, profileID, attemptID, examID, ex
 			a.ProjectVersion != proof.ProjectVersion || a.ArtifactHash != strings.TrimPrefix(proof.ArtifactHash, "sha256:") || a.RubricVersion != requirement.ManualReviewRubricVersion || a.RubricHash != requirement.ManualReviewRubricHash {
 			return errors.New("manual review attestation binding changed")
 		}
-		var latestID, latestDecision string
-		// project_reviews is append-only; SQLite rowid is its server acceptance sequence.
-		err = tx.QueryRow(`SELECT id,decision FROM project_reviews WHERE profile_id=? AND submission_id=? AND evaluation_id=? AND project_id=?
-			AND project_version=? AND artifact_hash=? AND rubric_version=? AND rubric_hash=? AND reviewer_key_fingerprint=?
-			ORDER BY rowid DESC LIMIT 1`, profileID, proof.SubmissionID, proof.EvaluationID, proof.ProjectID,
-			proof.ProjectVersion, strings.TrimPrefix(proof.ArtifactHash, "sha256:"), requirement.ManualReviewRubricVersion,
-			requirement.ManualReviewRubricHash, review.ReviewerKeyFingerprint).Scan(&latestID, &latestDecision)
-		if err != nil {
-			return fmt.Errorf("latest manual review decision missing: %w", err)
-		}
-		if latestID != review.ReviewID || latestDecision != "approve" {
-			return fmt.Errorf("%w: manual review approval was superseded", ErrExamPrerequisites)
+		if requireCurrent {
+			var latestID, latestDecision string
+			// project_reviews is append-only; SQLite rowid is its server acceptance sequence.
+			err = tx.QueryRow(`SELECT id,decision FROM project_reviews WHERE profile_id=? AND submission_id=? AND evaluation_id=? AND project_id=?
+				AND project_version=? AND artifact_hash=? AND rubric_version=? AND rubric_hash=? AND reviewer_key_fingerprint=?
+				ORDER BY rowid DESC LIMIT 1`, profileID, proof.SubmissionID, proof.EvaluationID, proof.ProjectID,
+				proof.ProjectVersion, strings.TrimPrefix(proof.ArtifactHash, "sha256:"), requirement.ManualReviewRubricVersion,
+				requirement.ManualReviewRubricHash, review.ReviewerKeyFingerprint).Scan(&latestID, &latestDecision)
+			if err != nil {
+				return fmt.Errorf("latest manual review decision missing: %w", err)
+			}
+			if latestID != review.ReviewID || latestDecision != "approve" {
+				return fmt.Errorf("%w: manual review approval was superseded", ErrExamPrerequisites)
+			}
 		}
 	}
 	return nil

@@ -1,3 +1,7 @@
 Date: 2026-10-16
 Command: `GOTOOLCHAIN=local sh scripts/go.sh run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...`
 Result: `No vulnerabilities found.`
+
+Repeat: 2026-10-18 (Go 1.27.2; golang.org/x/vuln/cmd/govulncheck v1.9.0)
+Command: `GOTOOLCHAIN=local GOFLAGS=-p=1 GOMAXPROCS=2 sh scripts/go.sh run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...`
+Result: `No vulnerabilities found.` Current report output: `artifacts/govulncheck-current-20261018.log` (ignored).
