@@ -1,0 +1,9 @@
+Open Go Academy — current-tree desktop/mobile E2E acceptance
+Date: 2026-10-18 (Asia/Atyrau)
+Commit: `6b368a9`
+
+Command: `ACADEMY_E2E_RUNNER=1 ACADEMY_E2E_PROJECT_RUNNER=1 ACADEMY_E2E_P3_RUNNER=1 npm run e2e -- --reporter=list`, with locally started runner processes and isolated sockets/DB under `/tmp/oga-e2e-current-6b368a9.kVosbJ`.
+
+Result: **PASS — 50 passed, 10 intentional skips, 0 failed, 10.7 minutes, exit 0.** Browser matrix used one Playwright worker, desktop/mobile Chromium. Actual isolated P1/P2/P3/P4/P5 projects passed; P4/P5 machine evidence did not award rank. API uses the new bounded-body and duplicate-JSON-key parser. No AI provider/model was called. Temporary runners were terminated by the harness; scoped container cleanup is verified by runner integration.
+
+Log: `artifacts/e2e-current-6b368a9.log`, SHA256 `55d6419b089a3b10833731a18b48816ce811cdfd8be80d2e728ef4593806065a`. Playwright HTML report and traces remain under ignored `artifacts/playwright-report/` and `artifacts/playwright/`.

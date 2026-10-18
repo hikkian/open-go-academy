@@ -12,6 +12,7 @@ Validation:
 - `sh scripts/go.sh vet ./internal/httpapi` — PASS.
 - Full `make test` after the cross-site/body-size regressions — PASS: full Go unit/integration/reference, vet, race, Python gates, TypeScript and production build. Log `artifacts/m12-s12-current-make-test-20261018.log`, SHA256 `7ea4959581d3b7e1836a961a4dc1894f4858e92ef5173fe293856f4ae0dab168`.
 - Full `make test` after duplicate-key rejection was added — PASS, full log `artifacts/m12-s08-s12-current-make-test-20261018.log`, SHA256 `c7f606d90213173d93804f4ca52a798576589eaa7a16eab0c7a245e573576445`.
+- Current-tree desktop/mobile E2E after both API hardening changes — PASS 50/10/0, 10.7m; actual isolated P1–P5 profiles passed. Report `docs/validation/e2e-current-tree-20261018-v6.txt`, raw log SHA256 `55d6419b089a3b10833731a18b48816ce811cdfd8be80d2e728ef4593806065a`.
 - `git diff --check` — PASS.
 
 These changes close the specific S08 missing oversized-body/duplicate-key rejection probes and S12 cross-site Fetch Metadata regression. Other M12 evidence gaps remain in S01–S04, S06–S07, S09 and S11.
