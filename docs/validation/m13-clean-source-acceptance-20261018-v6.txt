@@ -1,0 +1,25 @@
+Open Go Academy — clean-source technical acceptance v6
+Date: 2026-10-18 (Asia/Atyrau)
+Commit: `e2bad43`
+`git archive --format=tar HEAD` SHA-256: `f42736e58e9b01a5e616177016cc55b3ce4bf56b82e107dd8ce6b055eb325012`
+Fresh extraction: `/tmp/oga-m13-final-e2bad43` (initially no `.git`, user `.data`, node_modules or build output)
+
+## Results
+
+- `make bootstrap` — PASS, exit 0. The pinned Go toolchain, Go/npm dependencies, Playwright Chromium fallback build and pinned Go image were prepared. This Fedora host used Playwright's Ubuntu 24.04 fallback; this does not certify a native Windows/macOS install. Log SHA-256 `a853496b0e34505fe98a8d565db84acf66d72e1071eada3bda1add13d6a9729b`.
+- `make test` — PASS, exit 0 on fresh source, including Go unit/integration/reference, whole-tree vet/race, Python gates (including the new namespace-probe parser/scope tests), TypeScript and Vite build. Log SHA-256 `9078b61f8071abd2e0beba99eaff0bbd00839e480796e542825e11241004994d`.
+- `make build` — PASS, exit 0; API, basic runner and production UI built. Log SHA-256 `29fbc284b38024fe91f1c13460cbae66db0a4037cda91996078943b5a1767d0b`.
+- `make project-runtime` — PASS; P2/P3/P4/P5 runtime profiles and immutable checker inputs built from fresh source and the locally cached pinned OCI image. Log SHA-256 `3e210bd3760f1936452fb24b0b2834e78c6c419fa4ea67aab51ee4dd072c36e7`.
+- `python3 scripts/recovery-check.py` — PASS; disposable SQLite backup/restore, API restart, profile/theme/draft and migrations. Log SHA-256 `7f454538a3f22afe23140ca952189da9318fcb9921d2e1374358d569b214ae57`.
+- Correctly configured clean-archive desktop/mobile Playwright E2E — PASS, 50 passed / 10 intentional skips / 0 failures, 9.8m. Actual P1–P5 project submissions ran in isolated local rootless workers; no rank was granted by project completion and no AI provider was called. Log SHA-256 `81e1ead168baab559dfb6704425be483d722cd31fcd8a898ce7f6721fece6eaa`.
+- Gitleaks v8.30.1 on a second fresh extraction of this same archive before bootstrap/build — PASS, zero findings. Redacted report SHA-256 `37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`.
+- Gitleaks Git-history scan at `e2bad43` — PASS, 70 commits, zero findings. Redacted report SHA-256 `37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`.
+- Cache-only license inventory regenerated from the clean `e2bad43` extraction: `docs/validation/m13-license-inventory-e2bad43-20261018.json`, SHA-256 `ddf986d53b2f99b6c497bad1ca72bec3c15f2d12e55ed04dcc7073756707cf15`, 268 observations (92 Go / 176 npm). Go SPDX stays UNKNOWN when no declaration is available; package metadata is observational and is not a legal interpretation. No registry/network request was made.
+
+An additional exploratory Gitleaks scan after `make build` flagged one `generic-api-key` match only in the generated, ignored `web/dist/assets/index-BCfSK7Ft.js`. Its 46-byte match is minified control-flow syntax around the UI's cloud API-key handling/route string, contains no token prefix or URL and is not a source literal. The clean pre-build tracked-source archive and all 70 Git commits scan clean. The finding is recorded rather than ignored globally.
+
+All test DBs and runner sockets were under fresh `/tmp` directories. Runner processes were stopped after E2E and scoped container cleanup completed. No user `.data`, port 8380 service, public execution or paid service was used.
+
+## Still open
+
+This passes the reproducible source/build/runtime/browser/secret-scan portion of M13, not the legal/platform release gates. Root `LICENSE`/`NOTICE` are still absent and manifests are `UNLICENSED`; the owner must choose code/course licensing terms before those files can be added. Native non-Linux validation has not been performed. No public repository or service was published.

@@ -1,6 +1,6 @@
 # Актуальная проверка — 2026-10-18
 
-## Последний текущий source checkpoint — `90d56f1` (2026-10-18)
+## Последний текущий source checkpoint — `e2bad43` (2026-10-18)
 
 - M11 **DONE**. `python3 scripts/check_m11_acceptance.py --report docs/validation/m11-current-tree-acceptance-20261018-v7.txt --log artifacts/m11-full-final-v7-20261018.log --cache-dir /tmp/oga-m11-v7-20261018` — **PASS, 88/88**, 2815.381s; source fingerprint до и после `sha256:dd28be0d31ffba7ea087bc52a928e673cbc515ceafce756f5506416a1a07886d`; log SHA-256 `abf0880c69155e94a8ea2af2eb06780f391a2876645c1b7319b8ca16e229dce7`. Исправление backoff подняло текущий Middle exam до v1.0.1, legacy v1.0.0 остался доступен для старых попыток.
 - `make test` — **PASS, exit 0** после backoff/reference/version compatibility fix: Go unit/integration/reference, vet, whole-tree race, Python gates, TypeScript и production build.
@@ -12,6 +12,12 @@
 - `make test` after adding the namespace-probe unit tests — **PASS, exit 0**; log `artifacts/make-test-m12-namespace-20261018.log`, SHA-256 `78482703da33150e76e1e330937c3d80e62674c520b85be3de2d2860857e76e0`.
 - `npm run test:progress` — **PASS** desktop/light и mobile/dark, axe violations 0, horizontal overflow 0; generated screenshots визуально inspected. Dashboard показывает 12/14 checkpoints (86%) и оставшиеся M12/M13.
 - M12/M13 остаются открыты: literal `cgroup.events populated=0`, полный host mount/PID-1 mapping и DNS/external-network behavior не подтверждены; нужно повторить fresh-source M13/Gitleaks. LICENSE/NOTICE choice требует решения владельца, другая ОС не тестировалась. Эти границы не утверждаются как observed escapes.
+
+## M13 fresh archive — `e2bad43` (2026-10-18)
+
+- Fresh `git archive` SHA-256 `f42736e58e9b01a5e616177016cc55b3ce4bf56b82e107dd8ce6b055eb325012` passed bootstrap, make test/build/project-runtime, recovery-check, and desktop/mobile E2E50/10/0. Full evidence and each log hash are in [M13 clean-source v6](validation/m13-clean-source-acceptance-20261018-v6.txt).
+- Gitleaks v8.30.1 on the fresh pre-build source archive and 70-commit history returned zero findings. A separate scan after build detected one generated-only `web/dist` minified-code false positive; the masked match is control flow around cloud-key handling and a route template, not a source credential. The report records both scans, with no global ignore added.
+- M13 is only technically accepted at this checkpoint. Root LICENSE/NOTICE and UNLICENSED manifests still need owner legal terms; native non-Linux installation remains unvalidated. Do not publish or claim release-ready licensing.
 
 ## Повторный checkpoint после аудита 2026-10-18
 
