@@ -160,6 +160,17 @@ func TestTutorCourseRetrievalIsPublishedBoundedAndCurrentFirst(t *testing.T) {
 	if !foundSQL {
 		t.Fatalf("query did not retrieve SQL lesson: %+v", selected)
 	}
+	if _, ok := catalog.FindLesson("senior-23"); !ok {
+		t.Fatal("published Senior P5 lesson is missing from the local Tutor catalog")
+	}
+	seniorContext, seniorItems := tutorCourseContext(catalog, "P5 defense independent review human review evidence", "")
+	foundSenior := false
+	for _, item := range seniorItems {
+		foundSenior = foundSenior || item["id"] == "senior-23"
+	}
+	if !foundSenior || len(seniorContext) > maxTutorCourseContext || !strings.Contains(seniorContext, "независим") {
+		t.Fatalf("local Tutor did not retrieve published Senior review context: %d bytes %+v", len(seniorContext), seniorItems)
+	}
 	for _, item := range selected {
 		lesson, _ := catalog.FindLesson(item["id"])
 		for _, exercise := range lesson.Exercises {

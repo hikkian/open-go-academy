@@ -5,6 +5,31 @@ const valid='package main\n\nimport "fmt"\n\nfunc main() {\n fmt.Println("Go г�
 async function enter(page:any){await page.goto('/');await expect.poll(async()=>await page.getByLabel('Твоё имя').isVisible()||await page.getByRole('heading',{name:'Твоя практика начинается здесь.'}).isVisible()).toBe(true);if(await page.getByLabel('Твоё имя').isVisible()){await page.getByLabel('Твоё имя').fill('Ада');await page.getByRole('button',{name:'Создать профиль'}).click()};await expect(page.getByRole('heading',{name:'Твоя практика начинается здесь.'})).toBeVisible();}
 async function open(page:any){await page.getByRole('button',{name:new RegExp(lessonTitle)}).first().click();await expect(page.getByLabel('Go-код',{exact:true})).toBeVisible();}
 async function code(page:any,source:string){const editor=page.getByLabel('Go-код',{exact:true});await editor.click();await editor.press('ControlOrMeta+a');await editor.fill(source);await expect(page.getByText('Сохранено',{exact:true})).toBeVisible();}
+test('expanded local course publishes and renders Middle through Senior lessons',async({page},info)=>{
+ await enter(page);
+ const response=await page.request.get('/api/lessons');expect(response.ok()).toBeTruthy();
+ const lessons=await response.json();expect(lessons).toHaveLength(128);
+ const expected=[['Middle',40],['Middle+',24],['Senior',24]];
+ await page.getByRole('button',{name:'Путь обучения',exact:true}).click();
+ for(const [rank,count] of expected){
+  const level=page.locator('.path-level').filter({has:page.getByRole('heading',{name:rank,exact:true})});
+  await expect(level).toContainText(`${count} уроков доступно`);
+ }
+ const middle=page.locator('.path-level').filter({has:page.getByRole('heading',{name:'Middle',exact:true})});
+ await middle.getByRole('button',{name:/Параллельная работа и конкурентность/}).click();
+ await expect(page.getByLabel('Go-код',{exact:true})).toBeVisible();
+ await expect(page.getByText(/Практический мост: от модели к реальному параллельному worker-у/)).toBeVisible();
+ await page.screenshot({path:`artifacts/${info.project.name}-middle-course.png`,fullPage:true});
+ await page.getByRole('button',{name:'Путь обучения',exact:true}).click();
+ const senior=page.locator('.path-level').filter({has:page.getByRole('heading',{name:'Senior',exact:true})});
+ const seniorLesson=lessons.find((lesson:any)=>lesson.id==='senior-23');expect(seniorLesson).toBeTruthy();
+ await senior.getByRole('button',{name:new RegExp(seniorLesson.title.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'))}).click();
+ await expect(page.getByLabel('Go-код',{exact:true})).toBeVisible();
+ await expect(page.getByText(/P5 defense|независимую проверку/)).toBeVisible();
+ const axe=await new AxeBuilder({page}).analyze();expect(axe.violations.map(v=>v.id)).toEqual([]);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ await page.screenshot({path:`artifacts/${info.project.name}-senior-course.png`,fullPage:true});
+});
 test('profile, roadmap, safe content, themes, drafts and responsive layout',async({page},info)=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await enter(page);if(await page.locator('html').getAttribute('data-theme')==='dark')await page.getByRole('button',{name:'Включить светлую тему'}).click();
  await page.getByRole('button',{name:'Путь обучения',exact:true}).click();for(const rank of ['Zero','Junior','Junior+','Middle','Middle+','Senior'])await expect(page.getByRole('heading',{name:rank,exact:true})).toBeVisible();await page.getByRole('button',{name:new RegExp(lessonTitle)}).click();await expect(page.getByLabel('Go-код',{exact:true})).toBeVisible();
