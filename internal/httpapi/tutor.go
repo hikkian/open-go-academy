@@ -709,7 +709,7 @@ func tutorCourseContext(c *content.Catalog, query, currentID string) (string, []
 	var text strings.Builder
 	used := 0
 	if currentID == "" {
-		snapshot := "Проверенный срез upstream: последний minor Go 1.27 — Go 1.27.2, релиз 2026-10-08; проверено 2026-10-16. История релизов: https://go.dev/doc/devel/release ; заметки: https://go.dev/doc/go1.27 . Этот срез устаревает после даты проверки; модель не обращается к сети. Версия Go из урока, если он выбран, остаётся главным target совместимости.\n\n"
+		snapshot := "Проверенный срез upstream: последний minor Go 1.27 — Go 1.27.2, релиз 2026-10-08; проверено 2026-10-18. История релизов: https://go.dev/doc/devel/release ; заметки: https://go.dev/doc/go1.27 . Этот срез устаревает после даты проверки; модель не обращается к сети. Версия Go из урока, если он выбран, остаётся главным target совместимости.\n\n"
 		part := clipTutorUTF8(snapshot, maxTutorCourseContext)
 		text.WriteString(part)
 		used = len(part)
