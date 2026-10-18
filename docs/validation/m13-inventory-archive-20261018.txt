@@ -1,7 +1,7 @@
 M13 source-archive dependency/license inventory — 2026-10-18
 
-Source commit: `3f5566d`
-Deterministic `git archive --format=tar HEAD` SHA-256: `949b15fcd37765022eb8f36a07d051e7a1867df678be7633815e058334c3c25d`
+Source commit: `10cd990`
+Deterministic `git archive --format=tar HEAD` SHA-256: `8a12cc8a3b1bda86d7312662bc618417ff2c390758e11e1cdb9e226ecc86d7dc`
 Command: `python3 scripts/m13_license_inventory.py --repo-root <extracted-clean-archive> --output docs/validation/m13-license-inventory-20261018.json`
 Mode: cache-only; no network/package installation. Generated `.data`, `.tools`, artifacts, `.git`, and `node_modules` are absent from the source archive. The scanner separately excludes generated roots when run on a working tree.
 

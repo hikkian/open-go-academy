@@ -111,7 +111,7 @@
       "value": 0,
       "max": 2,
       "unit": "этапа",
-      "detail": "M12: планшетное переполнение/контраст исправлены; responsive/a11y tests прошли на 768 и 1920 px. `make sandbox-test` PASS с реальными cgroup OOM/PID событиями; слабые runner assertions исправлены. Полный desktop/mobile E2E текущего дерева PASS50 / intentional SKIP10 / FAIL0 на actual P1–P5 runners; evidence `docs/validation/e2e-current-tree-20261018.txt`. Открыты дополнительные threat/load/theme/error-state checks и exhaustive security matrix. M13: clean archive license inventory 268 записей (92 Go, 176 npm; 193 license-file observations/99 hashes), без generated `.data`/node_modules. Остаются clean archive bootstrap/build/test/recovery, final secret scan, legal NOTICE review и решение владельца по лицензии."
+      "detail": "M12: tablet overflow/contrast fixes, responsive/axe checks and full desktop/mobile E2E PASS50/SKIP10/FAIL0; real cgroup OOM/PID probes and exact runner assertions pass. Broader security/load/theme/error-state audit remains open. M13: clean archive `10cd990` bootstrap/test/build/project-runtime/recovery/full E2E and redacted source Gitleaks all pass; inventory has 268 records and 193 license-file observations/99 hashes. Still open: final history secret scan, legal license/NOTICE review, owner license decision, and non-Linux support validation."
     },
     {
       "title": "Необязательный ИИ-наставник",
