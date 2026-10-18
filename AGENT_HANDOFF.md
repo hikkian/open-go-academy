@@ -1,6 +1,6 @@
 # Open Go Academy — точка продолжения
 
-Обновлено **2026-10-18 11:29 Asia/Atyrau**. Локальный репозиторий `master`, remote нет; checkpoint `34628a9` содержит M12 responsive fixes/test и M13 cache-only license inventory/docs. Сейчас рабочее дерево меняет только progress JSON/HTML и строгие regression tests для нового cgroup probe; fingerprinted M11 source неизменён. Full gate v3 идёт на `c9c85f0f…af2c0`, лог дошёл до Middle+13, результата ещё нет. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
+Обновлено **2026-10-18 11:31 Asia/Atyrau**. Локальный репозиторий `master`, remote нет; текущий HEAD `be2497a`, рабочее дерево чистое. M12 responsive fixes/test и M13 cache inventory сохранены в предыдущих локальных checkpoints `34628a9`/`be2497a`; cgroup probe/script tests подготовлены, но интеграционно не запускались. M11 source fingerprint не изменён; gate v3 идёт на `c9c85f0f…af2c0`, лог дошёл до Middle+18, результата ещё нет. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
 
 ## Продукт и доверительные границы
 
