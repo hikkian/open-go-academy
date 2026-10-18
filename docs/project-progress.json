@@ -111,7 +111,7 @@
       "value": 0,
       "max": 2,
       "unit": "этапа",
-      "detail": "M12: tablet overflow/contrast fixes, responsive/axe checks and full desktop/mobile E2E PASS50/SKIP10/FAIL0; real cgroup OOM/PID probes and exact runner assertions pass. Broader security/load/theme/error-state audit remains open. M13: clean archive `10cd990` bootstrap/test/build/project-runtime/recovery/full E2E and redacted source Gitleaks all pass; inventory has 268 records and 193 license-file observations/99 hashes. Still open: final history secret scan, legal license/NOTICE review, owner license decision, and non-Linux support validation."
+      "detail": "M12: tablet overflow/contrast fixes, responsive/axe checks and full desktop/mobile E2E PASS50/SKIP10/FAIL0; real cgroup OOM/PID probes and exact runner assertions pass. Broader security/load/theme/error-state checks remain open. M13: clean archive `10cd990` bootstrap/test/build/project-runtime/recovery/E2E and redacted Gitleaks archive/history scans pass; inventory has 268 records and 193 license-file observations/99 hashes. Remaining: legal license/NOTICE owner choice and non-Linux support validation."
     },
     {
       "title": "Необязательный ИИ-наставник",
