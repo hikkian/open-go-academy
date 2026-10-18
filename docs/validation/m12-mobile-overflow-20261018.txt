@@ -1,0 +1,24 @@
+# M12 — mobile lesson and editor width regression
+
+Date: 2026-10-18 (Asia/Atyrau)
+
+## Finding
+
+Visual inspection of the Middle concurrency lesson revealed that a long inline repository path (`content/projects/p3/reference/postgres_integration_test.go`) expanded the document beyond a 390 px mobile viewport. Before correction, Playwright measured `document.documentElement.clientWidth=390`, `scrollWidth=449`; `window.innerWidth` also expanded to 449, so the previous assertions comparing scroll width with `window.innerWidth` were false negatives. The viewport screenshot appeared normal, but the full-page capture was 449 px wide.
+
+## Fix
+
+- Inline code in rendered lessons can now wrap at any safe boundary; fenced code has `max-width:100%` while retaining its own horizontal scrolling.
+- All E2E horizontal-overflow assertions now compare `document.documentElement.scrollWidth` with `document.documentElement.clientWidth`, the actual layout viewport.
+- The Middle lesson test asserts no document overflow immediately after opening the code editor.
+
+## Verification
+
+- `npm run build` — PASS.
+- `make test` — PASS, exit 0 (unit/integration/reference, vet, whole-tree race, Python gates, TypeScript and production build). Log `artifacts/make-test-mobile-overflow-fix-20261018.log`, SHA-256 `21c34b18432fab2607196d16d724fce2008c3ce60e89a82cd154ebe8009af0b7`.
+- `npx playwright test tests/learning.spec.ts --project=mobile --grep "expanded local course" --reporter=list` — PASS, 1 test.
+- Full desktop/mobile E2E v8 — PASS 50/10/0, 9.9m; see `e2e-current-tree-20261018-v8.txt`.
+- Direct mobile visual probe after onboarding → learning path → Middle lesson/editor: `clientWidth=390`, `scrollWidth=390`, `visualViewport.width=390`; axe violations 0, page/console errors 0.
+- Inspected screenshots: `artifacts/academy-mobile-editor-viewport-v7.png` (390 × 844), `artifacts/academy-mobile-editor-full-v7.png` (390 × 13,885), `artifacts/mobile-middle-course.png` (390 × 13,885). No horizontal page expansion remains; code blocks keep their local scroll affordance.
+
+This finding was a responsive content overflow, not a sandbox escape or data exposure.

@@ -2,7 +2,7 @@
   "updated_at": "2026-10-18",
   "phase": "M12 — финальный аудит безопасности, производительности и доступности",
   "phase_note_suffix": " M11 complete. Остались M12 с ограниченными недостающими boundary-probes и M13 с чистым source acceptance, license/NOTICE и выпускной проверкой.",
-  "m11_review_detail": "M11 acceptance закрыта: all-88 gate v7 PASS на fingerprint sha256:dd28be0d…a07886d за 2815.381 s; full make test PASS; desktop/mobile E2E PASS 50/10/0. Независимые аудиты охватили Middle01–40, Middle+01–24 и Senior01–24; пять найденных P2 исправлены и перепроверены. Middle exam 1.0.1 корректно насыщает backoff; точная legacy 1.0.0 сохранена для старых попыток. Human-review ограничения рангов и сертификатов сохранены.",
+  "m11_review_detail": "M11 acceptance закрыта: all-88 gate v7 PASS на fingerprint sha256:dd28be0d…a07886d за 2815.381 s; full make test PASS; desktop/mobile E2E v8 PASS 50/10/0. Независимые аудиты охватили Middle01–40, Middle+01–24 и Senior01–24; пять найденных P2 исправлены и перепроверены. Middle exam 1.0.1 корректно насыщает backoff; точная legacy 1.0.0 сохранена для старых попыток. Human-review ограничения рангов и сертификатов сохранены.",
   "phase_note": "Для Middle, Middle+ и Senior опубликовано локально 88/88 глав; полные наборы подготовлены: 88/88. Автоматическая проверка текущих исходников прошла; остаются аудит и выпуск. M11 complete. Остались M12 с ограниченными недостающими boundary-probes и M13 с чистым source acceptance, license/NOTICE и выпускной проверкой.",
   "milestones": [
     {
@@ -89,7 +89,7 @@
       "value": 88,
       "max": 88,
       "unit": "уроков",
-      "detail": "В локальном каталоге доступны 88 из 88 расширенных глав; подготовлено 88 из 88 полных наборов lesson/metadata/examples/exercises. Полная автоматическая проверка текущих исходников прошла. M11 acceptance закрыта: all-88 gate v7 PASS на fingerprint sha256:dd28be0d…a07886d за 2815.381 s; full make test PASS; desktop/mobile E2E PASS 50/10/0. Независимые аудиты охватили Middle01–40, Middle+01–24 и Senior01–24; пять найденных P2 исправлены и перепроверены. Middle exam 1.0.1 корректно насыщает backoff; точная legacy 1.0.0 сохранена для старых попыток. Human-review ограничения рангов и сертификатов сохранены. Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены.",
+      "detail": "В локальном каталоге доступны 88 из 88 расширенных глав; подготовлено 88 из 88 полных наборов lesson/metadata/examples/exercises. Полная автоматическая проверка текущих исходников прошла. M11 acceptance закрыта: all-88 gate v7 PASS на fingerprint sha256:dd28be0d…a07886d за 2815.381 s; full make test PASS; desktop/mobile E2E v8 PASS 50/10/0. Независимые аудиты охватили Middle01–40, Middle+01–24 и Senior01–24; пять найденных P2 исправлены и перепроверены. Middle exam 1.0.1 корректно насыщает backoff; точная legacy 1.0.0 сохранена для старых попыток. Human-review ограничения рангов и сертификатов сохранены. Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены.",
       "id": "m11-course"
     },
     {
@@ -111,7 +111,7 @@
       "value": 0,
       "max": 2,
       "unit": "этапа",
-      "detail": "M12: rootless make sandbox-test подтвердил OOM/PID-лимиты, блокировку доступа к host sentinel/listener/socket, отказ опасных syscall, общий лимит stdout/stderr, ENOSPC при записи файлов, очистку после завершения родителя/потомка, изоляцию одинаковых имён файлов и отказ неподдерживаемого runtime. Тесты S08/S12 проверяют размер и дубликаты JSON, а также cross-site запросы. Остались: полная видимость host mount/PID mapping (S01), DNS/external network (S02), literal cgroup populated=0 (S04). M13 clean-source архив 5a985b2 устарел; его нужно пересобрать после acceptance M11/M12. Выбор LICENSE/NOTICE владельцем и проверка другой ОС ещё не завершены. Последний full E2E v7 прошёл 50/10/0; полный rootless make sandbox-test прошёл за 174.833s."
+      "detail": "M12: rootless make sandbox-test подтвердил OOM/PID-лимиты, блокировку доступа к host sentinel/listener/socket, отказ опасных syscall, общий лимит stdout/stderr, ENOSPC при записи файлов, очистку после завершения родителя/потомка, изоляцию одинаковых имён файлов и отказ неподдерживаемого runtime. Тесты S08/S12 проверяют размер и дубликаты JSON, а также cross-site запросы. Остались: полная видимость host mount/PID mapping (S01), DNS/external network (S02), literal cgroup populated=0 (S04). M13 clean-source архив 5a985b2 устарел; его нужно пересобрать после acceptance M11/M12. Выбор LICENSE/NOTICE владельцем и проверка другой ОС ещё не завершены. Последний full E2E v7 прошёл 50/10/0; полный rootless make sandbox-test прошёл за 174.833s. Найденный мобильный overflow в уроке Middle исправлен; документ теперь 390/390 px, Playwright проверяет clientWidth. Полный make test и E2E v8 прошли 50/10/0; остаются только границы sandbox и выпускная приёмка. Новый `m12_sandbox_namespace_probe.py` подтвердил разные PID/mount namespace, отличающиеся mountinfo и только loopback routes; прямой host PID-1 и DNS-запросы не проверялись. Probe отчётливо указывает, что cgroup events исчезает до наблюдения populated=0."
     },
     {
       "title": "Необязательный ИИ-наставник",

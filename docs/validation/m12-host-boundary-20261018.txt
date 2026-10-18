@@ -3,7 +3,7 @@ runner image: docker.io/library/golang@sha256:3b15ba438c60ab8fabe5fee3b11025c004
 policy: exact current runner policy() literals; no mounts, --network=none, read-only, cap-drop=ALL
 scope: disposable temp sentinel/key fixture and loopback TCP/UDP/unix listeners; no external network or DNS query.
 proc semantics: /proc/1 is checked to be in this container's PID namespace; this does not inspect host /proc/1/environ.
-result: PASS; elapsed=0.27s; host listeners tcp/udp/unix=(0, 0, 0)
+result: PASS; elapsed=0.29s; host listeners tcp/udp/unix=(0, 0, 0)
 host sentinel (0644) and issuer-key fixture (0600) unchanged; contents redacted
   direct_sentinel_denied=true
   sentinel_write_denied=true

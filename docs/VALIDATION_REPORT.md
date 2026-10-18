@@ -1,11 +1,15 @@
 # Актуальная проверка — 2026-10-18
 
-## Последний текущий source checkpoint — `e4ac92a` (2026-10-18)
+## Последний текущий source checkpoint — `90d56f1` (2026-10-18)
 
 - M11 **DONE**. `python3 scripts/check_m11_acceptance.py --report docs/validation/m11-current-tree-acceptance-20261018-v7.txt --log artifacts/m11-full-final-v7-20261018.log --cache-dir /tmp/oga-m11-v7-20261018` — **PASS, 88/88**, 2815.381s; source fingerprint до и после `sha256:dd28be0d31ffba7ea087bc52a928e673cbc515ceafce756f5506416a1a07886d`; log SHA-256 `abf0880c69155e94a8ea2af2eb06780f391a2876645c1b7319b8ca16e229dce7`. Исправление backoff подняло текущий Middle exam до v1.0.1, legacy v1.0.0 остался доступен для старых попыток.
 - `make test` — **PASS, exit 0** после backoff/reference/version compatibility fix: Go unit/integration/reference, vet, whole-tree race, Python gates, TypeScript и production build.
-- Current-tree desktop/mobile E2E — **PASS 50 / 10 intentional skips / 0 failures**, 10.9m, с реальными изолированными P1–P5 runner flows. Evidence: [E2E v7](validation/e2e-current-tree-20261018-v7.txt); Playwright report hash указан внутри.
+- `make test` после мобильной перепроверки — **PASS, exit 0**; log `artifacts/make-test-mobile-overflow-fix-20261018.log`, SHA-256 `21c34b18432fab2607196d16d724fce2008c3ce60e89a82cd154ebe8009af0b7`.
+- Current-tree desktop/mobile E2E v8 — **PASS 50 / 10 intentional skips / 0 failures**, 9.9m, с реальными изолированными P1–P5 runner flows. Evidence: [E2E v8](validation/e2e-current-tree-20261018-v8.txt); Playwright report hash указан внутри.
+- Browser visual QA обнаружил 449px document при 390px mobile viewport из-за длинного inline пути в уроке. Перенос Markdown-кода и проверка `scrollWidth <= documentElement.clientWidth` исправлены; targeted mobile lesson 1/1 и полный E2E v8 PASS. После фикса mobile lesson/editor: 390/390 px, axe0, console/page errors0, screenshots inspected. Details: [mobile overflow evidence](validation/m12-mobile-overflow-20261018.txt).
 - `make sandbox-test` — **PASS, exit 0**; `TestSandboxIntegration` 174.833s, rootless cgroup and host-boundary probes. Log `artifacts/m12-final-post-m11-20261018.log`, SHA-256 `89ab0a3abfd9df964c586978c18ba63224d3dcb6068de74135be625cd256a51c`.
+- Latest `make sandbox-test` with the bounded namespace/route/cgroup lifecycle probe — **PASS, exit 0**; log `artifacts/m12-final-with-namespace-20261018.log`, SHA-256 `ee1ac11fae331eb4c3e3197a786f75234e8d3f76aaa73f79a4480785354029ee`. The probe confirms distinct PID/mount namespaces, different mountinfo sets and loopback-only routes; it explicitly records that `--rm` removed the cgroup before literal `populated=0` was observable.
+- `make test` after adding the namespace-probe unit tests — **PASS, exit 0**; log `artifacts/make-test-m12-namespace-20261018.log`, SHA-256 `78482703da33150e76e1e330937c3d80e62674c520b85be3de2d2860857e76e0`.
 - `npm run test:progress` — **PASS** desktop/light и mobile/dark, axe violations 0, horizontal overflow 0; generated screenshots визуально inspected. Dashboard показывает 12/14 checkpoints (86%) и оставшиеся M12/M13.
 - M12/M13 остаются открыты: literal `cgroup.events populated=0`, полный host mount/PID-1 mapping и DNS/external-network behavior не подтверждены; нужно повторить fresh-source M13/Gitleaks. LICENSE/NOTICE choice требует решения владельца, другая ОС не тестировалась. Эти границы не утверждаются как observed escapes.
 

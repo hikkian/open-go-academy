@@ -27,6 +27,7 @@ test:
 	python3 -m unittest discover -s scripts -p 'test_m13_license_inventory.py'
 	python3 -m unittest discover -s scripts -p 'test_m12_sandbox_limit_probe.py'
 	python3 -m unittest discover -s scripts -p 'test_m12_sandbox_access_probe.py'
+	python3 -m unittest discover -s scripts -p 'test_m12_sandbox_namespace_probe.py'
 	$(GO) test ./...
 	$(GO) -C content/projects/p1/reference test ./...
 	$(GO) -C content/projects/p1/reference vet ./...
@@ -37,6 +38,8 @@ sandbox-test:
 	ACADEMY_SANDBOX_TEST=1 $(GO) test -count=1 -timeout=10m -v ./internal/runner
 	python3 scripts/m12_sandbox_limit_probe.py --output docs/validation/m12-sandbox-cgroup-20261018.txt
 	python3 scripts/m12_sandbox_access_probe.py --output docs/validation/m12-host-boundary-20261018.txt
+	python3 -m unittest discover -s scripts -p 'test_m12_sandbox_namespace_probe.py'
+	python3 scripts/m12_sandbox_namespace_probe.py
 e2e:
 	ACADEMY_E2E_RUNNER=1 npm run e2e
 check: test

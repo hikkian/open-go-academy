@@ -1,0 +1,14 @@
+Open Go Academy — current-tree desktop/mobile E2E acceptance v8
+Date: 2026-10-18 (Asia/Atyrau)
+Commit under test: `90d56f1` (including mobile Markdown wrapping and corrected viewport-width assertions)
+
+Command: `ACADEMY_E2E_RUNNER=1 ACADEMY_E2E_PROJECT_RUNNER=1 ACADEMY_E2E_P3_RUNNER=1 npm run e2e -- --reporter=list`, with separately started local runner daemons, private Unix sockets under a fresh `/tmp/oga-e2e-v8-*` directory, and a disposable SQLite DB in that directory.
+
+Result: **PASS — 50 passed, 10 intentional skips, 0 failures, 9.9 minutes, exit 0.** One Playwright worker covered desktop and mobile Chromium. Real Go editor/grading and isolated P1–P5 project flows passed; completing project checks did not award a rank. No external/paid AI provider was called. Runner processes and the temporary DB/socket directory were cleaned by the harness.
+
+The mobile Middle lesson assertion now compares document scroll width to `document.documentElement.clientWidth`; this prevents a mobile browser's expanded layout viewport from masking overflow. A separate visual probe measured the opened editor at 390/390 px, axe violations 0, console/page errors 0. The full-page screenshot is `artifacts/mobile-middle-course.png` (390 × 13,885); the editor viewport is `artifacts/academy-mobile-editor-viewport-v7.png` (390 × 844).
+
+Playwright HTML report: `artifacts/playwright-report/index.html`, SHA-256 `ea3c032700c768b3f81bd1759f4e02a8f032f8dd1c6f31944d7e96bba11ef864`.
+The HTML report preserves per-test results; the Playwright list output is in the run transcript.
+
+The API bound only to `127.0.0.1:8081`. No public service or user database was used.
