@@ -1,0 +1,10 @@
+M13 source-archive dependency/license inventory — 2026-10-18
+
+Source commit: `3f5566d`
+Deterministic `git archive --format=tar HEAD` SHA-256: `949b15fcd37765022eb8f36a07d051e7a1867df678be7633815e058334c3c25d`
+Command: `python3 scripts/m13_license_inventory.py --repo-root <extracted-clean-archive> --output docs/validation/m13-license-inventory-20261018.json`
+Mode: cache-only; no network/package installation. Generated `.data`, `.tools`, artifacts, `.git`, and `node_modules` are absent from the source archive. The scanner separately excludes generated roots when run on a working tree.
+
+Result: **268 observations** (92 Go: 11 workspace modules, 41 extracted-cache, 40 not cached; 176 npm lock entries: 132 npm-content-cache and 44 lock-metadata-only). There are 193 license-file observations with 99 distinct SHA-256 digests. Go SPDX declarations remain UNKNOWN where module metadata does not declare them; 40 Go dependencies were unavailable locally. npm declarations observed: MIT 133, Apache-2.0 26, MPL-2.0 14, ISC 2, BSD-3-Clause 1. The inventory is observational and is not a legal determination. Root LICENSE/NOTICE are absent, package manifests are UNLICENSED, and license/NOTICE decisions remain open.
+
+The earlier working-tree scan reported npm `installed-cache` files. Regeneration from the clean archive intentionally uses npm content-cache/license data instead, so this source archive report is the release-source baseline. The actual source files and report are checked in as `docs/validation/m13-license-inventory-20261018.json`.

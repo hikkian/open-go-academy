@@ -1093,12 +1093,12 @@
       "version": "local"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MPL-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "812e9d96e900a093ae4d1d3f22c5f82f568a0a0461c3007a99d00573d41c5461"
         }
       ],
@@ -1107,12 +1107,12 @@
       "version": "4.13.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
         }
       ],
@@ -1121,12 +1121,12 @@
       "version": "6.20.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
         }
       ],
@@ -1135,12 +1135,12 @@
       "version": "6.11.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "8ac9cfc9c82c397298c2139028d2474d8e0470f2092a97edddccf353bc5d4d36"
         }
       ],
@@ -1149,12 +1149,12 @@
       "version": "6.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
         }
       ],
@@ -1163,12 +1163,12 @@
       "version": "6.13.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
         }
       ],
@@ -1177,12 +1177,12 @@
       "version": "6.9.7"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
         }
       ],
@@ -1191,12 +1191,12 @@
       "version": "6.7.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
         }
       ],
@@ -1205,12 +1205,12 @@
       "version": "6.7.6"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
         }
       ],
@@ -1219,12 +1219,12 @@
       "version": "6.0.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
         }
       ],
@@ -1233,12 +1233,12 @@
       "version": "6.43.14"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "568902fb66eaf1f11750e966b33fd7b5d7c618e65af09f35ef843635bcf5f1ba"
         }
       ],
@@ -1247,12 +1247,12 @@
       "version": "1.5.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "54bd812a6d334e0c438b78a43cea74b67e882739fd3450115ddc7c52be5706c1"
         }
       ],
@@ -1261,12 +1261,12 @@
       "version": "1.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "568902fb66eaf1f11750e966b33fd7b5d7c618e65af09f35ef843635bcf5f1ba"
         }
       ],
@@ -1275,12 +1275,12 @@
       "version": "1.2.5"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "568902fb66eaf1f11750e966b33fd7b5d7c618e65af09f35ef843635bcf5f1ba"
         }
       ],
@@ -1289,12 +1289,12 @@
       "version": "1.4.11"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "9360b00fdd091f05c783b568bdd46c679c41b72415599252de98949462ea1acb"
         }
       ],
@@ -1303,12 +1303,12 @@
       "version": "1.0.4"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "95ced5ecf1133fbf41d409b5555c86c344f83f3b019926057ddbc07cfdcc27b3"
         }
       ],
@@ -1317,16 +1317,16 @@
       "version": "0.154.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "Apache-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb"
         },
         {
-          "path": "NOTICE",
+          "path": "<npm-tarball>!/package/NOTICE",
           "sha256": "6d602191187b35b9b01d2cffa01c8469c2c8d9de8a96f1bf868e0f264f51c81d"
         }
       ],
@@ -1425,7 +1425,7 @@
       "version": "1.2.14"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [],
@@ -1470,12 +1470,12 @@
       "version": "1.2.14"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "e1919b3b98b8bf6c1b99fcc60a0ed46027c97ac947432e1278446c9606f50161"
         }
       ],
@@ -1484,12 +1484,12 @@
       "version": "1.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/debug/LICENSE",
           "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ],
@@ -1498,12 +1498,12 @@
       "version": "4.1.13"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/estree/LICENSE",
           "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ],
@@ -1512,12 +1512,12 @@
       "version": "1.0.9"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/estree-jsx/LICENSE",
           "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ],
@@ -1526,12 +1526,12 @@
       "version": "1.0.5"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/hast/LICENSE",
           "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ],
@@ -1540,12 +1540,12 @@
       "version": "3.0.5"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/mdast/LICENSE",
           "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ],
@@ -1554,12 +1554,12 @@
       "version": "4.0.4"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/ms/LICENSE",
           "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ],
@@ -1568,12 +1568,12 @@
       "version": "2.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/react/LICENSE",
           "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ],
@@ -1582,12 +1582,12 @@
       "version": "19.3.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/react-dom/LICENSE",
           "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ],
@@ -1596,12 +1596,12 @@
       "version": "19.3.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/unist/LICENSE",
           "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ],
@@ -1718,16 +1718,16 @@
       "version": "7.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "Apache-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "a7d00bfd54525bc694b6e32f64c7ebcf5e6b7ae3657be5cc12767bce74654a47"
         },
         {
-          "path": "NOTICE.txt",
+          "path": "<npm-tarball>!/package/NOTICE.txt",
           "sha256": "f5c708b59114507b8b27b48181b6883d106bbca0c1634bbee45b5e344237b66b"
         }
       ],
@@ -1799,12 +1799,12 @@
       "version": "7.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "ISC",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "dc6d4961d8b6ee747231582ae9c53ce1d66bf76bc9f5a28f554c0e97210953bf"
         }
       ],
@@ -1813,12 +1813,12 @@
       "version": "1.4.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "29b68325fe026047d13e187b44c33b2acacf7dc647dec4583702e59f235e13b5"
         }
       ],
@@ -1827,16 +1827,16 @@
       "version": "6.1.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MPL-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "af175b9d96ee93c21a036152e1b905b0b95304d4ae8c2c921c7609100ba8df7e"
         },
         {
-          "path": "LICENSE-3RD-PARTY.txt",
+          "path": "<npm-tarball>!/package/LICENSE-3RD-PARTY.txt",
           "sha256": "4f8563870d0fca38bbc3e00b6f670cb7fa9f380ba9f26a7f7d1184a6b18b1653"
         }
       ],
@@ -1845,12 +1845,12 @@
       "version": "4.13.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
         }
       ],
@@ -1859,12 +1859,12 @@
       "version": "2.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
         }
       ],
@@ -1873,12 +1873,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
         }
       ],
@@ -1887,12 +1887,12 @@
       "version": "2.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
         }
       ],
@@ -1901,12 +1901,12 @@
       "version": "2.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
         }
       ],
@@ -1915,12 +1915,12 @@
       "version": "3.0.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
         }
       ],
@@ -1929,12 +1929,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
         }
       ],
@@ -1943,12 +1943,12 @@
       "version": "6.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
@@ -1957,12 +1957,12 @@
       "version": "2.0.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "23852ebf6aef7fadffc92514b3c5df163a8651f2c3ed0dbb494cb49d93bd5de5"
         }
       ],
@@ -1971,12 +1971,12 @@
       "version": "1.0.7"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "11d55bd4541c75ee7879547ac49089c489163dae49551389713c3d026cab383e"
         }
       ],
@@ -1985,12 +1985,12 @@
       "version": "3.2.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "3a61c6c96caf5c1d9b623fb9b04c822b783dfcb78aa7e49c76a3f643e6ed7f95"
         }
       ],
@@ -1999,12 +1999,12 @@
       "version": "4.4.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2013,12 +2013,12 @@
       "version": "1.3.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "306fa513e39b23a6e8747520de761809d206b99800ef41907b530226574c59ae"
         }
       ],
@@ -2027,12 +2027,12 @@
       "version": "2.0.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "Apache-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
         }
       ],
@@ -2041,12 +2041,12 @@
       "version": "2.1.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "6f296a5eccc1dc96714bb94ebaa9cac25b0a1467d74cc5263ac4d0646ab01f62"
         }
       ],
@@ -2055,12 +2055,12 @@
       "version": "1.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
         }
       ],
@@ -2069,12 +2069,12 @@
       "version": "3.0.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "97af7428f93afbab9bf79cd09254da1357161794f4255eb1b4599f04dd2d2e7c"
         }
       ],
@@ -2083,12 +2083,12 @@
       "version": "3.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "9a39f2aadab11a3697edd668ff2d8ad885b649737b7ab4d3bf12b34e5ada0c86"
         }
       ],
@@ -2106,12 +2106,12 @@
       "version": "2.3.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2120,12 +2120,12 @@
       "version": "2.3.6"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
@@ -2134,12 +2134,12 @@
       "version": "3.0.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "e18cf5173e928f808f0cd208097fee8fbec9d28fc0255213938e4c559e29ff58"
         }
       ],
@@ -2148,12 +2148,12 @@
       "version": "3.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "395c95f20598da653ff1eb1cb9d74947c7fac689697147f1d192fd0242a0e635"
         }
       ],
@@ -2162,12 +2162,12 @@
       "version": "0.2.7"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
@@ -2176,12 +2176,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
@@ -2190,12 +2190,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
@@ -2204,12 +2204,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
@@ -2218,12 +2218,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
         }
       ],
@@ -2232,12 +2232,12 @@
       "version": "4.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "Apache-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
         }
       ],
@@ -2246,12 +2246,12 @@
       "version": "1.4.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MPL-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "5eba353fe5076ac3432177f8ab1cf75e3afcd0584251e37c3bfead5f447d040e"
         }
       ],
@@ -2323,12 +2323,12 @@
       "version": "1.33.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MPL-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "5eba353fe5076ac3432177f8ab1cf75e3afcd0584251e37c3bfead5f447d040e"
         }
       ],
@@ -2364,12 +2364,12 @@
       "version": "1.33.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "9f084fac69d8cf1e6ce983ba5a3499c7695ed74a26ec625c38f0fd19fddd5e10"
         }
       ],
@@ -2378,12 +2378,12 @@
       "version": "3.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2392,12 +2392,12 @@
       "version": "2.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
         }
       ],
@@ -2406,12 +2406,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
         }
       ],
@@ -2420,12 +2420,12 @@
       "version": "3.2.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
         }
       ],
@@ -2434,12 +2434,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "b6d1a4e1831b177acc96f22a817d4f0f4c18419355badc3125754445fc69e3a7"
         }
       ],
@@ -2448,12 +2448,12 @@
       "version": "4.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
@@ -2462,12 +2462,12 @@
       "version": "13.2.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2476,12 +2476,12 @@
       "version": "2.2.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
         }
       ],
@@ -2490,12 +2490,12 @@
       "version": "4.0.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2504,12 +2504,12 @@
       "version": "4.0.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2518,12 +2518,12 @@
       "version": "2.0.4"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2532,12 +2532,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2546,12 +2546,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2560,12 +2560,12 @@
       "version": "2.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2574,12 +2574,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2588,12 +2588,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2602,12 +2602,12 @@
       "version": "2.1.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2616,12 +2616,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2630,12 +2630,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2644,12 +2644,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2658,12 +2658,12 @@
       "version": "2.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2672,12 +2672,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2686,12 +2686,12 @@
       "version": "1.0.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2700,12 +2700,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2714,12 +2714,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2728,12 +2728,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2742,12 +2742,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2756,12 +2756,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2770,12 +2770,12 @@
       "version": "2.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2784,12 +2784,12 @@
       "version": "2.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -2798,12 +2798,12 @@
       "version": "2.0.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license.md",
+          "path": "<npm-tarball>!/package/license.md",
           "sha256": "1662fae9b5314d11cf51284e2dcd1f006a354f7343f08712a730fcff9a359801"
         }
       ],
@@ -2812,12 +2812,12 @@
       "version": "2.1.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987"
         }
       ],
@@ -2826,12 +2826,12 @@
       "version": "3.3.20"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "5d0698266086f217bb11ea0499d33453e401fe479fb9126ad04e625e63d3557b"
         }
       ],
@@ -2840,12 +2840,12 @@
       "version": "4.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/unist v2.0/LICENSE",
           "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ],
@@ -2854,12 +2854,12 @@
       "version": "2.0.11"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "ISC",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750"
         }
       ],
@@ -2868,12 +2868,12 @@
       "version": "1.1.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "d0cd141b0c322fded5dfad1d4645bb2fedfc05b7321fe1009469638190d59ef9"
         }
       ],
@@ -2882,16 +2882,16 @@
       "version": "4.0.7"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "Apache-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb"
         },
         {
-          "path": "NOTICE",
+          "path": "<npm-tarball>!/package/NOTICE",
           "sha256": "6d602191187b35b9b01d2cffa01c8469c2c8d9de8a96f1bf868e0f264f51c81d"
         }
       ],
@@ -2900,16 +2900,16 @@
       "version": "1.64.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "Apache-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb"
         },
         {
-          "path": "NOTICE",
+          "path": "<npm-tarball>!/package/NOTICE",
           "sha256": "6d602191187b35b9b01d2cffa01c8469c2c8d9de8a96f1bf868e0f264f51c81d"
         }
       ],
@@ -2918,12 +2918,12 @@
       "version": "1.64.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "be75ef59c5cf59715588a17a82dff7dd3e83c4dba3c458676bb9311e05fbedc5"
         }
       ],
@@ -2932,12 +2932,12 @@
       "version": "7.0.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "5be1f3465bba68a626777f984878814aaf35e7ef8e9fd314d469bcf887050fb8"
         }
       ],
@@ -2946,12 +2946,12 @@
       "version": "8.5.30"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "5d0698266086f217bb11ea0499d33453e401fe479fb9126ad04e625e63d3557b"
         }
       ],
@@ -2960,12 +2960,12 @@
       "version": "7.2.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
         }
       ],
@@ -2974,12 +2974,12 @@
       "version": "19.3.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
         }
       ],
@@ -2988,12 +2988,12 @@
       "version": "19.3.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "f6196c64e144f9a6fa9154c3a80bc8b89615a9567934b83a8951879f06ba2aef"
         }
       ],
@@ -3002,12 +3002,12 @@
       "version": "10.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "413654b0a78b98661dce96d2aff2e4d075603d220b8483e28b1aa010ccc138b4"
         }
       ],
@@ -3016,12 +3016,12 @@
       "version": "11.0.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -3030,12 +3030,12 @@
       "version": "11.1.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734"
         }
       ],
@@ -3044,12 +3044,12 @@
       "version": "1.2.14"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
         }
       ],
@@ -3058,12 +3058,12 @@
       "version": "0.28.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "BSD-3-Clause",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd"
         }
       ],
@@ -3072,12 +3072,12 @@
       "version": "1.2.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
@@ -3086,12 +3086,12 @@
       "version": "2.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "9f084fac69d8cf1e6ce983ba5a3499c7695ed74a26ec625c38f0fd19fddd5e10"
         }
       ],
@@ -3100,12 +3100,12 @@
       "version": "4.0.4"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "cb4474e26547397169061d3586c00022cda5330a1b64fa13e872319f3b63aff1"
         }
       ],
@@ -3114,12 +3114,12 @@
       "version": "4.1.4"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "bbb380e5c1a717079378d6ea4d33c8a5a81655d4612b749f882e34e46712aab5"
         }
       ],
@@ -3128,12 +3128,12 @@
       "version": "1.1.21"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "896c9fd6b5fc48ac31800b9d29a6e3ffcb0c2d534ed077ebfa5c2fa388cc38b7"
         }
       ],
@@ -3142,12 +3142,12 @@
       "version": "1.0.14"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "22c68811e174cbbfb3813d4135918df4f540959c14d872e601d9abe83d3cde8f"
         }
       ],
@@ -3156,12 +3156,12 @@
       "version": "0.2.17"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "9f084fac69d8cf1e6ce983ba5a3499c7695ed74a26ec625c38f0fd19fddd5e10"
         }
       ],
@@ -3170,12 +3170,12 @@
       "version": "3.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "6c03fd41cfd7c92d8aa8a2fa521b94b2683f059123281dcf921ddea9216b6254"
         }
       ],
@@ -3184,17 +3184,21 @@
       "version": "2.2.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "Apache-2.0",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "a7d00bfd54525bc694b6e32f64c7ebcf5e6b7ae3657be5cc12767bce74654a47"
         },
         {
-          "path": "NOTICE.txt",
+          "path": "<npm-tarball>!/package/NOTICE.txt",
           "sha256": "f5c708b59114507b8b27b48181b6883d106bbca0c1634bbee45b5e344237b66b"
+        },
+        {
+          "path": "<npm-tarball>!/package/vendor/vscode-jsonrpc/License.txt",
+          "sha256": "ec9ee83580841e8eb687aca9867f221503809ba6426c7f876ede17d91b9fcfd0"
         }
       ],
       "manifest": "web/package-lock.json",
@@ -3202,12 +3206,12 @@
       "version": "7.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "05811400116ed61f1a7693b78fe8ca6598c155a12f3978e609db4df648a4cb3d"
         }
       ],
@@ -3216,12 +3220,12 @@
       "version": "11.0.5"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "82974dbf2639d13edab95c32ed9cb6c0867ede272cd2e07ce47ce8548fe55c05"
         }
       ],
@@ -3230,12 +3234,12 @@
       "version": "6.0.1"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
         }
       ],
@@ -3244,12 +3248,12 @@
       "version": "5.0.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
@@ -3258,12 +3262,12 @@
       "version": "4.0.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
         }
       ],
@@ -3272,12 +3276,12 @@
       "version": "5.1.0"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
@@ -3286,12 +3290,12 @@
       "version": "6.0.2"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "05811400116ed61f1a7693b78fe8ca6598c155a12f3978e609db4df648a4cb3d"
         }
       ],
@@ -3300,12 +3304,12 @@
       "version": "6.0.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
         }
       ],
@@ -3314,12 +3318,12 @@
       "version": "4.0.3"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE.md",
+          "path": "<npm-tarball>!/package/LICENSE.md",
           "sha256": "a47172e44a86a7e2cd1c16282341f7726ec60caafe3a6166fe3e0602005b6fa6"
         }
       ],
@@ -3328,12 +3332,12 @@
       "version": "8.3.4"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "LICENSE",
+          "path": "<npm-tarball>!/package/LICENSE",
           "sha256": "869c30f368eb08735e779027b9f4bc9fea2f39624351856aebe42741f0bc0884"
         }
       ],
@@ -3342,12 +3346,12 @@
       "version": "2.2.8"
     },
     {
-      "cache": "installed-cache",
+      "cache": "npm-content-cache",
       "declared_license": "MIT",
       "ecosystem": "npm",
       "license_files": [
         {
-          "path": "license",
+          "path": "<npm-tarball>!/package/license",
           "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
         }
       ],
