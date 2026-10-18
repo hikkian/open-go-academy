@@ -82,6 +82,7 @@ func TestP4P5SubmitRejectsGoTestProcessHijacks(t *testing.T) {
 			{"test exit", "early_test.go", "package main\nimport (\"os\"; \"testing\")\nfunc TestEarly(t *testing.T){ os.Exit(0) }\n"},
 			{"dot-import syscall exit", "early_test.go", "package main\nimport ( . \"syscall\"; \"testing\")\nfunc TestEarly(t *testing.T){ Exit(0) }\n"},
 			{"test goexit", "early_test.go", "package main\nimport (\"runtime\"; \"testing\")\nfunc TestEarly(t *testing.T){ runtime.Goexit() }\n"},
+			{"dot-import runtime goexit", "early_test.go", "package main\nimport ( . \"runtime\"; \"testing\")\nfunc TestEarly(t *testing.T){ Goexit() }\n"},
 		} {
 			t.Run(projectID+"/"+tc.name, func(t *testing.T) {
 				files := make(map[string]string, len(project.StarterFiles)+1)
