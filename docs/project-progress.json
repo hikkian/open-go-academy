@@ -2,8 +2,8 @@
   "updated_at": "2026-10-18",
   "phase": "M11 — содержательная проверка курса, проектов и рангов Middle → Senior",
   "phase_note_suffix": " Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
-  "m11_review_detail": "Исторический all-88 gate v4 PASS на fingerprint sha256:e03e7282…d3fb. После аудита Middle19/20/32/36 внесены правки; gate v4 stale. Новый полный make test PASS: Go unit/integration/reference/vet/whole-tree race, Python gates, web typecheck и production build. Targeted curriculum/fingerprint checks и JSON/path tests прошли. Остаются all-88 gate v5, desktop/mobile E2E для текущего дерева, независимая педагогическая проверка и rank-governance traceability. Публичный Go runner и внешнее доверие сертификатов не включены.",
-  "phase_note": "Для Middle, Middle+ и Senior опубликовано локально 88/88 глав; полные наборы подготовлены: 88/88. После правок нужен полный acceptance gate. Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
+  "m11_review_detail": "All-88 gate v5 PASS: 88/88 advanced lessons, exit0, 2815.488s; start/end source fingerprint matches sha256:f6e44740…eaf8c5 (exact hash in acceptance report docs/validation/m11-current-tree-acceptance-20261018-v5.txt). Full make test also passes including Go vet/race and web build. Remaining: current-tree desktop/mobile E2E, independent pedagogy/rank-governance traceability, broader M12 audit and M13 legal/release gates. Public Go runner and external certificate trust are not enabled.",
+  "phase_note": "Для Middle, Middle+ и Senior опубликовано локально 88/88 глав; полные наборы подготовлены: 88/88. Автоматическая проверка текущих исходников прошла; остаются аудит и выпуск. Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
   "milestones": [
     {
       "id": "M0",
@@ -89,7 +89,7 @@
       "value": 88,
       "max": 88,
       "unit": "уроков",
-      "detail": "В локальном каталоге доступны 88 из 88 расширенных глав; подготовлено 88 из 88 полных наборов lesson/metadata/examples/exercises. После последних правок требуется повторный полный автоматический gate. Исторический all-88 gate v4 PASS на fingerprint sha256:e03e7282…d3fb. После аудита Middle19/20/32/36 внесены правки; gate v4 stale. Новый полный make test PASS: Go unit/integration/reference/vet/whole-tree race, Python gates, web typecheck и production build. Targeted curriculum/fingerprint checks и JSON/path tests прошли. Остаются all-88 gate v5, desktop/mobile E2E для текущего дерева, независимая педагогическая проверка и rank-governance traceability. Публичный Go runner и внешнее доверие сертификатов не включены. Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены.",
+      "detail": "В локальном каталоге доступны 88 из 88 расширенных глав; подготовлено 88 из 88 полных наборов lesson/metadata/examples/exercises. Полная автоматическая проверка текущих исходников прошла. All-88 gate v5 PASS: 88/88 advanced lessons, exit0, 2815.488s; start/end source fingerprint matches sha256:f6e44740…eaf8c5 (exact hash in acceptance report docs/validation/m11-current-tree-acceptance-20261018-v5.txt). Full make test also passes including Go vet/race and web build. Remaining: current-tree desktop/mobile E2E, independent pedagogy/rank-governance traceability, broader M12 audit and M13 legal/release gates. Public Go runner and external certificate trust are not enabled. Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены.",
       "id": "m11-course"
     },
     {
@@ -129,8 +129,8 @@
     "constraints": "Доступность лимитов и результаты повторных проверок влияют на календарный срок. Оценка пересматривается после закрытия крупных этапов."
   },
   "m11_acceptance": {
-    "status": "needs_recheck",
+    "status": "passed",
     "source_fingerprint": "sha256:f6e44740783cba50ff9b2bc2812f7f88283a8d5caff0ef062b33e7b471aef8c5"
   },
-  "m11_acceptance_report": "docs/validation/m11-current-tree-acceptance-20261018-v4.txt"
+  "m11_acceptance_report": "docs/validation/m11-current-tree-acceptance-20261018-v5.txt"
 }

@@ -1,0 +1,15 @@
+M11 acceptance
+Result: PASS
+Scope: all 88 advanced lessons
+Started epoch: 1792324409
+Started UTC: 2026-10-18T11:53:29+00:00
+Elapsed seconds: 2815.488
+Exit code: 0
+Source fingerprint: sha256:f6e44740783cba50ff9b2bc2812f7f88283a8d5caff0ef062b33e7b471aef8c5
+Finished source fingerprint: sha256:f6e44740783cba50ff9b2bc2812f7f88283a8d5caff0ef062b33e7b471aef8c5
+Raw log: /home/alisher/Desktop/open-go-academy/artifacts/m11-full-final-v5-20261018.log
+Raw log SHA-256: 06b47c1334bed09bb7281d2192751babc42f43c7a61b317c2aa812e931aebe5c
+Command: ACADEMY_ACCEPT_M11_ADVANCED=1 GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off GOFLAGS=-p=1 GOMAXPROCS=2 GOCACHE=/tmp/oga-m11-v5-20261018 sh scripts/go.sh test -count=1 -timeout=3h ./internal/content -run '^TestM11AdvancedCurriculumAcceptance$' -v
+
+This gate executes repository-owned examples/starters and reference solutions through the pinned isolated runner.
+A passing automatic gate does not establish pedagogical completeness, reviewer identity or public sandbox safety.
