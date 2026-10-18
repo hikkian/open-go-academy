@@ -111,7 +111,7 @@
       "value": 0,
       "max": 2,
       "unit": "этапа",
-      "detail": "M12: current desktop/mobile E2E 50/10/0, responsive/a11y, cgroup OOM/PID tests pass; bounded threat coverage S01–S03/S06–S09/S11–S12 still open. M13: clean-source acceptance on 10cd990 passed, must rerun on current checkpoint; legal LICENSE/NOTICE decision and non-Linux platform testing remain open."
+      "detail": "M12: текущие browser/E2E 50/10/0, responsive/axe и cgroup OOM/PID проходят; threat-evidence gaps S01–S03/S06–S09/S11–S12 остаются. M13: clean archive на 5a985b2 прошёл bootstrap/test/build/project-runtime/recovery/E2E и оба Gitleaks scan. Остаются юридический review, выбор лицензии/NOTICE владельцем и non-Linux validation."
     },
     {
       "title": "Необязательный ИИ-наставник",
@@ -125,7 +125,7 @@
     "range": "Предварительный ориентир: ещё 4–8 недель активной разработки.",
     "calendar_window": "Ориентир при регулярной работе: 15 ноября–13 декабря 2026. Это плановый диапазон, не обещанная дата.",
     "confidence": "Низкая: три оставшихся этапа крупнее некоторых уже завершённых; новые результаты аудита могут увеличить объём исправлений.",
-    "basis": "Остались независимая педагогическая/ранговая traceability M11, bounded threat-coverage probes and full M12 acceptance, plus clean-source revalidation and legal/owner gates M13. Технический all-88 gate и текущий desktop/mobile E2E уже прошли.",
+    "basis": "Остались независимая pedagogy/rank traceability M11, bounded threat-coverage probes и полный M12 audit, затем M13 legal/owner/non-Linux gates. Clean-source bootstrap/test/build/recovery/E2E и secret scans уже прошли на commit 5a985b2.",
     "constraints": "Доступность лимитов и результаты повторных проверок влияют на календарный срок. Оценка пересматривается после закрытия крупных этапов."
   },
   "m11_acceptance": {

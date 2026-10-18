@@ -1,0 +1,20 @@
+Open Go Academy — clean-source acceptance v5
+Date: 2026-10-18 (Asia/Atyrau)
+Commit: `5a985b2`
+Git archive SHA-256: `e7b3764994d1ff19999c5c30a9473201e75c9aaf4a751b6b131c28fcceff4376`
+Clean extraction: `/tmp/oga-m13-current-5a985b2` (no `.git`, user `.data`, node_modules or compiled artifacts at extraction time)
+
+Results
+- `make bootstrap`: PASS, exit 0. Pinned toolchain/dependencies, npm lockfiles, Playwright browser and OCI image prepared; npm reported 0 vulnerabilities. Log SHA256: `8e06278992d8454e055d6f3c3b96ac03601f0d214e566723af80cb713d51bf25`.
+- `make test`: PASS, exit 0, fresh source. Includes Go unit/integration/reference tests, vet, whole-tree race, Python gates, TypeScript and Vite production build. Log SHA256: `c78bc111a270f6a23a0682470fcb40b47b79ea3007cf2e29c9f71c8cf8b80257`.
+- `make build`: PASS, exit 0. API, basic runner and production UI build. Log SHA256: `7e9b859b19d83c405b4ce3add1b12709e635a39922511048443417535b2e9d7e`.
+- `make project-runtime`: PASS; exact cached offline P2/P3/P4/P5 profiles and immutable checker identities built from archive source. Log SHA256: `3e210bd3760f1936452fb24b0b2834e78c6c419fa4ea67aab51ee4dd072c36e7`.
+- `python3 scripts/recovery-check.py`: PASS; disposable SQLite backup/restore, API restart, profile/theme/draft and migrations preserved. Log SHA256: `7f454538a3f22afe23140ca952189da9318fcb9921d2e1374358d569b214ae57`.
+- Correctly configured clean-archive desktop/mobile Playwright with independent rootless runner processes and temporary sockets/DB: **PASS 50 / 10 intentional skips / 0 failures**, 10.6m. Actual P1/P2/P3/P4/P5 submissions passed; mobile accessibility/workspace coverage passed. No AI provider/model called. Log SHA256: `9c0aa5d8dfcf1d34aeafbebfe4ee7fc2588a14320f72f49c62c0d70a0082a2f6`.
+- Gitleaks v8.30.1 fresh source archive directory scan: PASS, no findings. Redacted JSON SHA256: `37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`.
+- Gitleaks Git-history scan at `5a985b2`: PASS, 60 commits, no findings. Redacted JSON SHA256: `37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`.
+- After E2E teardown, process checks found no temporary runner/API processes, and runner-specific Podman label queries found no remaining containers.
+
+All databases and runner sockets were isolated under `/tmp`; no user `.data/academy.db`, `session.secret`, `issuer.key`, or service on ports 8380/8080 was accessed. Temporary logs and the browser report are in ignored `artifacts/`.
+
+Still open: owner choice of code/course license, legal text-level review and root LICENSE/NOTICE, non-Linux platform support validation, and outstanding M11 pedagogy/rank-governance plus M12 threat-evidence acceptance. This gate does not publish the repository or establish legal rights, reviewer identity or public multi-tenant safety.
