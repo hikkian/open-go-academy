@@ -19,6 +19,7 @@ test('expanded local course publishes and renders Middle through Senior lessons'
  await middle.getByRole('button',{name:/Параллельная работа и конкурентность/}).click();
  await expect(page.getByLabel('Go-код',{exact:true})).toBeVisible();
  await expect(page.getByText(/Практический мост: от модели к реальному параллельному worker-у/)).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
  await page.screenshot({path:`artifacts/${info.project.name}-middle-course.png`,fullPage:true});
  await page.getByRole('button',{name:'Путь обучения',exact:true}).click();
  const senior=page.locator('.path-level').filter({has:page.getByRole('heading',{name:'Senior',exact:true})});
@@ -27,7 +28,7 @@ test('expanded local course publishes and renders Middle through Senior lessons'
  await expect(page.getByLabel('Go-код',{exact:true})).toBeVisible();
  await expect(page.getByRole('heading',{name:'P5 defense и независимый review',exact:true})).toBeVisible();
  const axe=await new AxeBuilder({page}).analyze();expect(axe.violations.map(v=>v.id)).toEqual([]);
- expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
  await page.screenshot({path:`artifacts/${info.project.name}-senior-course.png`,fullPage:true});
 });
 test('profile, roadmap, safe content, themes, drafts and responsive layout',async({page},info)=>{
@@ -39,7 +40,7 @@ test('profile, roadmap, safe content, themes, drafts and responsive layout',asyn
  await page.screenshot({path:`artifacts/${info.project.name}-light.png`,fullPage:true});
  await page.getByRole('button',{name:'Включить тёмную тему'}).click();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await page.reload();await open(page);await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
  const dark=await new AxeBuilder({page}).analyze();expect(dark.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>({target:n.target,message:n.failureSummary}))}))).toEqual([]);await page.screenshot({path:`artifacts/${info.project.name}-dark.png`,fullPage:true});expect(errors).toEqual([]);
- expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
  await page.getByRole('button',{name:'Включить светлую тему'}).click();
 });
 test('real Go errors, output, server grading, no AI and idempotent XP',async({page},info)=>{
@@ -64,7 +65,7 @@ test('course search and server criteria/skills reflect only verified exercises',
  const lessons=await(await page.request.get('/api/lessons')).json();for(const skill of learning.skills){const row=page.getByRole('row').filter({hasText:skill.title});await expect(row).toBeVisible();await expect(row).toContainText(`${skill.level} / 4`);const evidenceCell=row.getByRole('cell').nth(2);await expect(evidenceCell.locator('.evidence-list li')).toHaveCount(skill.evidence.length);for(const id of skill.evidence){const exercise=lessons.flatMap((lesson:any)=>lesson.exercises||[]).find((candidate:any)=>candidate.id===id);const label=exercise?.title||(skill.id==='communication'&&id.startsWith('sha256:')?'P5: итоговое ручное ревью Senior':id);await expect(evidenceCell).toContainText(label)}}
  const program=page.getByRole('row').filter({hasText:'Исходный код и запуск программы'});await expect(program).toBeVisible();if(process.env.ACADEMY_E2E_RUNNER==='1'){const expected=learning.skills.find((skill:any)=>skill.id==='program');await expect(program).toContainText(`${expected.level} / 4`);await program.getByRole('button',{name:'Поздоровайся с компьютером'}).click();await expect(page.getByLabel('Go-код',{exact:true})).toContainText('Go готов!');await page.getByRole('button',{name:'Навыки',exact:true}).click()}
  const after=await(await page.request.get('/api/learning')).json();expect(after.current_rank).toBe(learning.current_rank);expect(after.verified).toBe(learning.verified);expect((await(await page.request.get('/api/progress')).json()).xp).toBe(progress.xp);const scan=await new AxeBuilder({page}).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);await page.screenshot({path:`artifacts/${info.project.name}-skills.png`,fullPage:true});
- expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
 });
 
 test('verified Senior review evidence has a clear label without exposing its token',async({page},info)=>{
@@ -92,6 +93,6 @@ test('verified Senior review evidence has a clear label without exposing its tok
  }
  const axe=await new AxeBuilder({page}).analyze();
  expect(axe.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
- expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
  await page.screenshot({path:`artifacts/${info.project.name}-senior-communication-evidence-right.png`,fullPage:true});
 });

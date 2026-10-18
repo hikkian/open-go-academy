@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 async function enter(page:any){await page.goto('/');await expect.poll(async()=>await page.getByLabel('Твоё имя').isVisible()||await page.getByRole('heading',{name:'Твоя практика начинается здесь.'}).isVisible()).toBe(true);if(await page.getByLabel('Твоё имя').isVisible()){await page.getByLabel('Твоё имя').fill('Ученик');await page.getByRole('button',{name:'Создать профиль'}).click()};await page.getByRole('button',{name:'ИИ-наставник',exact:true}).click()}
-test('tutor privacy and no-AI remain usable',async({page},info)=>{await enter(page);await expect(page.getByRole('heading',{name:'ИИ-наставник',exact:true})).toBeVisible();if(process.env.ACADEMY_E2E_TUTOR!=='1')await expect(page.getByRole('heading',{name:'Наставник сейчас недоступен'})).toBeVisible();const scan=await new AxeBuilder({page}).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await page.screenshot({path:`artifacts/${info.project.name}-tutor.png`,fullPage:true})});
+test('tutor privacy and no-AI remain usable',async({page},info)=>{await enter(page);await expect(page.getByRole('heading',{name:'ИИ-наставник',exact:true})).toBeVisible();if(process.env.ACADEMY_E2E_TUTOR!=='1')await expect(page.getByRole('heading',{name:'Наставник сейчас недоступен'})).toBeVisible();const scan=await new AxeBuilder({page}).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);await page.screenshot({path:`artifacts/${info.project.name}-tutor.png`,fullPage:true})});
 test('quiz history is previewed, consented per request, and reset without model calls',async({page},info)=>{
  const usage={day:'2026-10-18',used_tokens:0,reserved_tokens:0,requests:0,failed_requests:0,estimated_requests:0};
  const posted:any[]=[];
@@ -30,7 +30,7 @@ test('quiz history is previewed, consented per request, and reset without model 
  expect(posted[1].message).toBe('Почему цикл повторяется?');
  const a11y=await new AxeBuilder({page}).analyze();
  expect(a11y.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
- expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
  await page.screenshot({path:`artifacts/tutor-history-${info.project.name}.png`,fullPage:true});
  await page.getByRole('button',{name:'Начать новый диалог'}).click();
  await expect(page.getByText('Предыдущих сообщений нет.')).toBeVisible();

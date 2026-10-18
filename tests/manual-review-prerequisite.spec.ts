@@ -26,6 +26,6 @@ test('advanced exam catalog explains artifact-bound human review and reviewer-ke
   await expect(card.getByText(/не подтверждает личность проверяющего или независимость проверок/)).toBeVisible();
   const scan=await new AxeBuilder({page}).analyze();
   expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
   await page.screenshot({path:`artifacts/${info.project.name}-manual-review-prerequisite.png`,fullPage:true});
 });

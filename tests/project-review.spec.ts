@@ -80,7 +80,7 @@ test('passing evidence can export packet and import signed review with explicit 
   await expect(page.getByText(/если ключ reviewer не настроен, запрос будет отклонён/)).toBeVisible();
   await expect(page.getByText(/Личность и независимость проверяющего зависят от внешней настройки/)).toBeVisible();
   await expect(page.getByText('rank', {exact: true})).toHaveCount(0);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 
   const packetDownload = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Скачать JSON review packet'}).click();
@@ -115,7 +115,7 @@ test('passing evidence can export packet and import signed review with explicit 
   await expect(reviewRegion.getByRole('status')).toHaveCount(0);
   const axe = await new AxeBuilder({page}).analyze();
   expect(axe.violations.map(v => ({id: v.id, targets: v.nodes.map(n => n.target)}))).toEqual([]);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await page.screenshot({path: `artifacts/${info.project.name}-project-review-flow.png`, fullPage: true});
 
   await page.reload();
@@ -134,7 +134,7 @@ test('passing evidence can export packet and import signed review with explicit 
   await expect(reloadedHistory).toContainText('не начисляет ранг');
   const historyAxe = await new AxeBuilder({page}).analyze();
   expect(historyAxe.violations.map(v => ({id: v.id, impact: v.impact, nodes: v.nodes.map(n => ({target: n.target, html: n.html, failureSummary: n.failureSummary, any: n.any.map(check => ({message: check.message, data: check.data}))}))})), 'Full page axe audit after workspace reload').toEqual([]);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await upload.setInputFiles({name: 'signed-review-again.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(signedApproval))});
   await expect(page.getByRole('region', {name: 'Подписанное ручное ревью'}).getByRole('status')).toContainText('review-saved-1234567890');
   await expect(reloadedHistory).toContainText('review-saved-1234567890');

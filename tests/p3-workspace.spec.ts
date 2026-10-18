@@ -57,7 +57,7 @@ test('P3 catalog and workspace are responsive, accessible, and capability-gated'
  for(const label of ['Запустить','Запустить тесты','Проверить проект']) await expect(page.getByRole('button',{name:label,exact:true})).toBeEnabled();
  const scan=await new AxeBuilder({page}).analyze();
  expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
- expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
  await page.screenshot({path:`artifacts/${info.project.name}-p3-workspace.png`,fullPage:true});
  if(info.project.name==='mobile'){
   const profile=await(await page.request.get('/api/profile')).json();
@@ -86,7 +86,7 @@ test('P3 catalog and workspace are responsive, accessible, and capability-gated'
   await expect(savedEvidence).toContainText('автоматическое evidence не подтверждает ручное ревью и не присваивает ранг');
   await expect(page.locator('.project-output')).toContainText('не присваивает учебный ранг');
   for(const label of labels) await expect(page.locator('.project-output')).toContainText(label);
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
   const resultScan=await new AxeBuilder({page}).analyze();
   expect(resultScan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
   await page.screenshot({path:'artifacts/mobile-p3-submit-evidence.png',fullPage:true});

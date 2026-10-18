@@ -27,7 +27,7 @@ test('new exam selection, versioned history and cancellation use the selected ca
    const card=page.locator('.exam-catalog-item').filter({has:page.getByRole('heading',{name:exam.title,exact:true})});
    await card.getByRole('button',{name:'Начать экзамен',exact:true}).click();await expect(page.getByRole('heading',{name:exam.title,exact:true})).toBeVisible();await expect(page.locator('.exam-question')).toHaveCount(20);await expect(page.locator('.exam-task')).toHaveCount(3);
    await page.locator('.exam-question input').first().check();await expect(page.getByText('Черновик сохранён',{exact:true})).toBeVisible();
-   const scan=await new AxeBuilder({page}).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+   const scan=await new AxeBuilder({page}).analyze();expect(scan.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
    await page.screenshot({path:`artifacts/${info.project.name}-${id}-exam.png`,fullPage:true});
    page.once('dialog',dialog=>dialog.accept());await page.getByRole('button',{name:'Отменить попытку',exact:true}).click();await expect(page.getByRole('heading',{name:'Экзамены',exact:true})).toBeVisible();
    const history=await(await page.request.get(base+'/api/exams/attempts')).json();expect(history.some((item:any)=>item.exam_id===id&&item.status==='cancelled')).toBe(true);

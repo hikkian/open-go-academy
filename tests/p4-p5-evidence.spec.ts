@@ -68,7 +68,7 @@ test('P4/P5 isolated submissions persist machine evidence but never award rank',
     expect(after.verified).toBe(before.verified);
     const axe = await new AxeBuilder({page}).analyze();
     expect(axe.violations.map(v => ({id: v.id, targets: v.nodes.map(n => n.target)}))).toEqual([]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     await page.screenshot({path: `artifacts/desktop-${id}-evidence.png`, fullPage: true});
   }
 });
@@ -87,7 +87,7 @@ test('P4/P5 workspaces remain accessible and fit a mobile viewport', async ({pag
     await expect(page.getByRole('heading', {name: id === 'p4' ? /ScaleLab/ : /Capstone/})).toBeVisible();
     const axe = await new AxeBuilder({page}).analyze();
     expect(axe.violations.map(v => ({id: v.id, targets: v.nodes.map(n => n.target)}))).toEqual([]);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', {name: 'Скачать ZIP', exact: true}).click();
     const download = await downloadPromise;
