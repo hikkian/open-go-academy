@@ -57,6 +57,19 @@ func TestAPIProfilePersistenceAndBoundaries(t *testing.T) {
 	if w := request("POST", "/api/profile", `{"name":"Ada","theme":"dark"}`, true, "127.0.0.1:8080", ""); w.Code != 200 {
 		t.Fatal(w.Body.String())
 	}
+	crossSite := httptest.NewRequest("POST", "http://127.0.0.1:8080/api/profile", strings.NewReader(`{"name":"Mallory","theme":"dark"}`))
+	crossSite.AddCookie(&http.Cookie{Name: "academy_session", Value: "secret"})
+	crossSite.Header.Set("Origin", "http://127.0.0.1:8080")
+	crossSite.Header.Set("Sec-Fetch-Site", "cross-site")
+	crossSite.Header.Set("X-CSRF-Token", "secret")
+	crossSiteResponse := httptest.NewRecorder()
+	h.ServeHTTP(crossSiteResponse, crossSite)
+	if crossSiteResponse.Code != http.StatusForbidden {
+		t.Fatalf("Sec-Fetch-Site cross-site request was not rejected: %d %s", crossSiteResponse.Code, crossSiteResponse.Body)
+	}
+	if w := request("GET", "/api/profile", "", false, "127.0.0.1:8080", ""); w.Code != 200 || !strings.Contains(w.Body.String(), `"name":"Ada"`) || strings.Contains(w.Body.String(), "Mallory") {
+		t.Fatalf("cross-site mutation changed the local profile: %d %s", w.Code, w.Body)
+	}
 	if w := request("PUT", "/api/drafts/hello", `{"files":{"../evil.go":"x"}}`, true, "127.0.0.1:8080", ""); w.Code != 422 {
 		t.Fatal("unsafe file accepted")
 	}
