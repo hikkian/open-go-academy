@@ -32,7 +32,7 @@ def main() -> int:
     before = source_fingerprint(root)
     started = int(time.time())
     env = os.environ.copy()
-    settings = {"ACADEMY_ACCEPT_M11_DRAFTS": "1", "GOTOOLCHAIN": "local",
+    settings = {"ACADEMY_ACCEPT_M11_ADVANCED": "1", "GOTOOLCHAIN": "local",
                 "GOPROXY": "off", "GOSUMDB": "off", "GOFLAGS": "-p=1",
                 "GOMAXPROCS": "2", "GOCACHE": str(args.cache_dir.resolve())}
     env.pop("ACADEMY_M11_LESSON_IDS", None)
@@ -40,8 +40,8 @@ def main() -> int:
         settings["ACADEMY_M11_LESSON_IDS"] = args.lessons
     env.update(settings)
     command = ["sh", "scripts/go.sh", "test", "-count=1", "-timeout=3h",
-               "./internal/content", "-run", "^TestM11DraftCatalogAcceptance$", "-v"]
-    scope = "all 88 drafts" if not args.lessons else args.lessons
+               "./internal/content", "-run", "^TestM11AdvancedCurriculumAcceptance$", "-v"]
+    scope = "all 88 advanced lessons" if not args.lessons else args.lessons
     print(f"M11 acceptance started: {scope}\nSource fingerprint: {before}\nRaw log: {log}", flush=True)
     with log.open("wb") as output:
         process = subprocess.Popen(command, cwd=root, env=env, stdout=output,

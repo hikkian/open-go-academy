@@ -81,6 +81,10 @@ func main(){ctx,cancel:=context.WithCancel(context.Background());cancel();ch:=ma
 
 ## Практика без AI
 
+### Практический мост: отмена и ограниченное ожидание
+
+Helper с флагом отмены вычисляет категорию; он не ждёт `context.Done()`, не прерывает I/O и не проверяет гонку timeout/cancel. P3 проверяет shutdown в `content/projects/p3/reference/reference_test.go`: `TestWaitForWorkerHonorsShutdownDeadline` и `TestRunWorkersJoinsInflightWork`. Запустите `cd content/projects/p3/reference && go test -run 'Test(WaitForWorkerHonorsShutdownDeadline|RunWorkersJoinsInflightWork)' -count=1`; база не нужна. Ожидайте возврат в пределах deadline и присоединение работы после сигнала. Для других вариантов `select` P3 не содержит отдельного теста: сделайте локальный bounded эксперимент с `context.WithTimeout` и context-aware ожиданием, проверьте `errors.Is(err, context.DeadlineExceeded)`.
+
 Уровни проверяют разные алгоритмы по теме главы. Векторы охватывают только чистую функцию: они не запускают goroutine, не устанавливают happens-before и не заменяют интеграционные проверки.
 
 **Easy — `MinDeadline`.** Для [родительскийСрок,локальныйСрок] в миллисекундах верните меньший положительный срок; некорректное значение даёт [0].

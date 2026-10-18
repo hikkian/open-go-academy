@@ -93,6 +93,10 @@ func main(){ctx,cancel:=context.WithCancel(context.Background());cancel();ch:=ma
 
 ## Практика без AI
 
+### Практический мост: канал как сигнал между участниками
+
+Helper возвращает значение и не создаёт отправителя, получателя или канал; правильный ответ не доказывает отсутствие блокировки. P3 предоставляет канал-барьер в `content/projects/p3/reference/reference_test.go`, `TestRunWorkersJoinsInflightWork`. Выполните `cd content/projects/p3/reference && go test -run TestRunWorkersJoinsInflightWork -count=1`. Ожидайте, что тест наблюдает вход worker-а в работу, затем отпускает его и проверяет присоединение. Это проверяет канал тестового протокола, не канал helper-а и не конкурентный SQL.
+
 Уровни проверяют разные алгоритмы по теме главы. Векторы охватывают только чистую функцию: они не запускают goroutine, не устанавливают happens-before и не заменяют интеграционные проверки.
 
 **Easy — `TakeChannelPrefix`.** Вход — [n,значения...]. Верните первые n значений; при n<=0 верните пустой список.

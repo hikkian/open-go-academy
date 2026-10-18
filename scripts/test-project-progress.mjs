@@ -27,8 +27,13 @@ try {
         assert.match(await page.locator('.updated').innerText(), /выполняется/,
           `${name}: active fingerprint-bound gate must be visible`);
       }
-      assert.equal(await page.getByRole('heading', { name: 'M11 — подготовленные черновики', exact: true }).count(), 1,
-        `${name}: preparation count must not claim completed acceptance`);
+      assert.equal(await page.getByRole('heading', { name: 'M11 — курс Middle → Senior', exact: true }).count(), 1,
+        `${name}: advanced course workstream must be visible`);
+      const m11Track = tracks.filter({ has: page.getByRole('heading', { name: 'M11 — курс Middle → Senior', exact: true }) });
+      assert.match(await m11Track.innerText(), /88 из 88/, `${name}: all advanced chapter bundles must be counted`);
+      if (data.m11_acceptance?.status !== 'passed') {
+        assert.match(await m11Track.innerText(), /gate/i, `${name}: incomplete acceptance must remain explicit`);
+      }
       assert.equal(await tracks.count(), data.workstreams.length, `${name}: workstream count`);
       assert.equal(await page.locator('.milestone').count(), data.milestones.length, `${name}: milestone count`);
       for (let i = 0; i < data.workstreams.length; i++) {

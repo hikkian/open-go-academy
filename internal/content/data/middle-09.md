@@ -81,6 +81,10 @@ func main(){ctx,cancel:=context.WithCancel(context.Background());cancel();ch:=ma
 
 ## Практика без AI
 
+### Практический мост: утечки и остановка worker-а
+
+Статусный helper не создаёт зависшую goroutine и не доказывает освобождение ресурсов. P3 проверяет присоединение работы и shutdown deadline в `content/projects/p3/reference/reference_test.go`: `TestRunWorkersJoinsInflightWork`, `TestWaitForWorkerHonorsShutdownDeadline`. Команда без БД: `cd content/projects/p3/reference && go test -run 'Test(RunWorkersJoinsInflightWork|WaitForWorkerHonorsShutdownDeadline)' -count=1`. Ожидайте завершение управляемой работы после сигнала и конечное ожидание. Для утечки в собственном handler-е добавьте каналы входа/выхода и подтвердите завершение отменённого пути; тест P3 за пределы своего worker runner-а не распространяется.
+
 Уровни проверяют разные алгоритмы по теме главы. Векторы охватывают только чистую функцию: они не запускают goroutine, не устанавливают happens-before и не заменяют интеграционные проверки.
 
 **Easy — `BlockedSenders`.** Для [ёмкость,вОчереди,отправители] верните число отправителей, которые блокируются после заполнения буфера; некорректные счётчики дают [0].

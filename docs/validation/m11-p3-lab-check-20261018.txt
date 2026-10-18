@@ -1,0 +1,14 @@
+M11 P3 lab reproducibility check
+Date: 2026-10-18 10:26 Asia/Atyrau
+
+PASS: the lesson's disposable PostgreSQL + P3 concurrency/outbox path worked against the repository-pinned PostgreSQL image.
+
+Runtime: Go 1.27.2 via scripts/go.sh; Docker Compose v5.6.0; project name oga-m11-lab-check-20261018; unique random password held only in the invoking shell; POSTGRES_DB=taskflow_test; loopback port 55433.
+
+Command equivalent (credentials intentionally omitted):
+  docker compose -p <isolated-project> -f content/projects/p3/compose.yaml up -d --wait db
+  TASKFLOW_TEST_DATABASE_URL=postgres://taskflow:<ephemeral>@127.0.0.1:55433/taskflow_test?sslmode=disable \
+    ./scripts/go.sh -C content/projects/p3/reference test \
+    -run '^TestPostgresTaskOutboxAndTenantIsolation$' -count=1 -v
+
+Result: TestPostgresTaskOutboxAndTenantIsolation PASS in 0.388s. The command ran the real P3 reference integration test; it did not run learner-submitted code. A shell EXIT trap ran `docker compose down -v`. Follow-up `docker ps -a`, `docker volume ls`, and `docker network ls` filters for the unique project name returned no resources. No repository `.env`, test password, or user database was read or written.

@@ -9,7 +9,7 @@ def acceptance_matches(evidence: str, fingerprint: str) -> bool:
     recorded = re.search(r"^Source fingerprint: (sha256:[0-9a-f]{64})$", evidence, re.MULTILINE)
     finished = re.search(r"^Finished source fingerprint: (sha256:[0-9a-f]{64})$", evidence, re.MULTILINE)
     return bool(re.search(r"^Result: PASS$", evidence, re.MULTILINE)
-                and re.search(r"^Scope: all 88 drafts$", evidence, re.MULTILINE)
+                and re.search(r"^Scope: all 88 advanced lessons$", evidence, re.MULTILINE)
                 and recorded and finished and recorded.group(1) == fingerprint == finished.group(1))
 
 

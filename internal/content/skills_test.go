@@ -17,18 +17,27 @@ func TestCompetencyMetadataRejectsUnknownDuplicateOrMissingIDs(t *testing.T) {
 	}
 }
 
-func TestAllDraftCompetenciesUseKnownMeasuredPracticeTags(t *testing.T) {
+func TestAllAdvancedCompetenciesUseKnownMeasuredPracticeTags(t *testing.T) {
 	manifest, err := Manifest()
 	if err != nil {
 		t.Fatal(err)
 	}
 	ids := append([]string(nil), manifest.Published...)
+	seen := make(map[string]struct{}, len(manifest.Published)+88)
+	for _, id := range ids {
+		seen[id] = struct{}{}
+	}
 	for _, track := range []struct {
 		prefix string
 		count  int
 	}{{"middle", 40}, {"middleplus", 24}, {"senior", 24}} {
 		for n := 1; n <= track.count; n++ {
-			ids = append(ids, fmt.Sprintf("%s-%02d", track.prefix, n))
+			id := fmt.Sprintf("%s-%02d", track.prefix, n)
+			if _, exists := seen[id]; exists {
+				continue
+			}
+			seen[id] = struct{}{}
+			ids = append(ids, id)
 		}
 	}
 	catalog, err := loadLessons(ids)

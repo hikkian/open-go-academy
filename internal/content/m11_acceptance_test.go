@@ -15,14 +15,15 @@ import (
 
 var lessonWord = regexp.MustCompile(`[\pL\pN]+([-'’][\pL\pN]+)*`)
 
-// TestM11DraftCatalogAcceptance is the explicit pre-publication gate for the
-// advanced curriculum. Run it only after all 88 draft chapters are present:
-// ACADEMY_ACCEPT_M11_DRAFTS=1 go test -count=1 -timeout=1h ./internal/content -run '^TestM11DraftCatalogAcceptance$'
+// TestM11AdvancedCurriculumAcceptance runs the final content/Go-code gate for
+// all advanced lessons, whether they are published in the local catalog or
+// still candidates for publication:
+// ACADEMY_ACCEPT_M11_ADVANCED=1 go test -count=1 -timeout=1h ./internal/content -run '^TestM11AdvancedCurriculumAcceptance$'
 // To rerun a small subset after a text-only fix, set ACADEMY_M11_LESSON_IDS to
-// a comma-separated list of draft IDs. Catalog/rank/order validation remains global.
-func TestM11DraftCatalogAcceptance(t *testing.T) {
-	if os.Getenv("ACADEMY_ACCEPT_M11_DRAFTS") != "1" {
-		t.Skip("set ACADEMY_ACCEPT_M11_DRAFTS=1 to run full M11 candidate acceptance")
+// a comma-separated list of advanced lesson IDs. Catalog/rank/order validation remains global.
+func TestM11AdvancedCurriculumAcceptance(t *testing.T) {
+	if os.Getenv("ACADEMY_ACCEPT_M11_ADVANCED") != "1" {
+		t.Skip("set ACADEMY_ACCEPT_M11_ADVANCED=1 to run full M11 curriculum acceptance")
 	}
 
 	manifest, err := Manifest()
@@ -58,12 +59,20 @@ func TestM11DraftCatalogAcceptance(t *testing.T) {
 			t.Fatal("ACADEMY_M11_LESSON_IDS must contain at least one lesson ID")
 		}
 	}
-	allIDs := append(append([]string(nil), manifest.Published...), draftIDs...)
+	allIDs := make([]string, 0, len(manifest.Published)+len(draftIDs))
+	seenIDs := make(map[string]struct{}, cap(allIDs))
+	for _, id := range append(append([]string(nil), manifest.Published...), draftIDs...) {
+		if _, exists := seenIDs[id]; exists {
+			continue
+		}
+		seenIDs[id] = struct{}{}
+		allIDs = append(allIDs, id)
+	}
 	catalog, err := loadLessons(allIDs)
 	if err != nil {
 		t.Fatalf("candidate catalog failed production validation: %v", err)
 	}
-	if got, want := len(catalog.Lessons), len(manifest.Published)+len(draftIDs); got != want {
+	if got, want := len(catalog.Lessons), len(allIDs); got != want {
 		t.Fatalf("loaded %d lessons, want %d", got, want)
 	}
 

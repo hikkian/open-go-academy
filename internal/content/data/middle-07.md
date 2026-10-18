@@ -81,6 +81,34 @@ func main(){ctx,cancel:=context.WithCancel(context.Background());cancel();ch:=ma
 
 ## Практика без AI
 
+### Практический мост: выбор примитива синхронизации
+
+Helper не использует `RWMutex`, `Once` или атомарные операции, поэтому результат не подтверждает синхронизацию памяти. Ближайший реальный сценарий P3 — один эффект при конкурентной доставке: `TestPostgresTaskOutboxAndTenantIsolation` в `content/projects/p3/reference/postgres_integration_test.go`. Для реального DB-сценария используйте disposable PostgreSQL:
+
+Перед запуском нужны Go, Docker Compose v2 и OpenSSL. Команда поднимает только disposable PostgreSQL из P3 Compose на loopback-порту 55433; пароль существует только в окружении shell. Она ждёт healthcheck, запускает точный тест и удаляет контейнер и volume при завершении блока:
+
+```sh
+(
+cd content/projects/p3/reference
+set -eu
+export POSTGRES_USER=taskflow POSTGRES_DB=taskflow_test
+export POSTGRES_PASSWORD="$(openssl rand -hex 24)"
+export TASKFLOW_TEST_DATABASE_URL="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@127.0.0.1:55433/$POSTGRES_DB?sslmode=disable"
+compose() { docker compose -f ../compose.yaml -p oga-middle07 "$@"; }
+trap 'compose down -v' EXIT
+compose up -d db
+ready=0
+for attempt in $(seq 1 60); do
+  if compose exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then ready=1; break; fi
+  sleep 1
+done
+test "$ready" -eq 1
+go test -run TestPostgresTaskOutboxAndTenantIsolation -count=1
+)
+```
+
+Ожидайте один receipt при конкурентной доставке. Это не тест `RWMutex`, `sync.Once` или atomic.
+
 Уровни проверяют разные алгоритмы по теме главы. Векторы охватывают только чистую функцию: они не запускают goroutine, не устанавливают happens-before и не заменяют интеграционные проверки.
 
 **Easy — `RetryAllowed`.** Для [номерПопытки,максимум] верните [1], если можно выполнить ещё одну попытку; нумерация начинается с 1.

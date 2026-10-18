@@ -128,3 +128,30 @@ func main() {
 Для failure case определите инъекцию только в тестовой среде и ограничьте воздействие числом запросов, временем либо тестовой очередью. До старта проверьте cleanup и состояние ресурса. После эксперимента подтвердите, что соединения закрыты, временные записи очищены и service вернулся к ready только после проверки обязательной зависимости. При неожиданном результате немедленно прекратите эксперимент и сохраните логи с очищенными секретами. Не расширяйте нагрузку, пока не объяснили расхождение и не повторили исходный контрольный прогон.
 
 На review передайте короткую карточку: код/commit, версия Go, команда, входные vectors, результат каждого теста, окружение, риски и пробелы. Попросите рецензента указать альтернативное объяснение результата. Если независимый читатель трактует сообщение сильнее, чем измерения, уточните claim. Назначьте конкретное следующее действие только при ясной проверке завершения; общие призывы «улучшить мониторинг» не являются завершённым пунктом.
+
+## Воспроизводимая лабораторная: схема и ограничения TaskFlow
+
+**Prerequisites:** исходники P3; для SQL-фикстуры нужны Go 1.27.2 и отдельная PostgreSQL 18.6 из Compose. Сначала без запуска DB изучите схему:
+
+```sh
+cd content/projects/p3
+rg -n 'CREATE TABLE|FOREIGN KEY|UNIQUE|CHECK|CREATE INDEX' reference/migrations
+```
+
+Нарисуйте связи `workspace → project → task` и укажите FK/unique constraint, поддерживающий каждую. Для реального теста повторите setup в проекте `oga-middle36`:
+
+```sh
+set -eu
+cd content/projects/p3
+export POSTGRES_USER=taskflow POSTGRES_PASSWORD="$(openssl rand -hex 24)" POSTGRES_DB=taskflow_test
+docker compose -p oga-middle36 up -d db
+for attempt in $(seq 1 30); do
+  if docker compose -p oga-middle36 exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then break; fi
+  sleep 1
+done
+docker compose -p oga-middle36 exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+cd reference
+TASKFLOW_TEST_DATABASE_URL="postgres://taskflow:${POSTGRES_PASSWORD}@127.0.0.1:55433/taskflow_test?sslmode=disable" go test -run '^TestPostgresTaskOutboxAndTenantIsolation$' -count=1 -v
+```
+
+ **Ожидайте:** миграции содержат объявленные ограничения, integration test проходит; Go `TaskInput` helper проверяет только свои значения и не запускает SQL. **Очистка:** только если поднимали DB — `cd .. && docker compose -p oga-middle36 down -v`.

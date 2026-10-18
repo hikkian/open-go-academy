@@ -147,3 +147,25 @@ func main() {
 Для update определите гонку между проверкой доступа и изменением. Если владение или tenant могут измениться параллельно, используйте транзакцию/условное обновление согласно модели хранения и добавьте конкурентный тест. Один helper или последовательный тест не проверяет TOCTOU. Не утверждайте, что вся система защищена от IDOR: вывод ограничивается конкретным endpoint, политикой ролей, схемой и выполненными запросами.
 
 Завершите заметку: commit, команда, Go version, база/схема, набор IDs, ожидаемые/фактические результаты и ограничения. Избегайте реальных пользовательских данных. При сбое cleanup восстановите тестовую базу перед повтором; не оставляйте тестовую роль или запись в общем development окружении.
+
+## Воспроизводимая лабораторная: tenant и роль на реальном SQL-пути
+
+**Prerequisites:** Go 1.27.2, Docker Compose v2, POSIX shell с `openssl`/`seq` и свободный loopback-порт 55433. Из корня репозитория поднимите только закреплённую disposable БД из P3; случайный пароль хранится лишь в текущей shell-сессии:
+
+```sh
+set -eu
+cd content/projects/p3
+export POSTGRES_USER=taskflow POSTGRES_PASSWORD="$(openssl rand -hex 24)" POSTGRES_DB=taskflow_test
+docker compose -p oga-middle27 up -d db
+for attempt in $(seq 1 30); do
+  if docker compose -p oga-middle27 exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then break; fi
+  sleep 1
+done
+docker compose -p oga-middle27 exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+cd reference
+TASKFLOW_TEST_DATABASE_URL="postgres://taskflow:${POSTGRES_PASSWORD}@127.0.0.1:55433/taskflow_test?sslmode=disable" go test -run '^TestPostgresTaskOutboxAndTenantIsolation$' -count=1 -v
+```
+
+
+
+**Ожидайте:** тест проходит и включает проверки tenant isolation из своего описания. Для одного негативного случая запишите ожидаемые статус/отсутствие чтения или изменения и найдите соответствующую SQL-проверку членства; не подменяйте principal заголовком. Этот тест не является доказательством безопасности произвольного приложения. **Очистка:** `cd .. && docker compose -p oga-middle27 down -v`; volume содержит только тестовую БД этого опыта.

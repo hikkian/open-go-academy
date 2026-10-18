@@ -1,0 +1,20 @@
+M11 optional Redis lab reproducibility checks
+Date: 2026-10-18 10:28 Asia/Atyrau
+
+The optional lesson labs use the Docker Official Image `redis@sha256:cb1c6f8dc0251eb2b079d774f1dbf51536b216b5568545559b20cd949235dd28`, the Linux/amd64 manifest for Redis 8.4.2 Alpine. It is bound only to loopback and uses a unique ephemeral container with `--rm`.
+
+PASS — Middle-21 TTL/cache primitive:
+- `PING` → PONG
+- `SET lesson:21:value fresh EX 2` → OK
+- TTL observed as 2 (valid range is 1..2 because command latency affects it)
+- GET before expiry → fresh
+- GET after 3 seconds → no output/absent key
+
+PASS — Middle-24 Streams delivery primitive:
+- XGROUP CREATE with MKSTREAM → OK
+- XREADGROUP delivered the appended task-created event
+- XPENDING showed one pending event before claim/ack
+- XCLAIM reassigned it from reader-a to reader-b
+- XACK returned 1; final XPENDING returned 0
+
+Both checks were executed against a local disposable container. An EXIT trap stopped it; post-run container/volume/network filters for the unique name returned no resources. These checks demonstrate the selected Redis CLI protocol behavior only; they do not demonstrate app integration, persistence/failover guarantees, or production safety.

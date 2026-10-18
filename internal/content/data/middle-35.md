@@ -128,3 +128,25 @@ func main() {
 Для failure case определите инъекцию только в тестовой среде и ограничьте воздействие числом запросов, временем либо тестовой очередью. До старта проверьте cleanup и состояние ресурса. После эксперимента подтвердите, что соединения закрыты, временные записи очищены и service вернулся к ready только после проверки обязательной зависимости. При неожиданном результате немедленно прекратите эксперимент и сохраните логи с очищенными секретами. Не расширяйте нагрузку, пока не объяснили расхождение и не повторили исходный контрольный прогон.
 
 На review передайте короткую карточку: код/commit, версия Go, команда, входные vectors, результат каждого теста, окружение, риски и пробелы. Попросите рецензента указать альтернативное объяснение результата. Если независимый читатель трактует сообщение сильнее, чем измерения, уточните claim. Назначьте конкретное следующее действие только при ясной проверке завершения; общие призывы «улучшить мониторинг» не являются завершённым пунктом.
+
+## Воспроизводимая лабораторная: отказ worker на тестовой БД
+
+**Prerequisites:** Go 1.27.2, Docker Compose v2, POSIX shell с `openssl`/`seq` и свободный loopback-порт 55433. Из корня репозитория поднимите только закреплённую disposable БД из P3; случайный пароль хранится лишь в текущей shell-сессии:
+
+```sh
+set -eu
+cd content/projects/p3
+export POSTGRES_USER=taskflow POSTGRES_PASSWORD="$(openssl rand -hex 24)" POSTGRES_DB=taskflow_test
+docker compose -p oga-middle35 up -d db
+for attempt in $(seq 1 30); do
+  if docker compose -p oga-middle35 exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then break; fi
+  sleep 1
+done
+docker compose -p oga-middle35 exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+cd reference
+TASKFLOW_TEST_DATABASE_URL="postgres://taskflow:${POSTGRES_PASSWORD}@127.0.0.1:55433/taskflow_test?sslmode=disable" go test -run '^TestPostgresTaskOutboxAndTenantIsolation$' -count=1 -v
+```
+
+
+
+**Ожидайте:** один тестовый прогон на случайных строках/схеме; сверяйте фактически перечисленные retry/lease assertions с выводом. Это контролируемый integration test, а не нагрузка и не доказательство восстановления после произвольного production-сбоя. Сохраните только команду и PASS/FAIL, не секрет URL. **Очистка:** `cd .. && docker compose -p oga-middle35 down -v`; volume содержит только тестовую БД этого опыта.

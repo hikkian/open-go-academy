@@ -45,13 +45,13 @@ class SourceFingerprintTests(unittest.TestCase):
 
     def test_acceptance_requires_exact_source_and_success(self):
         fingerprint = source_fingerprint(self.root)
-        evidence = f"Result: PASS\nScope: all 88 drafts\nSource fingerprint: {fingerprint}\nFinished source fingerprint: {fingerprint}\n"
+        evidence = f"Result: PASS\nScope: all 88 advanced lessons\nSource fingerprint: {fingerprint}\nFinished source fingerprint: {fingerprint}\n"
         self.assertTrue(acceptance_matches(evidence, fingerprint))
         self.assertFalse(acceptance_matches("Result: PASS\nStarted epoch: 1\n", fingerprint))
         self.assertFalse(acceptance_matches(evidence.replace("PASS", "FAIL"), fingerprint))
         self.assertFalse(acceptance_matches(evidence.replace("Result:", "Historical result:"), fingerprint))
         self.assertFalse(acceptance_matches(evidence, "sha256:" + "0" * 64))
-        self.assertFalse(acceptance_matches(evidence.replace("all 88 drafts", "middle-26"), fingerprint))
+        self.assertFalse(acceptance_matches(evidence.replace("all 88 advanced lessons", "middle-26"), fingerprint))
         self.assertFalse(acceptance_matches(evidence.replace("Finished source fingerprint: " + fingerprint,
                                                          "Finished source fingerprint: sha256:" + "0" * 64), fingerprint))
 

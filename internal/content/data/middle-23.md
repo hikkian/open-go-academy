@@ -132,3 +132,23 @@ Easy сравнивает версии; Medium отделяет обновлен
 
 
 Если версии приходят из разных shard, их сравнимость должна быть определена заранее; случайный timestamp не всегда задаёт полный порядок при одинаковом времени. Выберите источник sequence и правило tie-breaker, добавьте его в event contract и тестируйте конкурирующие обновления. Слабая версия может привести к тихому откату проекции.
+
+## Воспроизводимая лабораторная: повтор операции и сохранённый результат
+
+**Prerequisites:** Go 1.27.2, Docker Compose v2, POSIX shell с `openssl`/`seq` и свободный loopback-порт 55433. Из корня репозитория поднимите только закреплённую disposable БД из P3; случайный пароль хранится лишь в текущей shell-сессии:
+
+```sh
+set -eu
+cd content/projects/p3
+export POSTGRES_USER=taskflow POSTGRES_PASSWORD="$(openssl rand -hex 24)" POSTGRES_DB=taskflow_test
+docker compose -p oga-middle23 up -d db
+for attempt in $(seq 1 30); do
+  if docker compose -p oga-middle23 exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then break; fi
+  sleep 1
+done
+docker compose -p oga-middle23 exec -T db pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+cd reference
+TASKFLOW_TEST_DATABASE_URL="postgres://taskflow:${POSTGRES_PASSWORD}@127.0.0.1:55433/taskflow_test?sslmode=disable" go test -run '^TestPostgresTaskOutboxAndTenantIsolation$' -count=1 -v
+```
+
+**Ожидайте:** тест проходит; он покрывает повтор `CreateTask` с одним ключом в том же проекте, тот же ключ в другом проекте, и tenant cases. Сравните ID и флаг `created` в assertions теста. Это поведение относится к P3 PostgreSQL, а не к Redis-инвалидации этого урока. **Очистка:** `cd .. && docker compose -p oga-middle23 down -v` удаляет только volume этой disposable БД.

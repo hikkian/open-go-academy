@@ -151,3 +151,13 @@ func main() {
 Для `PublicError` проверьте границы статусов 399, 400, 599 и 600, а также сочетание валидного статуса с внутренней деталью. В HTTP integration test удостоверьтесь, что клиенту возвращается стабильная безопасная ошибка, а очищенный внутренний event имеет correlation ID согласно локальной policy. Один классификатор не доказывает формат всего response или безопасность exporter.
 
 Запишите, какие зависимости входят в readiness, какой timeout задан, когда включается drain и как завершаются активные запросы. Зафиксируйте команду, тестовый writer/exporter, среду и ограничения. Не утверждайте защиту от утечки в любой лог-системе, если проверен только один in-memory writer.
+
+## Воспроизводимая лабораторная: liveness, readiness и безопасная ошибка
+
+**Prerequisites:** Go 1.27.2; БД не требуется для целевых unit tests. Из `content/projects/p3/reference` выполните:
+
+```sh
+go test -run '^(TestReadinessRequiresDatabaseAndWorkerAndLivenessDoesNot|TestErrorResponseDoesNotExposeInternalText)$' -count=1 -v
+```
+
+**Ожидайте:** отдельные утверждения для процесса, зависимости/worker и сокрытия внутреннего текста; прочитайте сообщения `--- PASS` и сопоставьте их с test names. Это тесты P3 handlers/fixtures, не проверка живого PostgreSQL endpoint. Для живого `/readyz` используйте Compose инструкцию предыдущего лабораторного сценария и выделенный проект/БД. **Очистка:** unit tests не создают сервисы или данные.

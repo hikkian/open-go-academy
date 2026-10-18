@@ -9,16 +9,14 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs/project-progress.json"
 TARGET = ROOT / "docs/PROJECT_PROGRESS.html"
 data = json.loads(SOURCE.read_text(encoding="utf-8"))
-# Show writer output separately from reviewed/published lessons. A draft counts
-# only when all core metadata (including self-check), markdown, three specs,
-# and three reference files are present and parseable.
+# Count advanced lesson bundles by their real content artifacts. Publication and
+# the source-fingerprinted M11 acceptance gate are tracked separately below.
 manifest = json.loads((ROOT / "internal/content/manifest.json").read_text(encoding="utf-8"))
 published = set(manifest["published_lessons"])
-draft_ids = [f"middle-{n:02d}" for n in range(1, 41)] + [f"middleplus-{n:02d}" for n in range(1, 25)] + [f"senior-{n:02d}" for n in range(1, 25)]
-draft_count = 0
-for lesson_id in draft_ids:
-    if lesson_id in published:
-        continue
+advanced_ids = [f"middle-{n:02d}" for n in range(1, 41)] + [f"middleplus-{n:02d}" for n in range(1, 25)] + [f"senior-{n:02d}" for n in range(1, 25)]
+advanced_count = 0
+published_advanced_count = sum(lesson_id in published for lesson_id in advanced_ids)
+for lesson_id in advanced_ids:
     try:
         meta = json.loads((ROOT / f"internal/content/data/{lesson_id}.json").read_text(encoding="utf-8"))
         body = ROOT / f"internal/content/data/{lesson_id}.md"
@@ -30,12 +28,12 @@ for lesson_id in draft_ids:
             continue
         if all((ROOT / f"internal/grading/specs/{ex['id']}.json").is_file() and
                (ROOT / f"internal/content/solutions/{ex['id']}/main.go").is_file() for ex in exercises):
-            draft_count += 1
+            advanced_count += 1
     except (OSError, ValueError, KeyError, TypeError):
         continue
-draft_track = next(item for item in data["workstreams"] if item.get("id") == "m11-drafts" or item["title"].startswith("M11 "))
-draft_track["id"] = "m11-drafts"
-draft_track["value"] = draft_count
+advanced_track = next(item for item in data["workstreams"] if item.get("id") == "m11-course" or item["title"].startswith("M11 "))
+advanced_track["id"] = "m11-course"
+advanced_track["value"] = advanced_count
 acceptance_path = ROOT / data.get("m11_acceptance_report", "docs/validation/m11-current-tree-acceptance-20261016.txt")
 current_fingerprint = source_fingerprint(ROOT)
 acceptance_passed = False
@@ -48,20 +46,20 @@ if acceptance_path.is_file():
     acceptance_passed = acceptance_matches(evidence, current_fingerprint)
 data["m11_acceptance"] = {"status": "passed" if acceptance_passed else ("running" if acceptance_running else "needs_recheck"),
                           "source_fingerprint": current_fingerprint}
-draft_track["title"] = "M11 — подготовленные черновики"
-draft_track["detail"] = (
-    f"Подготовлены файлы {draft_count} из 88 глав. "
+advanced_track["title"] = "M11 — курс Middle → Senior"
+advanced_track["detail"] = (
+    f"В локальном каталоге доступны {published_advanced_count} из 88 расширенных глав; подготовлено {advanced_count} из 88 полных наборов lesson/metadata/examples/exercises. "
     + ("Полная автоматическая проверка текущих исходников прошла. "
        if acceptance_passed else ("Полная fingerprint-bound проверка исходников сейчас выполняется. "
-                                  if acceptance_running else "Полную автоматическую проверку текущих исходников ещё нужно повторить. "))
+                                  if acceptance_running else "После последних правок требуется повторный полный автоматический gate. "))
     + data.get("m11_review_detail", "")
-    + " Этот счётчик показывает подготовку файлов; проверка качества и публикация — отдельные условия."
+    + " Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены."
 )
 data["phase_note"] = (
-    f"Для Middle, Middle+ и Senior подготовлены {draft_count}/88 черновых глав. "
-    + ("Автоматическая проверка текущих исходников прошла; главы ожидают педагогической приёмки."
+    f"Для Middle, Middle+ и Senior опубликовано локально {published_advanced_count}/88 глав; полные наборы подготовлены: {advanced_count}/88. "
+    + ("Автоматическая проверка текущих исходников прошла; остаются аудит и выпуск."
        if acceptance_passed else ("Полный fingerprint-bound автоматический прогон текущего дерева выполняется."
-                                  if acceptance_running else "Полный автоматический прогон нужно повторить после правок."))
+                                  if acceptance_running else "После правок нужен полный acceptance gate."))
     + data.get("phase_note_suffix", "")
 )
 
