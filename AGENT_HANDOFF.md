@@ -1,6 +1,6 @@
 # Open Go Academy — точка продолжения
 
-Обновлено **2026-10-18 11:31 Asia/Atyrau**. Локальный репозиторий `master`, remote нет; текущий HEAD `be2497a`, рабочее дерево чистое. M12 responsive fixes/test и M13 cache inventory сохранены в предыдущих локальных checkpoints `34628a9`/`be2497a`; cgroup probe/script tests подготовлены, но интеграционно не запускались. M11 source fingerprint не изменён; gate v3 идёт на `c9c85f0f…af2c0`, лог дошёл до Middle+18, результата ещё нет. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
+Обновлено **2026-10-18 11:43 Asia/Atyrau**. Репозиторий `master`, HEAD `f52c609`, рабочее дерево было чистым до этого handoff update. M12 responsive fixes/a11y tests и M13 cache-only license evidence зафиксированы в `34628a9`, `be2497a`, `dbf1149`, `c76d088`, `f52c609`. All-88 gate v3 выполняется на `sha256:c9c85f0f9b6d2622bc29cefad12e2feac1b349950f1b7c3e579a05ed556af2c0`; log дошёл до Senior-15, итогового отчёта пока нет, fingerprint не менялся. Cgroup probe прошёл 10/10 unit tests + независимый code review, но rootless integration ещё не запускалась. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
 
 ## Продукт и доверительные границы
 
@@ -60,6 +60,6 @@ python3 scripts/check_m11_acceptance.py \
 
 ## Лимиты и безопасность
 
-Последний `get_usage_limits` **2026-10-18 11:28 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **88%**, weekly **29%**; бесплатный reset credit доступен, но не использован, покупок/сбросов не делать. Primary reset **2026-10-18 13:55:42**, weekly reset **2026-10-25 03:38:23 Asia/Atyrau**. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate.
+Последний `get_usage_limits` **2026-10-18 11:43 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **98%**, weekly **31%**; бесплатный reset credit доступен, но не использован, покупок/сбросов не делать. Primary reset **2026-10-18 13:55:42**, weekly reset **2026-10-25 03:38:23 Asia/Atyrau**. При следующем запуске проверить лимиты до любой большой задачи; продолжать после reset без покупки credits. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate.
 
 Работать только в репозитории. Не читать/удалять/коммитить `.data/academy.db`, `session.secret`, `issuer.key`; не останавливать пользовательские сервисы на 8380/8080; QA DB/keys только disposable. Не публиковать, не тратить деньги, не включать public multi-tenant execution. Чат оставить открытым.
