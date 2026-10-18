@@ -111,7 +111,7 @@
       "value": 0,
       "max": 2,
       "unit": "этапа",
-      "detail": "M12: исправлены переполнение планшета и недостаточный контраст; автотест прошёл на desktop/mobile при 768 и 1920 px, без axe-ошибок и горизонтальной прокрутки. Впереди проверка реальных cgroup-событий памяти/PID, исправление слабых runner assertions, полный браузерный и security-аудит. M13: сохранён локальный список из 339 зависимостей и 256 текстов лицензий; открыты правовой разбор, NOTICE, clean-source/bootstrap/recovery и выбор лицензии владельцем."
+      "detail": "M12: планшетное переполнение/контраст исправлены; responsive/a11y tests прошли на 768 и 1920 px. `make sandbox-test` PASS: реальные memory.events oom_kill=1/exit137 и pids.events max=3/EAGAIN, дети очищены; слабые runner assertions исправлены. Полная desktop/mobile browser и security/theme/error matrix ещё выполняется. M13: clean archive scan на commit 3f5566d — 268 наблюдений (92 Go, 176 npm), 193 license-file observations/99 hashes; зависимостям без метаданных SPDX не приписывается. Дальше clean bootstrap/build/test/recovery/E2E, secret audit, legal/NOTICE и выбор лицензии владельцем."
     },
     {
       "title": "Необязательный ИИ-наставник",
