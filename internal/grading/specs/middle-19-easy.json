@@ -18,12 +18,24 @@
       "Attempt": 2,
       "BaseMS": 80,
       "MaximumMS": 30
+    },
+    {
+      "Attempt": 9223372036854775807,
+      "BaseMS": 0,
+      "MaximumMS": 100
+    },
+    {
+      "Attempt": 2,
+      "BaseMS": 9223372036854775807,
+      "MaximumMS": 9223372036854775807
     }
   ],
   "public_expected": [
     10,
     50,
-    30
+    30,
+    0,
+    9223372036854775807
   ],
   "private_input": [
     {

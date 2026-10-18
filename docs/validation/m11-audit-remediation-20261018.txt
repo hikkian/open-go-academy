@@ -1,0 +1,31 @@
+Open Go Academy — M11 independent audit remediation
+Date: 2026-10-18 (Asia/Atyrau)
+
+Scope
+- Read-only independent review: Middle01–20 and Middle21–40.
+- Remediation: Middle19 Easy, Middle20 Medium, Middle32 outcome/lab claim, Middle36 P3 lab paths.
+
+Findings fixed
+- Middle19: RetryDelayEasy allowed BaseMS=0, so MaxInt64 attempts could loop MaxInt64-1 times. Added zero-base early return to lesson/reference and MaxInt64 vectors (zero base and saturation) to the grading spec.
+- Synchronized Middle19's public exercise output with all five public vectors after the full catalog tests caught stale metadata; the initial full test correctly rejected the incomplete catalog.
+- Middle20: private vector required empty exchange => invalid, but the prompt omitted this. The contract now explicitly scopes to named direct exchanges and excludes RabbitMQ default exchange.
+- Middle32: lesson outcomes implied actual trace propagation tests, while P3 has no tracing instrumentation/exporter. Outcomes now require a reproducible integration-test plan and state the evidence boundary.
+- Middle36: two relative `cd content/projects/p3` commands were not idempotent when run sequentially. Both now resolve the repository root before changing directory.
+
+Validation
+- `python3 -m unittest discover -s scripts -p 'test_m11_curriculum_quality.py'`: PASS, 6/6.
+- `python3 -m unittest discover -s scripts -p 'test_m11_source_fingerprint.py'`: PASS, 5/5.
+- `sh scripts/go.sh test ./internal/content ./internal/grading -run 'Middle19|Middle20|Curriculum|Manifest' -count=1`: PASS (content package 0.324s; grading package had no tests matching this filter).
+- JSON parsing for Middle19/20/32 and Middle19 Easy spec: PASS.
+- Middle36 repo-root path command from inside P3: PASS.
+- `git diff --check`: PASS.
+- Progress HTML rendering + desktop light/mobile dark tests: PASS, axe clean/no overflow.
+- `make test`: PASS after synchronizing Middle19 public output; Python gates, full Go unit/integration, reference, vet, whole-tree race, web typecheck and production build all exited 0.
+- S10 assessment-hook follow-up guard in `internal/projectrunner/types.go` rejects `unsafe`, compiler `go:linkname` directives and bodyless top-level functions. AST-only tests exercise the directives without compiling hostile code. `go test`, `go vet`, and `go test -race ./internal/projectrunner`: PASS. Independent security reviewer found no new High/Medium issue; confirmed linkname-specific direct test was added.
+
+Source state
+- New source fingerprint: `sha256:f6e44740783cba50ff9b2bc2812f7f88283a8d5caff0ef062b33e7b471aef8c5`.
+- Previous all-88 M11 gate v4 fingerprint `sha256:e03e7282ceea394a172f8cc4f6204bd20bf58dfb71aa6d546e1f0eda6683d2fb` is stale. No all-88 result is claimed for this fingerprint yet. Run gate v5 and require equal start/end fingerprints.
+- Reviewer scope limitation: these audits were targeted, not a complete line-by-line review of all lesson Markdown, all 60 specs, or external P3 services.
+
+Separate M12 read-only findings are recorded in AGENT_HANDOFF.md and EXECUTION_PLAN.md; they are coverage gaps or static suspected issues, not confirmed escapes. M12 acceptance remains open.

@@ -46,7 +46,7 @@
       "prompt": "Контракт `func RetryDelayEasy(attempt, baseMS, maximumMS int64) int64`: attempt<=0 or negative bounds => 0; otherwise double baseMS per one-based attempt, saturate at maximumMS without overflow. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc RetryDelayEasy(attempt, baseMS, maximumMS int64) int64 {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "10\n50\n30\n",
+      "public_output": "10\n50\n30\n0\n9223372036854775807\n",
       "criteria": [
         "Контракт delay выполнен для нормального, граничного и отказного векторов.",
         "Ветки policy имеют явный приоритет и обработку invalid input.",

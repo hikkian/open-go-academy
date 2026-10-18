@@ -40,13 +40,13 @@ package main
 import "fmt"
 
 func DirectRouteMedium(exchange, routingKey, bindingKey string) string {
-	if routingKey == "" || bindingKey == "" { return "invalid" }; if exchange == "" { return "invalid" }; if routingKey == bindingKey { return "route" }; return "unrouted"
+	if exchange == "" || routingKey == "" || bindingKey == "" { return "invalid" }; if routingKey == bindingKey { return "route" }; return "unrouted"
 }
 
 func main() { fmt.Println(DirectRouteMedium("orders", "created", "created")) }
 ```
 
-Второй пример меняет вход так, чтобы пересечь границу контракта. Прочитайте его вместе с первым: какой именно параметр изменился и почему результат должен измениться? Эти два запуска проверяют заданное правило, но не обращаются к внешней зависимости и не доказывают её конфигурацию.
+Модель поддерживает только именованный direct exchange; пустой exchange считается `invalid`. RabbitMQ default exchange находится вне этой учебной модели. Второй пример меняет вход так, чтобы пересечь границу контракта. Прочитайте его вместе с первым: какой именно параметр изменился и почему результат должен измениться? Эти два запуска проверяют заданное правило, но не обращаются к внешней зависимости и не доказывают её конфигурацию.
 
 ## Ошибка, повтор и восстановление
 

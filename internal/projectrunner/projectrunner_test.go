@@ -113,6 +113,34 @@ func main() { state := State{Exit: 1}; _ = state.Exit; _ = state.Goexit; _ = sta
 	}
 }
 
+func TestValidateAssessmentProcessHooksRejectsASTOnlyEscapePatterns(t *testing.T) {
+	// These sources are parsed only. In particular, the linkname case must
+	// never be compiled or executed by this regression test.
+	for _, tc := range []struct{ name, source string }{
+		{"blank unsafe import", "package main\nimport _ \"unsafe\"\n"},
+		{"linkname directive", "package main\n//go:linkname stop os.Exit\nfunc stop(int)\nfunc TestAssessment() {}\n"},
+		{"bodyless function", "package main\nfunc stop(int)\n"},
+		{"variable initializer process call", "package main\nimport process \"os\"\nvar _ = process.Exit\n"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := ValidateAssessmentProcessHooks(map[string]string{"assessment_test.go": tc.source}); err == nil {
+				t.Fatal("assessment hook source was accepted")
+			}
+		})
+	}
+}
+
+func TestValidateAssessmentProcessHooksAllowsOrdinaryASTControl(t *testing.T) {
+	source := `package main
+type State struct { Exit int }
+func (s State) ExitValue() int { return s.Exit }
+func main() { _ = State{Exit: 1}.ExitValue() }
+`
+	if err := ValidateAssessmentProcessHooks(map[string]string{"main.go": source}); err != nil {
+		t.Fatalf("ordinary struct member named Exit should be allowed: %v", err)
+	}
+}
+
 func TestP3PolicyAllowsTrustedStarterAndRejectsRuntimeConfiguration(t *testing.T) {
 	project, ok := projects.Find("p3")
 	if !ok {

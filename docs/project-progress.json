@@ -2,8 +2,8 @@
   "updated_at": "2026-10-18",
   "phase": "M11 — содержательная проверка курса, проектов и рангов Middle → Senior",
   "phase_note_suffix": " Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
-  "m11_review_detail": "All-88 технический gate v4 PASS: 88/88 продвинутых глав, exit0, 3042.331s; source fingerprints в начале и конце совпали (sha256:e03e7282…d3fb). Остаются полная интегрированная регрессия/E2E, независимая педагогическая проверка и rank-governance traceability. Публичный Go runner и внешнее доверие сертификатов не включены.",
-  "phase_note": "Для Middle, Middle+ и Senior опубликовано локально 88/88 глав; полные наборы подготовлены: 88/88. Автоматическая проверка текущих исходников прошла; остаются аудит и выпуск. Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
+  "m11_review_detail": "Исторический all-88 gate v4 PASS на fingerprint sha256:e03e7282…d3fb. После аудита Middle19/20/32/36 внесены правки; gate v4 stale. Новый полный make test PASS: Go unit/integration/reference/vet/whole-tree race, Python gates, web typecheck и production build. Targeted curriculum/fingerprint checks и JSON/path tests прошли. Остаются all-88 gate v5, desktop/mobile E2E для текущего дерева, независимая педагогическая проверка и rank-governance traceability. Публичный Go runner и внешнее доверие сертификатов не включены.",
+  "phase_note": "Для Middle, Middle+ и Senior опубликовано локально 88/88 глав; полные наборы подготовлены: 88/88. После правок нужен полный acceptance gate. Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
   "milestones": [
     {
       "id": "M0",
@@ -89,7 +89,7 @@
       "value": 88,
       "max": 88,
       "unit": "уроков",
-      "detail": "В локальном каталоге доступны 88 из 88 расширенных глав; подготовлено 88 из 88 полных наборов lesson/metadata/examples/exercises. Полная автоматическая проверка текущих исходников прошла. All-88 технический gate v4 PASS: 88/88 продвинутых глав, exit0, 3042.331s; source fingerprints в начале и конце совпали (sha256:e03e7282…d3fb). Остаются полная интегрированная регрессия/E2E, независимая педагогическая проверка и rank-governance traceability. Публичный Go runner и внешнее доверие сертификатов не включены. Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены.",
+      "detail": "В локальном каталоге доступны 88 из 88 расширенных глав; подготовлено 88 из 88 полных наборов lesson/metadata/examples/exercises. После последних правок требуется повторный полный автоматический gate. Исторический all-88 gate v4 PASS на fingerprint sha256:e03e7282…d3fb. После аудита Middle19/20/32/36 внесены правки; gate v4 stale. Новый полный make test PASS: Go unit/integration/reference/vet/whole-tree race, Python gates, web typecheck и production build. Targeted curriculum/fingerprint checks и JSON/path tests прошли. Остаются all-88 gate v5, desktop/mobile E2E для текущего дерева, независимая педагогическая проверка и rank-governance traceability. Публичный Go runner и внешнее доверие сертификатов не включены. Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены.",
       "id": "m11-course"
     },
     {
@@ -129,8 +129,8 @@
     "constraints": "Доступность лимитов и результаты повторных проверок влияют на календарный срок. Оценка пересматривается после закрытия крупных этапов."
   },
   "m11_acceptance": {
-    "status": "passed",
-    "source_fingerprint": "sha256:e03e7282ceea394a172f8cc4f6204bd20bf58dfb71aa6d546e1f0eda6683d2fb"
+    "status": "needs_recheck",
+    "source_fingerprint": "sha256:f6e44740783cba50ff9b2bc2812f7f88283a8d5caff0ef062b33e7b471aef8c5"
   },
   "m11_acceptance_report": "docs/validation/m11-current-tree-acceptance-20261018-v4.txt"
 }

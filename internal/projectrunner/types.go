@@ -247,7 +247,7 @@ func ValidateAssessmentProcessHooks(files map[string]string) error {
 		if !strings.HasSuffix(name, ".go") {
 			continue
 		}
-		file, err := parser.ParseFile(token.NewFileSet(), name, source, 0)
+		file, err := parser.ParseFile(token.NewFileSet(), name, source, parser.ParseComments)
 		if err != nil {
 			return fmt.Errorf("invalid Go source %s", name)
 		}
@@ -264,14 +264,33 @@ func ValidateAssessmentProcessHooks(files map[string]string) error {
 			if (importPath == "os" || importPath == "runtime" || importPath == "syscall") && alias == "." {
 				return fmt.Errorf("%s не может использовать dot-import %s при проверке P4/P5", name, importPath)
 			}
+			if importPath == "unsafe" {
+				return fmt.Errorf("%s не может импортировать unsafe при проверке P4/P5", name)
+			}
 			if alias != "_" && alias != "." {
 				importAliases[alias] = importPath
 			}
 		}
+		for _, group := range file.Comments {
+			for _, comment := range group.List {
+				if strings.HasPrefix(strings.TrimSpace(comment.Text), "//go:linkname") {
+					return fmt.Errorf("%s не может использовать директиву go:linkname при проверке P4/P5", name)
+				}
+			}
+		}
 		for _, decl := range file.Decls {
 			fn, ok := decl.(*ast.FuncDecl)
-			if ok && (fn.Name.Name == "init" || fn.Name.Name == "TestMain") {
+			if !ok {
+				continue
+			}
+			if fn.Name.Name == "init" || fn.Name.Name == "TestMain" {
 				return fmt.Errorf("%s не может определять init или TestMain в проверяемом проекте", name)
+			}
+			// Bodyless top-level functions are only needed for assembly/compiler
+			// declarations. P4/P5 assessments have no such requirement, and a
+			// declaration can bind a linkname symbol to an otherwise innocent call.
+			if fn.Recv == nil && fn.Body == nil {
+				return fmt.Errorf("%s не может объявлять функцию без тела при проверке P4/P5", name)
 			}
 		}
 		var processExit bool

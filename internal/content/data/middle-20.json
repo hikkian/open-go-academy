@@ -72,7 +72,7 @@
       ],
       "difficulty": "medium",
       "title": "Direct routing — ветви политики",
-      "prompt": "Контракт `func DirectRouteMedium(exchange, routingKey, bindingKey string) string`: empty routing key or binding key => invalid; exact key match => route; otherwise unrouted. This models only direct-exchange key equality. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Контракт `func DirectRouteMedium(exchange, routingKey, bindingKey string) string`: модель поддерживает только именованный direct exchange; пустой exchange, routing key или binding key => invalid; exact key match => route; otherwise unrouted. Это намеренное ограничение учебной модели: она не включает default exchange RabbitMQ. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc DirectRouteMedium(exchange, routingKey, bindingKey string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"route\"\n\"unrouted\"\n\"invalid\"\n",

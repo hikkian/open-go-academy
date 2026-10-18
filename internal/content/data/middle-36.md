@@ -134,7 +134,7 @@ func main() {
 **Prerequisites:** исходники P3; для SQL-фикстуры нужны Go 1.27.2 и отдельная PostgreSQL 18.6 из Compose. Сначала без запуска DB изучите схему:
 
 ```sh
-cd content/projects/p3
+cd "$(git rev-parse --show-toplevel)/content/projects/p3"
 rg -n 'CREATE TABLE|FOREIGN KEY|UNIQUE|CHECK|CREATE INDEX' reference/migrations
 ```
 
@@ -142,7 +142,7 @@ rg -n 'CREATE TABLE|FOREIGN KEY|UNIQUE|CHECK|CREATE INDEX' reference/migrations
 
 ```sh
 set -eu
-cd content/projects/p3
+cd "$(git rev-parse --show-toplevel)/content/projects/p3"
 export POSTGRES_USER=taskflow POSTGRES_PASSWORD="$(openssl rand -hex 24)" POSTGRES_DB=taskflow_test
 docker compose -p oga-middle36 up -d db
 for attempt in $(seq 1 30); do
