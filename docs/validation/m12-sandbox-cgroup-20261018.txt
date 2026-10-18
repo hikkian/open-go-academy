@@ -114,7 +114,7 @@ memory: PASS (0.6s)
   PROBE_EVENTS_END
 pids: PASS (0.2s)
   spawn_error=fork/exec /proc/self/exe: resource temporarily unavailable
-  children_cleaned=33
+  children_cleaned=34
   eagain=true
   child_exit=0
   PROBE_EVENTS_BEGIN
@@ -127,5 +127,5 @@ pids: PASS (0.2s)
   oom_group_kill 0
   sock_throttled 0
   pids_events:
-  max 3
+  max 6
   PROBE_EVENTS_END

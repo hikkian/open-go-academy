@@ -1,0 +1,17 @@
+Open Go Academy — M12 current local probe batch
+Date: 2026-10-18 (Asia/Atyrau)
+Scope: current rootless Linux / Podman / cgroup v2 only. These results are bounded local evidence, not a public multi-tenant certification.
+
+Commands/results
+- `make test` — PASS, exit 0; full unit/integration/reference/vet/whole-tree race, Python probe gates, TS typecheck and production build. Log `artifacts/m12-final-batch-make-test-20261018.log`, SHA256 `14cf12faa4c95184212ce948e8c60b9b0b4fe682821a648f5d153029663b664c`.
+- `make sandbox-test` — PASS, exit 0; complete rootless `TestSandboxIntegration`, cgroup event probe, and host-boundary probe. Log `artifacts/m12-final-batch-sandbox-test-20261018.log`, SHA256 `800bbc4c6a9edeae2e518150b4cb65ad21999cca31c54d3855ac1f83eaf4913b`.
+- S05 actual counters: memory job exit137 with `memory.events oom_kill=1`; PID job receives EAGAIN and cleans 33 children, `pids.events max=3`. Report `docs/validation/m12-sandbox-cgroup-20261018.txt`.
+- S01/S02 host-boundary probe PASS; time-bounded temporary 0644 sentinel and 0600 issuer fixture stayed unchanged. Direct and `/proc/1/root` fixture access failed; container `/proc/1` is in its own PID namespace; host-only environment marker and standard Docker/Podman socket paths were absent. Host TCP/UDP/unix listeners received zero connections/datagrams. Report `docs/validation/m12-host-boundary-20261018.txt`.
+- S03 static syscall fixture PASS: `unshare(CLONE_NEWNS)`, mount, raw socket and ptrace to container PID 1 were denied; `CapEff=0000000000000000`, seccomp mode 2.
+- S06 PASS: simultaneous stdout/stderr floods hit the shared 32768-byte output cap with both streams represented; aggregate writes across separate files stopped at 189 1MiB files with ENOSPC.
+- S07 PASS: parent exited while a child retained inherited output pipes; request completed in 3.12s and the exact install-label query found no leftover container.
+- S09 PASS: a second job using the same `main.go` while the first held the sole slot was rejected as busy; first-job output stayed `first-only`, no second-job output mixed, and scoped cleanup passed.
+- S11 PASS (fake-runtime boundary): cgroup v1 fails before any container command; missing delegation runs/cleans only the scoped preflight and never starts a user job.
+- S08/S12 API boundaries have separate report `docs/validation/m12-api-boundary-probes-20261018.txt`: oversized body and duplicate nested JSON key rejected; cross-site mutation rejected with unchanged profile.
+
+Still unverified: literal `cgroup.events populated=0`; DNS and external-network behavior; a full host mount-list/host-PID-1 mapping beyond the disposable path/env tests; other kernels/runtimes; and non-Linux environments. No external network target, user database/key/socket, public service, or paid service was used.

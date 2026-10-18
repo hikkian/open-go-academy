@@ -2,8 +2,8 @@
   "updated_at": "2026-10-18",
   "phase": "M11 — содержательная проверка курса, проектов и рангов Middle → Senior",
   "phase_note_suffix": " Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
-  "m11_review_detail": "All-88 gate v5 PASS: 88/88 advanced lessons, exit0, 2815.488s; source fingerprint sha256:f6e44740…eaf8c5 matches start/end (exact report docs/validation/m11-current-tree-acceptance-20261018-v5.txt). Full make test and current-tree desktop/mobile E2E PASS 50/10/0. Remaining: independent full-course pedagogy/rank-governance traceability. Public Go runner and external certificate trust are not enabled.",
-  "phase_note": "Для Middle, Middle+ и Senior опубликовано локально 88/88 глав; полные наборы подготовлены: 88/88. Автоматическая проверка текущих исходников прошла; остаются аудит и выпуск. Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
+  "m11_review_detail": "All-88 gate v5 passed on historical hash sha256:f6e44740…eaf8c5. Middle+13 reserve-boundary lesson fix and M12 sandbox test additions changed the source fingerprint; gate v5 is stale. Current fingerprint is sha256:fbcc16bd…da81229; run gate v6 after the remaining content audit. Full make test and rootless sandbox gate are being refreshed. Targeted independent reviews cover Middle01–40, Middle+01–24 and Senior01–24; broader pedagogy/rank-governance review remains.",
+  "phase_note": "Для Middle, Middle+ и Senior опубликовано локально 88/88 глав; полные наборы подготовлены: 88/88. После правок нужен полный acceptance gate. Педагогическая вычитка курса ещё продолжается. Далее — полный аудит безопасности и доступности, затем подготовка выпуска.",
   "milestones": [
     {
       "id": "M0",
@@ -89,7 +89,7 @@
       "value": 88,
       "max": 88,
       "unit": "уроков",
-      "detail": "В локальном каталоге доступны 88 из 88 расширенных глав; подготовлено 88 из 88 полных наборов lesson/metadata/examples/exercises. Полная автоматическая проверка текущих исходников прошла. All-88 gate v5 PASS: 88/88 advanced lessons, exit0, 2815.488s; source fingerprint sha256:f6e44740…eaf8c5 matches start/end (exact report docs/validation/m11-current-tree-acceptance-20261018-v5.txt). Full make test and current-tree desktop/mobile E2E PASS 50/10/0. Remaining: independent full-course pedagogy/rank-governance traceability. Public Go runner and external certificate trust are not enabled. Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены.",
+      "detail": "В локальном каталоге доступны 88 из 88 расширенных глав; подготовлено 88 из 88 полных наборов lesson/metadata/examples/exercises. После последних правок требуется повторный полный автоматический gate. All-88 gate v5 passed on historical hash sha256:f6e44740…eaf8c5. Middle+13 reserve-boundary lesson fix and M12 sandbox test additions changed the source fingerprint; gate v5 is stale. Current fingerprint is sha256:fbcc16bd…da81229; run gate v6 after the remaining content audit. Full make test and rootless sandbox gate are being refreshed. Targeted independent reviews cover Middle01–40, Middle+01–24 and Senior01–24; broader pedagogy/rank-governance review remains. Локальная доступность не означает, что все критерии качества или внешний выпуск уже завершены.",
       "id": "m11-course"
     },
     {
@@ -111,7 +111,7 @@
       "value": 0,
       "max": 2,
       "unit": "этапа",
-      "detail": "M12: latest desktop/mobile E2E 50/10/0, responsive/axe, cgroup OOM/PID, S08 oversized/nested duplicate-key rejection and S12 cross-site mutation tests pass; S01–S04/S06–S07/S09/S11 evidence remains. M13: clean archive 5a985b2 passed earlier; current API source changes have full make test/E2E, and clean archive will be refreshed after remaining M12 code work. Owner LICENSE/NOTICE and non-Linux validation remain."
+      "detail": "M12: rootless make sandbox-test passes actual OOM/PID, host sentinel/listener/socket denial, syscall denial (Seccomp2/CapEff0), dual-stream cap, multi-file ENOSPC, parent/child pipe cleanup, same-filename busy isolation, and denied-runtime preflight; S08 body/duplicate JSON and S12 cross-site tests pass. Remaining S01 full host mount/PID mapping, S02 DNS/external-network, S04 literal cgroup populated=0. M13 clean archive at 5a985b2 predates current source changes; refresh after M11/M12 acceptance. Owner LICENSE/NOTICE and non-Linux validation remain."
     },
     {
       "title": "Необязательный ИИ-наставник",
@@ -129,8 +129,8 @@
     "constraints": "Доступность лимитов и результаты повторных проверок влияют на календарный срок. Оценка пересматривается после закрытия крупных этапов."
   },
   "m11_acceptance": {
-    "status": "passed",
-    "source_fingerprint": "sha256:f6e44740783cba50ff9b2bc2812f7f88283a8d5caff0ef062b33e7b471aef8c5"
+    "status": "needs_recheck",
+    "source_fingerprint": "sha256:fbcc16bd516cccb92d4fbe0664899f38e7d27fb4951befa950ec9c906da81229"
   },
   "m11_acceptance_report": "docs/validation/m11-current-tree-acceptance-20261018-v5.txt"
 }

@@ -1,0 +1,27 @@
+M12 S01/S02 bounded rootless host-boundary probe
+runner image: docker.io/library/golang@sha256:3b15ba438c60ab8fabe5fee3b11025c0049e358b31feff384648f11fc8e335f8
+policy: exact current runner policy() literals; no mounts, --network=none, read-only, cap-drop=ALL
+scope: disposable temp sentinel/key fixture and loopback TCP/UDP/unix listeners; no external network or DNS query.
+proc semantics: /proc/1 is checked to be in this container's PID namespace; this does not inspect host /proc/1/environ.
+result: PASS; elapsed=0.29s; host listeners tcp/udp/unix=(0, 0, 0)
+host sentinel (0644) and issuer-key fixture (0600) unchanged; contents redacted
+  direct_sentinel_denied=true
+  sentinel_write_denied=true
+  proc_root_sentinel_denied=true
+  proc_root_write_denied=true
+  proc1_root_visible=true
+  proc1_pid_namespace_matches_self=true
+  host_only_env_in_container=false
+  host_only_env_in_proc1_environ=false
+  host_sentinel_in_mountinfo=false
+  issuer_fixture_denied=true
+  issuer_write_denied=true
+  issuer_fixture_in_mountinfo=false
+  docker_socket_unavailable=true
+  podman_socket_unavailable=true
+  mountinfo_lines=42
+  tcp_connect_denied=true
+  udp_write_unavailable=false
+  udp_write_attempted=true
+  unix_connect_denied=true
+interpretation: this local probe does not establish DNS/external-network blocking or other-host behavior.

@@ -1,6 +1,6 @@
 # Модель угроз execution и credentials
 
-Дата: 2026-10-15. Статус: проектная модель, негативные тесты ниже пока NOT RUN. Источники механизмов и фактические probes: [SANDBOX_SECURITY](../research/SANDBOX_SECURITY.md); модель доверия: [CREDENTIALS](../research/CREDENTIALS.md).
+Дата модели: 2026-10-15; evidence обновлено 2026-10-18. Статус: модель угроз остается IN PROGRESS; некоторые bounded probes выполнены на текущей Linux/rootless Podman/cgroup v2 конфигурации, полный набор S01–S12 не закрыт. Источники механизмов и фактические probes: [SANDBOX_SECURITY](../research/SANDBOX_SECURITY.md); модель доверия: [CREDENTIALS](../research/CREDENTIALS.md).
 
 ## Область и границы
 
@@ -28,6 +28,12 @@
 | S12 | Foreign Origin/Host, cross-site POST/fetch, DNS rebinding, forged client rank | Request rejected; exact Origin/Host allowlist, CSRF/session protection; server-authoritative grade |
 
 **S05: локальное подтверждение 2026-10-18.** `make sandbox-test` завершился exit 0. В текущей rootless Podman/cgroup v2 конфигурации runner memory fixture был остановлен ядром с exit 137 и `memory.events: oom_kill=1`; PID fixture получил `EAGAIN` (`resource temporarily unavailable`), очистил все 33 дочерних процесса и завершился с exit 0 при `pids.events: max=3`. Проверка воспроизводится `scripts/m12_sandbox_limit_probe.py`; итог записан в `docs/validation/m12-sandbox-cgroup-20261018.txt`. Это подтверждает текущую локальную конфигурацию и эти два сценария, не является доказательством для другого ядра/runtime, публичной multi-tenant модели или всей S01–S12 матрицы.
+
+**S01/S02/S03/S06/S07/S09/S11: bounded local probes 2026-10-18.** Rootless `make sandbox-test` прошел на current tree (`artifacts/m12-final-batch-sandbox-test-20261018.log`): обе output streams вместе достигли общего лимита 32768 bytes и вернули `output_limit`; запись в разные файлы заняла 189 отдельных 1 MiB файлов и получила `ENOSPC`; parent-exit/child-inherited-pipes probe завершился за 3.12s с точной scoped-container cleanup проверкой. Same-filename concurrent job отказан как busy, первый job вернул только собственный stdout. Fake-runtime S11 fixtures отвергли cgroup v1 и отсутствующую delegation без user-job запуска; только scoped preflight запускался и очищался. S03 syscall fixture подтвердил `unshare(CLONE_NEWNS)`, mount, raw socket и ptrace container PID 1 denied; `CapEff=0`, `Seccomp=2`.
+
+Host-boundary probe (`scripts/m12_sandbox_access_probe.py`) показал denied read/write на временный sentinel и issuer-key fixture, включая путь через `/proc/1/root`; fixture остались unchanged, sentinel был 0644, issuer-key test fixture 0600. Host-only environment marker отсутствовал в container `/proc/1/environ`, standard Docker/Podman socket paths отсутствовали. Временные host TCP/UDP/unix listeners получили 0 соединений/датаграмм; TCP и Unix connect завершились отказом. UDP `Write` вернул успех, но listener datagram не получил — это наблюдение, не доказательство того, что syscall отказал.
+
+Остаются: `cgroup.events populated=0` literal для S04; DNS/external-network behavior; snapshot/сопоставление полного host mount list и host PID-1 (тест сверил только namespace container PID-1); scope иных host kernels. S04 timeout и отсутствие scoped container подтверждены, но не literal counter. S02 не выполняет внешний network/DNS probe. Подробности: `docs/validation/m12-host-boundary-20261018.txt` и `docs/validation/m12-api-boundary-probes-20261018.txt`.
 
 Для S05/S06 нельзя сначала создавать необузданный host fork/memory/disk bomb. Harness предварительно создаёт и проверяет ограниченную группу, имеет внешний watchdog и host sentinel. Все tests сохраняют команды, лимиты, версии, exit status, elapsed time и cleanup evidence. Успешный hello-world не заменяет матрицу.
 

@@ -11,6 +11,7 @@ Findings fixed
 - Middle20: private vector required empty exchange => invalid, but the prompt omitted this. The contract now explicitly scopes to named direct exchanges and excludes RabbitMQ default exchange.
 - Middle32: lesson outcomes implied actual trace propagation tests, while P3 has no tracing instrumentation/exporter. Outcomes now require a reproducible integration-test plan and state the evidence boundary.
 - Middle36: two relative `cd content/projects/p3` commands were not idempotent when run sequentially. Both now resolve the repository root before changing directory.
+- Middle+13: the lesson claimed `p=100-reservePercent` is in `[1,100]` and rejected a 100% reserve, while the exercise contract accepts `[0,100]` and explicitly expects a zero budget at 100%. The lesson now states `p∈[0,100]`, documents the valid zero-budget boundary, and matches the exercise.
 
 Validation
 - `python3 -m unittest discover -s scripts -p 'test_m11_curriculum_quality.py'`: PASS, 6/6.
@@ -24,9 +25,11 @@ Validation
 - S10 assessment-hook follow-up guard in `internal/projectrunner/types.go` rejects `unsafe`, compiler `go:linkname` directives and bodyless top-level functions. AST-only tests exercise the directives without compiling hostile code. `go test`, `go vet`, and `go test -race ./internal/projectrunner`: PASS. Independent security reviewer found no new High/Medium issue; confirmed linkname-specific direct test was added.
 
 Source state
-- New source fingerprint: `sha256:f6e44740783cba50ff9b2bc2812f7f88283a8d5caff0ef062b33e7b471aef8c5`.
-- All-88 M11 gate v5: **PASS**, 88/88, exit 0, 2815.488s; source fingerprint at start and finish matches the value above. Report `docs/validation/m11-current-tree-acceptance-20261018-v5.txt`; raw log SHA256 `06b47c1334bed09bb7281d2192751babc42f43c7a61b317c2aa812e931aebe5c`.
-- Previous all-88 gate v4 fingerprint `sha256:e03e7282ceea394a172f8cc4f6204bd20bf58dfb71aa6d546e1f0eda6683d2fb` is stale and is superseded by v5.
+- The source fingerprint accepted by v5 was `sha256:f6e44740783cba50ff9b2bc2812f7f88283a8d5caff0ef062b33e7b471aef8c5`.
+- All-88 M11 gate v5: **PASS** at the prior source fingerprint `sha256:f6e44740783cba50ff9b2bc2812f7f88283a8d5caff0ef062b33e7b471aef8c5`, 88/88, exit 0, 2815.488s. Report `docs/validation/m11-current-tree-acceptance-20261018-v5.txt`; raw log SHA256 `06b47c1334bed09bb7281d2192751babc42f43c7a61b317c2aa812e931aebe5`.
+- After adding the M12 S03 sandbox acceptance regression, the current source fingerprint is now `sha256:fbcc16bd516cccb92d4fbe0664899f38e7d27fb4951befa950ec9c906da81229`; the Middle+13 lesson edit and M12 `internal/runner` acceptance-test additions make v5 stale. Run gate v6 after remaining content changes.
+- The changed tree passed full `make test` and full `make sandbox-test`; current logs/evidence are recorded in AGENT_HANDOFF.md. Current E2E v6 predates the Middle+13 lesson correction; rerun after all M11 content corrections and gate v6.
+- Independent audit slices: Middle01–20, Middle21–40, Middle+01–12 and Middle+13–24/Senior01–24. Confirmed P2s listed above were fixed. Other P1/P2s were not found in those targeted scopes. This is not a full line-by-line review of every explanatory sentence or a complete rank-governance audit.
 - Reviewer scope limitation: these audits were targeted, not a complete line-by-line review of all lesson Markdown, all 60 specs, or external P3 services.
 
 Separate M12 read-only findings are recorded in AGENT_HANDOFF.md and EXECUTION_PLAN.md; they are coverage gaps or static suspected issues, not confirmed escapes. M12 acceptance remains open.
