@@ -23,7 +23,7 @@
 | M10 | Full Zero/Junior/Junior+ curriculum and projects | DONE | 2026-10-15: 40chapters/120exercises;117nativefunctionsPASS;P2native44checks/recovery;Junior→Junior+nativeawards/credentialsPASS64.3s;full27PASS7skip7.6min;unit/vet/race/TSbuildPASS |
 | M11 | Full Middle/Middle+/Senior curriculum and projects | DONE | All-88 gate v7 **PASS**, 88/88, 2815.381s, matching source fingerprint `sha256:dd28be0d31ffba7ea087bc52a928e673cbc515ceafce756f5506416a1a07886d`; report `docs/validation/m11-current-tree-acceptance-20261018-v7.txt`, log SHA-256 `abf0880c69155e94a8ea2af2eb06780f391a2876645c1b7319b8ca16e229dce7`. Fixed both trusted Middle backoff references, added portable saturation vectors, and bumped exam to v1.0.1 while exact legacy v1.0.0 remains resolvable. `make test` PASS after fix. Independent lesson audits covered Middle01–40, Middle+01–24 and Senior01–24, fixing confirmed P2s. Desktop/mobile Playwright E2E v8 PASS 50/10/0 (`docs/validation/e2e-current-tree-20261018-v8.txt`); rank policy and credential review boundaries remain explicit.
 | M12 | Hardening, full E2E, performance, visual and accessibility | DONE (declared local Linux/rootless scope) | `make test`, `make sandbox-test`, current desktop/mobile E2E v8 PASS50/10/0 and visual/a11y checks passed. `scripts/m12_sandbox_namespace_probe.py` confirms isolated PID/mount namespaces, differing mountinfo (32/41 entries, 8 shared), loopback-only routes and exact cleanup. S01/S02 evidence also covers temporary host sentinel/issuer key and zero host TCP/UDP/unix listener traffic; S03 syscall denial/CapEff0/Seccomp2; S05 OOM/PID counters; S06 dual-stream cap + ENOSPC; S07 parent/child pipe cleanup; S08 JSON boundaries; S09 same-filename admission; S11 cgroup-v1/delegation fail-closed; S12 cross-site mutation rejection. Mobile Middle overflow 449→390px fixed; all Playwright assertions compare actual clientWidth, full E2E and progress-dashboard desktop/light + mobile/dark axe checks pass. Evidence: `docs/validation/m12-current-probe-acceptance-20261018.txt`, `docs/validation/m12-mobile-overflow-20261018.txt`, `docs/validation/e2e-current-tree-20261018-v8.txt`. Scope caveats remain explicit: no direct host PID-1/full mount-list comparison, no external DNS/network request, and `cgroup.events populated=0` was not observed because Podman `--rm` removes the cgroup before readback. No public multi-tenant runner is enabled; these are validation limitations, not observed escapes.
-| M13 | Open-source release preparation and final acceptance audit | IN PROGRESS | Clean-source v6 at `e2bad43` passed bootstrap/test/build/project-runtime/recovery/E2E50/10/0; pre-build source and 70-commit history Gitleaks were clean (`docs/validation/m13-clean-source-acceptance-20261018-v6.txt`). Owner selected MIT for platform source and CC BY 4.0 for original course text; `LICENSE`, `COURSE_LICENSE.md`, `NOTICE`, npm manifest/lock metadata and README describe free learning and recommend project credit: “Учебные материалы подготовлены проектом Open Go Academy (2026)”, without naming an individual or asserting origin of every fragment. Decision record: `docs/validation/m13-license-choice-20261018.txt`. The v6 archive predates these files/metadata; run clean-source build/test/E2E/Gitleaks on the post-license checkpoint. Read-only third-party review found no missing notice blocker in the Git source archive: no vendored Go/npm packages or generated binaries are tracked; DejaVu Sans is accompanied by its upstream notice. This does not clear binary/installer/bundled-web distribution: regenerate exact linked dependency notices (including applicable `x/image` and `modernc.org/sqlite` notices) before distributing those artifacts. Cache-only package inventory is `docs/validation/m13-license-inventory-e2bad43-20261018.json`. Native non-Linux validation is open; Windows/WSL/macOS guides remain experimental until tested.
+| M13 | Open-source release preparation and final acceptance audit | DONE (local Linux/rootless source-release scope) | Clean source archive at `bc89a40590b4ac55d8ed782d50a0f358c023aa03` passed bootstrap/test/build/project-runtime/recovery and full Playwright 50/10/0; Gitleaks source/history returned zero findings; root/web npm audit returned 0 vulnerabilities. Exact commands, archive/log hashes, visual evidence and limitations: `docs/validation/m13-clean-source-acceptance-20261018-v7.txt`. MIT code + CC BY 4.0 original course text and project-level credit are documented; source-only third-party notice review found no missing notice blocker. Future binary/installer/web-bundle artifacts need exact linked-dependency notices. Native Windows/macOS and public multi-tenant execution remain outside the validated scope; project not published.
 
 ### Правила сотрудничества субагентов
 
@@ -288,7 +288,7 @@
 
 ---
 
-## M13 — Release preparation & final acceptance
+## M13 — Release preparation & final acceptance — DONE (local Linux/rootless source scope)
 
 ### Работы
 
@@ -300,10 +300,10 @@
 
 ### Gate
 
-- [ ] Документация позволяет воспроизвести запуск.
-- [ ] Финальный аудит показывает **реальное** покрытие и known limitations.
-- [ ] Full-course completion отмечен только при реально написанных/проверенных материалах всех рангов.
-- [ ] Агент оставил точную инструкцию продолжения/публикации, если необходимы внешние разрешения.
+- [x] Документация позволяет воспроизвести запуск в заявленном Linux/rootless scope; свежий архив прошёл bootstrap/build и браузерную приёмку.
+- [x] Финальный аудит показывает **реальное** покрытие и ограничения: `docs/REQUIREMENT_TRACEABILITY.md`, `docs/validation/m13-clean-source-acceptance-20261018-v7.txt`.
+- [x] Full-course completion отмечен только для доступных и проверенных 128 глав Zero → Senior; ранги требуют отдельных проектов/экзаменов и настроенного human review.
+- [x] Handoff сохраняет внешние ограничения: публикация GitHub/remote CI требует отдельного действия владельца; native non-Linux и binary bundles не объявлены проверенными.
 
 ---
 
@@ -444,7 +444,7 @@ Middle-24 remediation (2026-10-17): the three previous task contracts could labe
 
 Middle-25 remediation (2026-10-17): replaced three string/boolean role classifiers with a narrow injected `ProfileReader` and fake-backed use cases. Easy distinguishes a valid read, absent row and invalid request/profile; Medium exercises read/validate/write, proves unchanged values perform zero writes and detects storage errors; Hard composes creator+audit interfaces and verifies event order plus the partial state where create succeeds but audit fails. Tutorial text explicitly separates test doubles from SQL/HTTP integration and atomic rollback. Scoped acceptance passed on the final tree in 30.324s; `go test ./internal/content ./internal/grading` passed. Full `make test` passed after the lesson rewrite but before the final test-driver assertions; current scoped gate and affected Go packages passed after them. The 2026-10-16 unfiltered M11 content aggregate is stale after both Middle-24/25 edits and must rerun after remaining content changes. Details: `docs/validation/m11-middle25-di-remediation-20261017.txt`.
 
-### 2026-10-18 — M11 remediation и M12 validation (IN PROGRESS)
+### Historical checkpoint 2026-10-18 — M11 remediation и M12 validation (superseded; M11/M12 are DONE above)
 
 M16–18 delivery/outbox/unknown-outcome протоколы, M20 truth table, M22 overflow/refill/invalid-domain и M26 Begin/Apply/Commit/Rollback исправлены и проверены scoped gates, production-mutant regressions, independent review. Каноническая таксономия 13 навыков теперь общая для content/learning; 88 draft mappings не теряют неизвестные ID, automatic P5 не доказывает communication. Общий make test прошёл для этого среза. Педагогическая сверка исправила M28/Senior13–23/M+21/24 gaps и отдельные Middle P2; M11 gate повторно выполняется после content/spec изменений. P3 human rubric v2 явно связывает M27–40 с exact project evidence; автоматические project criteria неизменны. Полные итоги проверок и workers — в AGENT_HANDOFF.md.
 

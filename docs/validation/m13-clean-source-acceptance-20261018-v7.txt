@@ -1,0 +1,26 @@
+Open Go Academy — M13 clean-source acceptance v7
+Date: 2026-10-18 (Asia/Atyrau)
+Source commit: `bc89a40590b4ac55d8ed782d50a0f358c023aa03`
+`git archive --format=tar HEAD` SHA-256: `8b08ba3b6a0ee0dd0b79bc598a478964c32f805f9b2523e812265829112e3a50`
+Fresh extraction: `/tmp/oga-m13-v7-bc89a40`; no `.git`, user `.data`, node_modules or build output before bootstrap.
+
+## Results
+
+- `make bootstrap` — PASS, exit 0. Pinned Go toolchain and Go/npm dependencies, Chromium and pinned OCI image were prepared. This Fedora host selected Playwright's Ubuntu 24.04 fallback; it does not establish native Windows/macOS support. Log SHA-256: `dd856f796fbaa6bdac339862325a9b525d323eca7523ca0da4d2c982cf6ed8b7`.
+- `make test` — PASS, exit 0 on the fresh archive: Python course/fingerprint/license/runner-policy gates, Go unit/integration/reference tests, whole-tree vet/race, TypeScript and production web build. Log SHA-256: `b3e1f6c0cdf59c8f8ee2f51ec3d2aaf61393f6e41cd6652ceb1719757438fb17`.
+- `make build` — PASS, exit 0 (API, runner and web production build). Log SHA-256: `63e508497d0061751b083fd5969ac607af46861ad8a0e37575a994e4d0ecfbc9`.
+- `make project-runtime` — PASS; pinned P2/P3/P4/P5 runner and trusted-checker runtime profiles were prepared. Log SHA-256: `3e210bd3760f1936452fb24b0b2834e78c6c419fa4ea67aab51ee4dd072c36e7`.
+- `python3 scripts/recovery-check.py` — PASS; disposable SQLite backup/restore, API restart, profile/theme/draft and migration persistence. Log SHA-256: `7f454538a3f22afe23140ca952189da9318fcb9921d2e1374358d569b214ae57`.
+- Full desktop/mobile Playwright run: `ACADEMY_E2E_RUNNER=1 ACADEMY_E2E_PROJECT_RUNNER=1 ACADEMY_E2E_P3_RUNNER=1 npm run e2e -- --reporter=list` — **50 passed / 10 intentional skips / 0 failed**, 9.9 minutes. Real P1–P5 submissions ran in isolated rootless workers; an exam awarded only the evidenced local Zero rank; project completion alone granted no rank; no real AI provider was called. Log SHA-256: `df1488f27b7262b508648a72af487b9c05c143d302d276692b66ad15356d7f88`. Runner startup logs: basic `0fd0055181ba6b37f488e390690d145424031088041dabd87039e8f3b8c14b23`; project `66929e4b4acf52ca787cccb64a80aa977b052ffc36e7a6c83493e410d8fe79be`. Temporary DB and sockets were removed; no test containers or runner processes remained.
+- Visual review: desktop Senior P5 project and completed Zero exam, plus mobile Middle lesson and Senior P5 workspace screenshots, were opened and inspected. Files are under `artifacts/m13-v7-visual/`. E2E assertions also checked responsive layouts, keyboard/accessibility paths, axe and horizontal overflow. Progress dashboard separately passes desktop/light and mobile/dark axe/no-overflow checks.
+- Gitleaks v8.30.1 source scan on a second fresh pre-build extraction — PASS, zero findings; redacted report SHA-256: `37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`.
+- Gitleaks v8.30.1 Git history scan at this checkpoint — PASS, 72 commits, zero findings; redacted report SHA-256: `37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570`.
+- `npm audit --audit-level=low` — PASS, 0 vulnerabilities in root and web lockfiles. Root log SHA-256: `6d8c5c8f3d7684adb070417bd608d01ae90aa3dc26a65af03ffda4955f38d9a3`; web log has the same successful output/hash.
+- Cache-only license inventory regenerated against this source archive: `docs/validation/m13-license-inventory-bc89a40-20261018.json`, SHA-256 `e1a2ab3d52c28e1028dde87a5da4a50130b8925a5e553dc9431c11c2e1bc0ed1`; 268 records (92 Go / 176 npm), 194 license-file observations / 100 distinct file hashes. Forty Go packages were not locally cached and remain UNKNOWN. These are metadata observations, not a legal interpretation.
+- Independent read-only notice review found no missing notice blocker in the current Git source archive: package sources, node_modules, generated web assets and binaries are not vendored; the only identified vendored asset is DejaVu Sans with its upstream notice beside it. Before binary, installer, OCI or bundled-web distribution, generate notices from the exact included dependencies; applicable `x/image` and SQLite notices and the embedded DejaVu license must accompany such artifacts.
+
+The project licenses are now in the archive: MIT for platform code and CC BY 4.0 for original instructional materials. The course is described as free and open, with the recommended credit “Учебные материалы подготовлены проектом Open Go Academy (2026)”. This names the project without claiming that a particular person created the course or asserting the origin of every fragment. Third-party materials retain their own licenses.
+
+## Scope and remaining limits
+
+This is source-release preparation for the validated Linux/rootless local profile. Native Windows/macOS installs remain experimental and are not claimed as supported; Fedora used Playwright's Ubuntu 24.04 fallback. The browser/API runner is local-only. Public multi-tenant execution, formal legal opinion, GitHub publication and remote CI were not performed. No user database or service on ports 8380/8080, paid service or external AI provider was used.

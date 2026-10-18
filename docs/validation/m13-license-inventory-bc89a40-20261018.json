@@ -1,0 +1,3367 @@
+{
+  "format": "open-go-academy-license-inventory-v1",
+  "mode": "cache-only",
+  "records": [
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "d4c9754b442ae53fb2f29ab0d373922a23f1411fdeb0c20824a3f6abe80d7889"
+        },
+        {
+          "path": "NOTICE",
+          "sha256": "922876f0d850dbb86865ce2db8f683ceaeac1420688dcd5f616b1f163fed7cc9"
+        },
+        {
+          "path": "internal/credentialrender/assets/LICENSE-DejaVu.txt",
+          "sha256": "7a083b136e64d064794c3419751e5c7dd10d2f64c108fe5ba161eae5e5958a93"
+        }
+      ],
+      "manifest": "go.mod",
+      "name": "academy",
+      "version": "local"
+    },
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "content/projects/p1/reference/go.mod",
+      "name": "cli-toolkit",
+      "version": "local"
+    },
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "content/projects/p1/starter/go.mod",
+      "name": "cli-toolkit",
+      "version": "local"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/chzyer/readline",
+      "version": "v1.5.1"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "1b93a317849ee09d3d7e4f1d20c2b78ddb230b4becb12d7c224c927b9d470251"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/davecgh/go-spew",
+      "version": "v1.1.1"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "a973b4498c13eb74baa2a8e5c351426a6826f2fcdd909916dbe53ee2e755fd71"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/dustin/go-humanize",
+      "version": "v1.0.1"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/google/go-cmp",
+      "version": "v0.6.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "path": "third_party/svgpan/LICENSE",
+          "sha256": "154c946c17de61ca71d28e13673d76a5798e6e25995a7397fbae157afc8f62b4"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/google/pprof",
+      "version": "v0.0.0-20260802141513-ef3492d7dac3"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "0a8d61ed3cbfd5312326e8126c31ce9c627a283adc99131b56896d29ada04b2d"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/google/uuid",
+      "version": "v1.6.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "06dcddbb6908a0c6dd4a9e8ec822eea41d5a460a53089fecccc8a68049e99241"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/gpdf-dev/gpdf",
+      "version": "v1.0.13"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "6c7088eb877b5d7e6e0e9d27e822ea25fcda2e83f9eba59bb5f1418a656796e0"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/hashicorp/golang-lru/v2",
+      "version": "v2.0.7"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/ianlancetaylor/demangle",
+      "version": "v0.0.0-20250417193237-f615e6bd150b"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "adb1663fda031df8f4344aa68f299fd87d80353e31339406742ded21dae65702"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/jackc/pgpassfile",
+      "version": "v1.0.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "fc505773403fe869ed64cc2235cdd13988a427bb7e3a7e7004a3f4b27420f8fc"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/jackc/pgservicefile",
+      "version": "v0.0.0-20240606120523-5a60cdf6a761"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "467f95e074fe23079a5623ed652619682692041b8551da27e3c2ddb9659a1507"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/jackc/pgx/v5",
+      "version": "v5.11.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "2d50e98a4900b4d6457a38d39c1432fdc156fc2f7b365f2e33ec9344acbb0057"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/jackc/puddle/v2",
+      "version": "v2.2.2"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/kballard/go-shellquote",
+      "version": "v0.0.0-20180428030007-95032a82bc51"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/kr/pretty",
+      "version": "v0.3.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "08eab1118c80885fa1fa6a6dd7303f65a379fcb3733e063d20d1bbc2c76e6fa1"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/mattn/go-isatty",
+      "version": "v0.0.24"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "38ae43959daf953a393a585b2988672cb65a5a541aca0d0be5e72595a0a16883"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/ncruces/go-strftime",
+      "version": "v1.0.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/pbnjay/memory",
+      "version": "v0.0.0-20210728143218-7b4eea64cf58"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "2eb550be6801c1ea434feba53bf6d12e7c71c90253e0a9de4a4f46cf88b56477"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/pmezard/go-difflib",
+      "version": "v1.0.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "dd26a7abddd02e2d0aba97805b31f248ef7835d9e10da289b22e3b8ab78b324d"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/remyoudompheng/bigfft",
+      "version": "v0.0.0-20230129092748-24d4a6f8daec"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/stretchr/objx",
+      "version": "v0.5.2"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "f8e536c1c7b695810427095dc85f5f80d44ff7c10535e8a9486cf393e2599189"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/stretchr/testify",
+      "version": "v1.11.1"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/stretchr/testify",
+      "version": "v1.3.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/stretchr/testify",
+      "version": "v1.7.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/stretchr/testify",
+      "version": "v1.8.1"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "github.com/yuin/goldmark",
+      "version": "v1.4.13"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/exp",
+      "version": "v0.0.0-20181106170214-d68db9428509"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/exp",
+      "version": "v0.0.0-20250305212735-054e65f0b394"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/exp",
+      "version": "v0.0.0-20251023183803-a4bb9ffd2546"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/image",
+      "version": "v0.47.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/mod",
+      "version": "v0.24.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/mod",
+      "version": "v0.27.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/mod",
+      "version": "v0.41.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/net",
+      "version": "v0.59.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/sync",
+      "version": "v0.1.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/sync",
+      "version": "v0.12.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/sync",
+      "version": "v0.17.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/sync",
+      "version": "v0.23.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/sync",
+      "version": "v0.24.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/sys",
+      "version": "v0.28.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/sys",
+      "version": "v0.31.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/sys",
+      "version": "v0.32.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/sys",
+      "version": "v0.48.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/sys",
+      "version": "v0.49.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/telemetry",
+      "version": "v0.0.0-20260908163034-4bcc4b2ee518"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/telemetry",
+      "version": "v0.0.0-20260924152758-ed294f943157"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/text",
+      "version": "v0.29.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/text",
+      "version": "v0.43.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/tools",
+      "version": "v0.31.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/tools",
+      "version": "v0.36.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/tools",
+      "version": "v0.49.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/tools",
+      "version": "v0.50.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "golang.org/x/tools",
+      "version": "v0.51.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "gopkg.in/check.v1",
+      "version": "v0.0.0-20161208181325-20d25e280405"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "gopkg.in/check.v1",
+      "version": "v1.0.0-20201130134442-10cb98267c6c"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "d18f6323b71b0b768bb5e9616e36da390fbd39369a81807cca352de4e4e6aa0b"
+        },
+        {
+          "path": "NOTICE",
+          "sha256": "f6c2dd3a67b576eafb89b80200b8b1627230bf3821a0c14cb99a22ac19107d00"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "gopkg.in/yaml.v3",
+      "version": "v3.0.1"
+    },
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "content/projects/p2/reference/go.mod",
+      "name": "linkhub",
+      "version": "local"
+    },
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "content/projects/p2/starter/go.mod",
+      "name": "linkhub-student",
+      "version": "local"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "lukechampine.com/uint128",
+      "version": "v1.3.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/cc/v3",
+      "version": "v3.41.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "1c77905db36f407e0fdb513f97f1f2a3f2282049ca273637841face982d5d003"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/cc/v4",
+      "version": "v4.29.7"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/ccgo/v3",
+      "version": "v3.17.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "343748b20da2ceb739c1ab7b85fe16f6fe4b67fad88fea40c5835a08383d8ffe"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/ccgo/v4",
+      "version": "v4.36.1"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/ccorpus2",
+      "version": "v1.6.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/ebnf",
+      "version": "v1.1.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/ebnfutil",
+      "version": "v1.1.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/fileutil",
+      "version": "v1.1.2"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "7dc07397727fc500d5ce768d724e4d555eee8fb7687f421fd40d72249868b0ca"
+        },
+        {
+          "path": "falloc/LICENSE",
+          "sha256": "078134734db24112b59bcfd4ce3462e2d167471e5a11a69911785e881fc92c86"
+        },
+        {
+          "path": "hdb/LICENSE",
+          "sha256": "078134734db24112b59bcfd4ce3462e2d167471e5a11a69911785e881fc92c86"
+        },
+        {
+          "path": "storage/LICENSE",
+          "sha256": "078134734db24112b59bcfd4ce3462e2d167471e5a11a69911785e881fc92c86"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/fileutil",
+      "version": "v1.4.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "4719790df5e9d33b1cef3a67df8264fb1e3e7f54f3ca900c562e84a951de62d9"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/gc/v2",
+      "version": "v2.6.5"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "4719790df5e9d33b1cef3a67df8264fb1e3e7f54f3ca900c562e84a951de62d9"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/gc/v3",
+      "version": "v3.1.5"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "6d33428c98f9d7113dfc86e17fca00f81aeaac33e02f79c8a5afafb0a5fd33c6"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/goabi0",
+      "version": "v0.2.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/lex",
+      "version": "v1.1.1"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/lexer",
+      "version": "v1.0.4"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/libc",
+      "version": "v1.76.0"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "95ff867eb55a56935fa7492406cfa953fb7c13ca73f4c0a86ae05756b4605600"
+        },
+        {
+          "path": "LICENSE-3RD-PARTY.md",
+          "sha256": "f597097efe3d97021f89170746bd3a0fb9a8b6fb26b82043ed68a4e0283bee6c"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/libc",
+      "version": "v1.77.1"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "bfa9bf72a72ca009fd62a8f84fca3dca67e51d93af96352723646599898b6cf5"
+        },
+        {
+          "path": "mersenne/LICENSE",
+          "sha256": "c05630f9ca899ea094620d37daea6ba66f99adbf9268ea5fea9db607e1102bd9"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/mathutil",
+      "version": "v1.7.1"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "59895e669f48f168b6b858358f6005779cdf40a265f7828813061b56af67b496"
+        },
+        {
+          "path": "LICENSE-GO",
+          "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067"
+        },
+        {
+          "path": "LICENSE-LOGO",
+          "sha256": "5ae5bee3072a841376451b48d8cfcec7188e10543926d5870828d36c8a750dc5"
+        },
+        {
+          "path": "LICENSE-MMAP-GO",
+          "sha256": "c2eba69f20d05414538c3a5df7694dde392e065ff70882e1625e90f5d6659fff"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/memory",
+      "version": "v1.12.1"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "7a0dd90f1d1c8fa80d03c1806bdd8e4dca7285fae9b4a34f2c4a8a2552fdd77c"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/opt",
+      "version": "v0.2.0"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/scannertest",
+      "version": "v1.0.2"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "7bc9df688c16dd8e64463ec0ad66728730a0e1a70a1dbda3dcbcd8a9b45bfaab"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/sortutil",
+      "version": "v1.2.1"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c6fe05491a60ae13bcd223088d2705e36dede24e5587226231d2459ada5c4822"
+        },
+        {
+          "path": "LICENSE-3RD-PARTY.md",
+          "sha256": "b4366b9c27a9364633e015011a231913ed19bf1228f335bf617e50a6f7b168a6"
+        },
+        {
+          "path": "LICENSE-SQLITE",
+          "sha256": "8438c9c89b849131ead81d5435cb97fcf052df5b0b286dda8a2d4c29e6cb3fd0"
+        },
+        {
+          "path": "LICENSE-SQLITE_VEC",
+          "sha256": "6ce72bbe12d975bd5286e5ab0a064c069693300c47bccbc57bec18485f1621ea"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/sqlite",
+      "version": "v1.60.1"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "0f594b710bedb0335b15155204150cb1aac98e76144b52b852b43ce6a65eaaad"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/strutil",
+      "version": "v1.2.1"
+    },
+    {
+      "cache": "extracted-cache",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067"
+        }
+      ],
+      "manifest": "go.mod dependency graph",
+      "name": "modernc.org/token",
+      "version": "v1.1.0"
+    },
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "content/projects/p4/reference/go.mod",
+      "name": "open-go-academy/p4-scalelab/reference",
+      "version": "local"
+    },
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "content/projects/p4/starter/go.mod",
+      "name": "open-go-academy/p4-scalelab/starter",
+      "version": "local"
+    },
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "content/projects/p5/starter/go.mod",
+      "name": "p5-capstone-prototype",
+      "version": "local"
+    },
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "content/projects/p5/reference/go.mod",
+      "name": "p5-capstone-reference",
+      "version": "local"
+    },
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "content/projects/p3/reference/go.mod",
+      "name": "taskflow",
+      "version": "local"
+    },
+    {
+      "cache": "workspace",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "content/projects/p3/starter/go.mod",
+      "name": "taskflow",
+      "version": "local"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "812e9d96e900a093ae4d1d3f22c5f82f568a0a0461c3007a99d00573d41c5461"
+        }
+      ],
+      "manifest": "package-lock.json",
+      "name": "@axe-core/playwright",
+      "version": "4.13.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@codemirror/autocomplete",
+      "version": "6.20.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@codemirror/commands",
+      "version": "6.11.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "8ac9cfc9c82c397298c2139028d2474d8e0470f2092a97edddccf353bc5d4d36"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@codemirror/lang-go",
+      "version": "6.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@codemirror/language",
+      "version": "6.13.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@codemirror/lint",
+      "version": "6.9.7"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@codemirror/search",
+      "version": "6.7.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@codemirror/state",
+      "version": "6.7.6"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@codemirror/streamparser",
+      "version": "6.0.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@codemirror/view",
+      "version": "6.43.14"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "568902fb66eaf1f11750e966b33fd7b5d7c618e65af09f35ef843635bcf5f1ba"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@lezer/common",
+      "version": "1.5.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "54bd812a6d334e0c438b78a43cea74b67e882739fd3450115ddc7c52be5706c1"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@lezer/go",
+      "version": "1.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "568902fb66eaf1f11750e966b33fd7b5d7c618e65af09f35ef843635bcf5f1ba"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@lezer/highlight",
+      "version": "1.2.5"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "568902fb66eaf1f11750e966b33fd7b5d7c618e65af09f35ef843635bcf5f1ba"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@lezer/lr",
+      "version": "1.4.11"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "9360b00fdd091f05c783b568bdd46c679c41b72415599252de98949462ea1acb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@marijn/find-cluster-break",
+      "version": "1.0.4"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "95ced5ecf1133fbf41d409b5555c86c344f83f3b019926057ddbc07cfdcc27b3"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@oxc-project/types",
+      "version": "0.154.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb"
+        },
+        {
+          "path": "NOTICE",
+          "sha256": "6d602191187b35b9b01d2cffa01c8469c2c8d9de8a96f1bf868e0f264f51c81d"
+        }
+      ],
+      "manifest": "package-lock.json",
+      "name": "@playwright/test",
+      "version": "1.64.1"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-android-arm-eabi",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-android-arm64",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-darwin-arm64",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-darwin-x64",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-freebsd-x64",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-linux-arm-gnueabihf",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-linux-arm64-gnu",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-linux-arm64-musl",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-linux-ppc64-gnu",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-linux-s390x-gnu",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-linux-x64-gnu",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-linux-x64-musl",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-openharmony-arm64",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-win32-arm64-msvc",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/binding-win32-x64-msvc",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "e1919b3b98b8bf6c1b99fcc60a0ed46027c97ac947432e1278446c9606f50161"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@rolldown/pluginutils",
+      "version": "1.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@types/debug",
+      "version": "4.1.13"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@types/estree",
+      "version": "1.0.9"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@types/estree-jsx",
+      "version": "1.0.5"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@types/hast",
+      "version": "3.0.5"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@types/mdast",
+      "version": "4.0.4"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@types/ms",
+      "version": "2.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@types/react",
+      "version": "19.3.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@types/react-dom",
+      "version": "19.3.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@types/unist",
+      "version": "3.0.3"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-aix-ppc64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-darwin-arm64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-darwin-x64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-freebsd-arm64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-freebsd-x64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-linux-arm",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-linux-arm64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-linux-loong64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-linux-mips64el",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-linux-ppc64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-linux-riscv64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-linux-s390x",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "a7d00bfd54525bc694b6e32f64c7ebcf5e6b7ae3657be5cc12767bce74654a47"
+        },
+        {
+          "path": "NOTICE.txt",
+          "sha256": "f5c708b59114507b8b27b48181b6883d106bbca0c1634bbee45b5e344237b66b"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-linux-x64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-netbsd-arm64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-netbsd-x64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-openbsd-arm64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-openbsd-x64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-sunos-x64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-win32-arm64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "@typescript/typescript-win32-x64",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "ISC",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "dc6d4961d8b6ee747231582ae9c53ce1d66bf76bc9f5a28f554c0e97210953bf"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@ungap/structured-clone",
+      "version": "1.4.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "29b68325fe026047d13e187b44c33b2acacf7dc647dec4583702e59f235e13b5"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "@vitejs/plugin-react",
+      "version": "6.1.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "af175b9d96ee93c21a036152e1b905b0b95304d4ae8c2c921c7609100ba8df7e"
+        },
+        {
+          "path": "LICENSE-3RD-PARTY.txt",
+          "sha256": "4f8563870d0fca38bbc3e00b6f670cb7fa9f380ba9f26a7f7d1184a6b18b1653"
+        }
+      ],
+      "manifest": "package-lock.json",
+      "name": "axe-core",
+      "version": "4.13.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "bail",
+      "version": "2.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "ccount",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "character-entities",
+      "version": "2.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "character-entities-html4",
+      "version": "2.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "character-entities-legacy",
+      "version": "3.0.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "character-reference-invalid",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "05c6130cda97e7600ca91427a41e8a065efcf82365fc0293e7de80faec494c07"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "codemirror",
+      "version": "6.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "comma-separated-tokens",
+      "version": "2.0.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "23852ebf6aef7fadffc92514b3c5df163a8651f2c3ed0dbb494cb49d93bd5de5"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "crelt",
+      "version": "1.0.7"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "11d55bd4541c75ee7879547ac49089c489163dae49551389713c3d026cab383e"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "csstype",
+      "version": "3.2.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "3a61c6c96caf5c1d9b623fb9b04c822b783dfcb78aa7e49c76a3f643e6ed7f95"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "debug",
+      "version": "4.4.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "decode-named-character-reference",
+      "version": "1.3.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "306fa513e39b23a6e8747520de761809d206b99800ef41907b530226574c59ae"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "dequal",
+      "version": "2.0.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "detect-libc",
+      "version": "2.1.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "6f296a5eccc1dc96714bb94ebaa9cac25b0a1467d74cc5263ac4d0646ab01f62"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "devlop",
+      "version": "1.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "estree-util-is-identifier-name",
+      "version": "3.0.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "97af7428f93afbab9bf79cd09254da1357161794f4255eb1b4599f04dd2d2e7c"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "extend",
+      "version": "3.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "9a39f2aadab11a3697edd668ff2d8ad885b649737b7ab4d3bf12b34e5ada0c86"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "fdir",
+      "version": "6.5.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "fsevents",
+      "version": "2.3.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "hast-util-to-jsx-runtime",
+      "version": "2.3.6"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "hast-util-whitespace",
+      "version": "3.0.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "e18cf5173e928f808f0cd208097fee8fbec9d28fc0255213938e4c559e29ff58"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "html-url-attributes",
+      "version": "3.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "395c95f20598da653ff1eb1cb9d74947c7fac689697147f1d192fd0242a0e635"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "inline-style-parser",
+      "version": "0.2.7"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "is-alphabetical",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "is-alphanumerical",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "is-decimal",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "is-hexadecimal",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "is-plain-obj",
+      "version": "4.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+        }
+      ],
+      "manifest": "package-lock.json",
+      "name": "jsqr",
+      "version": "1.4.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "5eba353fe5076ac3432177f8ab1cf75e3afcd0584251e37c3bfead5f447d040e"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-android-arm64",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-darwin-arm64",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-darwin-x64",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-freebsd-x64",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-linux-arm-gnueabihf",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-linux-arm64-gnu",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-linux-arm64-musl",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "5eba353fe5076ac3432177f8ab1cf75e3afcd0584251e37c3bfead5f447d040e"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-linux-x64-gnu",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-linux-x64-musl",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-win32-arm64-msvc",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "lock-metadata",
+      "declared_license": "MPL-2.0",
+      "ecosystem": "npm",
+      "license_files": [],
+      "manifest": "web/package-lock.json",
+      "name": "lightningcss-win32-x64-msvc",
+      "version": "1.33.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "9f084fac69d8cf1e6ce983ba5a3499c7695ed74a26ec625c38f0fd19fddd5e10"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "longest-streak",
+      "version": "3.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "mdast-util-from-markdown",
+      "version": "2.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "mdast-util-mdx-expression",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "mdast-util-mdx-jsx",
+      "version": "3.2.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "536804b3adbff17dbbb9ed0d2bf9655b78f07640278581e37e3d7475282d5e61"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "mdast-util-mdxjs-esm",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "b6d1a4e1831b177acc96f22a817d4f0f4c18419355badc3125754445fc69e3a7"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "mdast-util-phrasing",
+      "version": "4.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "mdast-util-to-hast",
+      "version": "13.2.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "mdast-util-to-markdown",
+      "version": "2.2.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "mdast-util-to-string",
+      "version": "4.0.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark",
+      "version": "4.0.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-core-commonmark",
+      "version": "2.0.4"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-factory-destination",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-factory-label",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-factory-space",
+      "version": "2.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-factory-title",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-factory-whitespace",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-character",
+      "version": "2.1.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-chunked",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-classify-character",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-combine-extensions",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-decode-numeric-character-reference",
+      "version": "2.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-decode-string",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-edit-map",
+      "version": "1.0.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-encode",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-html-tag-name",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-normalize-identifier",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-resolve-all",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-sanitize-uri",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-subtokenize",
+      "version": "2.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-symbol",
+      "version": "2.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "micromark-util-types",
+      "version": "2.0.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license.md",
+          "sha256": "1662fae9b5314d11cf51284e2dcd1f006a354f7343f08712a730fcff9a359801"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "ms",
+      "version": "2.1.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "nanoid",
+      "version": "3.3.20"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "5d0698266086f217bb11ea0499d33453e401fe479fb9126ad04e625e63d3557b"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "parse-entities",
+      "version": "4.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "parse-entities/node_modules/@types/unist",
+      "version": "2.0.11"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "ISC",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "picocolors",
+      "version": "1.1.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "d0cd141b0c322fded5dfad1d4645bb2fedfc05b7321fe1009469638190d59ef9"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "picomatch",
+      "version": "4.0.7"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb"
+        },
+        {
+          "path": "NOTICE",
+          "sha256": "6d602191187b35b9b01d2cffa01c8469c2c8d9de8a96f1bf868e0f264f51c81d"
+        }
+      ],
+      "manifest": "package-lock.json",
+      "name": "playwright",
+      "version": "1.64.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "45873d00a0dd243596deb4aa23b2493b3d1f0671921bf2538ea431d7380220eb"
+        },
+        {
+          "path": "NOTICE",
+          "sha256": "6d602191187b35b9b01d2cffa01c8469c2c8d9de8a96f1bf868e0f264f51c81d"
+        }
+      ],
+      "manifest": "package-lock.json",
+      "name": "playwright-core",
+      "version": "1.64.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "be75ef59c5cf59715588a17a82dff7dd3e83c4dba3c458676bb9311e05fbedc5"
+        }
+      ],
+      "manifest": "package-lock.json",
+      "name": "pngjs",
+      "version": "7.0.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "5be1f3465bba68a626777f984878814aaf35e7ef8e9fd314d469bcf887050fb8"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "postcss",
+      "version": "8.5.30"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "5d0698266086f217bb11ea0499d33453e401fe479fb9126ad04e625e63d3557b"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "property-information",
+      "version": "7.2.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "react",
+      "version": "19.3.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "react-dom",
+      "version": "19.3.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "f6196c64e144f9a6fa9154c3a80bc8b89615a9567934b83a8951879f06ba2aef"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "react-markdown",
+      "version": "10.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "413654b0a78b98661dce96d2aff2e4d075603d220b8483e28b1aa010ccc138b4"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "remark-parse",
+      "version": "11.0.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "remark-rehype",
+      "version": "11.1.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "rolldown",
+      "version": "1.2.14"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "scheduler",
+      "version": "0.28.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "BSD-3-Clause",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "source-map-js",
+      "version": "1.2.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "space-separated-tokens",
+      "version": "2.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "9f084fac69d8cf1e6ce983ba5a3499c7695ed74a26ec625c38f0fd19fddd5e10"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "stringify-entities",
+      "version": "4.0.4"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "cb4474e26547397169061d3586c00022cda5330a1b64fa13e872319f3b63aff1"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "style-mod",
+      "version": "4.1.4"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "bbb380e5c1a717079378d6ea4d33c8a5a81655d4612b749f882e34e46712aab5"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "style-to-js",
+      "version": "1.1.21"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "896c9fd6b5fc48ac31800b9d29a6e3ffcb0c2d534ed077ebfa5c2fa388cc38b7"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "style-to-object",
+      "version": "1.0.14"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "22c68811e174cbbfb3813d4135918df4f540959c14d872e601d9abe83d3cde8f"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "tinyglobby",
+      "version": "0.2.17"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "9f084fac69d8cf1e6ce983ba5a3499c7695ed74a26ec625c38f0fd19fddd5e10"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "trim-lines",
+      "version": "3.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "6c03fd41cfd7c92d8aa8a2fa521b94b2683f059123281dcf921ddea9216b6254"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "trough",
+      "version": "2.2.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "Apache-2.0",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "a7d00bfd54525bc694b6e32f64c7ebcf5e6b7ae3657be5cc12767bce74654a47"
+        },
+        {
+          "path": "NOTICE.txt",
+          "sha256": "f5c708b59114507b8b27b48181b6883d106bbca0c1634bbee45b5e344237b66b"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "typescript",
+      "version": "7.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "05811400116ed61f1a7693b78fe8ca6598c155a12f3978e609db4df648a4cb3d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "unified",
+      "version": "11.0.5"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "82974dbf2639d13edab95c32ed9cb6c0867ede272cd2e07ce47ce8548fe55c05"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "unist-util-is",
+      "version": "6.0.1"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "unist-util-position",
+      "version": "5.0.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "unist-util-stringify-position",
+      "version": "4.0.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "63cb98b3f6abfb3c3592c16f88253c1bdc834087bf52671e8ce5609e4eb693cf"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "unist-util-visit",
+      "version": "5.1.0"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "unist-util-visit-parents",
+      "version": "6.0.2"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "05811400116ed61f1a7693b78fe8ca6598c155a12f3978e609db4df648a4cb3d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "vfile",
+      "version": "6.0.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "dd1081884a92952802f4803110a6bb543acea9a814c786d58605b4c1219b5ebb"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "vfile-message",
+      "version": "4.0.3"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE.md",
+          "sha256": "a47172e44a86a7e2cd1c16282341f7726ec60caafe3a6166fe3e0602005b6fa6"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "vite",
+      "version": "8.3.4"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "LICENSE",
+          "sha256": "869c30f368eb08735e779027b9f4bc9fea2f39624351856aebe42741f0bc0884"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "w3c-keyname",
+      "version": "2.2.8"
+    },
+    {
+      "cache": "installed-cache",
+      "declared_license": "MIT",
+      "ecosystem": "npm",
+      "license_files": [
+        {
+          "path": "license",
+          "sha256": "ca4662cb5d1b738fbe5350c0d5485ba11773b4b7208974082ae6e129a52d631d"
+        }
+      ],
+      "manifest": "web/package-lock.json",
+      "name": "zwitch",
+      "version": "2.0.4"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Актуальная проверка — 2026-10-18
 
-## Последний текущий source checkpoint — license update после `e2bad43` (2026-10-18)
+## M13 clean-source acceptance v7 — license checkpoint `bc89a40` (2026-10-18)
 
 Лицензионный выбор владельца выполнен: MIT для исходного кода платформы и CC BY 4.0 для оригинального учебного текста. Курс позиционируется как бесплатный; рекомендуемый кредит — «Учебные материалы подготовлены проектом Open Go Academy (2026)». Это проектная атрибуция, не заявление о конкретном авторе или происхождении каждого фрагмента. README, `LICENSE`, `COURSE_LICENSE.md`, `NOTICE` и npm metadata обновлены. Само публичное размещение в GitHub не выполнялось.
 
@@ -12,15 +12,16 @@
 - `make sandbox-test` — **PASS, exit 0**; `TestSandboxIntegration` 174.833s, rootless cgroup and host-boundary probes. Log `artifacts/m12-final-post-m11-20261018.log`, SHA-256 `89ab0a3abfd9df964c586978c18ba63224d3dcb6068de74135be625cd256a51c`.
 - Latest `make sandbox-test` with the bounded namespace/route/cgroup lifecycle probe — **PASS, exit 0**; log `artifacts/m12-final-with-namespace-20261018.log`, SHA-256 `ee1ac11fae331eb4c3e3197a786f75234e8d3f76aaa73f79a4480785354029ee`. The probe confirms distinct PID/mount namespaces, different mountinfo sets and loopback-only routes; it explicitly records that `--rm` removed the cgroup before literal `populated=0` was observable.
 - `make test` after adding the namespace-probe unit tests — **PASS, exit 0**; log `artifacts/make-test-m12-namespace-20261018.log`, SHA-256 `78482703da33150e76e1e330937c3d80e62674c520b85be3de2d2860857e76e0`.
-- `npm run test:progress` — **PASS** desktop/light и mobile/dark, axe violations 0, horizontal overflow 0; generated screenshots визуально inspected. Текущая панель обновлена до 13/14 checkpoints (93%); оставшийся checkpoint — M13.
-- M12 завершён для заявленного локального Linux/rootless режима; direct host PID-1/full mount, external DNS request и literal `cgroup.events populated=0` остаются непроверенными и ограничивают scope. M13 license choice теперь применён (MIT code + CC BY 4.0 course); свежий clean-source acceptance/Gitleaks нужно повторить после LICENSE/NOTICE diff. Native non-Linux installs не проверялись. Эти границы не утверждаются как observed escapes.
-- После добавления license files: `make test` — PASS (включает Go test/vet/race, Python gates, TypeScript и production web build); `npm run test:progress` — PASS на desktop/light и mobile/dark, axe 0 и overflow 0; `git diff --check` — PASS. Независимый read-only M13 notice review не выявил пропущенного уведомления в текущем Git source archive: пакеты не vendored, DejaVu имеет соседний notice. Он подтвердил отдельные notice требования для будущих бинарных/web bundle artifacts (`x/image`, SQLite и встроенный DejaVu); это не является legal clearance будущих пакетов.
+- `npm run test:progress` — **PASS** desktop/light и mobile/dark, axe violations 0, horizontal overflow 0; generated screenshots визуально inspected. Текущая панель обновлена до 14/14 acceptance gates (100%) для заявленного Linux/rootless scope.
+- M12 завершён для заявленного локального Linux/rootless режима; direct host PID-1/full mount, external DNS request и literal `cgroup.events populated=0` остаются непроверенными и ограничивают scope. Эти границы не утверждаются как observed escapes.
+- M13 clean-source acceptance v7 — PASS после license files. Свежий archive прошёл bootstrap/test/build/project-runtime/recovery, Playwright 50/10/0 и source/history Gitleaks; npm audit root/web выявил 0 уязвимостей. Source-only notice review не нашёл блокирующего пропуска; binary/web bundle требуют notices точных зависимостей. Native non-Linux не заявляется.
+- Локальные `make test`, `npm run test:progress` и `git diff --check` после лицензионных правок — PASS. `docs/validation/m13-clean-source-acceptance-20261018-v7.txt` содержит hashes, визуальные evidence paths и ограничения.
 
-## M13 fresh archive — `e2bad43` (2026-10-18)
+## Historical M13 fresh archive — `e2bad43` (superseded by v7 below)
 
 - Fresh `git archive` SHA-256 `f42736e58e9b01a5e616177016cc55b3ce4bf56b82e107dd8ce6b055eb325012` passed bootstrap, make test/build/project-runtime, recovery-check, and desktop/mobile E2E50/10/0. Full evidence and each log hash are in [M13 clean-source v6](validation/m13-clean-source-acceptance-20261018-v6.txt).
 - Gitleaks v8.30.1 on the fresh pre-build source archive and 70-commit history returned zero findings. A separate scan after build detected one generated-only `web/dist` minified-code false positive; the masked match is control flow around cloud-key handling and a route template, not a source credential. The report records both scans, with no global ignore added.
-- At `e2bad43`, M13 technical source/build/runtime/browser/secret scans passed, but that archive predates the later owner-authorized MIT/CC BY 4.0 license files. The license files and package metadata now exist; rerun clean-source acceptance and Gitleaks on the post-license checkpoint. Third-party text-level notice/legal review and native non-Linux validation remain open. No public release is claimed.
+- At `e2bad43`, M13 technical source/build/runtime/browser/secret scans passed, but that archive predates the later owner-authorized MIT/CC BY 4.0 license files. This was resolved by clean-source acceptance v7 on `bc89a40` below. Native non-Linux validation remains outside the declared support scope. No public release is claimed.
 
 ## Исторические checkpoints до текущего состояния
 
