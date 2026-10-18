@@ -40,7 +40,8 @@ test('profile, roadmap, safe content, themes, drafts and responsive layout',asyn
  await page.screenshot({path:`artifacts/${info.project.name}-light.png`,fullPage:true});
  await page.getByRole('button',{name:'Включить тёмную тему'}).click();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await page.reload();await open(page);await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
  const dark=await new AxeBuilder({page}).analyze();expect(dark.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>({target:n.target,message:n.failureSummary}))}))).toEqual([]);await page.screenshot({path:`artifacts/${info.project.name}-dark.png`,fullPage:true});expect(errors).toEqual([]);
- expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
+ const layout=await page.evaluate(()=>{const viewport=document.documentElement.clientWidth;const offenders=[...document.querySelectorAll('body *')].map((el:any)=>{const r=el.getBoundingClientRect();const s=getComputedStyle(el);return{tag:el.tagName,className:typeof el.className==='string'?el.className:'',text:(el.textContent||'').trim().slice(0,55),left:Math.round(r.left),right:Math.round(r.right),clientWidth:el.clientWidth,scrollWidth:el.scrollWidth,overflowX:s.overflowX}}).filter(el=>el.left < -1 || el.right > viewport+1).sort((a,b)=>b.right-a.right).slice(0,12);return{viewport,documentWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,offenders}});
+ expect(layout.documentWidth,JSON.stringify(layout)).toBeLessThanOrEqual(layout.viewport);
  await page.getByRole('button',{name:'Включить светлую тему'}).click();
 });
 test('real Go errors, output, server grading, no AI and idempotent XP',async({page},info)=>{
