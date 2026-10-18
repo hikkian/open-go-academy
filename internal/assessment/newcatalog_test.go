@@ -33,7 +33,11 @@ func TestCatalogAndFrozenZeroCriteria(t *testing.T) {
 	advancedIDs := []string{"middle-exam", "middleplus-exam", "senior-exam"}
 	for i, id := range advancedIDs {
 		e := all[i+3]
-		if e.ID != id || e.Version != "1.0.0" || len(e.Questions) != 15 || len(e.Tasks) != 3 {
+		wantVersion := "1.0.0"
+		if id == "middle-exam" {
+			wantVersion = "1.0.1"
+		}
+		if e.ID != id || e.Version != wantVersion || len(e.Questions) != 15 || len(e.Tasks) != 3 {
 			t.Errorf("incomplete advanced exam %s: %+v", id, e)
 		}
 		for _, exerciseID := range e.Prerequisites {

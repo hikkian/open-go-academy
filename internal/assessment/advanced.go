@@ -1,6 +1,13 @@
 package assessment
 
-import "fmt"
+import (
+	"fmt"
+
+	"academy/internal/grading"
+)
+
+const middleV100BackoffReference = `package main
+func BackoffSeconds(baseSeconds, attempt, maxSeconds int) int { if baseSeconds <= 0 || attempt <= 0 || maxSeconds <= 0 { return 0 }; if baseSeconds >= maxSeconds { return maxSeconds }; if attempt > 30 { attempt = 30 }; delay := baseSeconds; for i := 1; i < attempt && delay < maxSeconds; i++ { if delay > maxSeconds/2 { return maxSeconds }; delay *= 2 }; if delay > maxSeconds { return maxSeconds }; return delay }`
 
 // Advanced catalogs are immutable objective exams. Passing their quiz and
 // function checks is evidence only; project review and rank policy stay outside
@@ -9,7 +16,7 @@ var advancedReferences = map[string]string{
 	"middle-exam-retry-decision": `package main
 func RetryDecision(retryable bool, attemptsRemaining int) string { if retryable && attemptsRemaining > 0 { return "retry" }; return "terminal" }`,
 	"middle-exam-backoff-seconds": `package main
-func BackoffSeconds(baseSeconds, attempt, maxSeconds int) int { if baseSeconds <= 0 || attempt <= 0 || maxSeconds <= 0 { return 0 }; if baseSeconds >= maxSeconds { return maxSeconds }; if attempt > 30 { attempt = 30 }; delay := baseSeconds; for i := 1; i < attempt && delay < maxSeconds; i++ { if delay > maxSeconds/2 { return maxSeconds }; delay *= 2 }; if delay > maxSeconds { return maxSeconds }; return delay }`,
+func BackoffSeconds(baseSeconds, attempt, maxSeconds int) int { if baseSeconds <= 0 || attempt <= 0 || maxSeconds <= 0 { return 0 }; if baseSeconds >= maxSeconds { return maxSeconds }; delay := baseSeconds; for i := 1; i < attempt && delay < maxSeconds; i++ { if delay > maxSeconds/2 { return maxSeconds }; delay *= 2 }; if delay > maxSeconds { return maxSeconds }; return delay }`,
 	"middle-exam-commit-allowed": `package main
 func CommitAllowed(validated, conflictFree, contextActive bool) bool { return validated && conflictFree && contextActive }`,
 	"middleplus-exam-compare-benchmark": `package main
@@ -27,9 +34,25 @@ func ReleaseGate(acceptancePassed, rollbackReady, independentReviewApproved, hig
 }
 
 func loadMiddle() *Exam {
-	return buildExam("middle-exam", "Экзамен Middle: надёжность и проектные доказательства", "Middle", "Junior+",
+	e := buildExam("middle-exam", "Экзамен Middle: надёжность и проектные доказательства", "Middle", "Junior+",
 		"Объективная часть проверяет Go, эксплуатационные решения и критерии P3. Допуск требует завершённого курса Middle, подтверждённого Junior+ и проверенного P3. Экзамен не заменяет review проекта и сам не присваивает ранг.", middlePrerequisites(),
 		[]string{"Все упражнения Middle и prerequisite Junior+", "Независимо подтверждён ранг Junior+", "P3 TaskFlow: machine checks пройдены и артефакт закреплён за версией", "Все 15 вопросов и проверки трёх функций пройдены", "Авторство и качество проекта требуют review; экзамен не присваивает ранг"}, middleQuestions(), middleTasks(), map[string]string{"retry": "middle-exam-retry-decision", "backoff": "middle-exam-backoff-seconds", "commit": "middle-exam-commit-allowed"})
+	e.Version = "1.0.1"
+	return e
+}
+
+func loadMiddleV100() *Exam {
+	e := loadMiddle()
+	e.Version = "1.0.0"
+	spec, err := grading.LoadArchived("middle-exam-backoff-seconds", "1.0.0")
+	if err != nil {
+		panic(fmt.Errorf("load immutable Middle 1.0.0 grading policy: %w", err))
+	}
+	if err := spec.BindReference(middleV100BackoffReference); err != nil {
+		panic(fmt.Errorf("bind immutable Middle 1.0.0 reference: %w", err))
+	}
+	e.functionSpecs["backoff"] = spec
+	return e
 }
 
 func loadMiddlePlus() *Exam {

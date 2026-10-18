@@ -22,7 +22,7 @@ import (
 	"academy/internal/runner"
 )
 
-//go:embed specs/*.json
+//go:embed specs/*.json legacy/*.json
 var specFiles embed.FS
 
 const maxVectorBytes = 4 << 10
@@ -89,6 +89,39 @@ type specJSON struct {
 
 func Load() (map[string]*Spec, error) { return loadSpecs(nil) }
 
+// LoadArchived returns a frozen grading specification retained for resolving
+// attempts created under an older immutable exam version.
+func LoadArchived(id, version string) (*Spec, error) {
+	if !validID(id) || !validArchiveVersion(version) {
+		return nil, errors.New("invalid archived spec identity")
+	}
+	name := "legacy/" + id + "-" + version + ".json"
+	b, err := specFiles.ReadFile(name)
+	if err != nil {
+		return nil, err
+	}
+	s, err := decodeSpec(name, b)
+	if err != nil {
+		return nil, err
+	}
+	if s.id != id {
+		return nil, fmt.Errorf("%s: archived spec id mismatch", name)
+	}
+	return s, nil
+}
+
+func validArchiveVersion(version string) bool {
+	if len(version) == 0 || len(version) > 32 {
+		return false
+	}
+	for _, r := range version {
+		if r != '.' && (r < '0' || r > '9') {
+			return false
+		}
+	}
+	return true
+}
+
 // LoadFor loads only published exercises; draft content stays outside runtime.
 func LoadFor(ids []string) (map[string]*Spec, error) {
 	selected := map[string]bool{}
@@ -117,18 +150,9 @@ func loadSpecs(selected map[string]bool) (map[string]*Spec, error) {
 		if err != nil {
 			return nil, err
 		}
-		var raw specJSON
-		dec := json.NewDecoder(bytes.NewReader(b))
-		dec.DisallowUnknownFields()
-		if err := dec.Decode(&raw); err != nil {
-			return nil, fmt.Errorf("%s: %w", entry.Name(), err)
-		}
-		if err := dec.Decode(new(any)); err != io.EOF {
-			return nil, fmt.Errorf("%s: trailing JSON", entry.Name())
-		}
-		s := &Spec{id: raw.ID, signature: raw.Signature, allowedImports: raw.AllowedImports, driver: raw.Driver, publicInput: raw.PublicInput, publicExpected: raw.PublicExpected, privateInput: raw.PrivateInput, privateExpected: raw.PrivateExpected}
-		if err := s.validate(); err != nil {
-			return nil, fmt.Errorf("%s: %w", entry.Name(), err)
+		s, err := decodeSpec(entry.Name(), b)
+		if err != nil {
+			return nil, err
 		}
 		if entry.Name() != s.id+".json" {
 			return nil, fmt.Errorf("%s: filename must match id", entry.Name())
@@ -146,6 +170,23 @@ func loadSpecs(selected map[string]bool) (map[string]*Spec, error) {
 		}
 	}
 	return out, nil
+}
+
+func decodeSpec(name string, b []byte) (*Spec, error) {
+	var raw specJSON
+	dec := json.NewDecoder(bytes.NewReader(b))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&raw); err != nil {
+		return nil, fmt.Errorf("%s: %w", name, err)
+	}
+	if err := dec.Decode(new(any)); err != io.EOF {
+		return nil, fmt.Errorf("%s: trailing JSON", name)
+	}
+	s := &Spec{id: raw.ID, signature: raw.Signature, allowedImports: raw.AllowedImports, driver: raw.Driver, publicInput: raw.PublicInput, publicExpected: raw.PublicExpected, privateInput: raw.PrivateInput, privateExpected: raw.PrivateExpected}
+	if err := s.validate(); err != nil {
+		return nil, fmt.Errorf("%s: %w", name, err)
+	}
+	return s, nil
 }
 
 func (s *Spec) validate() error {

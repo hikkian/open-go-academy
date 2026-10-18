@@ -87,6 +87,18 @@ func seedPreviousZeroAward(t *testing.T, s *store.Store) {
 		t.Fatal(err)
 	}
 }
+
+func TestHistoricalMiddleExamVersionCanStillBeViewed(t *testing.T) {
+	f := newCatalogFixture(t, nil)
+	legacy := f.request("GET", "/api/exams/middle-exam?version=1.0.0", nil)
+	if legacy.Code != http.StatusOK || !strings.Contains(legacy.Body.String(), `"version":"1.0.0"`) {
+		t.Fatalf("persisted Middle 1.0.0 exam is no longer resolvable: %d %s", legacy.Code, legacy.Body.String())
+	}
+	current := f.request("GET", "/api/exams/middle-exam", nil)
+	if current.Code != http.StatusOK || !strings.Contains(current.Body.String(), `"version":"1.0.1"`) {
+		t.Fatalf("current Middle exam version not served: %d %s", current.Code, current.Body.String())
+	}
+}
 func startCatalogExam(t *testing.T, f catalogFixture, id string) struct {
 	ID       string `json:"id"`
 	Token    string `json:"attempt_token"`

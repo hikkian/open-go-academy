@@ -14,19 +14,19 @@ import (
 
 func TestAdvancedCatalogsAreCompleteAndVersioned(t *testing.T) {
 	catalogs := []struct {
-		exam               *Exam
-		id, rank, required string
-		questions, tasks   int
-		hash               string
+		exam                        *Exam
+		id, rank, required, version string
+		questions, tasks            int
+		hash                        string
 	}{
-		{loadMiddle(), "middle-exam", "Middle", "Junior+", 15, 3, "769db5107eba8e957e3645c4b56eaff5bf4e946705668ac58216d63a85bfdc9c"},
-		{loadMiddlePlus(), "middleplus-exam", "Middle+", "Middle", 15, 3, "4e2bc1f4d4e230f9b52432f2a47e24a9b6f76b9e4bdf8f10be107bb240a951fa"},
-		{loadSenior(), "senior-exam", "Senior", "Middle+", 15, 3, "beac22567bc0cf6c1c56ddb527f0c87897bf4e799e7db1c17a19a1a6eb424860"},
+		{loadMiddle(), "middle-exam", "Middle", "Junior+", "1.0.1", 15, 3, "dcc0ca4424ada80c8f8e0b1e941d2dd84d3c2873726ba611173adbf3e2c2fbd7"},
+		{loadMiddlePlus(), "middleplus-exam", "Middle+", "Middle", "1.0.0", 15, 3, "4e2bc1f4d4e230f9b52432f2a47e24a9b6f76b9e4bdf8f10be107bb240a951fa"},
+		{loadSenior(), "senior-exam", "Senior", "Middle+", "1.0.0", 15, 3, "beac22567bc0cf6c1c56ddb527f0c87897bf4e799e7db1c17a19a1a6eb424860"},
 	}
 	for _, tc := range catalogs {
 		t.Run(tc.id, func(t *testing.T) {
 			e := tc.exam
-			if e.ID != tc.id || e.Version != "1.0.0" || e.Rank != tc.rank || e.RequiredRank != tc.required {
+			if e.ID != tc.id || e.Version != tc.version || e.Rank != tc.rank || e.RequiredRank != tc.required {
 				t.Fatalf("unexpected immutable identity: %+v", e)
 			}
 			if len(e.Questions) != tc.questions || len(e.Tasks) != tc.tasks {
@@ -83,6 +83,20 @@ func TestAdvancedCatalogsAreCompleteAndVersioned(t *testing.T) {
 	}
 }
 
+func TestLegacyMiddleExamRegistrationRemainsResolvable(t *testing.T) {
+	legacy, ok := Find("middle-exam", "1.0.0")
+	if !ok || legacy.Version != "1.0.0" || legacy.Hash() != "769db5107eba8e957e3645c4b56eaff5bf4e946705668ac58216d63a85bfdc9c" {
+		t.Fatalf("immutable Middle 1.0.0 registration changed: ok=%v exam=%+v", ok, legacy)
+	}
+	current, ok := Find("middle-exam", "")
+	if !ok || current.Version != "1.0.1" || current.Hash() == legacy.Hash() {
+		t.Fatalf("current Middle exam did not advance independently: ok=%v exam=%+v", ok, current)
+	}
+	if _, ok := Find("middle-exam", "9.9.9"); ok {
+		t.Fatal("unknown immutable exam version resolved")
+	}
+}
+
 func TestAdvancedTrustedReferencesPassActualPublicAndPrivateExamVectors(t *testing.T) {
 	_, here, _, ok := runtime.Caller(0)
 	if !ok {
@@ -93,15 +107,19 @@ func TestAdvancedTrustedReferencesPassActualPublicAndPrivateExamVectors(t *testi
 	if candidate := filepath.Join(repo, ".tools", "go", "bin", "go"); exists(candidate) {
 		goBin = candidate
 	}
-	for _, exam := range []*Exam{loadMiddle(), loadMiddlePlus(), loadSenior()} {
+	exams := append(All()[3:], loadMiddleV100())
+	for _, exam := range exams {
 		for _, task := range exam.Tasks {
 			exam, task := exam, task
-			t.Run(exam.ID+"/"+task.ID, func(t *testing.T) {
+			t.Run(exam.ID+"/"+exam.Version+"/"+task.ID, func(t *testing.T) {
 				spec := exam.FunctionSpec(task.ID)
 				if spec == nil {
 					t.Fatal("advanced task lacks grading spec")
 				}
 				reference := advancedReferences[spec.ExerciseID()]
+				if exam.ID == "middle-exam" && exam.Version == "1.0.0" && task.ID == "backoff" {
+					reference = middleV100BackoffReference
+				}
 				request, err := spec.Request(map[string]string{"main.go": reference}, true)
 				if err != nil {
 					t.Fatalf("reference rejected by exam spec: %v", err)

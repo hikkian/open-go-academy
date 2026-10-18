@@ -42,6 +42,9 @@ func All() []*Exam {
 
 // Find resolves an exact immutable version, or the current version when empty.
 func Find(id, version string) (*Exam, bool) {
+	if id == "middle-exam" && version == "1.0.0" {
+		return loadMiddleV100(), true
+	}
 	for _, e := range All() {
 		if e.ID == id && (version == "" || e.Version == version) {
 			return e, true
