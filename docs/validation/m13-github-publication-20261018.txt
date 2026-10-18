@@ -1,0 +1,22 @@
+Open Go Academy — GitHub publication and commit attribution
+Date: 2026-10-18 (Asia/Atyrau)
+
+Repository: https://github.com/hikkian/open-go-academy
+Visibility: public
+Default branch: `master`
+Published checkpoint after attribution update: `485b48f9559c1fa906a2b66695f43863350dfbd2`.
+
+The owner requested that GitHub show only the owner's account as commit author. The repository's 73 existing commits initially had the local `Codex` author label, and there were no `Co-authored-by` trailers. All 73 commits were rewritten to the authenticated GitHub profile name and its private GitHub-provided no-reply address. A follow-up commit refreshed one exact Gitleaks false-positive fingerprint. The final published history contains 74 commits, all attributed by GitHub's API to the owner's profile. The account's Gmail address was not used or added to the repository.
+
+The commit trees and messages were preserved during the author/committer rewrite. The only file content changed for the rewrite was the exact historical Gitleaks fingerprint in `.gitleaksignore`; no source, course, license or configuration behavior changed. A local Git bundle of the pre-rewrite history is retained under ignored `artifacts/history-before-account-attribution.bundle` for rollback; it was not pushed.
+
+Final verification after the rewrite:
+
+- GitHub repository metadata reports public visibility and `master` as default branch.
+- GitHub API lists 74 commits with author name `Alisher Sharipov`.
+- No commit message contains a `Co-authored-by` trailer.
+- Fresh source archive Gitleaks and the 74-commit `master` history scan both report zero findings.
+- Local `master` tracks `origin/master` at `485b48f`; working tree is clean.
+- GitHub Actions foundation workflows were triggered by the public pushes. Their remote result is not implied by the local M13 acceptance; check the repository Actions page for the latest run status.
+
+Project licenses remain MIT for platform code and CC BY 4.0 for original course materials. Recommended course credit remains project-level: “Учебные материалы подготовлены проектом Open Go Academy (2026)”. Public multi-tenant Go execution remains disabled; native Windows/macOS remain unvalidated.

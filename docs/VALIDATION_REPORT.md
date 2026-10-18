@@ -2,7 +2,7 @@
 
 ## M13 clean-source acceptance v7 — license checkpoint `bc89a40` (2026-10-18)
 
-Лицензионный выбор владельца выполнен: MIT для исходного кода платформы и CC BY 4.0 для оригинального учебного текста. Курс позиционируется как бесплатный; рекомендуемый кредит — «Учебные материалы подготовлены проектом Open Go Academy (2026)». Это проектная атрибуция, не заявление о конкретном авторе или происхождении каждого фрагмента. README, `LICENSE`, `COURSE_LICENSE.md`, `NOTICE` и npm metadata обновлены. Само публичное размещение в GitHub не выполнялось.
+Лицензионный выбор владельца выполнен: MIT для исходного кода платформы и CC BY 4.0 для оригинального учебного текста. Курс позиционируется как бесплатный; рекомендуемый кредит — «Учебные материалы подготовлены проектом Open Go Academy (2026)». Это проектная атрибуция, не заявление о конкретном авторе или происхождении каждого фрагмента. README, `LICENSE`, `COURSE_LICENSE.md`, `NOTICE` и npm metadata обновлены. На момент clean-source acceptance публичная публикация ещё не выполнялась; последующая публикация и обновление Git-атрибуции описаны в [отдельном отчёте](validation/m13-github-publication-20261018.txt).
 
 - M11 **DONE**. `python3 scripts/check_m11_acceptance.py --report docs/validation/m11-current-tree-acceptance-20261018-v7.txt --log artifacts/m11-full-final-v7-20261018.log --cache-dir /tmp/oga-m11-v7-20261018` — **PASS, 88/88**, 2815.381s; source fingerprint до и после `sha256:dd28be0d31ffba7ea087bc52a928e673cbc515ceafce756f5506416a1a07886d`; log SHA-256 `abf0880c69155e94a8ea2af2eb06780f391a2876645c1b7319b8ca16e229dce7`. Исправление backoff подняло текущий Middle exam до v1.0.1, legacy v1.0.0 остался доступен для старых попыток.
 - `make test` — **PASS, exit 0** после backoff/reference/version compatibility fix: Go unit/integration/reference, vet, whole-tree race, Python gates, TypeScript и production build.
@@ -16,6 +16,7 @@
 - M12 завершён для заявленного локального Linux/rootless режима; direct host PID-1/full mount, external DNS request и literal `cgroup.events populated=0` остаются непроверенными и ограничивают scope. Эти границы не утверждаются как observed escapes.
 - M13 clean-source acceptance v7 — PASS после license files. Свежий archive прошёл bootstrap/test/build/project-runtime/recovery, Playwright 50/10/0 и source/history Gitleaks; npm audit root/web выявил 0 уязвимостей. Source-only notice review не нашёл блокирующего пропуска; binary/web bundle требуют notices точных зависимостей. Native non-Linux не заявляется.
 - Локальные `make test`, `npm run test:progress` и `git diff --check` после лицензионных правок — PASS. `docs/validation/m13-clean-source-acceptance-20261018-v7.txt` содержит hashes, визуальные evidence paths и ограничения.
+- После clean-source acceptance репозиторий опубликован как `https://github.com/hikkian/open-go-academy`. По просьбе владельца авторские/committer метаданные 73 коммитов переписаны на его GitHub-профиль; содержимое и сообщения сохранены, Gmail не использовался. Новая точная Gitleaks fingerprint запись в `.gitleaksignore` покрывает только ранее проверенную UI-строку; source/history scans после переписывания — PASS, 74 коммита. GitHub Actions workflow запущен; его remote результат не подменяет локальное M13 доказательство.
 
 ## Historical M13 fresh archive — `e2bad43` (superseded by v7 below)
 
