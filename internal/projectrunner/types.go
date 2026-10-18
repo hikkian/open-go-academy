@@ -240,7 +240,7 @@ func validate(req Request, cfg Config) error {
 // projects do not require package initialization or process control in tests;
 // reject those hooks on machine-assessed actions while leaving normal `run`
 // behavior available.
-// ValidateAssessmentProcessHooks rejects Go test-runner process hooks that
+// ValidateAssessmentProcessHooks rejects process termination primitives that
 // could skip trusted P4/P5 acceptance tests before they execute.
 func ValidateAssessmentProcessHooks(files map[string]string) error {
 	for name, source := range files {
@@ -252,34 +252,39 @@ func ValidateAssessmentProcessHooks(files map[string]string) error {
 			return fmt.Errorf("invalid Go source %s", name)
 		}
 		dotImportedProcessHooks := map[string]bool{}
+		syscallAliases := map[string]bool{}
 		for _, im := range file.Imports {
-			if im.Name == nil || im.Name.Name != "." {
-				continue
-			}
 			importPath, err := strconv.Unquote(im.Path.Value)
 			if err != nil {
 				continue
 			}
+			alias := path.Base(importPath)
+			if im.Name != nil {
+				alias = im.Name.Name
+			}
 			switch importPath {
-			case "os", "syscall":
-				dotImportedProcessHooks["Exit"] = true
+			case "os":
+				if alias == "." {
+					dotImportedProcessHooks["Exit"] = true
+				}
+			case "syscall":
+				if alias == "." {
+					for _, name := range []string{"Exit", "Syscall", "Syscall6", "RawSyscall", "RawSyscall6"} {
+						dotImportedProcessHooks[name] = true
+					}
+				} else if alias != "_" {
+					syscallAliases[alias] = true
+				}
 			case "runtime":
-				dotImportedProcessHooks["Goexit"] = true
+				if alias == "." {
+					dotImportedProcessHooks["Goexit"] = true
+				}
 			}
 		}
-		allowedMainExit := map[ast.Node]bool{}
 		for _, decl := range file.Decls {
 			fn, ok := decl.(*ast.FuncDecl)
 			if ok && (fn.Name.Name == "init" || fn.Name.Name == "TestMain") {
 				return fmt.Errorf("%s не может определять init или TestMain в проверяемом проекте", name)
-			}
-			if ok && fn.Name.Name == "main" && fn.Body != nil {
-				ast.Inspect(fn.Body, func(node ast.Node) bool {
-					if selector, ok := node.(*ast.SelectorExpr); ok && (selector.Sel.Name == "Exit" || selector.Sel.Name == "Goexit") {
-						allowedMainExit[selector] = true
-					}
-					return true
-				})
 			}
 		}
 		var processExit bool
@@ -292,8 +297,13 @@ func ValidateAssessmentProcessHooks(files map[string]string) error {
 			if !ok {
 				return true
 			}
-			if (selector.Sel.Name == "Exit" || selector.Sel.Name == "Goexit") &&
-				(strings.HasSuffix(name, "_test.go") || !allowedMainExit[selector]) {
+			if ident, ok := selector.X.(*ast.Ident); ok && syscallAliases[ident.Name] {
+				switch selector.Sel.Name {
+				case "Syscall", "Syscall6", "RawSyscall", "RawSyscall6":
+					processExit = true
+				}
+			}
+			if selector.Sel.Name == "Exit" || selector.Sel.Name == "Goexit" {
 				processExit = true
 			}
 			return true

@@ -76,11 +76,14 @@ func TestP4P5SubmitRejectsGoTestProcessHijacks(t *testing.T) {
 			t.Fatalf("%s missing", projectID)
 		}
 		for _, tc := range []struct{ name, file, source string }{
+			{"main early exit", "main.go", "package main\nimport \"os\"\nfunc main(){ os.Exit(0) }\n"},
 			{"init early exit", "main.go", "package main\nimport \"os\"\nfunc init(){ os.Exit(0) }\n"},
 			{"dot-import early exit", "main.go", "package main\nimport . \"os\"\nvar _ = func() int { Exit(0); return 0 }()\n"},
 			{"test main", "early_test.go", "package main\nimport \"testing\"\nfunc TestMain(m *testing.M) {}\n"},
 			{"test exit", "early_test.go", "package main\nimport (\"os\"; \"testing\")\nfunc TestEarly(t *testing.T){ os.Exit(0) }\n"},
 			{"dot-import syscall exit", "early_test.go", "package main\nimport ( . \"syscall\"; \"testing\")\nfunc TestEarly(t *testing.T){ Exit(0) }\n"},
+			{"aliased syscall raw exit", "early_test.go", "package main\nimport sc \"syscall\"\nvar _ = sc.RawSyscall(sc.SYS_EXIT, 0, 0, 0)\n"},
+			{"dot-import syscall raw exit", "early_test.go", "package main\nimport . \"syscall\"\nvar _ = RawSyscall(SYS_EXIT, 0, 0, 0)\n"},
 			{"test goexit", "early_test.go", "package main\nimport (\"runtime\"; \"testing\")\nfunc TestEarly(t *testing.T){ runtime.Goexit() }\n"},
 			{"dot-import runtime goexit", "early_test.go", "package main\nimport ( . \"runtime\"; \"testing\")\nfunc TestEarly(t *testing.T){ Goexit() }\n"},
 		} {
