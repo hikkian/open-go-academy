@@ -27,3 +27,4 @@
 @media(min-width:651px) and (max-width:850px){.topbar{gap:12px;padding:0 16px}.topbar .brand{flex:none;gap:0;font-size:0}.topbar .brand .go-mark{font-size:17px}.topbar .main-nav{flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin;gap:12px}.topbar .nav-link{flex:none}.topbar .top-actions{gap:9px}.topbar .profile-chip{font-size:0;white-space:nowrap}.topbar .avatar{font-size:12px}}
 .lesson-icon{color:#126577}
 .editor-loading{padding:16px;background:var(--editor);color:var(--editor-ink);font:13px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace}
+@media(max-width:650px){.editor-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));height:auto;gap:6px;padding:8px 12px}.editor-actions>span{display:none}.editor-actions>button{width:100%;min-width:0;white-space:normal;line-height:1.2}}
