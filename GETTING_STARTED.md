@@ -2,6 +2,8 @@
 
 Open Go Academy запускается локально. Требуются Linux, Node.js 24.18.0, npm, make и rootless Podman с cgroup v2/systemd и seccomp для выполнения учебного Go-кода. Версии и ограничения — в [матрице версий](docs/research/VERSION_MATRIX.md), [архитектурном обзоре](docs/architecture/OVERVIEW.md) и основном [README](README.md).
 
+Проверенная среда — Linux; есть дополнительные, пока не проверенные инструкции для [Windows/WSL 2](docs/INSTALL_WINDOWS_WSL.md) и [macOS/Linux VM](docs/INSTALL_MACOS.md). Если среда не подтверждает необходимые Linux sandbox features, оставьте runner выключенным.
+
 ## Установка
 
 Из корня репозитория:

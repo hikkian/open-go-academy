@@ -1,0 +1,18 @@
+M12 focused responsive/accessibility regression — 2026-10-18
+
+Command:
+
+```sh
+npx playwright test tests/m12-responsive-a11y.spec.ts --project=desktop --project=mobile
+```
+
+Result: PASS, 2 tests / 0 failures, 6.9s across desktop and mobile Playwright projects. The test enters the real E2E API profile flow without launching Go submissions, verifies accessible names/enabled state for all primary navigation controls, keyboard-only Tab reachability and visible focus, reduced-motion media/CSS behavior, and scans axe at tablet (768×1024) and wide (1920×1080) viewports. Both viewports have no document horizontal overflow and zero axe violations.
+
+This test was introduced after an observed tablet defect (768px viewport expanded to 986px; navigation and profile/theme controls clipped) and an axe contrast failure on `.lesson-icon`. Responsive CSS now collapses brand/profile labels at tablet widths and lets the primary nav use available width; icon text color was darkened to meet contrast. The regression rerun passed after `cd web && npm run build` regenerated the served production bundle.
+
+Screenshots were visually inspected:
+
+- `artifacts/desktop-m12-tablet-768-reduced-motion.png` and `artifacts/mobile-m12-tablet-768-reduced-motion.png`
+- `artifacts/desktop-m12-wide-1920-reduced-motion.png` and `artifacts/mobile-m12-wide-1920-reduced-motion.png`
+
+Scope is only this navigation/dashboard state and two viewports. It does not complete the full M12 keyboard, responsive, theme, lesson/project workspace, failure-state, or performance matrix.
