@@ -1,6 +1,6 @@
 # Open Go Academy — точка продолжения
 
-Обновлено **2026-10-18 10:00 Asia/Atyrau**. Локальный репозиторий `master`, remote нет. Текущее состояние сохранено в локальном Git `HEAD`; remote нет. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
+Обновлено **2026-10-18 10:09 Asia/Atyrau**. Локальный репозиторий `master`, remote нет. Текущее состояние сохранено в локальном Git `HEAD`; remote нет. **M0–M10 DONE; M11–M13 IN PROGRESS.** Полный проект не завершён.
 
 ## Продукт и доверительные границы
 
@@ -11,7 +11,8 @@
 - M28 Hard теперь проверяет настоящий `TaskService`→`TaskRepository` fake. Full gate v1 обнаружил standalone reference/import и starter type-tag mismatch; исправлены. Узкий gate M28 PASS31.819s: `docs/validation/m11-middle28-current-20261018.txt`.
 - Middle+21 Easy теперь показывает `within` и `errors`, а private vectors покрывают 4 invalid boundaries. Lesson/example/spec синхронизированы; scoped gate PASS31.475s: `docs/validation/m11-middleplus21-easy-current-20261018.txt`.
 - Панель прогресса `docs/PROJECT_PROGRESS.html` строится reproducibly из `docs/project-progress.json`. 88/88 — подготовка draft files, не принятие/публикация. Текущий fingerprint-bound gate показывает running. 11/14 — счётчик этапов, не процент объёма работ.
-- Независимая read-only педагогическая вычитка и повторный подсчёт одинаковых JSON-строк выявили P2 пробелы: Middle01–14 упражнения не проверяют часть заявленных concurrency/SQL механизмов; Middle21–37 интеграционные лабораторные не дают воспроизводимых шагов; термины Middle01–02/21–37 не всегда переведены при первом употреблении; generic outcomes/self-check повторяются в Middle01–12, 13–24/26, 27–33 и Middle+01–12; Middle+13–23 повторяет общий материал, Middle+18–24 имеет недостаточно специфичные outcomes; Senior06–12 повторяют JSON self-check, Senior13–24 — generic outcomes. Детали: `docs/research/M11_PEDAGOGY_REVIEW_20261018.md`. Не менять fingerprint-входы до завершения gate v2.
+- Независимая read-only педагогическая вычитка и повторный подсчёт одинаковых JSON-строк выявили P2 пробелы: Middle01–14 упражнения не проверяют часть заявленных concurrency/SQL механизмов; Middle21–37 интеграционные лабораторные не дают воспроизводимых шагов; термины Middle01–02/21/24/25/30/33 не всегда переведены при первом употреблении; generic outcomes/self-check повторяются в Middle01–12, 13–24/26, 27–33 и Middle+01–12; Middle+13–23 повторяет общий материал, Middle+18–24 имеет недостаточно специфичные outcomes; Senior06–12 повторяют JSON self-check, Senior13–24 — generic outcomes. Детали: `docs/research/M11_PEDAGOGY_REVIEW_20261018.md`. Не менять fingerprint-входы до завершения gate v2.
+- Подготовлены, но ещё не приняты draft-предложения replacements для JSON Middle01–12, Middle+01–24 и Senior06–24: `docs/research/proposal-middle01-12.json`, `proposal-middleplus-outcomes.json`, `proposal-senior-metadata.json`. В gate-входы они не входят; проверить и перенести после v2.
 
 ## Проверки текущего дерева
 
@@ -29,7 +30,7 @@
 
 Попытка v1 на fingerprint `sha256:6ba40b...` прервана после двух M28 findings; её отчёт — `docs/validation/m11-current-tree-acceptance-20261018.txt`, статус `INTERRUPTED`. Это не PASS.
 
-Текущий full gate v2 — **exec session 55884**, исходный fingerprint `sha256:7600aec0f32445b13ff22d2d088c6b402a5a744fca5399930d3112d74a7911db`, лог дошёл до Middle+11. Изменения в `internal/projectrunner/` не входят в M11 fingerprint. Команда:
+Текущий full gate v2 — **exec session 55884**, исходный fingerprint `sha256:7600aec0f32445b13ff22d2d088c6b402a5a744fca5399930d3112d74a7911db`, лог дошёл до Senior-02. Изменения в `internal/projectrunner/` не входят в M11 fingerprint. Команда:
 
 ```sh
 python3 scripts/check_m11_acceptance.py \
@@ -46,12 +47,12 @@ python3 scripts/check_m11_acceptance.py \
 2. Исправить документированные педагогические замечания, сверяя упражнения/JSON с реально исполняемыми возможностями runner; добавить конкретные наблюдаемые навыки и terminology. Запустить полный gate заново на итоговом содержимом и обновить outcome/evidence traceability.
 3. После M11 педагогических исправлений выполнить полный `make test`, desktop/mobile Playwright E2E с актуальным dist, `make sandbox-test`, актуальный `govulncheck`, repeat load/restart only if runtime code changes, screenshots/themes/a11y inspection. Сохранить доказательства.
 4. Закрыть содержательную/педагогическую вычитку всех 88 draft bundles и traceability course→skill→project→exam→rank; не публиковать автоматически.
-4. M12: завершить threat/failure/resource-abuse, persistence/restart, viewport/theme, accessibility/dependency/security audit и остаточные ограничения в `docs/VALIDATION_REPORT.md`.
-5. M13: clean archive/bootstrap/recovery на окончательном commit, requirement matrix, повтор Gitleaks для clean archive, dependency license/third-party notice review, runbook. Проектная LICENSE не выбрана владельцем; не выдумывать лицензию и не публиковать без разрешения.
-6. Обновить план/progress/handoff, выполнить `git diff --check`, сохранить локальный checkpoint. M11–M13 не закрывать до фактических gate criteria.
+5. M12: завершить threat/failure/resource-abuse, persistence/restart, viewport/theme, accessibility/dependency/security audit и остаточные ограничения в `docs/VALIDATION_REPORT.md`.
+6. M13: clean archive/bootstrap/recovery на окончательном commit, requirement matrix, повтор Gitleaks для clean archive, dependency license/third-party notice review, runbook. Проектная LICENSE не выбрана владельцем; не выдумывать лицензию и не публиковать без разрешения.
+7. Обновить план/progress/handoff, выполнить `git diff --check`, сохранить локальный checkpoint. M11–M13 не закрывать до фактических gate criteria.
 
 ## Лимиты и безопасность
 
-Последний `get_usage_limits` **2026-10-18 09:44 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **40%**, weekly **22%**, reset credit не использован. Primary reset **2026-10-18 13:55:42**, weekly reset **2026-10-25 03:38:23 Asia/Atyrau**. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate.
+Последний `get_usage_limits` **2026-10-18 10:01 Asia/Atyrau**: `ordinaryUsageAllowed=true`, primary **46%**, weekly **23%**, reset credit не использован. Primary reset **2026-10-18 13:55:42**, weekly reset **2026-10-25 03:38:23 Asia/Atyrau**. Единственный heartbeat `open-go-academy-m13` должен оставаться one-shot на следующий limiting reset +1 минута; не создавать daily repeat/duplicate.
 
 Работать только в репозитории. Не читать/удалять/коммитить `.data/academy.db`, `session.secret`, `issuer.key`; не останавливать пользовательские сервисы на 8380/8080; QA DB/keys только disposable. Не публиковать, не тратить деньги, не включать public multi-tenant execution. Чат оставить открытым.
