@@ -3,256 +3,10 @@
   "mode": "cache-only",
   "records": [
     {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "\"gopkg.in/check.v1\"",
-      "version": "v0.0.0-20161208181325-20d25e280405"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".data/fresh-source/go.mod",
-      "name": "academy",
-      "version": "local"
-    },
-    {
       "cache": "workspace",
       "declared_license": "UNKNOWN",
       "ecosystem": "go",
       "license_files": [
-        {
-          "path": ".data/p2-module-cache/github.com/jackc/pgpassfile@v1.0.0/LICENSE",
-          "sha256": "adb1663fda031df8f4344aa68f299fd87d80353e31339406742ded21dae65702"
-        },
-        {
-          "path": ".data/p2-module-cache/github.com/jackc/pgservicefile@v0.0.0-20240606120523-5a60cdf6a761/LICENSE",
-          "sha256": "fc505773403fe869ed64cc2235cdd13988a427bb7e3a7e7004a3f4b27420f8fc"
-        },
-        {
-          "path": ".data/p2-module-cache/github.com/jackc/pgx/v5@v5.11.0/LICENSE",
-          "sha256": "467f95e074fe23079a5623ed652619682692041b8551da27e3c2ddb9659a1507"
-        },
-        {
-          "path": ".data/p2-module-cache/github.com/jackc/puddle/v2@v2.2.2/LICENSE",
-          "sha256": "2d50e98a4900b4d6457a38d39c1432fdc156fc2f7b365f2e33ec9344acbb0057"
-        },
-        {
-          "path": ".data/p2-module-cache/golang.org/x/sync@v0.17.0/LICENSE",
-          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
-        },
-        {
-          "path": ".data/p2-module-cache/golang.org/x/text@v0.29.0/LICENSE",
-          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
-        },
-        {
-          "path": ".tools/go/LICENSE",
-          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
-        },
-        {
-          "path": ".tools/go/src/crypto/internal/boring/LICENSE",
-          "sha256": "56210f826b8f0fbac3160dfe55c97f4019eb6cdda3963b5a0eab8a8bdb62360e"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/attrs-26.1.0.dist-info/licenses/LICENSE",
-          "sha256": "882115c95dfc2af1eeb6714f8ec6d5cbcabf667caff8729f42420da63f714e9f"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/jsonschema-4.26.0.dist-info/licenses/COPYING",
-          "sha256": "4f92a015a13c4d1a040bef018aa13430b4f1bc73b41b16bb846c346766de7439"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/jsonschema_specifications-2025.9.1.dist-info/licenses/COPYING",
-          "sha256": "42dcd63495f87b4eb7c7757afa379bb55a53f94afd7a5f657d9adf57236e515c"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/cachecontrol/LICENSE.txt",
-          "sha256": "86eeee87be2a43f3ff1f56496f451f69243926f025fedbb033666c304c4c161b"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/certifi/LICENSE",
-          "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/dependency_groups/LICENSE.txt",
-          "sha256": "1ab36e3e2a4ba8631625384f87e9e091db1faed034c5b23325b3239abf2cc525"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/distlib/LICENSE.txt",
-          "sha256": "808e10c8a6ab8deb149ff9b3fb19f447a808094606d712a9ca57fead3552599d"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/distro/LICENSE",
-          "sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/idna/LICENSE.md",
-          "sha256": "b7a336abf3b04e180ec065cdd16e705d079e1cc7a14f910aa6e9187f36b9cd87"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/msgpack/COPYING",
-          "sha256": "492dedba85da5872f78e6091bcd1fea474d660d35acb4dee964b8aab3f007427"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/packaging/LICENSE",
-          "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/packaging/LICENSE.APACHE",
-          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/packaging/LICENSE.BSD",
-          "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/pkg_resources/LICENSE",
-          "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/platformdirs/LICENSE",
-          "sha256": "29e0fd62e929850e86eb28c3fdccf0cefdf4fa94879011cffb3d0d4bed6d4db6"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/pygments/LICENSE",
-          "sha256": "a9d66f1d526df02e29dce73436d34e56e8632f46c275bbdffc70569e882f9f17"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/pyproject_hooks/LICENSE",
-          "sha256": "1b22b049b5267d6dfc23a67bf4a84d8ec04b9fdfb1a51d360e42b4342c8b4154"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/requests/LICENSE",
-          "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/resolvelib/LICENSE",
-          "sha256": "f388fd38cad13112c1dc0f669bbe80e7f84541edbafb72f3030d2ca7642c3c9d"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/rich/LICENSE",
-          "sha256": "deed7c17a4318158190a3ea239cc879a5a50271cebb98ae7025f48fbe58dca15"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/tomli/LICENSE",
-          "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/tomli_w/LICENSE",
-          "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/truststore/LICENSE",
-          "sha256": "33be7b7e8fa4fd19b1760e1a8ed8a668bdab852c91b692dd41424bcb725a9fca"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip/_vendor/urllib3/LICENSE.txt",
-          "sha256": "c37bf186e27cf9dbe9619e55edfe3cea7b30091ceb3da63c7dacbe0e6d77907b"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/LICENSE.txt",
-          "sha256": "634300a669d49aeae65b12c6c48c924c51a4cdf3d1ff086dc3456dc8bcaa2104"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/cachecontrol/LICENSE.txt",
-          "sha256": "86eeee87be2a43f3ff1f56496f451f69243926f025fedbb033666c304c4c161b"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/certifi/LICENSE",
-          "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/dependency_groups/LICENSE.txt",
-          "sha256": "1ab36e3e2a4ba8631625384f87e9e091db1faed034c5b23325b3239abf2cc525"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/distlib/LICENSE.txt",
-          "sha256": "808e10c8a6ab8deb149ff9b3fb19f447a808094606d712a9ca57fead3552599d"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/distro/LICENSE",
-          "sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/idna/LICENSE.md",
-          "sha256": "b7a336abf3b04e180ec065cdd16e705d079e1cc7a14f910aa6e9187f36b9cd87"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/msgpack/COPYING",
-          "sha256": "492dedba85da5872f78e6091bcd1fea474d660d35acb4dee964b8aab3f007427"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/packaging/LICENSE",
-          "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/packaging/LICENSE.APACHE",
-          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/packaging/LICENSE.BSD",
-          "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/pkg_resources/LICENSE",
-          "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/platformdirs/LICENSE",
-          "sha256": "29e0fd62e929850e86eb28c3fdccf0cefdf4fa94879011cffb3d0d4bed6d4db6"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/pygments/LICENSE",
-          "sha256": "a9d66f1d526df02e29dce73436d34e56e8632f46c275bbdffc70569e882f9f17"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/pyproject_hooks/LICENSE",
-          "sha256": "1b22b049b5267d6dfc23a67bf4a84d8ec04b9fdfb1a51d360e42b4342c8b4154"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/requests/LICENSE",
-          "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/resolvelib/LICENSE",
-          "sha256": "f388fd38cad13112c1dc0f669bbe80e7f84541edbafb72f3030d2ca7642c3c9d"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/rich/LICENSE",
-          "sha256": "deed7c17a4318158190a3ea239cc879a5a50271cebb98ae7025f48fbe58dca15"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/tomli/LICENSE",
-          "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/tomli_w/LICENSE",
-          "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/truststore/LICENSE",
-          "sha256": "33be7b7e8fa4fd19b1760e1a8ed8a668bdab852c91b692dd41424bcb725a9fca"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pip-26.0.1.dist-info/licenses/src/pip/_vendor/urllib3/LICENSE.txt",
-          "sha256": "c37bf186e27cf9dbe9619e55edfe3cea7b30091ceb3da63c7dacbe0e6d77907b"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/pyyaml-6.0.3.dist-info/licenses/LICENSE",
-          "sha256": "8d3928f9dc4490fd635707cb88eb26bd764102a7282954307d3e5167a577e8a4"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/referencing-0.37.0.dist-info/licenses/COPYING",
-          "sha256": "42dcd63495f87b4eb7c7757afa379bb55a53f94afd7a5f657d9adf57236e515c"
-        },
-        {
-          "path": ".tools/qa-python/lib/python3.14/site-packages/rpds_py-2026.9.1.dist-info/licenses/LICENSE",
-          "sha256": "314e4e91be3baa93c0fb4bccc9e4e97cd643eb839b065af921782c2175fe9909"
-        },
         {
           "path": "internal/credentialrender/assets/LICENSE-DejaVu.txt",
           "sha256": "7a083b136e64d064794c3419751e5c7dd10d2f64c108fe5ba161eae5e5958a93"
@@ -260,24 +14,6 @@
       ],
       "manifest": "go.mod",
       "name": "academy",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".data/fresh-source/content/projects/p1/reference/go.mod",
-      "name": "cli-toolkit",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".data/fresh-source/content/projects/p1/starter/go.mod",
-      "name": "cli-toolkit",
       "version": "local"
     },
     {
@@ -297,186 +33,6 @@
       "manifest": "content/projects/p1/starter/go.mod",
       "name": "cli-toolkit",
       "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/cmd/go.mod",
-      "name": "cmd",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/cmd/objdump/testdata/testfilenum/go.mod",
-      "name": "cmd/objdump/testdata/testfilenum",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/cmd/compile/internal/ssa/_gen/go.mod",
-      "name": "compile/internal/ssa/_gen",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/cryptotest/wycheproof/_schema/go.mod",
-      "name": "crypto/internal/cryptotest/wycheproof/_schema",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/cryptotest/x509limbo/_schema/go.mod",
-      "name": "crypto/internal/cryptotest/x509limbo/_schema",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/fips140/aes/_asm/ctr/go.mod",
-      "name": "crypto/internal/fips140/aes/_asm/ctr",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/fips140/aes/_asm/standard/go.mod",
-      "name": "crypto/internal/fips140/aes/_asm/standard",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/fips140/aes/gcm/_asm/gcm/go.mod",
-      "name": "crypto/internal/fips140/aes/gcm/_asm/gcm",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/fips140/bigmod/_asm/go.mod",
-      "name": "crypto/internal/fips140/bigmod/_asm",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/fips140/edwards25519/field/_asm/go.mod",
-      "name": "crypto/internal/fips140/edwards25519/field/_asm",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/fips140/nistec/_asm/go.mod",
-      "name": "crypto/internal/fips140/nistec/_asm",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/fips140/sha256/_asm/go.mod",
-      "name": "crypto/internal/fips140/sha256/_asm",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/fips140/sha3/_asm/go.mod",
-      "name": "crypto/internal/fips140/sha3/_asm",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/internal/fips140/sha512/_asm/go.mod",
-      "name": "crypto/internal/fips140/sha512/_asm",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/md5/_asm/go.mod",
-      "name": "crypto/md5/_asm",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/crypto/sha1/_asm/go.mod",
-      "name": "crypto/sha1/_asm",
-      "version": "local"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "dario.cat/mergo",
-      "version": "v1.0.2"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/debug/buildinfo/testdata/go117/go.mod",
-      "name": "example.com/go117",
-      "version": "local"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "github.com/atombender/go-jsonschema",
-      "version": "v0.23.1"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "github.com/c2sp/wycheproof",
-      "version": "v0.0.0-20260625212325-ee7b4f7e6119"
     },
     {
       "cache": "not-cached",
@@ -521,35 +77,8 @@
       "ecosystem": "go",
       "license_files": [],
       "manifest": "go.mod dependency graph",
-      "name": "github.com/goccy/go-yaml",
-      "version": "v1.19.2"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
       "name": "github.com/google/go-cmp",
       "version": "v0.6.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "github.com/google/go-cmp",
-      "version": "v0.7.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "github.com/google/pprof",
-      "version": "v0.0.0-20260507013755-92041b743c96"
     },
     {
       "cache": "extracted-cache",
@@ -621,20 +150,6 @@
       "version": "v0.0.0-20250417193237-f615e6bd150b"
     },
     {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [
-        {
-          "path": "LICENSE",
-          "sha256": "adb1663fda031df8f4344aa68f299fd87d80353e31339406742ded21dae65702"
-        }
-      ],
-      "manifest": ".data/p2-module-cache/github.com/jackc/pgpassfile@v1.0.0/go.mod",
-      "name": "github.com/jackc/pgpassfile",
-      "version": "local"
-    },
-    {
       "cache": "extracted-cache",
       "declared_license": "UNKNOWN",
       "ecosystem": "go",
@@ -647,20 +162,6 @@
       "manifest": "go.mod dependency graph",
       "name": "github.com/jackc/pgpassfile",
       "version": "v1.0.0"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [
-        {
-          "path": "LICENSE",
-          "sha256": "fc505773403fe869ed64cc2235cdd13988a427bb7e3a7e7004a3f4b27420f8fc"
-        }
-      ],
-      "manifest": ".data/p2-module-cache/github.com/jackc/pgservicefile@v0.0.0-20240606120523-5a60cdf6a761/go.mod",
-      "name": "github.com/jackc/pgservicefile",
-      "version": "local"
     },
     {
       "cache": "extracted-cache",
@@ -677,20 +178,6 @@
       "version": "v0.0.0-20240606120523-5a60cdf6a761"
     },
     {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [
-        {
-          "path": "LICENSE",
-          "sha256": "467f95e074fe23079a5623ed652619682692041b8551da27e3c2ddb9659a1507"
-        }
-      ],
-      "manifest": ".data/p2-module-cache/github.com/jackc/pgx/v5@v5.11.0/go.mod",
-      "name": "github.com/jackc/pgx/v5",
-      "version": "local"
-    },
-    {
       "cache": "extracted-cache",
       "declared_license": "UNKNOWN",
       "ecosystem": "go",
@@ -703,20 +190,6 @@
       "manifest": "go.mod dependency graph",
       "name": "github.com/jackc/pgx/v5",
       "version": "v5.11.0"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [
-        {
-          "path": "LICENSE",
-          "sha256": "2d50e98a4900b4d6457a38d39c1432fdc156fc2f7b365f2e33ec9344acbb0057"
-        }
-      ],
-      "manifest": ".data/p2-module-cache/github.com/jackc/puddle/v2@v2.2.2/go.mod",
-      "name": "github.com/jackc/puddle/v2",
-      "version": "local"
     },
     {
       "cache": "extracted-cache",
@@ -763,24 +236,6 @@
       "manifest": "go.mod dependency graph",
       "name": "github.com/mattn/go-isatty",
       "version": "v0.0.24"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "github.com/mitchellh/go-wordwrap",
-      "version": "v1.0.1"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "github.com/mmcloughlin/avo",
-      "version": "v0.6.0"
     },
     {
       "cache": "extracted-cache",
@@ -832,24 +287,6 @@
       "manifest": "go.mod dependency graph",
       "name": "github.com/remyoudompheng/bigfft",
       "version": "v0.0.0-20230129092748-24d4a6f8daec"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "github.com/sanity-io/litter",
-      "version": "v1.5.8"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "github.com/sosodev/duration",
-      "version": "v1.4.0"
     },
     {
       "cache": "not-cached",
@@ -916,42 +353,6 @@
       "ecosystem": "go",
       "license_files": [],
       "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/arch",
-      "version": "v0.26.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/arch",
-      "version": "v0.27.1-0.20260521044007-9c1a596a2c97"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/build",
-      "version": "v0.0.0-20260522210304-d55d0041b921"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/crypto",
-      "version": "v0.52.1-0.20260526024921-9beb694f9766"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
       "name": "golang.org/x/exp",
       "version": "v0.0.0-20181106170214-d68db9428509"
     },
@@ -994,33 +395,6 @@
       "license_files": [],
       "manifest": "go.mod dependency graph",
       "name": "golang.org/x/mod",
-      "version": "v0.14.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/mod",
-      "version": "v0.19.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/mod",
-      "version": "v0.20.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/mod",
       "version": "v0.24.0"
     },
     {
@@ -1031,33 +405,6 @@
       "manifest": "go.mod dependency graph",
       "name": "golang.org/x/mod",
       "version": "v0.27.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/mod",
-      "version": "v0.29.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/mod",
-      "version": "v0.33.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/mod",
-      "version": "v0.36.1-0.20260813213634-8569e2639ca1"
     },
     {
       "cache": "extracted-cache",
@@ -1080,30 +427,7 @@
       "license_files": [],
       "manifest": "go.mod dependency graph",
       "name": "golang.org/x/net",
-      "version": "v0.55.1-0.20260731170536-c1d18010be90"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/net",
       "version": "v0.59.0"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [
-        {
-          "path": "LICENSE",
-          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
-        }
-      ],
-      "manifest": ".data/p2-module-cache/golang.org/x/sync@v0.17.0/go.mod",
-      "name": "golang.org/x/sync",
-      "version": "local"
     },
     {
       "cache": "not-cached",
@@ -1136,24 +460,6 @@
       "manifest": "go.mod dependency graph",
       "name": "golang.org/x/sync",
       "version": "v0.17.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/sync",
-      "version": "v0.19.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/sync",
-      "version": "v0.20.0"
     },
     {
       "cache": "extracted-cache",
@@ -1189,24 +495,6 @@
       "ecosystem": "go",
       "license_files": [],
       "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/sync",
-      "version": "v0.7.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/sync",
-      "version": "v0.8.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
       "name": "golang.org/x/sys",
       "version": "v0.28.0"
     },
@@ -1227,15 +515,6 @@
       "manifest": "go.mod dependency graph",
       "name": "golang.org/x/sys",
       "version": "v0.32.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/sys",
-      "version": "v0.45.0"
     },
     {
       "cache": "extracted-cache",
@@ -1272,15 +551,6 @@
       "license_files": [],
       "manifest": "go.mod dependency graph",
       "name": "golang.org/x/telemetry",
-      "version": "v0.0.0-20260519152614-eab6ae52b5e2"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/telemetry",
       "version": "v0.0.0-20260908163034-4bcc4b2ee518"
     },
     {
@@ -1291,29 +561,6 @@
       "manifest": "go.mod dependency graph",
       "name": "golang.org/x/telemetry",
       "version": "v0.0.0-20260924152758-ed294f943157"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/term",
-      "version": "v0.43.0"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [
-        {
-          "path": "LICENSE",
-          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
-        }
-      ],
-      "manifest": ".data/p2-module-cache/golang.org/x/text@v0.29.0/go.mod",
-      "name": "golang.org/x/text",
-      "version": "local"
     },
     {
       "cache": "extracted-cache",
@@ -1330,15 +577,6 @@
       "version": "v0.29.0"
     },
     {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/text",
-      "version": "v0.37.0"
-    },
-    {
       "cache": "extracted-cache",
       "declared_license": "UNKNOWN",
       "ecosystem": "go",
@@ -1351,42 +589,6 @@
       "manifest": "go.mod dependency graph",
       "name": "golang.org/x/text",
       "version": "v0.43.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/tools",
-      "version": "v0.16.1"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/tools",
-      "version": "v0.23.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/tools",
-      "version": "v0.24.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/tools",
-      "version": "v0.27.0"
     },
     {
       "cache": "not-cached",
@@ -1404,43 +606,7 @@
       "license_files": [],
       "manifest": "go.mod dependency graph",
       "name": "golang.org/x/tools",
-      "version": "v0.33.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/tools",
       "version": "v0.36.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/tools",
-      "version": "v0.38.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/tools",
-      "version": "v0.42.0"
-    },
-    {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "golang.org/x/tools",
-      "version": "v0.45.1-0.20260917185718-3dd9077b8066"
     },
     {
       "cache": "not-cached",
@@ -1486,6 +652,15 @@
       "license_files": [],
       "manifest": "go.mod dependency graph",
       "name": "gopkg.in/check.v1",
+      "version": "v0.0.0-20161208181325-20d25e280405"
+    },
+    {
+      "cache": "not-cached",
+      "declared_license": "UNKNOWN",
+      "ecosystem": "go",
+      "license_files": [],
+      "manifest": "go.mod dependency graph",
+      "name": "gopkg.in/check.v1",
       "version": "v1.0.0-20201130134442-10cb98267c6c"
     },
     {
@@ -1505,15 +680,6 @@
       "manifest": "go.mod dependency graph",
       "name": "gopkg.in/yaml.v3",
       "version": "v3.0.1"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".data/p2-runtime/go.mod",
-      "name": "linkhub",
-      "version": "local"
     },
     {
       "cache": "workspace",
@@ -1541,15 +707,6 @@
       "manifest": "go.mod dependency graph",
       "name": "lukechampine.com/uint128",
       "version": "v1.3.0"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/misc/go.mod",
-      "name": "misc",
-      "version": "local"
     },
     {
       "cache": "not-cached",
@@ -1918,47 +1075,6 @@
       "version": "local"
     },
     {
-      "cache": "not-cached",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": "go.mod dependency graph",
-      "name": "rsc.io/markdown",
-      "version": "v0.0.0-20240306144322-0bf8f97ee8ef"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/runtime/_mkmalloc/go.mod",
-      "name": "runtime/_mkmalloc",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/simd/archsimd/_gen/go.mod",
-      "name": "simd/archsimd/_gen",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [
-        {
-          "path": "crypto/internal/boring/LICENSE",
-          "sha256": "56210f826b8f0fbac3160dfe55c97f4019eb6cdda3963b5a0eab8a8bdb62360e"
-        }
-      ],
-      "manifest": ".tools/go/src/go.mod",
-      "name": "std",
-      "version": "local"
-    },
-    {
       "cache": "workspace",
       "declared_license": "UNKNOWN",
       "ecosystem": "go",
@@ -1974,24 +1090,6 @@
       "license_files": [],
       "manifest": "content/projects/p3/starter/go.mod",
       "name": "taskflow",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/cmd/vet/testdata/rangeloop/go.mod",
-      "name": "vet/testdata/rangeloop",
-      "version": "local"
-    },
-    {
-      "cache": "workspace",
-      "declared_license": "UNKNOWN",
-      "ecosystem": "go",
-      "license_files": [],
-      "manifest": ".tools/go/src/cmd/vet/testdata/stdversion/go.mod",
-      "name": "vet/testdata/stdversion",
       "version": "local"
     },
     {
