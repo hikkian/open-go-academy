@@ -38,14 +38,10 @@
 
 ## 🧭 Путь обучения
 
-```mermaid
-flowchart LR
-    Z[Zero<br>первая программа] --> J[Junior<br>P1 · Go CLI Toolkit]
-    J --> JP[Junior+<br>P2 · LinkHub API]
-    JP --> M[Middle<br>P3 · TaskFlow]
-    M --> MP[Middle+<br>P4 · ScaleLab]
-    MP --> S[Senior<br>P5 · Architecture Capstone]
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/learning-path-dark.svg">
+  <img src="docs/images/learning-path-light.svg" alt="Путь обучения: Zero → Junior (P1) → Junior+ (P2) → Middle (P3) → Middle+ (P4) → Senior (P5)" width="100%">
+</picture>
 
 | Ранг | Что осваиваете | Проект |
 |---|---|---|
@@ -100,14 +96,10 @@ make dev         # учебный сервис и интерфейс
 
 ## 🧩 Как это устроено
 
-```mermaid
-flowchart LR
-    B[Браузер<br>React 19 · CodeMirror 6] -->|HTTP, только 127.0.0.1| A[Учебный сервис<br>Go]
-    A --> D[(SQLite<br>прогресс и профиль)]
-    A -->|Unix socket 0600| R[Runner]
-    R --> P[Rootless Podman<br>без сети, read-only, лимиты]
-    A -.->|по желанию и с согласием| T[ИИ-наставник<br>OpenAI-совместимый endpoint]
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/architecture-dark.svg">
+  <img src="docs/images/architecture-light.svg" alt="Браузер → учебный сервис на Go (только 127.0.0.1) → SQLite; сервис → Runner по Unix socket → rootless Podman без сети; ИИ-наставник — по желанию и с согласием" width="100%">
+</picture>
 
 | Часть | Технологии |
 |---|---|
