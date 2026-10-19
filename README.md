@@ -1,6 +1,9 @@
 <div align="center">
 
-# Open Go Academy
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/banner-dark.svg">
+  <img src="docs/images/banner-light.svg" alt="Open Go Academy — Go с нуля до Senior: в браузере, на русском, бесплатно и с открытым кодом" width="100%">
+</picture>
 
 **Бесплатная платформа, где Go изучают с нуля до Senior — прямо в браузере, на русском, на своём компьютере.**
 
