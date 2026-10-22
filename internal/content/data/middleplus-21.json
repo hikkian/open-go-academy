@@ -1,155 +1,167 @@
 {
-  "id": "middleplus-21",
-  "title": "SLI, SLO и error budget",
-  "rank": "Middle+",
-  "module": "middleplus-scalelab",
-  "prerequisites": [
-    "middleplus-20"
-  ],
-  "estimated_minutes": 180,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 101,
-  "learning_outcomes": [
-    "Определять показатель уровня сервиса как долю явно заданных успешных событий от общего числа событий; указывать знаменатель и окно.",
-    "Рассчитывать допустимое число ошибок для цели уровня сервиса, корректно обрабатывая нулевой знаменатель и отсутствующие данные.",
-    "Классифицировать точную границу цели и объяснять, почему локальная модель не подтверждает доступность сервиса."
-  ],
-  "glossary": [
+ "id": "middleplus-21",
+ "title": "SLI, SLO и error budget",
+ "rank": "Middle+",
+ "module": "middleplus-scalelab",
+ "prerequisites": [
+  "middleplus-20"
+ ],
+ "estimated_minutes": 180,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 101,
+ "learning_outcomes": [
+  "Определять SLI через хорошее и плохое событие, единицу, фильтр и правило для отсутствующих данных, а не только через формулу доли.",
+  "Считать допустимое число ошибок и остаток бюджета через частное и остаток от деления на сто без переполнения на любых int.",
+  "Различать, что измеряют счётчики good/total и чего не могут сказать о распределении задержки, и привязывать цель к владельцу, окну и политике."
+ ],
+ "glossary": [
+  {
+   "term": "capacity",
+   "translation": "ёмкость",
+   "definition": "Полезный объём обработки за заданное время в заданных условиях."
+  },
+  {
+   "term": "backpressure",
+   "translation": "обратное давление",
+   "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+  },
+  {
+   "term": "queue depth",
+   "translation": "глубина очереди",
+   "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+  },
+  {
+   "term": "retry budget",
+   "translation": "бюджет повторов",
+   "definition": "Верхняя граница попыток в заданном контексте."
+  },
+  {
+   "term": "outbox",
+   "translation": "исходящий журнал",
+   "definition": "Устойчивая запись о намерении опубликовать событие."
+  },
+  {
+   "term": "SLI/SLO",
+   "translation": "индикатор/цель уровня сервиса",
+   "definition": "Измеренный сигнал и явно заданная цель по окну."
+  },
+  {
+   "term": "baseline",
+   "translation": "исходный уровень",
+   "definition": "Закреплённое сравнимое состояние до изменения."
+  }
+ ],
+ "markdown_file": "middleplus-21.md",
+ "exercises": [
+  {
+   "id": "middleplus-21-easy",
+   "kind": "function",
+   "skills": [
+    "reliability",
+    "performance"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: sli, slo и error budget — классификация",
+   "prompt": "total ≤ 0 или failed вне [0, total] → invalid; failed = 0 → within; иначе errors.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc SLOBand(total int, failed int) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"within\"\n\"errors\"\n",
+   "criteria": [
+    "Сигнатура func SLOBand(total int, failed int) string сохранена; без func main, печати и импортов.",
+    "Нулевой или отрицательный total, отрицательный failed и failed > total дают invalid; ноль ошибок — within; иначе errors.",
+    "Функция проверяет только переданные счётчики; она не собирает запросы и не задаёт цель."
+   ],
+   "self_check": [
     {
-      "term": "capacity",
-      "translation": "ёмкость",
-      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+     "question": "Почему нулевой total — invalid, а не within?",
+     "answer": "Без событий нечего оценивать; ноль событий — отсутствие данных, а не идеальная доступность."
     },
     {
-      "term": "backpressure",
-      "translation": "обратное давление",
-      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
-    },
-    {
-      "term": "queue depth",
-      "translation": "глубина очереди",
-      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
-    },
-    {
-      "term": "retry budget",
-      "translation": "бюджет повторов",
-      "definition": "Верхняя граница попыток в заданном контексте."
-    },
-    {
-      "term": "outbox",
-      "translation": "исходящий журнал",
-      "definition": "Устойчивая запись о намерении опубликовать событие."
-    },
-    {
-      "term": "SLI/SLO",
-      "translation": "индикатор/цель уровня сервиса",
-      "definition": "Измеренный сигнал и явно заданная цель по окну."
-    },
-    {
-      "term": "baseline",
-      "translation": "исходный уровень",
-      "definition": "Закреплённое сравнимое состояние до изменения."
+     "question": "Почему failed > total — invalid?",
+     "answer": "Это ошибка учёта; показать её как «100 % ошибок» значит скрыть проблему телеметрии."
     }
-  ],
-  "markdown_file": "middleplus-21.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-21-medium",
+   "kind": "function",
+   "skills": [
+    "reliability",
+    "performance"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: sli, slo и error budget — политика",
+   "prompt": "func SLOMeets(total int, failed int, maxErrorPercent int) bool: failed ≤ допуск",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc SLOMeets(total int, failed int, maxErrorPercent int) bool {\n\t// TODO: проверьте диапазоны, затем вычислите допустимое число отказов без переполнения.\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\nfalse\n",
+   "criteria": [
+    "Сигнатура func SLOMeets(total int, failed int, maxErrorPercent int) bool сохранена; без func main, печати и импортов.",
+    "false при total ≤ 0, failed вне [0, total] или проценте вне [0, 100]; иначе true, когда failed не больше floor(total·percent/100).",
+    "Порог считается через частное и остаток от деления на сто; на MaxInt ответ верный и без переполнения."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-21-easy",
-      "kind": "function",
-      "skills": [
-        "reliability",
-        "performance"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: sli, slo и error budget — классификация",
-      "prompt": "Реализуйте чистую функцию `func SLOBand(total int, failed int) string`. Контракт: total<=0, failed вне [0,total] → \"invalid\"; failed=0 → \"within\", иначе \"errors\". На публичных примерах `SLOBand(100,0)` возвращает within, а `SLOBand(100,1)` — errors. Проверьте также невалидные случаи: total<=0, failed<0 и failed>total.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc SLOBand(total int, failed int) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"within\"\n\"errors\"\n",
-      "criteria": [
-        "Контракт: total<=0, failed вне [0,total] → \"invalid\"; failed=0 → \"within\", иначе \"errors\".",
-        "Точная сигнатура, типы и результат контракта.",
-        "Проверить границы и порядок правил; не скрывать невалидный ввод.",
-        "Не выдавать чистый helper за интеграцию, нагрузочный тест или гарантию SLA."
-      ],
-      "self_check": [
-        {
-          "question": "Что доказывает прохождение этих тестов?",
-          "answer": "Только соответствие детерминированной функции перечисленным входам и ожидаемым ответам. Внешние процессы, измерения и эксплуатационные гарантии не проверяются."
-        }
-      ]
+     "question": "Почему нельзя сравнивать failed·100/total с процентом?",
+     "answer": "Произведение переполняется на больших числах, а целочисленное деление теряет точность на малых."
     },
     {
-      "id": "middleplus-21-medium",
-      "kind": "function",
-      "skills": [
-        "reliability",
-        "performance"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: sli, slo и error budget — политика",
-      "prompt": "Реализуйте чистую функцию `func SLOMeets(total int, failed int, maxErrorPercent int) bool`. Контракт: false при total<=0, failed вне [0,total] или maxErrorPercent вне [0,100]; иначе true тогда и только тогда, когда failed/total не превышает maxErrorPercent процентов. Контракт действует для всего допустимого диапазона int; промежуточная арифметика не должна переполняться. Проверяйте граничный процент, значение сразу выше границы и MaxInt.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc SLOMeets(total int, failed int, maxErrorPercent int) bool {\n\t// TODO: проверьте диапазоны, затем вычислите допустимое число отказов без переполнения.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\nfalse\n",
-      "criteria": [
-        "Отклонять некорректные диапазоны и сравнивать долю отказов с процентом без переполнения для всего допустимого диапазона int.",
-        "Точная сигнатура, типы и результат контракта.",
-        "Проверить точную границу, значение сразу выше неё и MaxInt; нулевой допустимый процент при failed=total должен давать false.",
-        "Не выдавать чистый helper за интеграцию, нагрузочный тест или гарантию SLA."
-      ],
-      "self_check": [
-        {
-          "question": "Что доказывает прохождение этих тестов?",
-          "answer": "Только соответствие детерминированной функции перечисленным входам и ожидаемым ответам. Внешние процессы, измерения и эксплуатационные гарантии не проверяются."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-21-hard",
-      "kind": "function",
-      "skills": [
-        "reliability",
-        "performance"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: sli, slo и error budget — остаток бюджета",
-      "prompt": "Реализуйте чистую функцию `func BudgetRemaining(total int, failed int, maxErrorPercent int) int`. Верните минимальное значение int при total<=0, failed вне [0,total] или maxErrorPercent вне [0,100]; это значение зарезервировано и не может быть корректным остатком бюджета. Иначе сначала вычислите допустимое число плохих событий `floor(total*maxErrorPercent/100)` без переполнения, затем верните лимит минус failed. Отрицательное число означает, что бюджет превышен; ноль означает, что он исчерпан ровно. Контракт действует для всего допустимого диапазона int.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc BudgetRemaining(total int, failed int, maxErrorPercent int) int {\n\t// TODO: invalid input -> MinInt sentinel; иначе верните допустимый лимит минус failed без переполнения.\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "0\n-1\n",
-      "criteria": [
-        "Отклонять некорректные диапазоны зарезервированным MinInt; корректный остаток может быть отрицательным, включая -1.",
-        "Вычислять floor(total*maxErrorPercent/100) без переполнения для всего допустимого диапазона int.",
-        "Возвращать остаток лимита: ноль при точном расходе, отрицательное значение при превышении.",
-        "Проверить MaxInt, проценты 0 и 100, точную границу и один случай выше лимита.",
-        "Не выдавать чистый helper за интеграцию, нагрузочный тест или гарантию SLA."
-      ],
-      "self_check": [
-        {
-          "question": "Как отличить неверный ввод от превышения бюджета на одно событие?",
-          "answer": "Неверный ввод возвращает MinInt (самое малое значение int), а корректный остаток -1 означает, что бюджет превышен на одно событие."
-        }
-      ]
+     "question": "Что означает false?",
+     "answer": "Либо цель не выполнена, либо вход негоден; в отчёте эти случаи различают отдельно."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-21-hard",
+   "kind": "function",
+   "skills": [
+    "reliability",
+    "performance"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: sli, slo и error budget — остаток бюджета",
+   "prompt": "func BudgetRemaining(total int, failed int, maxErrorPercent int) int: допуск − failed",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc BudgetRemaining(total int, failed int, maxErrorPercent int) int {\n\t// TODO: invalid input -> MinInt sentinel; иначе верните допустимый лимит минус failed без переполнения.\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "0\n-1\n",
+   "criteria": [
+    "Сигнатура func BudgetRemaining(total int, failed int, maxErrorPercent int) int сохранена; без func main, печати и импортов.",
+    "Некорректный вход даёт минимальное значение int — оно не может быть настоящим остатком; иначе допустимое число ошибок минус failed.",
+    "Остаток считается в событиях без переполнения: положительный — запас, ноль — исчерпан, отрицательный — превышен."
+   ],
+   "self_check": [
     {
-      "question": "Как определить error ratio SLI?",
-      "answer": "Явно задать плохое событие, total denominator и окно наблюдения."
+     "question": "Почему сигнал ошибки — MinInt, а не −1?",
+     "answer": "−1 — настоящий остаток «превышен на одно событие»; MinInt остатком быть не может, потому что допуск неотрицателен, а failed ≤ total."
     },
     {
-      "question": "Что означает пустой denominator?",
-      "answer": "Неизвестный результат, не нулевой error rate."
-    },
-    {
-      "question": "Как error budget связывает измерение с изменениями?",
-      "answer": "Остаток бюджета направляет риск-политику, но сам по себе не задаёт договорный SLA."
-    },
-    {
-      "question": "Как проверить alert threshold?",
-      "answer": "Подать повторяемую временную серию с границей окна и проверить, что срабатывает правильное действие."
+     "question": "Почему остаток в событиях полезнее процентов?",
+     "answer": "По числу оставшихся ошибок принимают решение о выкладке; доля в процентах этого не даёт."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Что входит в определение SLI помимо формулы?",
+   "answer": "Хорошее и плохое событие, единица учёта, фильтр, правило для отсутствующих данных и окно."
+  },
+  {
+   "question": "Почему ноль событий — не 100 % доступности?",
+   "answer": "Это отсутствие данных; доля без знаменателя не определена, и для неё нужно отдельное правило."
+  },
+  {
+   "question": "Как посчитать допустимое число ошибок без переполнения?",
+   "answer": "(total/100)·percent + (total%100)·percent/100: первое слагаемое не больше total, второе меньше процента."
+  },
+  {
+   "question": "Почему остаток бюджета считают в событиях?",
+   "answer": "Число оставшихся ошибок до конца окна напрямую определяет решения о выкладках; проценты этого не дают."
+  },
+  {
+   "question": "Что счётчики good/total не могут сказать о задержке?",
+   "answer": "Точное значение квантиля: они проверяют долю быстрее порога, но не восстанавливают p95; для распределения нужна гистограмма."
+  }
+ ]
 }
