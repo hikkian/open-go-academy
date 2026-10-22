@@ -1,166 +1,170 @@
 {
-  "id": "middleplus-24",
-  "title": "ScaleLab: SLI/SLO, отказ, выпуск и защита решения",
-  "rank": "Middle+",
-  "module": "middleplus-scalelab",
-  "prerequisites": [
-    "middleplus-23"
-  ],
-  "estimated_minutes": 180,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 104,
-  "learning_outcomes": [
-    "Объединять показатели и цели уровня сервиса, допустимое число ошибок, реакцию на отказ и решение о выпуске в ограниченную воспроизводимую модель.",
-    "Связывать каждый сигнал с единицей измерения, окном, ресурсом и ограничением наблюдаемости; проверять отказ и восстановление.",
-    "Подкреплять решение исходным замером, граничными примерами и следующей проверкой; отличать результат модели от гарантии системы."
-  ],
-  "glossary": [
+ "id": "middleplus-24",
+ "title": "ScaleLab: SLI/SLO, отказ, выпуск и защита решения",
+ "rank": "Middle+",
+ "module": "middleplus-scalelab",
+ "prerequisites": [
+  "middleplus-23"
+ ],
+ "estimated_minutes": 180,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 104,
+ "learning_outcomes": [
+  "Оформлять эксперимент ScaleLab как запись свидетельств: гипотеза, манифест baseline и кандидата, повторы, сценарий отказа, откат, ограничения — до прогонов.",
+  "Применять формальные ворота — не меньше трёх прогонов на сторону и тест отказа на выпускаемой сборке — и называть, чего они не проверяют.",
+  "Защищать решение о выпуске перед рецензентом ответами на шесть вопросов с явной границей между свидетельством и интерпретацией, включая отрицательный результат."
+ ],
+ "glossary": [
+  {
+   "term": "capacity",
+   "translation": "ёмкость",
+   "definition": "Полезный объём обработки за заданное время в заданных условиях."
+  },
+  {
+   "term": "backpressure",
+   "translation": "обратное давление",
+   "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+  },
+  {
+   "term": "queue depth",
+   "translation": "глубина очереди",
+   "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+  },
+  {
+   "term": "retry budget",
+   "translation": "бюджет повторов",
+   "definition": "Верхняя граница попыток в заданном контексте."
+  },
+  {
+   "term": "outbox",
+   "translation": "исходящий журнал",
+   "definition": "Устойчивая запись о намерении опубликовать событие."
+  },
+  {
+   "term": "SLI/SLO",
+   "translation": "индикатор/цель уровня сервиса",
+   "definition": "Измеренный сигнал и явно заданная цель по окну."
+  },
+  {
+   "term": "baseline",
+   "translation": "исходный уровень",
+   "definition": "Закреплённое сравнимое состояние до изменения."
+  }
+ ],
+ "markdown_file": "middleplus-24.md",
+ "exercises": [
+  {
+   "id": "middleplus-24-easy",
+   "kind": "function",
+   "skills": [
+    "performance",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: scalelab: sli/slo, отказ, выпуск и защита решения — классификация",
+   "prompt": "incomplete, если прогонов хотя бы одной стороны ≤ 0; иначе compare.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ScaleLabDecision(baselineRuns int, candidateRuns int) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"compare\"\n\"compare\"",
+   "criteria": [
+    "Сигнатура func ScaleLabDecision(baselineRuns int, candidateRuns int) string сохранена; без func main, печати и импортов.",
+    "Ноль или отрицательное число прогонов у любой стороны даёт incomplete; иначе compare, даже при одном прогоне.",
+    "Функция видит только два счётчика и не проверяет версию Go, хеш данных, одинаковость входов и результаты."
+   ],
+   "self_check": [
     {
-      "term": "capacity",
-      "translation": "ёмкость",
-      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+     "question": "Почему один прогон даёт compare?",
+     "answer": "Это первые ворота — есть ли что сравнивать; требование повторов — следующие ворота."
     },
     {
-      "term": "backpressure",
-      "translation": "обратное давление",
-      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
-    },
-    {
-      "term": "queue depth",
-      "translation": "глубина очереди",
-      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
-    },
-    {
-      "term": "retry budget",
-      "translation": "бюджет повторов",
-      "definition": "Верхняя граница попыток в заданном контексте."
-    },
-    {
-      "term": "outbox",
-      "translation": "исходящий журнал",
-      "definition": "Устойчивая запись о намерении опубликовать событие."
-    },
-    {
-      "term": "SLI/SLO",
-      "translation": "индикатор/цель уровня сервиса",
-      "definition": "Измеренный сигнал и явно заданная цель по окну."
-    },
-    {
-      "term": "baseline",
-      "translation": "исходный уровень",
-      "definition": "Закреплённое сравнимое состояние до изменения."
+     "question": "Что функция не проверяет?",
+     "answer": "Версию среды, набор данных, одинаковость входов и сами результаты — они в записи свидетельств."
     }
-  ],
-  "markdown_file": "middleplus-24.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-24-medium",
+   "kind": "function",
+   "skills": [
+    "performance",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: scalelab: sli/slo, отказ, выпуск и защита решения — политика",
+   "prompt": "< 3 прогонов у любой стороны → repeat; без теста отказа → fault_test; иначе review.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ScaleLabGate(baselineRuns int, candidateRuns int, faultTested bool) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"review\"\n\"repeat\"\n\"repeat\"\n\"fault_test\"",
+   "criteria": [
+    "Сигнатура func ScaleLabGate(baselineRuns int, candidateRuns int, faultTested bool) string сохранена; без func main, печати и импортов.",
+    "Порядок ворот: сначала повторы (меньше трёх — repeat, включая нули и отрицательные), затем тест отказа, затем review.",
+    "Флаг faultTested — утверждение автора; что тест выполнялся и что ломали, проверяет рецензент по записи."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-24-easy",
-      "kind": "function",
-      "skills": [
-        "performance",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: scalelab: sli/slo, отказ, выпуск и защита решения — классификация",
-      "prompt": "Реализуйте `func ScaleLabDecision(baselineRuns, candidateRuns int) string`. Верните \"incomplete\", если хотя бы одно число прогонов <= 0; иначе верните \"compare\". Эта функция видит только два счётчика: она не проверяет Go version, dataset hash, одинаковость входов или реальные запуски.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ScaleLabDecision(baselineRuns int, candidateRuns int) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"compare\"\n\"compare\"",
-      "criteria": [
-        "Вернуть incomplete при baselineRuns<=0 или candidateRuns<=0; иначе compare.",
-        "Проверить нулевые и отрицательные счётчики отдельно для baseline и candidate.",
-        "Не утверждать, что положительные числа подтверждают одинаковый вход или воспроизводимый benchmark."
-      ],
-      "self_check": [
-        {
-          "question": "Что означает compare в этой функции?",
-          "answer": "Только то, что оба переданных счётчика положительны; реальное сравнение результатов должно быть сделано отдельно."
-        },
-        {
-          "question": "Какие данные она не получает?",
-          "answer": "Версию Go, команду, dataset hash и сами результаты прогонов; их нужно записать в лабораторном evidence record."
-        }
-      ]
+     "question": "Почему отрицательные счётчики дают repeat, а не ошибку?",
+     "answer": "Модель не выделяет некорректный вход: любые прогоны меньше трёх требуют прогонов."
     },
     {
-      "id": "middleplus-24-medium",
-      "kind": "function",
-      "skills": [
-        "performance",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: scalelab: sli/slo, отказ, выпуск и защита решения — политика",
-      "prompt": "Реализуйте `func ScaleLabGate(baselineRuns, candidateRuns int, faultTested bool) string`. Если хотя бы один счётчик <3, верните \"repeat\". Иначе при faultTested=false верните \"fault_test\", а при true — \"review\". Функция не проверяет, что fault test действительно запускался, и не получает Go version, dataset hash или сами результаты.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ScaleLabGate(baselineRuns int, candidateRuns int, faultTested bool) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"review\"\n\"repeat\"\n\"repeat\"\n\"fault_test\"",
-      "criteria": [
-        "Проверять сначала оба порога повторов; любой счётчик <3 даёт repeat.",
-        "При достаточных повторах faultTested=false даёт fault_test, иначе review.",
-        "Считать faultTested только входным утверждением; не выдавать его за подтверждённый эксперимент или SLA."
-      ],
-      "self_check": [
-        {
-          "question": "Почему порядок порога повторов и faultTested важен?",
-          "answer": "Пока сравнимых повторов меньше заданного минимума, дальнейшие gates не должны сообщать review."
-        },
-        {
-          "question": "Доказывает ли true во входе, что отказ действительно тестировали?",
-          "answer": "Нет. Это лишь значение аргумента; запуск и наблюдение fault case подтверждаются отдельными артефактами."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-24-hard",
-      "kind": "function",
-      "skills": [
-        "performance",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: scalelab: sli/slo, отказ, выпуск и защита решения — проверка инварианта",
-      "prompt": "Реализуйте `func ReleaseEvidence(baselineRuns, candidateRuns int, faultTested bool) bool`. Верните true ровно когда оба счётчика >=3 и faultTested=true. Сигнатура не получает Go version, dataset hash или флаг одинакового входа, поэтому функция не может подтвердить эти части воспроизводимости; зафиксируйте их отдельно в evidence record.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ReleaseEvidence(baselineRuns int, candidateRuns int, faultTested bool) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\ntrue\nfalse",
-      "criteria": [
-        "true только при baselineRuns>=3, candidateRuns>=3 и faultTested=true.",
-        "Отклонить недостаток повторов в любой выборке и false faultTested.",
-        "Не называть true подтверждением same input, реального fault run, безопасного rollout или универсальной performance claim."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно означает true у ReleaseEvidence?",
-          "answer": "Только выполнение трёх условий, доступных сигнатуре: число прогонов обеих выборок и булевый faultTested."
-        },
-        {
-          "question": "Как отдельно доказать одинаковость входа и версию Go?",
-          "answer": "Записать хэш набора, версию toolchain, команды и сырые результаты в воспроизводимом evidence record; текущая функция этого не читает."
-        }
-      ]
+     "question": "Почему тест отказа повторяют на выпускаемой сборке?",
+     "answer": "Кандидат меняет поведение под отказом так же, как под нагрузкой; старый тест ничего не говорит о новой сборке."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-24-hard",
+   "kind": "function",
+   "skills": [
+    "performance",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: scalelab: sli/slo, отказ, выпуск и защита решения — проверка инварианта",
+   "prompt": "true ровно когда оба счётчика ≥ 3 и faultTested.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ReleaseEvidence(baselineRuns int, candidateRuns int, faultTested bool) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\ntrue\nfalse",
+   "criteria": [
+    "Сигнатура func ReleaseEvidence(baselineRuns int, candidateRuns int, faultTested bool) bool сохранена; без func main, печати и импортов.",
+    "true только при трёх и более прогонах на каждую сторону и выполненном тесте отказа.",
+    "Сигнатура не получает версию Go, хеш данных и флаг одинаковых входов — эти части воспроизводимости фиксируются в записи свидетельств."
+   ],
+   "self_check": [
     {
-      "question": "Какие артефакты делают ScaleLab повторяемым?",
-      "answer": "Вход/хэш, Go version, команда, число прогонов и результаты baseline/candidate."
+     "question": "Означает ли true «выпускать»?",
+     "answer": "Нет: формальные ворота пройдены; решение принимает рецензент по полной записи."
     },
     {
-      "question": "Какую роль играет fault case в P4?",
-      "answer": "Он проверяет ограниченное поведение отказа; он не является нагрузкой на production."
-    },
-    {
-      "question": "Почему нельзя обобщать измеренное ускорение на другой workload?",
-      "answer": "Изменяются машина, вход, runtime и профиль нагрузки; результат относится к закреплённым условиям."
-    },
-    {
-      "question": "Какое evidence нужно перед рекомендацией о выпуске?",
-      "answer": "Сопоставимые измерения, корректность, failure result, rollout/rollback условия и открытые риски."
+     "question": "Почему инвариант сознательно неполон?",
+     "answer": "Версия среды, входы, корректность и откат не выражаются счётчиками; их проверяет человек по записи."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Что входит в запись свидетельств эксперимента?",
+   "answer": "Гипотеза с прогнозом на выигрыш и риск, манифест обеих сторон, сырые результаты и сводки, сценарий отказа и наблюдения, план и проверка отката, выводы и ограничения."
+  },
+  {
+   "question": "Почему три прогона на сторону — минимум?",
+   "answer": "Меньше — сравнение двух случайных чисел; три показывают разброс, с которым сравнивают эффект."
+  },
+  {
+   "question": "Почему тест отказа повторяют на выпускаемой сборке?",
+   "answer": "Поведение под отказом меняется с кодом; тест на другой сборке не свидетельство."
+  },
+  {
+   "question": "Чего не видят формальные ворота и где это фиксируется?",
+   "answer": "Версию среды, хеш данных, одинаковость входов, корректность и откат — в записи свидетельств для рецензента."
+  },
+  {
+   "question": "Как защищать отрицательный результат?",
+   "answer": "Так же: гипотеза не подтвердилась, запись, что узнали, следующий эксперимент — равноценный результат."
+  }
+ ]
 }
