@@ -60,23 +60,19 @@
       ],
       "difficulty": "easy",
       "title": "Отклони неполную конфигурацию",
-      "prompt": "Верни true, если databaseURL разбирается как URL со схемой postgres/postgresql и непустым host; origin — абсолютный http/https origin без userinfo, path (кроме /), query и fragment. Не возвращай и не логируй исходные строки. Это синтаксическая проверка, не проверка доступности БД.",
+      "prompt": "true для postgres DSN с host и чистого http/https origin; иначе false.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc ConfigValid(databaseURL, origin string) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "ConfigValid(databaseURL, origin string) bool компилируется; проверяются схема DSN, host и origin.",
+        "«Запустить»: пример 1 и пример 2 дают true и false.",
+        "«Проверить»: закрытые примеры, включая схему postgresql и путь в origin, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "Верни true, если databaseURL разбирается как URL со схемой postgres/postgresql и непустым host; origin — абсолютный http/https origin без userinfo, path (кроме /), query и fragment. Не возвращай и не логируй исходные строки. Это синтаксическая проверка, не проверка доступности БД."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Почему Origin с путём /links отклоняется?",
+          "answer": "Origin задаёт схему и адрес сервера; путь меняет смысл политики, поэтому допускаются только пустой путь и /."
         }
       ]
     },
@@ -91,23 +87,19 @@
       ],
       "difficulty": "medium",
       "title": "Оставь в журнале только разрешённые поля",
-      "prompt": "Разреши ровно request_id, method, status и duration_ms. Не включай path, query, headers, cookies, body, DSN, пароль или токен. Это проверяет helper allowlist; реальную запись и отсутствие secret fixtures нужно проверять отдельным log test.",
+      "prompt": "Разреши только request_id, method, status и duration_ms; остальные имена отклоняй.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc LogFieldAllowed(name string) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse\ntrue",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "LogFieldAllowed(name string) bool компилируется; разрешены ровно четыре имени.",
+        "«Запустить»: пример 1, 2 и 3 дают true, false и true.",
+        "«Проверить»: закрытые примеры, включая duration_ms, path и cookie, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "Разреши ровно request_id, method, status и duration_ms. Не включай path, query, headers, cookies, body, DSN, пароль или токен. Это проверяет helper allowlist; реальную запись и отсутствие secret fixtures нужно проверять отдельным log test."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Почему Authorization не проходит, даже если заголовок нужен для отладки?",
+          "answer": "Заголовок содержит секрет. Allowlist пропускает только явно разрешённые имена, остальные отклоняет по умолчанию."
         }
       ]
     },
@@ -122,51 +114,47 @@
       ],
       "difficulty": "hard",
       "title": "Отдели готовность от доступности процесса",
-      "prompt": "Если база недоступна — not_ready; иначе если миграции не актуальны — migrations_pending; иначе ready. Helper обрабатывает уже измеренные состояния и сам не выполняет ping, healthcheck или миграцию. HTTP listener может отвечать, когда зависимость ещё не готова.",
+      "prompt": "Сначала база (not_ready), затем миграции (migrations_pending), иначе ready.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc ReadinessState(databaseConnected, migrationsCurrent bool) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"not_ready\"\n\"migrations_pending\"\n\"ready\"",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "ReadinessState(databaseConnected, migrationsCurrent bool) string компилируется; база проверяется раньше миграций.",
+        "«Запустить»: три вызова дают not_ready, migrations_pending и ready.",
+        "«Проверить»: закрытые примеры — недоступная база и подключённая актуальная — совпадают."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "Если база недоступна — not_ready; иначе если миграции не актуальны — migrations_pending; иначе ready. Helper обрабатывает уже измеренные состояния и сам не выполняет ping, healthcheck или миграцию. HTTP listener может отвечать, когда зависимость ещё не готова."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Что вернёт ReadinessState при databaseConnected=false и migrationsCurrent=true?",
+          "answer": "not_ready: база недоступна, поэтому состояние миграций не делает приложение готовым."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Как отличить автоматическое evidence от утверждения?",
-      "answer": "Назовите контракт, конкретный test boundary и остающиеся неизвестными зависимости."
+      "question": "Чем формат DSN отличается от соединения, на которое можно выполнить запрос?",
+      "answer": "Формат проверяет синтаксис строки. Соединение и запрос показывают, что база доступна и credential подходит; это отдельная проверка."
     },
     {
-      "question": "Где посмотреть фактический P2?",
-      "answer": "В приложении «Проекты → LinkHub API» и в P2 README, OpenAPI, Compose и threat model."
+      "question": "Какой набор полей журнала разрешён и почему?",
+      "answer": "Только request_id, method, status и duration_ms: allowlist пропускает поля, которые решили записывать, и не пропускает новые секреты по умолчанию."
     },
     {
-      "question": "Что означает reviewed course evidence?",
-      "answer": "Только проверку требований курса, не профессию, external accreditation или trusted credential."
+      "question": "Каков точный смысл текущего /healthz?",
+      "answer": "Process health: GET /healthz в OpenAPI P2 возвращает status=ok. Он не доказывает доступность базы."
     },
     {
-      "question": "Что должно оставаться ручным?",
-      "answer": "Читаемость проекта, объяснение компромисса, threat boundary и review security критериев."
+      "question": "Что описывает OpenAPI и чего не доказывает?",
+      "answer": "Путь, method, параметры, body и responses. Не доказывает, что handler и middleware ведут себя так же, без теста."
     },
     {
-      "question": "Как безопасно повторить проверку?",
-      "answer": "Fresh local/disposable environment, точная команда и результат без секретов и production данных."
+      "question": "Чем readiness отличается от health check?",
+      "answer": "Health говорит, жив ли процесс; readiness — может ли приложение принять рабочий запрос с нужными зависимостями."
     },
     {
-      "question": "Нужен ли Tutor?",
-      "answer": "Нет, объяснение и критерии доступны самостоятельно."
+      "question": "Где хранить секрет конфигурации?",
+      "answer": "В локальном окружении или хранилище секретов. Коммит, пример и журнал попадают к людям и системам, которым секрет не нужен."
     }
   ]
 }
