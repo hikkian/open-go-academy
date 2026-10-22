@@ -102,7 +102,7 @@
       ],
       "difficulty": "medium",
       "title": "Обнаружить конфликт версии",
-      "prompt": "Отрицательная version → invalid; не совпала → conflict; совпала → apply.",
+      "prompt": "Любая отрицательная версия → invalid; не совпала → conflict; совпала → apply.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc VersionState(expected, current int64) string {\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"apply\"\n\"conflict\"\n",
