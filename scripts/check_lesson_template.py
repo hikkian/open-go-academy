@@ -70,9 +70,11 @@ for lid in sys.argv[1:]:
         block=m.group(1)
         # The block must match the program's real output byte for byte: that is the text the learner has to print.
         # public_output is that output (the Go encoder of the grader writes it, e.g. [1,2,3] with no spaces).
+        # The grader drops one final newline before it compares lines (grading.go: TrimSuffix), and public_output may
+        # lack it; a fenced block always ends with a newline. So the block matches public_output or public_output + "\n".
         exp=e.get("public_output")
         if not exp: problems.append(f"{lid}/{e['id']}: no public_output to compare the expected-output block with"); continue
-        if block!=exp: problems.append(f"{lid}/{e['id']}: expected-output block differs from public_output: {block!r} vs {exp!r}")
+        if block not in (exp, exp+"\n"): problems.append(f"{lid}/{e['id']}: expected-output block differs from public_output: {block!r} vs {exp!r}")
         for lab in ("**Цель.**","**Шаги.**","**Как проверить себя.**","**Если не принято.**","> **Подсказка.**"):
             if lab not in sec: problems.append(f"{lid}/{e['id']}: card lacks {lab}")
     for lab in re.findall(r"^> \*\*([^*]+)\*\*", md, flags=re.M):
