@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Макет: карточка задания и «ждали / получили»</title>
+<style>
+:root{--editor:#0f1b27;--ink:#e6eef5;--muted:#98aabb;--line:#293748;--cyan:#16a9bc;--red:#ff9ba2;--green:#80ddb0;--soft:#152538}
+body{margin:0;background:#0b1420;color:var(--ink);font:14px/1.5 system-ui,sans-serif}
+.pane{max-width:760px;margin:24px auto;background:var(--editor);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.card{padding:14px 18px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:10px;letter-spacing:.08em;color:var(--muted);font-weight:700;margin:0 0 6px}
+.goal{font-size:15px;font-weight:700;margin:0 0 10px}
+.expected{background:var(--soft);border-left:3px solid var(--cyan);border-radius:6px;padding:8px 12px;font:13px/1.6 ui-monospace,monospace;white-space:pre}
+.expected .inv{color:var(--cyan);opacity:.8}
+ol{margin:8px 0 8px 18px;padding:0}ol li{margin:2px 0}
+details{margin-top:8px}summary{cursor:pointer;color:var(--muted);font-size:12px}
+.crit{list-style:none;margin:8px 0 0;padding:0;font-size:12px}.crit li::before{content:"○ ";color:var(--muted)}.crit li.ok::before{content:"✓ ";color:var(--green)}.crit li.bad::before{content:"× ";color:var(--red)}
+.editor{padding:12px 18px;font:13px/1.7 ui-monospace,monospace;color:#c2d3df;border-bottom:1px solid var(--line)}.editor i{color:#71869b;font-style:normal;margin-right:14px}
+.actions{display:flex;gap:8px;justify-content:flex-end;padding:8px 12px;border-bottom:1px solid var(--line)}
+.btn{border:1px solid #506177;background:transparent;color:#d7e4ed;border-radius:7px;padding:8px 14px;font-weight:700;font-size:12px}.btn.primary{background:var(--cyan);border-color:var(--cyan);color:#062a3a}
+.result{padding:10px 18px 18px}.result h3{font-size:11px;color:#b6c3cf;margin:0 0 6px;display:flex;justify-content:space-between}.status{color:var(--red)}
+.out{font:12px/1.65 ui-monospace,monospace;color:#c2d3df;margin:0 0 10px;white-space:pre}
+.diff{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}.diff div{background:var(--soft);border-radius:6px;padding:8px 10px;font:12px/1.6 ui-monospace,monospace;white-space:pre}.diff b{display:block;font:700 10px system-ui;color:var(--muted);margin-bottom:4px}
+.diff mark{background:#5a2330;color:#ffd6da;border-radius:3px}
+.hint{font-size:12px;color:var(--muted);margin:4px 0 0}
+@media (max-width:640px){.diff{grid-template-columns:1fr}}
+</style></head><body>
+<section class="pane" aria-label="Рабочая область кода — макет">
+  <div class="card">
+    <p class="eyebrow">ЗАДАНИЕ 1 · ПОЗДОРОВАЙСЯ С КОМПЬЮТЕРОМ · простое</p>
+    <p class="goal">Цель: напечатать ровно одну строку «Go готов!»</p>
+    <p class="eyebrow">ОЖИДАЕМЫЙ ВЫВОД — ровно так</p>
+    <div class="expected">Go готов!<span class="inv">⏎</span></div>
+    <p class="eyebrow" style="margin-top:10px">ШАГИ</p>
+    <ol><li>Внутри <code>func main()</code> напиши вызов <code>fmt.Println</code> с этим текстом в кавычках.</li><li>Нажми «Запустить» и сравни вывод с блоком выше.</li><li>Нажми «Проверить».</li></ol>
+    <p class="eyebrow">ЧТО ПРОВЕРИТСЯ</p>
+    <ul class="crit"><li class="ok">Программа компилируется и завершается без ошибки</li><li class="bad">Вывод — ровно «Go готов!» и перевод строки</li><li class="ok">Ничего лишнего в выводе</li><li class="ok">В main есть вызов fmt.Println</li></ul>
+    <details><summary>Подсказка</summary><p class="hint">Текст между кавычками должен совпасть буква в букву — сравни со строкой «Ожидаемый вывод», включая восклицательный знак.</p></details>
+  </div>
+  <div class="editor"><i>1</i>package main<br><i>2</i><br><i>3</i>import "fmt"<br><i>4</i><br><i>5</i>func main() {<br><i>6</i>    fmt.Println("Привет, Go!")<br><i>7</i>}</div>
+  <div class="actions"><button class="btn">Запустить</button><button class="btn primary">Проверить</button></div>
+  <div class="result">
+    <h3><span>Результат</span><span class="status">НЕ ПРИНЯТО — вот что разошлось</span></h3>
+    <p class="out">Привет, Go!</p>
+    <div class="diff"><div><b>ЖДАЛИ</b>Go готов!⏎</div><div><b>ПОЛУЧИЛИ</b><mark>Привет, Go!</mark>⏎</div></div>
+    <p class="hint">× Вывод — ровно «Go готов!»: первая же строка отличается. Текст должен совпасть буква в букву.</p>
+  </div>
+</section>
+</body></html>
