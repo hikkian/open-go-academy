@@ -43,23 +43,19 @@
       ],
       "difficulty": "easy",
       "title": "Version ordering — локальное правило",
-      "prompt": "Контракт `func CacheVersionActionEasy(current, incoming int64) string`: versions must be non-negative; incoming strictly newer => apply; equal or older => ignore. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Отрицательная версия — invalid; строго новее — apply; равная или старее — ignore.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc CacheVersionActionEasy(current, incoming int64) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"apply\"\n\"ignore\"\n\"ignore\"\n",
       "criteria": [
-        "Контракт version ordering выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "CacheVersionActionEasy(current, incoming int64) string компилируется; сравнение строгое.",
+        "«Запустить»: три вызова дают apply, ignore и ignore.",
+        "«Проверить»: закрытые примеры с нулевой текущей версией и отрицательной входящей дают apply и invalid, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт CacheVersionActionEasy для current = 2, incoming = 3?",
+          "answer": "apply: входящая версия строго новее текущей."
         }
       ]
     },
@@ -72,23 +68,19 @@
       ],
       "difficulty": "medium",
       "title": "Ordered event policy — ветви политики",
-      "prompt": "Контракт `func CacheEventActionMedium(current, incoming int64, deleted bool) string`: invalid negative versions => invalid; reject older/equal event; a newer delete => invalidate; a newer upsert => refresh. This models ordering, not cache IO. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Отрицательная — invalid; не новее — ignore; новее удаление — invalidate, иначе refresh.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc CacheEventActionMedium(current, incoming int64, deleted bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"refresh\"\n\"invalidate\"\n\"ignore\"\n",
       "criteria": [
-        "Контракт ordered event policy выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "CacheEventActionMedium(current, incoming int64, deleted bool) string компилируется; старое событие игнорируется.",
+        "«Запустить»: три вызова дают refresh, invalidate и ignore.",
+        "«Проверить»: закрытые примеры с равной версией и нулевыми версиями удаления дают ignore и ignore, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт CacheEventActionMedium для current = 6, incoming = 6, deleted = true?",
+          "answer": "ignore: версия не новее текущей, поэтому удаление не применяется."
         }
       ]
     },
@@ -101,23 +93,19 @@
       ],
       "difficulty": "hard",
       "title": "Projection transition — отказ и граница гарантии",
-      "prompt": "Контракт `func ProjectionEventActionHard(current, incoming int64, deleted, alreadyApplied bool) string`: invalid negative versions => invalid; alreadyApplied event => duplicate; an older event => ignore; for newer events delete => invalidate and upsert => refresh. Idempotency key tracking and atomic version writes must be implemented separately. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Версия < 0 — invalid; применено — duplicate; не новее — ignore; удаление — invalidate.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc ProjectionEventActionHard(current, incoming int64, deleted, alreadyApplied bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"refresh\"\n\"invalidate\"\n\"ignore\"\n",
       "criteria": [
-        "Контракт projection transition выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "ProjectionEventActionHard(current, incoming int64, deleted, alreadyApplied bool) string компилируется; повтор проверяется раньше порядка.",
+        "«Запустить»: три вызова дают refresh, invalidate и ignore.",
+        "«Проверить»: закрытые примеры с уже применённым событием и отрицательной версией дают duplicate и invalid, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт ProjectionEventActionHard для current = 4, incoming = 5, deleted = true, alreadyApplied = true?",
+          "answer": "duplicate: событие уже применено, повторно менять кеш не нужно."
         }
       ]
     }
@@ -125,15 +113,27 @@
   "self_check": [
     {
       "question": "В каком месте после изменения источника может возникнуть рассогласование кеша?",
-      "answer": "После commit новых данных и до успешной инвалидации или обновления кешируемой проекции."
+      "answer": "Между коммитом в базу и обновлением или удалением ключа в кеше: кеш держит старое значение до применения инвалидации."
     },
     {
       "question": "Как версия помогает сравнивать свежесть событий?",
-      "answer": "Потребитель может не применять событие с версией старше уже сохранённой, чтобы состояние не откатилось назад."
+      "answer": "Версия растёт вместе с записью, которую выдаёт источник. Событие с не большей версией не может быть новее уже применённого состояния."
     },
     {
       "question": "Почему поздний ответ старого чтения опасен после инвалидации?",
-      "answer": "Он может записать устаревшее значение поверх более новой проекции; проверка версии или tombstone помогает отвергнуть такую запись."
+      "answer": "Он может положить в кеш значение, прочитанное до изменения, поверх свежей инвалидации."
+    },
+    {
+      "question": "Почему времени записи недостаточно для порядка?",
+      "answer": "Часы разных машин расходятся, и два события могут получить обратный порядок. Порядок задаёт версия источника."
+    },
+    {
+      "question": "Зачем хранить признак уже применённого события?",
+      "answer": "Повтор доставки того же события не должен повторно менять кеш и вызывать дубль эффекта."
+    },
+    {
+      "question": "Почему удаление ключа не всегда решает проблему?",
+      "answer": "Поздняя запись старого значения вернёт его после удаления. Нужен след последней версии и проверка версии при записи."
     }
   ]
 }
