@@ -1,154 +1,170 @@
 {
-  "id": "middleplus-20",
-  "title": "Worker pool, concurrency limit и fairness",
-  "rank": "Middle+",
-  "module": "middleplus-scalelab",
-  "prerequisites": [
-    "middleplus-19"
-  ],
-  "estimated_minutes": 180,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 100,
-  "learning_outcomes": [
-    "Распределять ограниченное число циклов работы исполнителей по порядку поступления и заданной границе ожидания.",
-    "Сначала обслуживать задачи, которые слишком долго ждали, затем остальные — в порядке поступления; при равенстве приоритетов сохранять детерминированный порядок.",
-    "Проверять, что в рамках модели каждая задача получает ход до истечения предельного ожидания, и называть ограничения такой проверки справедливости."
-  ],
-  "glossary": [
+ "id": "middleplus-20",
+ "title": "Worker pool, concurrency limit и fairness",
+ "rank": "Middle+",
+ "module": "middleplus-scalelab",
+ "prerequisites": [
+  "middleplus-19"
+ ],
+ "estimated_minutes": 180,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 100,
+ "learning_outcomes": [
+  "Находить предел параллелизма измерением полезной пропускной способности и объяснять, почему рост числа обработчиков увеличивает память и соединения, а не пользу.",
+  "Применять детерминированное правило выбора задачи — порог голодания, ожидание, порядок прихода, стабильные ничьи — для одного обработчика и для пачки.",
+  "Проверять инвариант справедливости и описывать поведение пула при нуле задач, переполнении, отмене и закрытии очереди."
+ ],
+ "glossary": [
+  {
+   "term": "capacity",
+   "translation": "ёмкость",
+   "definition": "Полезный объём обработки за заданное время в заданных условиях."
+  },
+  {
+   "term": "backpressure",
+   "translation": "обратное давление",
+   "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+  },
+  {
+   "term": "queue depth",
+   "translation": "глубина очереди",
+   "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+  },
+  {
+   "term": "retry budget",
+   "translation": "бюджет повторов",
+   "definition": "Верхняя граница попыток в заданном контексте."
+  },
+  {
+   "term": "outbox",
+   "translation": "исходящий журнал",
+   "definition": "Устойчивая запись о намерении опубликовать событие."
+  },
+  {
+   "term": "SLI/SLO",
+   "translation": "индикатор/цель уровня сервиса",
+   "definition": "Измеренный сигнал и явно заданная цель по окну."
+  },
+  {
+   "term": "baseline",
+   "translation": "исходный уровень",
+   "definition": "Закреплённое сравнимое состояние до изменения."
+  }
+ ],
+ "markdown_file": "middleplus-20.md",
+ "exercises": [
+  {
+   "id": "middleplus-20-easy",
+   "kind": "function",
+   "skills": [
+    "performance",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: worker pool, concurrency limit и fairness — классификация",
+   "prompt": "A или B: за порогом голодания → больше ожидание (ничья A); иначе раньше приход (ничья A).",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc WorkerTurn(arrivalA int, arrivalB int, waitA int, waitB int, maxWait int) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"A\"\n\"A\"\n",
+   "criteria": [
+    "Сигнатура func WorkerTurn(arrivalA int, arrivalB int, waitA int, waitB int, maxWait int) string сохранена; без func main, печати и импортов.",
+    "Отрицательные входы — invalid; порог голодания побеждает приход; при обоих за порогом решает большее ожидание, ничья — A; иначе ранний приход, ничья — A.",
+    "Правило детерминировано по снимку и не моделирует горутины."
+   ],
+   "self_check": [
     {
-      "term": "capacity",
-      "translation": "ёмкость",
-      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+     "question": "Почему при равном ожидании за порогом выбирается A?",
+     "answer": "Стабильное правило ничьей делает выбор воспроизводимым; без него поведение зависит от порядка обхода."
     },
     {
-      "term": "backpressure",
-      "translation": "обратное давление",
-      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
-    },
-    {
-      "term": "queue depth",
-      "translation": "глубина очереди",
-      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
-    },
-    {
-      "term": "retry budget",
-      "translation": "бюджет повторов",
-      "definition": "Верхняя граница попыток в заданном контексте."
-    },
-    {
-      "term": "outbox",
-      "translation": "исходящий журнал",
-      "definition": "Устойчивая запись о намерении опубликовать событие."
-    },
-    {
-      "term": "SLI/SLO",
-      "translation": "индикатор/цель уровня сервиса",
-      "definition": "Измеренный сигнал и явно заданная цель по окну."
-    },
-    {
-      "term": "baseline",
-      "translation": "исходный уровень",
-      "definition": "Закреплённое сравнимое состояние до изменения."
+     "question": "Что означает порог ноль?",
+     "answer": "Все задания голодают с момента прихода; решает ожидание, при равенстве — A."
     }
-  ],
-  "markdown_file": "middleplus-20.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-20-medium",
+   "kind": "function",
+   "skills": [
+    "performance",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: worker pool, concurrency limit и fairness — политика",
+   "prompt": "До workers индексов: сначала за порогом по убыванию ожидания, затем FIFO; через запятую.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc WorkerBatch(arrival []int, wait []int, workers int, maxWait int) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"1,0\"\n\"1,2\"\n",
+   "criteria": [
+    "Сигнатура func WorkerBatch(arrival []int, wait []int, workers int, maxWait int) string сохранена; без func main, печати и импортов.",
+    "Невалидные входы — invalid; workers обрезается до числа заданий; ноль обработчиков даёт пустую строку.",
+    "Выбор повторяется: сначала голодающие по убыванию ожидания (ничья — ранний приход), затем оставшиеся по порядку прихода; индексы через запятую."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-20-easy",
-      "kind": "function",
-      "skills": [
-        "performance",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: worker pool, concurrency limit и fairness — классификация",
-      "prompt": "Реализуйте чистую функцию `func WorkerTurn(arrivalA int, arrivalB int, waitA int, waitB int, maxWait int) string`. Контракт: Некорректны отрицательные arrival/wait/maxWait. Если достигнут maxWait только одним заданием, выберите его; если обоими — большее wait (при равенстве A); иначе более ранний arrival (равенство arrival отдаёт A).\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc WorkerTurn(arrivalA int, arrivalB int, waitA int, waitB int, maxWait int) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"A\"\n\"A\"\n",
-      "criteria": [
-        "Точно соблюдать контракт функции `func WorkerTurn(arrivalA int, arrivalB int, waitA int, waitB int, maxWait int) string` и заданный приоритет ветвей.",
-        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
-        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
-      ],
-      "self_check": [
-        {
-          "question": "Что доказывает прохождение векторов?",
-          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
-        }
-      ]
+     "question": "Почему workers = 0 — не ошибка?",
+     "answer": "Нет свободных обработчиков — выбирать некого; пустой выбор допустим."
     },
     {
-      "id": "middleplus-20-medium",
-      "kind": "function",
-      "skills": [
-        "performance",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: worker pool, concurrency limit и fairness — политика",
-      "prompt": "Реализуйте чистую функцию `func WorkerBatch(arrival []int, wait []int, workers int, maxWait int) string`. Контракт: Требуются непустые arrival и wait одинаковой длины; все arrival/wait неотрицательны, workers/maxWait неотрицательны. Выберите до workers индексов: сначала максимальный wait среди заданий с wait>=maxWait, равенство решает ранний arrival; оставшиеся места заполните в FIFO arrival order. Верните индексы через запятую; workers обрезается до числа заданий.\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc WorkerBatch(arrival []int, wait []int, workers int, maxWait int) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"1,0\"\n\"1,2\"\n",
-      "criteria": [
-        "Точно соблюдать контракт функции `func WorkerBatch(arrival []int, wait []int, workers int, maxWait int) string` и заданный приоритет ветвей.",
-        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
-        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
-      ],
-      "self_check": [
-        {
-          "question": "Что доказывает прохождение векторов?",
-          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-20-hard",
-      "kind": "function",
-      "skills": [
-        "performance",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: worker pool, concurrency limit и fairness — проверка инварианта",
-      "prompt": "Реализуйте чистую функцию `func WorkerFair(arrival []int, wait []int, selected []bool, maxWait int) bool`. Контракт: Верните true только для непустых массивов одинаковой длины, неотрицательных arrival/wait и maxWait>=0, если каждое невыбранное задание имеет wait<maxWait. Любое задание, достигшее starvation threshold, обязано быть выбранным.\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc WorkerFair(arrival []int, wait []int, selected []bool, maxWait int) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\nfalse\n",
-      "criteria": [
-        "Точно соблюдать контракт функции `func WorkerFair(arrival []int, wait []int, selected []bool, maxWait int) bool` и заданный приоритет ветвей.",
-        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
-        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
-      ],
-      "self_check": [
-        {
-          "question": "Что доказывает прохождение векторов?",
-          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
-        }
-      ]
+     "question": "Чем повторный выбор лучшего отличается от одной сортировки?",
+     "answer": "Сортировка по неполному ключу может нарушить порядок старения; повторный выбор применяет правило на каждом месте."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-20-hard",
+   "kind": "function",
+   "skills": [
+    "performance",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: worker pool, concurrency limit и fairness — проверка инварианта",
+   "prompt": "true, если массивы согласованы, значения ≥ 0 и ни одно невыбранное задание не достигло",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc WorkerFair(arrival []int, wait []int, selected []bool, maxWait int) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\nfalse\n",
+   "criteria": [
+    "Сигнатура func WorkerFair(arrival []int, wait []int, selected []bool, maxWait int) bool сохранена; без func main, печати и импортов.",
+    "Пустые или несогласованные по длине массивы, отрицательные значения и отрицательный порог дают false.",
+    "Инвариант: каждое невыбранное задание имеет wait < maxWait; достигшее порога обязано быть выбранным."
+   ],
+   "self_check": [
     {
-      "question": "Как worker cap влияет на ресурсы?",
-      "answer": "Он ограничивает параллельную работу и защищает соединения/память, но может увеличить ожидание очереди."
+     "question": "Что инвариант не проверяет?",
+     "answer": "Оптимальность выбора и порядок; только что голодающих не оставили без обработчика."
     },
     {
-      "question": "Почему больше workers не гарантируют больше throughput?",
-      "answer": "Общий downstream может быть bottleneck, а конкуренция за него повышает latency."
-    },
-    {
-      "question": "Что нужно проверить для fairness?",
-      "answer": "Сравнить время ожидания и долю обслуживания по классам задач, а не только общий завершённый count."
-    },
-    {
-      "question": "Как подтвердить верхний предел concurrency?",
-      "answer": "Измерить одновременно активные handler в тесте и проверить поведение при насыщении и закрытии очереди."
+     "question": "Почему порог включительный?",
+     "answer": "Задание с ожиданием, равным порогу, уже достигло его; невыбранное — нарушение."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Почему больше обработчиков не всегда больше пользы?",
+   "answer": "Все они могут ждать одну медленную зависимость; полезная пропускная способность не растёт, а память и соединения — да."
+  },
+  {
+   "question": "Зачем нужен порог голодания при приоритетах?",
+   "answer": "Без правила старения низкоприоритетная задача может ждать бесконечно; порог гарантирует ей очередь."
+  },
+  {
+   "question": "Почему ничья должна решаться одинаково?",
+   "answer": "Стабильный выбор воспроизводим в тестах и в разборе инцидентов; случайный — нет."
+  },
+  {
+   "question": "Чем повторный выбор лучшего отличается от одной сортировки?",
+   "answer": "Повторный выбор применяет полное правило на каждом месте пачки; сортировка по неполному ключу нарушает старение."
+  },
+  {
+   "question": "Что проверяет инвариант справедливости и чего не проверяет?",
+   "answer": "Что ни одно задание за порогом не осталось невыбранным; оптимальность и порядок он не оценивает."
+  }
+ ]
 }
