@@ -66,23 +66,19 @@
       ],
       "difficulty": "easy",
       "title": "Вынеси проверку в доменный слой",
-      "prompt": "Slug: 1..24 строчные ASCII буквы/цифры/дефисы; target: absolute HTTP(S), host, без userinfo/fragment, максимум 2048 байт. Категории invalid_alias, alias_too_long, invalid_target, unsupported_scheme, target_too_long; успех пустая строка. Не возвращай HTTP status.",
+      "prompt": "Проверь slug и target: вернуть код категории или пустую строку; HTTP-статусы не возвращай.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc ValidateLinkInput(alias, target string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"\"\n\"\"\n",
       "criteria": [
-        "Точная сигнатура компилируется и соответствует контракту.",
-        "Обычные и граничные значения обработаны согласно условию.",
-        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+        "ValidateLinkInput(alias, target string) string компилируется; возвращает код категории без HTTP.",
+        "«Запустить»: пример 1 и пример 2 дают пустые строки (успех).",
+        "«Проверить»: закрытые примеры, включая неверный alias и javascript-схему, совпадают."
       ],
       "self_check": [
         {
-          "question": "Какое условие определяет ответ?",
-          "answer": "Slug: 1..24 строчные ASCII буквы/цифры/дефисы; target: absolute HTTP(S), host, без userinfo/fragment, максимум 2048 байт. Категории invalid_alias, alias_too_long, invalid_target, unsupported_scheme, target_too_long; успех пустая строка. Не возвращай HTTP status."
-        },
-        {
-          "question": "Что доказывают перечисленные cases?",
-          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+          "question": "Почему alias проверяется раньше target?",
+          "answer": "Контракт задания проверяет поля по порядку. Первая найденная категория и есть ответ; ошибочный alias не требует разбора адреса."
         }
       ]
     },
@@ -96,23 +92,19 @@
       ],
       "difficulty": "medium",
       "title": "Подставь узкий slug repository",
-      "prompt": "Разреши slug из 1..24 строчных ASCII букв/цифр/дефисов, если его нет в injected repo. При nil repository/недопустимом slug false. Уникальный SQL constraint всё равно нужен против гонки.",
+      "prompt": "Разреши slug, которого нет в репозитории, и правильной формы; nil или плохой slug — false.",
       "starter_file": "main.go",
       "starter_code": "package main\n\ntype SlugRepository interface { Exists(string) bool }\n\nfunc CanCreateSlug(repo SlugRepository, slug string) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse\n",
       "criteria": [
-        "Точная сигнатура компилируется и соответствует контракту.",
-        "Обычные и граничные значения обработаны согласно условию.",
-        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+        "CanCreateSlug(repo SlugRepository, slug string) bool компилируется; nil-репозиторий обработан.",
+        "«Запустить»: пример 1 и пример 2 дают true и false.",
+        "«Проверить»: закрытые примеры, включая пустой slug и слишком длинный slug, совпадают."
       ],
       "self_check": [
         {
-          "question": "Какое условие определяет ответ?",
-          "answer": "Разреши slug из 1..24 строчных ASCII букв/цифр/дефисов, если его нет в injected repo. При nil repository/недопустимом slug false. Уникальный SQL constraint всё равно нужен против гонки."
-        },
-        {
-          "question": "Что доказывают перечисленные cases?",
-          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+          "question": "Почему nil-репозиторий даёт false, а не паникует?",
+          "answer": "Без репозитория нельзя проверить занятость slug. Контракт требует отказа, а не падения."
         }
       ]
     },
@@ -126,51 +118,47 @@
       ],
       "difficulty": "hard",
       "title": "Передай отмену через service seam",
-      "prompt": "Вызови dependency ровно один раз с тем же context. nil→ok, canceled/deadline→cancelled, иная ошибка→repository_error. Не заменяй request context на Background.",
+      "prompt": "Вызови load один раз с тем же ctx: nil — ok, отмена — cancelled, иное — repository_error.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nimport (\n\t\"context\"\n)\n\nfunc RunRepository(ctx context.Context, load func(context.Context) error) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"ok\"\n\"cancelled\"\n",
       "criteria": [
-        "Точная сигнатура компилируется и соответствует контракту.",
-        "Обычные и граничные значения обработаны согласно условию.",
-        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+        "RunRepository(ctx context.Context, load func(context.Context) error) string компилируется; load вызывается один раз.",
+        "«Запустить»: пример 1 и пример 2 дают \"ok\" и \"cancelled\".",
+        "«Проверить»: закрытые примеры, включая ошибку репозитория при отмене, совпадают."
       ],
       "self_check": [
         {
-          "question": "Какое условие определяет ответ?",
-          "answer": "Вызови dependency ровно один раз с тем же context. nil→ok, canceled/deadline→cancelled, иная ошибка→repository_error. Не заменяй request context на Background."
-        },
-        {
-          "question": "Что доказывают перечисленные cases?",
-          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+          "question": "Почему ошибка отмены распознаётся через errors.Is?",
+          "answer": "Ошибка может быть обёрнута. errors.Is находит исходную причину в цепочке, а сравнение текста — нет."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Какова граница или инвариант темы?",
-      "answer": "Разделять handler, service и repository по ответственности."
+      "question": "Что меняется, когда проверка возвращает категорию, а не HTTP-статус?",
+      "answer": "Правило не знает про HTTP и проверяется без сервера. Обработчик сам переводит категорию в статус."
     },
     {
-      "question": "Что доказывает функциональный test?",
-      "answer": "Только заданные наблюдаемые результаты на перечисленных входах."
+      "question": "Почему интерфейс зависимости делают маленьким?",
+      "answer": "Чем меньше методов, тем легче подставить замену в тесте и тем меньше ненужных деталей тянется в сервис."
     },
     {
-      "question": "Как воспроизвести отказ?",
-      "answer": "Создать один маленький fixture и изменить один параметр."
+      "question": "Зачем передавать context дальше, а не подменять его?",
+      "answer": "Отмена запроса клиента должна останавливать и внешние вызовы. Background её игнорирует."
     },
     {
-      "question": "Как обрабатывать внутреннюю ошибку?",
-      "answer": "Нормализовать её в стабильную безопасную категорию."
+      "question": "Как обрабатывать внутреннюю ошибку, не раскрывая её клиенту?",
+      "answer": "Сервис возвращает категорию, например repository_error. Детали остаются в журнале, а клиент видит только категорию."
     },
     {
-      "question": "Почему важны negative cases?",
-      "answer": "Успешный случай не проверяет deny, rollback, cleanup или expiry."
+      "question": "Почему нужны негативные случаи, а не только успешный?",
+      "answer": "Успешный случай не проверяет границы правила. Отказы показывают, что правило действительно срабатывает."
     },
     {
-      "question": "Обязателен ли AI Tutor?",
-      "answer": "Нет, материал можно пройти самостоятельно."
+      "question": "Обязателен ли AI Tutor для этой главы?",
+      "answer": "Нет. Контракты и проверки доступны без него."
     }
   ]
 }

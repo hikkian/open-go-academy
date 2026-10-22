@@ -1,210 +1,189 @@
-# Слои приложения и зависимости
+# Слои и зависимости
 
-## Зачем разделять HTTP и правило продукта
+## Что ты сделаешь
 
-Когда короткая ссылка создаётся через HTTP, один запрос проходит несколько разных вопросов. Входная граница понимает метод и JSON; доменная логика решает, допустимы ли alias и target; хранилище записывает и читает строки. Если всё это находится в одном большом handler, сложнее проверить правило без HTTP и сложнее заменить PostgreSQL на fake во время теста.
+Ты напишешь три функции, которые показывают разделение слоёв: `ValidateLinkInput` — правило продукта без HTTP, `CanCreateSlug` — проверка через узкий интерфейс репозитория, `RunRepository` — вызов зависимости с передачей отмены. Каждая функция получает всё нужное аргументами и ничего не создаёт сама.
 
-Слой (layer) — группа кода с ясной ответственностью. Для небольшого Go backend достаточно трёх логических частей:
+## Слой отвечает за своё
 
-```text
-HTTP handler → service/domain → repository → PostgreSQL
-     ↑              ↑                ↑
- request/response   правила          SQL и строки
-```
+Обработчик HTTP разбирает запрос и выбирает статус. Сервис решает, допустим ли ввод по правилам продукта. Репозиторий хранит данные. Смешивать эти задачи нельзя: правило, которое написано внутри обработчика, нельзя проверить без сервера и нельзя переиспользовать в другом месте.
 
-Handler переводит протокол в application input и результат обратно в status, headers и JSON. Service (служба приложения) координирует use case: проверяет доменное правило, вызывает repository и сопоставляет стабильные ошибки. Repository (репозиторий) знает конкретный способ хранения и преобразует rows/errors. Это направление зависимости важно: application правила не должны импортировать пакет PostgreSQL или `net/http` только ради хранения.
+Поэтому проверка возвращает не HTTP-статус, а категорию: `invalid_alias`, `invalid_target` и так далее. Обработчик потом переводит категорию в статус.
 
-Маленький проект не нуждается в десятках папок и интерфейсов. Пакеты следует разделять, когда у них появляется самостоятельная ответственность, а не потому, что схема архитектуры обещает по пакету на каждое имя. Первые несколько небольших типов можно держать в `internal/links`; слой обозначить кодом, а не глубокой папочной иерархией.
+## Внедрение зависимости через конструктор
 
-## Constructor injection — передать зависимость при создании
+Сервис получает зависимость при создании, а не создаёт её внутри. Для этого зависимость описывают маленьким интерфейсом с одним-двумя методами. Тогда в тесте вместо настоящей базы подставляется простая реализация:
 
-Dependency injection (внедрение зависимости) означает, что объект получает то, от чего зависит, извне. Вместо глобального `var database *Pool` создайте Service с repository:
-
-```text
-type Service struct { links LinkRepository }
-func NewService(links LinkRepository) *Service { return &Service{links: links} }
-```
-
-HTTP слой создаёт production repository и передаёт его конструктору; тест передаёт fake. У constructor injection несколько практических эффектов: состояние запроса не спрятано в глобальной переменной; одновременно могут жить две независимые конфигурации; тесту не нужно подключать пользовательскую базу; по сигнатуре видно, без чего Service не может работать.
-
-Интерфейс задаётся по потребности вызывающего слоя. Если сервису нужно `FindBySlug`, не принимайте весь большой `*pgxpool.Pool` и не передавайте десяток SQL методов. Маленький интерфейс показывает используемое обещание. Go реализует интерфейсы неявно: repository удовлетворяет типу, если имеет нужные методы; не нужен специальный `implements` блок.
-
-Интерфейс имеет стоимость: он добавляет абстракцию, ещё одно место для изменения и иногда заставляет fake имитировать детали реализации. Начните с concreteness. Вводите интерфейс у границы, когда сервис действительно нужно тестировать отдельно или существует реальная альтернативная реализация. Не делайте интерфейс из единственного метода, если он не помогает вызвать поведение или изолировать ресурс.
-
-### Единый владелец конфигурации
-
-Config (конфигурация) — проверенные параметры среды, например адрес базы, время жизни сессии и лимит body. Считайте их один раз при старте, проверьте ограничения и передайте нужную часть конструктору. Если лимит отрицательный или тайм-аут равен нулю вопреки требованиям, лучше остановиться до начала приёма запросов, чем позволить зависимости вести себя случайно.
-
-Не копируйте secret в каждый слой. Repository получает DSN через pool в конструкторе, но не должен возвращать значение DSN в ошибки API. Печатайте безопасную категорию конфигурационной ошибки; внутреннее объяснение остаётся в защищённой диагностике запуска без секретного значения.
-
-Constructor дерева приложения может владеть созданием pool, проверкой конфигурации и закрытием pool при graceful shutdown. Handler не должен незаметно создавать новый pool на каждый запрос: соединение — управляемый долгоживущий ресурс. На старте явно проверьте ограниченное соединение, затем передайте repository и service в router. Это делает процесс тестируемым и выделяет точку, где ресурс создаётся один раз и закрывается один раз.
-
-## Пример 1. Service использует узкий repository
-
-Путь `main.go`. Реализация и fake находятся в одном маленьком учебном файле, чтобы показать поток запроса без базы или listener.
-
-```go group=service-injection mode=run
+```go
 package main
 
-import (
-	"context"
-	"fmt"
-)
+import "fmt"
 
-type LinkRepository interface {
-	Exists(context.Context, string) (bool, error)
+type SlugStore interface {
+    Exists(slug string) bool
 }
 
-type Service struct { links LinkRepository }
-func NewService(links LinkRepository) *Service { return &Service{links: links} }
-func (s *Service) CanCreate(ctx context.Context, alias string) (bool, error) {
-	if alias == "" { return false, nil }
-	exists, err := s.links.Exists(ctx, alias)
-	if err != nil { return false, err }
-	return !exists, nil
+type memory struct {
+    slugs map[string]bool
 }
 
-type memoryLinks map[string]bool
-func (m memoryLinks) Exists(_ context.Context, alias string) (bool, error) { return m[alias], nil }
-
-func main() {
-	service := NewService(memoryLinks{"taken": true})
-	free, _ := service.CanCreate(context.Background(), "new")
-	taken, _ := service.CanCreate(context.Background(), "taken")
-	fmt.Println(free, taken)
-}
-```
-
-Service не знает, что репозиторий — map. Тот же интерфейс может реализовать pgx repository. Тестовый вывод `true false` проверяет только правило доступности alias на локальном fake.
-
-## Пример 2. Тест подставляет fake с поведением
-
-Тест явно выбирает подстановку и передаёт `context.Context`, как сделал бы запросный слой.
-
-```go group=service-test file=service.go mode=test
-package main
-
-import "context"
-
-type Lookup interface { Exists(context.Context, string) (bool, error) }
-type Service struct { lookup Lookup }
-func NewService(lookup Lookup) Service { return Service{lookup: lookup} }
-func (s Service) Available(ctx context.Context, slug string) (bool, error) {
-	if slug == "" { return false, nil }
-	exists, err := s.lookup.Exists(ctx, slug)
-	return !exists && err == nil, err
+func (m memory) Exists(slug string) bool {
+    return m.slugs[slug]
 }
 
-type fixedLookup struct { exists bool; err error }
-func (f fixedLookup) Exists(context.Context, string) (bool, error) { return f.exists, f.err }
-```
-
-```go group=service-test file=service_test.go mode=test
-package main
-
-import (
-	"context"
-	"errors"
-	"testing"
-)
-
-func TestAvailableUsesRepositoryOutcome(t *testing.T) {
-	for _, tc := range []struct { name string; repo fixedLookup; slug string; want bool; wantErr bool }{
-		{"free", fixedLookup{}, "go", true, false},
-		{"taken", fixedLookup{exists:true}, "go", false, false},
-		{"storage error", fixedLookup{err:errors.New("offline")}, "go", false, true},
-		{"empty slug", fixedLookup{exists:true}, "", false, false},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			got, err := NewService(tc.repo).Available(context.Background(), tc.slug)
-			if got != tc.want || (err != nil) != tc.wantErr { t.Fatalf("got (%v, %v)", got, err) }
-		})
-	}
-}
-```
-
-Тест не знает SQL и не подтверждает Postgres constraint; он доказывает применение результата зависимости внутри Service. Другой integration test должен отдельно проверить реальное ограничение уникальности.
-
-## Пример 3. Отмена проходит через Service
-
-`context.Context` переносит deadline и отмену. Не заменяйте request context новым фоновым context внутри слоя.
-
-```go group=context-chain mode=run
-package main
-
-import (
-	"context"
-	"fmt"
-	"time"
-)
-
-type Reader struct{}
-func (Reader) Find(ctx context.Context) error {
-	select {
-	case <-ctx.Done(): return ctx.Err()
-	case <-time.After(time.Millisecond): return nil
-	}
-}
-
-type Service struct { reader Reader }
-func (s Service) Load(ctx context.Context) string {
-	if err := s.reader.Find(ctx); err != nil { return "cancelled" }
-	return "loaded"
+func CanCreate(store SlugStore, slug string) bool {
+    return !store.Exists(slug)
 }
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	cancel()
-	fmt.Println((Service{reader:Reader{}}).Load(ctx))
+    store := memory{slugs: map[string]bool{"taken": true}}
+    fmt.Println(CanCreate(store, "new"), CanCreate(store, "taken"))
 }
 ```
 
-В настоящем pgx вызов принимает `ctx`, и deadline от клиента сокращает ожидание запросов. Нельзя игнорировать ошибку и продолжить бизнес-изменение как будто чтение успешно.
+Вывод: `true false`. `CanCreate` знает только интерфейс: за ним может стоять база, файл или тестовая таблица.
 
-## Архитектурные границы без догмы
+> **Важно.** Чем меньше интерфейс, тем легче подставить замену. Интерфейс с двадцатью методами редко нужен целиком тесту.
 
-Data transfer object (DTO, объект передачи данных) может представлять вход или выход HTTP. Он не обязан быть доменной моделью. JSON field `target_url` не должен незаметно определять column name, SQL table и внутреннее правило. Преобразуйте вход в нужный доменный тип на границе, если это упрощает смысл и проверку.
+## Context: отмена идёт по цепочке
 
-Не отдавайте `pgx.ErrNoRows`, `*pgconn.PgError` или внутреннюю ошибку middleware прямо в UI. Repository распознаёт инфраструктурную категорию, Service сопоставляет стабильное доменное имя, Handler устанавливает HTTP status и безопасный body. Текст ошибки SQL зависит от версии и окружения, поэтому не делайте `strings.Contains(err.Error(), "duplicate")` архитектурным контрактом.
+`context.Context` несёт отмену и срок ожидания. Его передают в каждую функцию, которая ждёт внешнего ресурса, и не подменяют на `context.Background()`: иначе отмена клиента перестанет действовать:
 
-Одна небольшая монолитная Go программа часто удобнее ранних микросервисов. Все слои собраны в одном модуле и одной deployable unit; запрос вызывает функцию, не перепрыгивая в другой сетевой сервис. Такую структуру называют modular monolith (модульный монолит): логические границы существуют, но HTTP сервис остаётся цельным процессом. Разделение в отдельный сервис потребовало бы сетевых отказов, версионирования контрактов, трассировки и дополнительных deployment решений, которые пока не решают текущую потребность.
+```go
+package main
 
-## Типичные ошибки и диагностика
+import (
+    "context"
+    "errors"
+    "fmt"
+)
 
-- **Глобальная база.** Тесты начинают влиять друг на друга, а конфигурацию нельзя проверить отдельно. Передайте pool через constructor.
-- **Зависимость от net/http в доменном правиле.** Сервис начинает говорить кодами статуса вместо результата продукта. Пусть handler переводит результат в HTTP.
-- **Интерфейс на каждую структуру.** Спроси, какая реальная реализация или test seam нужна. Если никто не использует интерфейс, он может быть лишним.
-- **SQL внутри handler.** Сопоставление протокола и чтение rows смешаны. Вынесите repository operation, если handler перестаёт быть понятным.
-- **Обернуть всякую ошибку в строку.** Клиент не может понять `not found` против `conflict`, а тест зависим от текста. Используйте стабильные категории.
-- **Потерять context.** `context.Background()` в середине запроса игнорирует отмену клиента и deadline.
-- **Лишний слой, который просто переименовывает вызов.** Абстракция полезна, если она задаёт границу или логику, а не добавляет переход для каждой функции.
+func load(ctx context.Context) error {
+    return ctx.Err()
+}
 
-Для расследования пройдите один `POST /links` по цепочке и назовите данные на каждом переходе: Request DTO, валидированные alias/target, Service command, repository parameters, persisted link, response DTO. Затем найдите, кто переводит storage conflict в `409`. Если ответа два или ни одного, скорее всего контракт размыт.
+func main() {
+    ctx, cancel := context.WithCancel(context.Background())
+    cancel()
+    err := load(ctx)
+    fmt.Println(errors.Is(err, context.Canceled))
+}
+```
+
+Вывод: `true`. Ошибка отмены узнаётся через `errors.Is`, а не по тексту.
+
+> **Типичная ошибка.** Вызвать зависимость с `context.Background()` внутри функции, которая получила `ctx`. Отмена запроса перестанет останавливать работу.
+
+## Если что-то пошло не так
+
+- `cannot use memory{} (value of type memory) as SlugStore value` → у типа не хватает метода; проверь сигнатуру `Exists`.
+- `nil pointer dereference` в сервисе → зависимость не передана; проверь `nil` до вызова.
+- Тест падает, хотя логика верна → тест использует настоящую зависимость вместо подставной.
+- `imported and not used: context` → импорт есть, а контекст не передаётся дальше.
 
 ## Практика
 
-- **Easy:** извлеките проверку alias/target из HTTP callback в функцию доменного слоя. У неё не должно быть аргумента `ResponseWriter`, а результат — стабильная категория или отсутствие ошибки.
-- **Medium:** опишите узкий `SlugRepository.Exists(ctx, slug)` и передайте fake в Service через constructor. Проверьте свободный slug, повтор и error repository; помните, уникальный индекс в БД всё равно нужен против гонки.
-- **Hard:** передайте запросный context через handler, Service и repository callback. Отмена должна дать категорию `cancelled`; ошибка хранения — `repository_error`; успех — `ok`. Не заменяйте входной context `Background()`.
+Три задания. Функции проверяются на входах из блока «Ожидаемый вывод»; закрытые примеры видны только в «Проверить». Сеть и база не используются.
 
-## Проверка понимания
+### Задание 1 · Вынеси проверку в доменный слой
 
-1. За что отвечает handler и за что Service?
-2. Какой кодовый слой должен знать SQL placeholder?
-3. Что означает constructor injection?
-4. Когда маленький интерфейс оправдан?
-5. Почему fake не проверяет уникальное ограничение реальной БД?
-6. Как context cancellation доходит от запроса к repository?
+**Цель.** Проверить slug и target и вернуть код категории: `invalid_alias`, `alias_too_long`, `invalid_target`, `unsupported_scheme`, `target_too_long` или пустую строку при успехе. HTTP-статусы не возвращаются.
 
-Перед следующей главой вспомните `httptest` из juniorplus-05: он проверяет HTTP границу, а fake отдельно подменяет storage. В главе 14 эти два тестовых уровня будут разнесены, чтобы не выдавать успешный unit test за проверку миграции.
+**Ожидаемый вывод** — входы `go` с `https://go.dev/` и `green-2` с `http://example.test/path`:
 
-## Мини-глоссарий
+```text
+""
+""
+```
 
-- **handler (обработчик)** — адаптер между HTTP и внутренним use case.
-- **service (служба приложения)** — координирует сценарий и доменные решения.
-- **repository (репозиторий)** — изолирует чтение и запись в хранилище.
-- **dependency injection (внедрение зависимости)** — передача зависимости снаружи при создании компонента.
-- **DTO** — тип для транспортной формы входных/выходных данных.
-- **modular monolith (модульный монолит)** — один deployable процесс с явными внутренними границами.
-- **context cancellation (отмена контекста)** — сигнал прекратить работу после deadline или отмены.
-- **test seam (граница тестовой подстановки)** — место, где реализацию можно заменить управляемым fake.
+**Шаги.**
+1. Выбери задание «Вынеси проверку в доменный слой»: в файле есть `ValidateLinkInput` с `panic("TODO")`. Добавь импорт `"net/url"`.
+2. Проверь `alias` первым: пустой, длиннее 24 символов или с символами вне строчных латинских букв, цифр и дефиса — `invalid_alias`. Длина больше 24 — `alias_too_long`.
+3. Если `target` длиннее 2048 байт, верни `target_too_long`.
+4. Разбери `target` через `url.Parse`. Ошибка — `invalid_target`.
+5. Если схема не `http` и не `https`, — `unsupported_scheme`. Если хост пустой или есть `userinfo` или фрагмент, — `invalid_target`.
+6. Иначе верни пустую строку.
+7. Нажми «Запустить» и сравни с блоком выше.
+8. Нажми «Проверить».
+
+**Как проверить себя.** Две пустые строки; все три критерия зелёные.
+
+**Если не принято.**
+- Адрес `javascript:alert(1)` даёт `invalid_target` → схема проверяется до хоста.
+- Пробел в alias принят → проверка символов alias.
+- Адрес с `#frag` принят → фрагмент отвергается отдельно.
+
+> **Подсказка.** Порядок проверок тот же, что в главе про валидацию: сначала дешёвые проверки, потом разбор.
+
+### Задание 2 · Подставь узкий slug repository
+
+**Цель.** Разрешить slug, если он правильной формы и его нет в репозитории. При `nil` репозитории или недопустимом slug — `false`. Уникальность в базе всё равно нужна против гонки.
+
+**Ожидаемый вывод** — входы: новый slug `new` при репозитории с `taken`, затем `taken` при том же репозитории:
+
+```text
+true
+false
+```
+
+**Шаги.**
+1. Выбери задание «Подставь узкий slug repository»: в файле есть `CanCreateSlug` с `panic("TODO")`.
+2. Если `repo` равен `nil`, верни `false`.
+3. Проверь slug: от 1 до 24 символов, только строчные латинские буквы, цифры и дефис. Иначе `false`.
+4. Если `repo.Exists(slug)` вернул `true`, верни `false`.
+5. Иначе верни `true`.
+6. Нажми «Запустить» и сравни с блоком выше.
+7. Нажми «Проверить».
+
+**Как проверить себя.** `true` и `false`; все три критерия зелёные.
+
+**Если не принято.**
+- Пустой slug принят → проверка длины до символов.
+- `nil` репозиторий падает с паникой → проверка `repo == nil` идёт первой.
+- Занятый slug разрешён → результат `Exists` должен менять ответ.
+
+> **Подсказка.** Интерфейс нужен только для одного метода: сравнивай slug с тем, что вернул `Exists`.
+
+### Задание 3 · Передай отмену через service seam
+
+**Цель.** Вызвать `load` ровно один раз с тем же контекстом. Ошибка `nil` — `ok`. Отмена или срок (`context.Canceled`, `context.DeadlineExceeded`) — `cancelled`. Любая другая ошибка — `repository_error`.
+
+**Ожидаемый вывод** — входы: без отмены и без ошибки, затем с отменой:
+
+```text
+"ok"
+"cancelled"
+```
+
+**Шаги.**
+1. Выбери задание «Передай отмену через service seam»: в файле есть `RunRepository` с `panic("TODO")`. Импорт `"context"` уже есть; добавь `"errors"`, если используешь.
+2. Вызови `err := load(ctx)` ровно один раз, передав тот же `ctx`.
+3. Если `err == nil`, верни `"ok"`.
+4. Если `errors.Is(err, context.Canceled)` или `errors.Is(err, context.DeadlineExceeded)`, верни `"cancelled"`.
+5. Иначе верни `"repository_error"`.
+6. Нажми «Запустить» и сравни с блоком выше.
+7. Нажми «Проверить».
+
+**Как проверить себя.** Две строки в кавычках: `"ok"` и `"cancelled"`; все три критерия зелёные.
+
+**Если не принято.**
+- Ошибка отмены даёт `repository_error` → проверка через `errors.Is`, а не сравнение текста.
+- `load` вызван дважды → вызов один раз.
+- Внутри вызова подставлен `context.Background()` → передай `ctx` как есть.
+
+> **Подсказка.** Сначала проверка `nil`, потом отмена, потом всё остальное.
+
+## Проверь себя
+
+- Что меняется, когда проверка возвращает категорию, а не HTTP-статус?
+- Почему интерфейс зависимости делают маленьким?
+- Зачем передавать `context` дальше, а не подменять его?
+- Как обрабатывать внутреннюю ошибку, не раскрывая её клиенту?
+- Почему нужны негативные случаи, а не только успешный?
+- Обязателен ли AI Tutor для этой главы?
+
+## Итог
+
+- Правило продукта возвращает категорию и не знает про HTTP; обработчик переводит её в статус.
+- Зависимость передаётся через конструктор и описывается маленьким интерфейсом; в тесте её подставляют.
+- Контекст идёт по цепочке без подмены; отмена распознаётся через `errors.Is`.
