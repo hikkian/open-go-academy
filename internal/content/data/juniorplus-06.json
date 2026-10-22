@@ -59,23 +59,19 @@
       ],
       "difficulty": "easy",
       "title": "Задай health маршрут",
-      "prompt": "GET /health → 204; иной method на path → 405/Allow GET; неизвестный path → 404.",
+      "prompt": "GET /health — 204; другой метод — 405 с Allow GET; прочее — 404.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc NewHealthRouter() http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "{\"Status\":204,\"Body\":\"\",\"ContentType\":\"\",\"Location\":\"\",\"Allow\":\"\"}\n{\"Status\":405,\"Body\":\"method not allowed\\n\",\"ContentType\":\"text/plain; charset=utf-8\",\"Location\":\"\",\"Allow\":\"GET\"}\n",
       "criteria": [
-        "Точная сигнатура компилируется.",
-        "Проверяются HTTP method, path, status, headers и body по контракту.",
-        "Неверные случаи обрабатываются безопасно и детерминированно."
+        "NewHealthRouter() http.Handler компилируется; для GET /health возвращается 204 без тела.",
+        "«Запустить»: пример 1 и пример 2 дают ответ 204 и ответ 405 с Allow GET.",
+        "«Проверить»: закрытые примеры, включая DELETE и путь с завершающим слэшем, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что задаёт ожидаемое поведение?",
-          "answer": "GET /health → 204; иной method на path → 405/Allow GET; неизвестный path → 404."
-        },
-        {
-          "question": "Что доказывает httptest?",
-          "answer": "Только наблюдаемое поведение handler в локальном процессе; не внешний listener или сервис."
+          "question": "Почему для GET на /health нет Content-Type?",
+          "answer": "Ответ 204 не содержит тела, поэтому и типа содержимого у него нет."
         }
       ]
     },
@@ -89,23 +85,19 @@
       ],
       "difficulty": "medium",
       "title": "Перенаправь известный short code",
-      "prompt": "GET /go/go → 302 Location /articles/go; GET /go/http → 302 Location /guide/http; неизвестный → 404; неверный method на code route → 405/Allow GET.",
+      "prompt": "GET /go/{code}: известные коды — 302 на адрес; неизвестный — 404; другой метод — 405.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc NewShortRedirectHandler() http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "{\"Status\":302,\"Body\":\"\",\"ContentType\":\"text/html; charset=utf-8\",\"Location\":\"/articles/go\",\"Allow\":\"\"}\n{\"Status\":302,\"Body\":\"\",\"ContentType\":\"text/html; charset=utf-8\",\"Location\":\"/guide/http\",\"Allow\":\"\"}\n",
       "criteria": [
-        "Точная сигнатура компилируется.",
-        "Проверяются HTTP method, path, status, headers и body по контракту.",
-        "Неверные случаи обрабатываются безопасно и детерминированно."
+        "NewShortRedirectHandler() http.Handler компилируется; Location задаётся явно, статус 302.",
+        "«Запустить»: пример 1 и пример 2 дают ответы 302 с Location /articles/go и /guide/http.",
+        "«Проверить»: закрытые примеры, включая неизвестный код и вложенный путь, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что задаёт ожидаемое поведение?",
-          "answer": "GET /go/go → 302 Location /articles/go; GET /go/http → 302 Location /guide/http; неизвестный → 404; неверный method на code route → 405/Allow GET."
-        },
-        {
-          "question": "Что доказывает httptest?",
-          "answer": "Только наблюдаемое поведение handler в локальном процессе; не внешний listener или сервис."
+          "question": "Почему вложенный путь /go/go/extra даёт 404?",
+          "answer": "Код берётся как весь остаток пути. Вложенный путь не совпадает ни с одним кодом из таблицы."
         }
       ]
     },
@@ -119,51 +111,47 @@
       ],
       "difficulty": "hard",
       "title": "Запрети open redirect",
-      "prompt": "GET /go перенаправляет только на локальный path; схема, authority, //host и обратные slash отклоняются 400. Иной method 405, путь неизвестен 404.",
+      "prompt": "GET /go — 302 на локальный путь; внешние и неверные цели — 400; другой метод — 405.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc NewSafeRedirectHandler(target string) http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "{\"Status\":302,\"Body\":\"\",\"ContentType\":\"text/html; charset=utf-8\",\"Location\":\"/articles/go\",\"Allow\":\"\"}\n{\"Status\":302,\"Body\":\"\",\"ContentType\":\"text/html; charset=utf-8\",\"Location\":\"/guide/http\",\"Allow\":\"\"}\n",
       "criteria": [
-        "Точная сигнатура компилируется.",
-        "Проверяются HTTP method, path, status, headers и body по контракту.",
-        "Неверные случаи обрабатываются безопасно и детерминированно."
+        "NewSafeRedirectHandler(target string) http.Handler компилируется; внешняя цель отвергается.",
+        "«Запустить»: пример 1 и пример 2 дают 302 на локальные пути.",
+        "«Проверить»: закрытые примеры, включая цели с протоколом и с двумя косыми, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что задаёт ожидаемое поведение?",
-          "answer": "GET /go перенаправляет только на локальный path; схема, authority, //host и обратные slash отклоняются 400. Иной method 405, путь неизвестен 404."
-        },
-        {
-          "question": "Что доказывает httptest?",
-          "answer": "Только наблюдаемое поведение handler в локальном процессе; не внешний listener или сервис."
+          "question": "Почему цель //evil.example отвергается?",
+          "answer": "Две косые в начале читаются браузером как адрес другого хоста. Такая цель выводит пользователя за пределы сайта."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Какова граница темы?",
-      "answer": "Различать отсутствующий route, resource и method."
+      "question": "Какая граница отделяет маршрут от метода?",
+      "answer": "Путь выбирает маршрут; если путь найден, но метод не разрешён, ответ 405 с Allow, а не 404."
     },
     {
-      "question": "Что доказывает локальный тест?",
-      "answer": "Только случаи, запущенные в httptest, не сетевую доступность."
+      "question": "Что доказывает локальный тест маршрутов?",
+      "answer": "Что таблица путей и методов совпадает с выбранными запросами. Поведение внешнего клиента этим не доказывается."
     },
     {
-      "question": "Как проверить неверный route или method?",
-      "answer": "Отдельно подать fixture и сверить status, headers, body."
+      "question": "Как проверить неверный маршрут или метод?",
+      "answer": "Сделать запрос с чужим путём и с чужим методом и сравнить статус и заголовок Allow с контрактом."
     },
     {
-      "question": "Как сравнить JSON устойчиво?",
-      "answer": "Декодировать JSON и сравнивать значения полей, не пробелы."
+      "question": "Как сравнить ответ устойчиво?",
+      "answer": "По статусу, Location, Allow и типу содержимого, а не по всему телу с пробелами и порядком полей."
     },
     {
       "question": "Как отдавать внутренние ошибки?",
-      "answer": "Без SQL, stack trace, пути или секрета в клиентском ответе."
+      "answer": "Клиенту — общий текст без внутренних деталей. Причину можно записать на сервере, а не в ответ."
     },
     {
-      "question": "Нужен ли AI Tutor?",
-      "answer": "Нет, все критерии доступны для самостоятельной проверки."
+      "question": "Нужен ли AI Tutor, чтобы пройти эту главу?",
+      "answer": "Нет. Контракты и проверки доступны без него."
     }
   ]
 }
