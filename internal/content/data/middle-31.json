@@ -48,19 +48,19 @@
       ],
       "difficulty": "easy",
       "title": "Easy: health, readiness и структурные логи — базовое правило",
-      "prompt": "Реализуйте `func ProbeStatus(started, dependenciesReady bool) string`. Контракт: Если started=false → starting; иначе dependenciesReady=false → not_ready; иначе ready. Это только логическая модель probe.",
+      "prompt": "Не стартовал — starting; зависимости не готовы — not_ready; иначе ready.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc ProbeStatus(started, dependenciesReady bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"ready\"\n",
       "criteria": [
-        "Точно выполнить контракт: Если started=false → starting; иначе dependenciesReady=false → not_ready; иначе ready. Это только логическая модель probe.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "ProbeStatus(started, dependenciesReady bool) string компилируется; старт проверяется первым.",
+        "«Запустить»: один вызов даёт ready.",
+        "«Проверить»: закрытые примеры с незапущенным процессом дают starting и starting, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт ProbeStatus, если процесс стартовал, а зависимости не готовы?",
+          "answer": "not_ready: процесс запущен, но принимать трафик ещё нельзя."
         }
       ],
       "signature": "func ProbeStatus(started, dependenciesReady bool) string"
@@ -73,19 +73,19 @@
       ],
       "difficulty": "medium",
       "title": "Medium: health, readiness и структурные логи — граничная политика",
-      "prompt": "Реализуйте `func LogFieldAllowed(key string) bool`. Контракт: true только для ключей request_id, route, status, duration_ms; сравнение точное и чувствительное к регистру. Функция не проверяет значения/санитизацию.",
+      "prompt": "Только request_id, route, status и duration_ms; точное сравнение с учётом регистра.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc LogFieldAllowed(key string) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\ntrue\ntrue\ntrue\n",
       "criteria": [
-        "Точно выполнить контракт: true только для ключей request_id, route, status, duration_ms; сравнение точное и чувствительное к регистру. Функция не проверяет значения/санитизацию.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "LogFieldAllowed(key string) bool компилируется; сравнение точное и чувствительное к регистру.",
+        "«Запустить»: четыре вызова дают true.",
+        "«Проверить»: закрытые примеры с секретом, пустым ключом и ключом другого регистра дают false, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт LogFieldAllowed для ключа duration?",
+          "answer": "false: точного совпадения с duration_ms нет, а похожий ключ не считается разрешённым."
         }
       ],
       "signature": "func LogFieldAllowed(key string) bool"
@@ -98,19 +98,19 @@
       ],
       "difficulty": "hard",
       "title": "Hard: health, readiness и структурные логи — helper-проверка",
-      "prompt": "Реализуйте `func PublicError(status int, hasInternalDetail bool) string`. Контракт: Статус вне 400..599 → invalid_status; иначе hasInternalDetail=true → generic_error; иначе safe_error. Это классификатор, не HTTP response/redaction pipeline.",
+      "prompt": "Статус вне 400–599 — invalid_status; внутренние детали — generic_error; иначе safe_error.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc PublicError(status int, hasInternalDetail bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"generic_error\"\n\"safe_error\"\n\"safe_error\"\n",
       "criteria": [
-        "Точно выполнить контракт: Статус вне 400..599 → invalid_status; иначе hasInternalDetail=true → generic_error; иначе safe_error. Это классификатор, не HTTP response/redaction pipeline.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "PublicError(status int, hasInternalDetail bool) string компилируется; граница статуса 400–599 включена.",
+        "«Запустить»: три вызова дают generic_error, safe_error и safe_error.",
+        "«Проверить»: закрытые примеры со статусами 399 и 600 дают invalid_status, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт PublicError для статуса 404 при наличии внутренней детали?",
+          "answer": "generic_error: статус допустим, но внутренние детали клиенту не отдаются."
         }
       ],
       "signature": "func PublicError(status int, hasInternalDetail bool) string"
@@ -119,19 +119,27 @@
   "self_check": [
     {
       "question": "Чем liveness отличается от readiness?",
-      "answer": "Liveness сообщает, что процесс не завис; readiness — что экземпляр может безопасно принимать работу с нужными зависимостями."
+      "answer": "Liveness проверяет, жив ли процесс: отказ ведёт к перезапуску. Readiness учитывает зависимости: отказ убирает экземпляр из балансировки, но не перезапускает процесс."
     },
     {
-      "question": "Почему отсутствие ошибки в readiness probe не равно живости?",
-      "answer": "Постоянная проверка каждой зависимости может вызвать рестарт-шквал и скрыть реальное состояние процесса."
+      "question": "Почему отсутствие ошибки в readiness-пробе не равно живости?",
+      "answer": "Readiness отвечает на вопрос о готовности принимать трафик. Процесс может быть жив, но не готов, и наоборот."
     },
     {
-      "question": "Какой класс данных не следует писать в структурированный log?",
-      "answer": "Credentials, authorization headers, полный request body и персональные значения, если они не прошли явную политику редактирования."
+      "question": "Какой класс данных не следует писать в структурированный журнал?",
+      "answer": "Секреты и учётные данные, тело HTTP-запроса и персональные данные. Журнал живёт дольше запроса и попадает к большему числу людей и систем."
     },
     {
-      "question": "Как проверить, что новые поля log не раскрывают секреты?",
-      "answer": "Использовать schema allowlist, тест с маркерами секретов и проверку сериализованного результата."
+      "question": "Как проверить, что новые поля журнала не раскрывают секреты?",
+      "answer": "Тестом: записать событие с секретом в поле, которое должно быть отброшено, и проверить, что сериализованная строка не содержит секрет."
+    },
+    {
+      "question": "Почему список разрешённых полей надёжнее списка запрещённых?",
+      "answer": "Новое поле запрещено по умолчанию и попадает в журнал только после явного решения. Чёрный список пропускает поля, которые никто не предусмотрел."
+    },
+    {
+      "question": "Почему клиенту нельзя возвращать внутреннюю причину ошибки?",
+      "answer": "Текст исключения раскрывает имена таблиц, пути и детали устройства сервиса. Клиенту нужна обобщённая категория, а причина остаётся в журнале сервера."
     }
   ]
 }
