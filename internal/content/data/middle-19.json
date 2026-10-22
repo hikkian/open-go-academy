@@ -43,23 +43,19 @@
       ],
       "difficulty": "easy",
       "title": "Delay — локальное правило",
-      "prompt": "Контракт `func RetryDelayEasy(attempt, baseMS, maximumMS int64) int64`: attempt<=0 or negative bounds => 0; otherwise double baseMS per one-based attempt, saturate at maximumMS without overflow. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Удваивай base на каждой попытке, но не выше maximum; при неверных входах верни 0.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc RetryDelayEasy(attempt, baseMS, maximumMS int64) int64 {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "10\n50\n30\n0\n9223372036854775807\n",
       "criteria": [
-        "Контракт delay выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "RetryDelayEasy(attempt, baseMS, maximumMS int64) int64 компилируется; задержка не выше предела.",
+        "«Запустить»: пять вызовов дают 10, 50, 30, 0 и MaxInt64.",
+        "«Проверить»: закрытый пример с нулевой попыткой даёт 0, совпадает с контрактом."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт RetryDelayEasy для attempt = 3, baseMS = 10, maximumMS = 100?",
+          "answer": "40: база 10 удваивается дважды после первой попытки, и 40 не превышает предел 100."
         }
       ]
     },
@@ -72,23 +68,19 @@
       ],
       "difficulty": "medium",
       "title": "Retry policy — ветви политики",
-      "prompt": "Контракт `func RetryActionMedium(attempt, maxAttempts int64, failed, temporary bool) string`: attempt and maxAttempts are one-based positive limits; invalid limits => invalid; success => ack; failed temporary work retries only while attempt < maxAttempts; permanent failure or exhausted budget => dead_letter. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Неверные лимиты — invalid; успех — ack; временная до лимита — retry; иначе dead_letter.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc RetryActionMedium(attempt, maxAttempts int64, failed, temporary bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"retry\"\n\"dead_letter\"\n\"dead_letter\"\n",
       "criteria": [
-        "Контракт retry policy выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "RetryActionMedium(attempt, maxAttempts int64, failed, temporary bool) string компилируется; постоянная ошибка уходит в dead_letter.",
+        "«Запустить»: три вызова дают retry, dead_letter и dead_letter.",
+        "«Проверить»: закрытые примеры с нулевой попыткой и успешной обработкой дают invalid и ack, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт RetryActionMedium для attempt = 2, maxAttempts = 4, failed = true, temporary = true?",
+          "answer": "retry: ошибка временная, а номер попытки меньше лимита."
         }
       ]
     },
@@ -101,23 +93,19 @@
       ],
       "difficulty": "hard",
       "title": "Delivery transition — отказ и граница гарантии",
-      "prompt": "Контракт `func RetryTransitionHard(attempt, maxAttempts int64, failed, temporary, acknowledged bool) string`: validate positive attempt/budget first; an already acknowledged delivery stays ack; success is ack; a temporary failed delivery retries only below the attempt ceiling; every other failed delivery goes to dead_letter. This is a state transition label, not broker acknowledgement or persistence. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Подтверждённое или успешное — ack; временная до лимита — retry; иначе dead_letter.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc RetryTransitionHard(attempt, maxAttempts int64, failed, temporary, acknowledged bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"retry\"\n\"dead_letter\"\n\"dead_letter\"\n",
       "criteria": [
-        "Контракт delivery transition выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "RetryTransitionHard(attempt, maxAttempts int64, failed, temporary, acknowledged bool) string компилируется; подтверждённая доставка остаётся ack.",
+        "«Запустить»: три вызова дают retry, dead_letter и dead_letter.",
+        "«Проверить»: закрытые примеры с подтверждённой доставкой и успешной обработкой дают ack и ack, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт RetryTransitionHard для attempt = 3, maxAttempts = 5, failed = true, temporary = false, acknowledged = false?",
+          "answer": "dead_letter: ошибка постоянная, поэтому повтор не планируется."
         }
       ]
     }
@@ -125,15 +113,27 @@
   "self_check": [
     {
       "question": "Зачем ограничивать число повторных попыток?",
-      "answer": "Чтобы временная ошибка не приводила к бесконечным повторам и неограниченной нагрузке."
+      "answer": "Постоянная ошибка не исчезнет. Без предела повторы забивают очередь и нагрузку и никогда не завершаются."
     },
     {
       "question": "Как backoff меняет поведение повторов?",
-      "answer": "Увеличивает задержку между попытками, уменьшая частоту немедленных повторов; точная политика задаётся контрактом."
+      "answer": "Растущая пауза снижает давление на зависимость, но увеличивает возраст сообщения. Поэтому нужен общий срок."
     },
     {
       "question": "Куда направляют сообщение после исчерпания лимита или постоянного отказа?",
-      "answer": "В dead-letter маршрут для отдельного разбора; это не означает, что сообщение автоматически исправлено или обработано."
+      "answer": "В dead-letter очередь с исходным ID и причиной, для разбора и контролируемой повторной отправки."
+    },
+    {
+      "question": "Почему задержку нужно ограничивать верхним пределом?",
+      "answer": "Экспоненциальный рост быстро превышает допустимое время и может переполнить целое число."
+    },
+    {
+      "question": "Зачем нужен jitter?",
+      "answer": "Чтобы клиенты не повторяли запросы одновременно и не создавали всплеск нагрузки на уже перегруженную зависимость."
+    },
+    {
+      "question": "Почему счётчик попыток должен сохраняться при повторной доставке?",
+      "answer": "Иначе падение worker сбросит бюджет, и повторы станут бесконечными."
     }
   ]
 }
