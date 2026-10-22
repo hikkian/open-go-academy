@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { basicSetup, EditorView } from 'codemirror';
+import { indentWithTab } from '@codemirror/commands';
 import { go } from '@codemirror/lang-go';
-import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
+import { HighlightStyle, indentUnit, syntaxHighlighting } from '@codemirror/language';
 import { Compartment, EditorState } from '@codemirror/state';
+import { keymap } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 
 const goHighlight = HighlightStyle.define([
@@ -25,7 +27,7 @@ export default function GoEditor({ value, onChange, readOnly = false, scrollLabe
   changeRef.current = onChange;
   useEffect(() => {
     if (!host.current) return;
-    const view = new EditorView({ doc: value, extensions: [basicSetup, go(), syntaxHighlighting(goHighlight), readonlyConfig.current.of([EditorState.readOnly.of(readOnly), EditorView.editable.of(!readOnly)]), EditorView.lineWrapping, EditorView.contentAttributes.of({ 'aria-label': 'Go-код' }), EditorView.updateListener.of(update => { if (update.docChanged&&!externalChange.current) changeRef.current(update.state.doc.toString()); })], parent: host.current });
+    const view = new EditorView({ doc: value, extensions: [basicSetup, keymap.of([indentWithTab]), indentUnit.of('\t'), EditorState.tabSize.of(4), go(), syntaxHighlighting(goHighlight), readonlyConfig.current.of([EditorState.readOnly.of(readOnly), EditorView.editable.of(!readOnly)]), EditorView.lineWrapping, EditorView.contentAttributes.of({ 'aria-label': 'Go-код' }), EditorView.updateListener.of(update => { if (update.docChanged&&!externalChange.current) changeRef.current(update.state.doc.toString()); })], parent: host.current });
     view.scrollDOM.tabIndex = 0;
     view.scrollDOM.setAttribute('role', 'region');
     view.scrollDOM.setAttribute('aria-label', scrollLabel);
