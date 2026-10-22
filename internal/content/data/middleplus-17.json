@@ -1,151 +1,170 @@
 {
-  "id": "middleplus-17",
-  "title": "Outbox, атомарность записи и публикация",
-  "rank": "Middle+",
-  "module": "middleplus-scalelab",
-  "prerequisites": [
-    "middleplus-16"
-  ],
-  "estimated_minutes": 180,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 97,
-  "learning_outcomes": [
-    "Представлять сохранение, откат, публикацию, подтверждение и аварию как допустимые переходы машины состояний исходящих событий.",
-    "Ограничивать число повторных публикаций и переводить исчерпавшие лимит события в очередь окончательного отказа.",
-    "Различать аварию до и после побочного эффекта у потребителя и проверять повторную доставку с явным удалением дублей."
-  ],
-  "glossary": [
+ "id": "middleplus-17",
+ "title": "Outbox, атомарность записи и публикация",
+ "rank": "Middle+",
+ "module": "middleplus-scalelab",
+ "prerequisites": [
+  "middleplus-16"
+ ],
+ "estimated_minutes": 180,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 97,
+ "learning_outcomes": [
+  "Объяснять, какой разрыв закрывает транзакционный outbox — между commit изменения и сохранением намерения публикации — и почему он не даёт доставку ровно один раз.",
+  "Описывать запись outbox конечным автоматом с четырьмя состояниями, событиями сбоя и лимитом попыток, ведущим в мёртвую очередь.",
+  "Проектировать восстановление после сбоя издателя и дедупликацию у потребителя по устойчивому идентификатору события."
+ ],
+ "glossary": [
+  {
+   "term": "capacity",
+   "translation": "ёмкость",
+   "definition": "Полезный объём обработки за заданное время в заданных условиях."
+  },
+  {
+   "term": "backpressure",
+   "translation": "обратное давление",
+   "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+  },
+  {
+   "term": "queue depth",
+   "translation": "глубина очереди",
+   "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+  },
+  {
+   "term": "retry budget",
+   "translation": "бюджет повторов",
+   "definition": "Верхняя граница попыток в заданном контексте."
+  },
+  {
+   "term": "outbox",
+   "translation": "исходящий журнал",
+   "definition": "Устойчивая запись о намерении опубликовать событие."
+  },
+  {
+   "term": "SLI/SLO",
+   "translation": "индикатор/цель уровня сервиса",
+   "definition": "Измеренный сигнал и явно заданная цель по окну."
+  },
+  {
+   "term": "baseline",
+   "translation": "исходный уровень",
+   "definition": "Закреплённое сравнимое состояние до изменения."
+  }
+ ],
+ "markdown_file": "middleplus-17.md",
+ "exercises": [
+  {
+   "id": "middleplus-17-easy",
+   "kind": "function",
+   "skills": [
+    "performance",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: outbox state transitions",
+   "prompt": "Новое состояние по таблице absent/pending/delivered/acked; иначе invalid.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc OutboxTransition(state string, event string) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"pending\"\n",
+   "criteria": [
+    "Сигнатура func OutboxTransition(state string, event string) string сохранена; без func main, печати и импортов.",
+    "Семь переходов таблицы: persist, rollback, publish, crash до и после отправки, ack, повторная доставка после подтверждения; остальное — invalid.",
+    "Функция не запускает базу или брокер; это конечный учебный автомат."
+   ],
+   "self_check": [
     {
-      "term": "capacity",
-      "translation": "ёмкость",
-      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+     "question": "Почему pending+crash не меняет состояние?",
+     "answer": "Строка outbox уже в базе и переживёт перезапуск; отправка просто ещё не началась."
     },
     {
-      "term": "backpressure",
-      "translation": "обратное давление",
-      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
-    },
-    {
-      "term": "queue depth",
-      "translation": "глубина очереди",
-      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
-    },
-    {
-      "term": "retry budget",
-      "translation": "бюджет повторов",
-      "definition": "Верхняя граница попыток в заданном контексте."
-    },
-    {
-      "term": "outbox",
-      "translation": "исходящий журнал",
-      "definition": "Устойчивая запись о намерении опубликовать событие."
-    },
-    {
-      "term": "SLI/SLO",
-      "translation": "индикатор/цель уровня сервиса",
-      "definition": "Измеренный сигнал и явно заданная цель по окну."
-    },
-    {
-      "term": "baseline",
-      "translation": "исходный уровень",
-      "definition": "Закреплённое сравнимое состояние до изменения."
+     "question": "Почему delivered+crash возвращает в pending?",
+     "answer": "Подтверждение потеряно, издатель не знает, дошло ли событие, и отправит снова."
     }
-  ],
-  "markdown_file": "middleplus-17.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-17-medium",
+   "kind": "function",
+   "skills": [
+    "performance",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: лимит повторной публикации",
+   "prompt": "Как Easy плюс лимит попыток: на лимите dead_letter; плохие счётчики invalid.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc OutboxAttempt(state string, event string, attempts int, maxAttempts int) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"delivered\"\n",
+   "criteria": [
+    "Сигнатура func OutboxAttempt(state string, event string, attempts int, maxAttempts int) string сохранена; без func main, печати и импортов.",
+    "Лимит проверяется в трёх ветвях: pending+publish, pending+retry, delivered+crash; на maxAttempts — dead_letter; attempts > maxAttempts — invalid.",
+    "Прочие валидные переходы — по таблице Easy; проверены первая попытка, граница лимита и invalid."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-17-easy",
-      "kind": "function",
-      "skills": [
-        "performance",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: outbox state transitions",
-      "prompt": "Реализуйте чистую функцию `func OutboxTransition(state string, event string) string`. Контракт: Состояния: \"absent\", \"pending\", \"delivered\", \"acked\". События: absent+persist=>pending; absent+rollback=>absent; pending+publish=>delivered; pending+crash=>pending; delivered+ack=>acked; delivered+crash=>pending; acked+publish=>acked (повторная доставка не меняет подтверждённое состояние). Прочее => \"invalid\".\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это конечная учебная state machine; реальная атомарность БД и дедупликация требуют отдельной интеграции.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc OutboxTransition(state string, event string) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"pending\"\n",
-      "criteria": [
-        "Смоделировать persist/rollback/publish/ack/crash как переходы между состояниями absent/pending/delivered/acked.",
-        "Не утверждать, что функция запускает DB или broker."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
-          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это конечная учебная state machine; реальная атомарность БД и дедупликация требуют отдельной интеграции."
-        }
-      ]
+     "question": "Почему на лимите dead_letter, а не удаление?",
+     "answer": "Удаление теряет событие молча; мёртвая очередь сохраняет его для ручного разбора."
     },
     {
-      "id": "middleplus-17-medium",
-      "kind": "function",
-      "skills": [
-        "performance",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: лимит повторной публикации",
-      "prompt": "Реализуйте чистую функцию `func OutboxAttempt(state string, event string, attempts int, maxAttempts int) string`. Контракт: Дополните переходы Easy ограничением попыток. Некорректные состояния/события, attempts<0, maxAttempts<=0 или attempts>maxAttempts => \"invalid\". pending+publish при attempts<maxAttempts => \"delivered\", иначе \"dead_letter\". pending+retry и delivered+crash при attempts<maxAttempts => \"pending\", иначе \"dead_letter\". Для остальных валидных переходов используйте таблицу Easy.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это конечная учебная state machine; реальная атомарность БД и дедупликация требуют отдельной интеграции.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc OutboxAttempt(state string, event string, attempts int, maxAttempts int) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"delivered\"\n",
-      "criteria": [
-        "Ограничить попытками обе ветви восстановления pending+retry и delivered+crash; на maxAttempts вернуть dead_letter.",
-        "Проверить первую попытку, границу лимита и invalid."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
-          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это конечная учебная state machine; реальная атомарность БД и дедупликация требуют отдельной интеграции."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-17-hard",
-      "kind": "function",
-      "skills": [
-        "performance",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: crash recovery и дедупликация",
-      "prompt": "Реализуйте чистую функцию `func OutboxRecovery(state string, event string, attempts int, maxAttempts int, effectApplied bool) string`. Контракт: Состояния/события/лимит — как в Medium. Дополнительное правило для delivered+crash: effectApplied=true => \"deduplicate\" (consumer уже применил эффект; повторный эффект должен быть подавлен ключом идемпотентности), иначе \"retry_publish\". acked+publish => \"deduplicate\". pending+retry или pending+publish за лимитом => \"dead_letter\"; до лимита — \"pending\" или \"delivered\" соответственно. Возвращаемая строка — решение ограниченной модели, не доказательство транзакции, доставки или реальной дедупликации.\n\nФункция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это конечная учебная state machine; реальная атомарность БД и дедупликация требуют отдельной интеграции.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc OutboxRecovery(state string, event string, attempts int, maxAttempts int, effectApplied bool) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"pending\"\n",
-      "criteria": [
-        "Восстановление delivered+crash зависит от effectApplied и лимита; acked+publish даёт deduplicate.",
-        "Модель не гарантирует транзакционность, at-least-once broker, идемпотентный consumer или exactly-once."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно подтверждает прохождение этого упражнения, а что остаётся за пределами модели?",
-          "answer": "Функция проверяет только переданные значения; она не запускает внешний сервис, нагрузку или эксперимент. Это конечная учебная state machine; реальная атомарность БД и дедупликация требуют отдельной интеграции."
-        }
-      ]
+     "question": "Что означает attempts, равное maxAttempts?",
+     "answer": "Все разрешённые попытки сделаны; следующая публикация не разрешена."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-17-hard",
+   "kind": "function",
+   "skills": [
+    "performance",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: crash recovery и дедупликация",
+   "prompt": "Как Medium; delivered+crash: эффект применён → deduplicate, иначе retry_publish.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc OutboxRecovery(state string, event string, attempts int, maxAttempts int, effectApplied bool) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"pending\"\n",
+   "criteria": [
+    "Сигнатура func OutboxRecovery(state string, event string, attempts int, maxAttempts int, effectApplied bool) string сохранена; без func main, печати и импортов.",
+    "delivered+crash: effectApplied → deduplicate раньше лимита; иначе retry_publish до лимита и dead_letter на нём; acked+publish → deduplicate.",
+    "Возвращаемая метка — решение ограниченной модели, не доказательство транзакции, доставки или реальной дедупликации."
+   ],
+   "self_check": [
     {
-      "question": "Какую проблему решает запись outbox в транзакции?",
-      "answer": "Она сохраняет бизнес-изменение и намерение публикации атомарно в одном источнике состояния."
+     "question": "Почему deduplicate проверяется раньше лимита?",
+     "answer": "Если эффект уже применён, повторная отправка не нужна независимо от числа попыток."
     },
     {
-      "question": "Какая граница остаётся после commit?",
-      "answer": "Публикация может задержаться или повториться, поэтому publisher и consumer требуют recovery и идемпотентности."
-    },
-    {
-      "question": "Почему нельзя заявить exactly-once из outbox pattern?",
-      "answer": "Повторное delivery и потеря ACK остаются возможными между разными системами."
-    },
-    {
-      "question": "Как проверить recovery publisher?",
-      "answer": "Прервать тестовый publisher после commit и проверить, что новый проход публикует событие без потери доменной записи."
+     "question": "Откуда берётся флаг effectApplied в реальной системе?",
+     "answer": "Из контракта с потребителем: устойчивый идентификатор события и таблица обработанных идентификаторов."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Какой разрыв закрывает транзакционный outbox, а какой — нет?",
+   "answer": "Закрывает разрыв между commit изменения и сохранением намерения публикации; не делает публикацию и commit одной транзакцией, поэтому повторы возможны."
+  },
+  {
+   "question": "Почему delivered+crash возвращает в pending, а pending+crash ничего не меняет?",
+   "answer": "После отправки без подтверждения исход неизвестен и отправку повторяют; до отправки строка просто ждёт в базе."
+  },
+  {
+   "question": "Зачем мёртвая очередь и почему не удаление?",
+   "answer": "Отравленное событие нельзя повторять вечно, но и терять нельзя; отдельное состояние для ручного разбора сохраняет его."
+  },
+  {
+   "question": "Откуда издатель узнаёт, что потребитель уже применил эффект?",
+   "answer": "Из устойчивого идентификатора события и таблицы обработанных идентификаторов у потребителя; без этого — предположение."
+  },
+  {
+   "question": "Что обязан делать потребитель, чтобы «хотя бы один раз» не стало «дважды»?",
+   "answer": "Хранить обработанные идентификаторы и пропускать повторы; это вторая половина outbox."
+  }
+ ]
 }
