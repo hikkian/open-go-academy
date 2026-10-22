@@ -119,23 +119,19 @@
       ],
       "difficulty": "easy",
       "title": "Cache или проверка гарантии",
-      "prompt": "Контракт `func RedisRoleEasy(durabilityRequired, replayable bool) string`: вернуть cache только если продукт допускает потерю значения и его можно заново получить; если требуется сохранить обязательную работу, вернуть needs_review независимо от replayable. Повторно прочитать значение не значит пережить отказ, получить подтверждённую запись или восстановить владение задачей. Функция — toy model, она не подключается к Redis. Реализуй правило и проверь обе комбинации replayable при durabilityRequired=true.",
+      "prompt": "Нужна сохранность работы — needs_review; иначе cache, независимо от повтора чтения.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc RedisRoleEasy(durabilityRequired, replayable bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"cache\"\n\"cache\"\n\"needs_review\"\n",
       "criteria": [
-        "Если durable work не требуется, вернуть cache независимо от replayable.",
-        "Если требуется сохранность, вернуть needs_review при любом значении replayable.",
-        "Не выдавать вывод о Redis deployment: функция проверяет только локальное правило."
+        "RedisRoleEasy(durabilityRequired, replayable bool) string компилируется; требование сохранности решает первым.",
+        "«Запустить»: три вызова дают cache, cache и needs_review.",
+        "«Проверить»: закрытый пример с требованием сохранности и повтором дают needs_review, совпадает."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт RedisRoleEasy для durabilityRequired = false, replayable = false?",
+          "answer": "cache: потеря значения допустима, и его можно получить заново."
         }
       ]
     },
@@ -148,23 +144,19 @@
       ],
       "difficulty": "medium",
       "title": "Заявленные гарантии — предпосылки очереди",
-      "prompt": "Контракт `func RedisQueuePrerequisitesMedium(persistenceConfigured, producerAckDefined, ownershipRecoveryDefined, idempotentHandler bool) string`: вернуть candidate_only только когда объявлены все четыре предпосылки, иначе needs_review. persistenceConfigured означает, что выбран конкретный режим persistence; producerAckDefined точно описывает, что подтверждает ответ producer; ownershipRecoveryDefined описывает, когда незавершённую задачу можно забрать после падения consumer; idempotentHandler означает, что повторная доставка не дублирует бизнес-эффект. Это заявления автора, не наблюдения; численное окно потери и recovery target задаются отдельно на Hard. Чистая функция не читает Redis version/configuration/topology, время ack, lease/fencing или код обработчика. Реализуй только локальный checklist.",
+      "prompt": "Все четыре предпосылки объявлены — candidate_only; иначе needs_review.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc RedisQueuePrerequisitesMedium(persistenceConfigured, producerAckDefined, ownershipRecoveryDefined, idempotentHandler bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"candidate_only\"\n\"needs_review\"\n\"needs_review\"\n",
       "criteria": [
-        "candidate_only требует заявленные persistence с окном потери, смысл producer ack, возврат владения незавершённой задачей и idempotent handler.",
-        "Если отсутствует любой пункт, вернуть needs_review. Это метка checklist, не production verdict.",
-        "Private vectors отдельно покрывают каждую отсутствующую предпосылку."
+        "RedisQueuePrerequisitesMedium(четыре флага) string компилируется; все четыре флага проверяются.",
+        "«Запустить»: три вызова дают candidate_only, needs_review и needs_review.",
+        "«Проверить»: закрытые примеры с одним ложным флагом дают needs_review и needs_review, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "На закреплённых Redis version/topology/primitive: записать и подтвердить сообщение, аварийно остановить узел/consumer в выбранных точках, затем проверить redelivery, recovery и отсутствие второго бизнес-эффекта."
+          "question": "Что вернёт RedisQueuePrerequisitesMedium, если persistenceConfigured и ownershipRecoveryDefined ложны, а остальные истинны?",
+          "answer": "needs_review: не все предпосылки объявлены, поэтому кандидатом очередь не считается."
         }
       ]
     },
@@ -177,23 +169,19 @@
       ],
       "difficulty": "hard",
       "title": "Отказной сценарий — проверить границу очереди",
-      "prompt": "Контракт `func RedisQueueReviewHard(persistenceConfigured, producerAckDefined, ownershipRecoveryDefined, idempotentHandler, failoverTestDefined, recoveryTargetDefined, lossBudgetDefined bool) string`: вернуть candidate_only только если все предпосылки объявлены, иначе needs_review. Дополнительно failoverTestDefined называет испытанные topology/failure points, recoveryTargetDefined задаёт измеримую цель восстановления, а lossBudgetDefined — согласованное окно потери. Boolean не доказывает, что drill пройден. Функция не читает конфигурацию Redis, replication, ack timing, consumer lease/fencing или реальные результаты recovery. Реализуй checklist-метку; не утверждай, что Redis стал durable queue.",
+      "prompt": "Все семь предпосылок объявлены — candidate_only; иначе needs_review.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc RedisQueueReviewHard(persistenceConfigured, producerAckDefined, ownershipRecoveryDefined, idempotentHandler, failoverTestDefined, recoveryTargetDefined, lossBudgetDefined bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"candidate_only\"\n\"needs_review\"\n\"needs_review\"\n",
       "criteria": [
-        "candidate_only требует все четыре medium prerequisites, описанное failover-испытание, измеримую recovery target и согласованный loss budget.",
-        "Каждый отсутствующий пункт даёт needs_review; private vectors отдельно проверяют каждый пробел.",
-        "Функция не называет Redis durable queue и не заявляет о реально пройденном тесте."
+        "RedisQueueReviewHard(семь флагов) string компилируется; окно потери и цель восстановления учитываются.",
+        "«Запустить»: три вызова дают candidate_only, needs_review и needs_review.",
+        "«Проверить»: закрытые примеры с ложными флагами дают needs_review, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Повторяемым drill для фиксированных версии, топологии и примитива: сохранить fixtures, точку crash, потерянные/дублированные сообщения и измеренное время восстановления."
+          "question": "Что вернёт RedisQueueReviewHard, если ложны failoverTestDefined и lossBudgetDefined, а остальные истинны?",
+          "answer": "needs_review: отказной сценарий и окно потери не объявлены."
         }
       ]
     }
@@ -201,15 +189,27 @@
   "self_check": [
     {
       "question": "Почему обычное кешируемое значение и очередь задач требуют разных гарантий?",
-      "answer": "Кеш обычно можно восстановить из источника; потеря ещё не выполненной работы может быть недопустима и требует определённой доставки, владения и восстановления."
+      "answer": "Потерю кеша восстанавливают из источника, а потерю задачи восстановить нечем: нужны подтверждённая запись, повторная доставка и владение задачей."
     },
     {
       "question": "Какие условия нужно уточнить для конкретного Redis-примитива перед использованием как очереди?",
-      "answer": "Режим persistence, смысл подтверждения записи producer, передачу владения consumer и процедуру восстановления после сбоя."
+      "answer": "Режим сохранения на диск, что означает подтверждение producer, как возвращается незавершённая задача и что происходит при переключении узла."
     },
     {
       "question": "Что должен проверять отказной тест очереди?",
-      "answer": "Что подтверждённая запись переживает предусмотренный отказ, повторная доставка не теряет её и повторный запуск не дублирует побочный эффект сверх заданной политики."
+      "answer": "Что подтверждённая запись переживает отказ, незавершённая задача доставляется повторно без второго эффекта, а состояние совпадает с ожидаемым в пределах окна потери."
+    },
+    {
+      "question": "Почему булевы флаги не доказывают готовности?",
+      "answer": "Флаг — заявление автора. Он не подтверждает настройку и не заменяет проведённый отказной сценарий."
+    },
+    {
+      "question": "Почему повторное чтение значения не равно восстановлению задачи?",
+      "answer": "Чтение вернёт данные, но не скажет, потеряна ли задача и не занята ли она другим потребителем."
+    },
+    {
+      "question": "Что означает окно потери данных?",
+      "answer": "Допустимое число последних подтверждённых записей, которые можно потерять при отказе. Его задаёт продукт и проверяет отказной тест."
     }
   ]
 }
