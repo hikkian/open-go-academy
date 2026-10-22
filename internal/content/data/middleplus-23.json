@@ -1,148 +1,164 @@
 {
-  "id": "middleplus-23",
-  "title": "Postmortem, временная шкала и системные меры",
-  "rank": "Middle+",
-  "module": "middleplus-scalelab",
-  "prerequisites": [
-    "middleplus-22"
-  ],
-  "estimated_minutes": 180,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 103,
-  "learning_outcomes": [
-    "Упорядочивать временную шкалу инцидента по временным отметкам и различать факты, сигналы и пробелы в свидетельствах.",
-    "Проверять, что каждая задача по итогам инцидента содержит меру снижения последствий, ответственного, срок и способ проверки.",
-    "Определять формальную полноту разбора инцидента, не выдавая вспомогательную функцию за оценку причинности или качества человеческого разбора."
-  ],
-  "glossary": [
+ "id": "middleplus-23",
+ "title": "Postmortem, временная шкала и системные меры",
+ "rank": "Middle+",
+ "module": "middleplus-scalelab",
+ "prerequisites": [
+  "middleplus-22"
+ ],
+ "estimated_minutes": 180,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 103,
+ "learning_outcomes": [
+  "Восстанавливать временную шкалу инцидента из фактов с источниками, отделяя гипотезы и помечая пробелы наблюдений.",
+  "Соблюдать порядок разбора: смягчение во время инцидента, не меньше двух свидетельств до выводов, проверка меры, владелец и срок у пункта действия.",
+  "Проверять готовность разбора по формальным признакам — упорядоченная подтверждённая шкала, закрытый и проверенный пункт действия — и понимать, чего эти признаки не оценивают."
+ ],
+ "glossary": [
+  {
+   "term": "capacity",
+   "translation": "ёмкость",
+   "definition": "Полезный объём обработки за заданное время в заданных условиях."
+  },
+  {
+   "term": "backpressure",
+   "translation": "обратное давление",
+   "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
+  },
+  {
+   "term": "queue depth",
+   "translation": "глубина очереди",
+   "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
+  },
+  {
+   "term": "retry budget",
+   "translation": "бюджет повторов",
+   "definition": "Верхняя граница попыток в заданном контексте."
+  },
+  {
+   "term": "outbox",
+   "translation": "исходящий журнал",
+   "definition": "Устойчивая запись о намерении опубликовать событие."
+  },
+  {
+   "term": "SLI/SLO",
+   "translation": "индикатор/цель уровня сервиса",
+   "definition": "Измеренный сигнал и явно заданная цель по окну."
+  },
+  {
+   "term": "baseline",
+   "translation": "исходный уровень",
+   "definition": "Закреплённое сравнимое состояние до изменения."
+  }
+ ],
+ "markdown_file": "middleplus-23.md",
+ "exercises": [
+  {
+   "id": "middleplus-23-easy",
+   "kind": "function",
+   "skills": [
+    "reliability"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: postmortem, временная шкала и системные меры — классификация",
+   "prompt": "invalid при плохих входах; ongoing → respond; пробел наблюдений → review_gaps; иначе",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc IncidentPriority(impact int, ongoing bool, eventTimes []int, observed []bool) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"respond\"\n\"review\"\n",
+   "criteria": [
+    "Сигнатура func IncidentPriority(impact int, ongoing bool, eventTimes []int, observed []bool) string сохранена; без func main, печати и импортов.",
+    "Отрицательное воздействие, пустые или разной длины массивы, отрицательные или убывающие отметки дают invalid; равные отметки допустимы.",
+    "Продолжающийся инцидент — respond раньше проверки пробелов; закрытый с неподтверждённым событием — review_gaps, иначе review."
+   ],
+   "self_check": [
     {
-      "term": "capacity",
-      "translation": "ёмкость",
-      "definition": "Полезный объём обработки за заданное время в заданных условиях."
+     "question": "Почему равные отметки допустимы, а убывающие нет?",
+     "answer": "Два события в одну секунду — нормально; события, идущие назад во времени, — ошибка шкалы."
     },
     {
-      "term": "backpressure",
-      "translation": "обратное давление",
-      "definition": "Сигнал ограничить поступление работы при насыщении потребителя."
-    },
-    {
-      "term": "queue depth",
-      "translation": "глубина очереди",
-      "definition": "Количество ожидающих, не обязательно уже исполняемых элементов."
-    },
-    {
-      "term": "retry budget",
-      "translation": "бюджет повторов",
-      "definition": "Верхняя граница попыток в заданном контексте."
-    },
-    {
-      "term": "outbox",
-      "translation": "исходящий журнал",
-      "definition": "Устойчивая запись о намерении опубликовать событие."
-    },
-    {
-      "term": "SLI/SLO",
-      "translation": "индикатор/цель уровня сервиса",
-      "definition": "Измеренный сигнал и явно заданная цель по окну."
-    },
-    {
-      "term": "baseline",
-      "translation": "исходный уровень",
-      "definition": "Закреплённое сравнимое состояние до изменения."
+     "question": "Почему ongoing проверяется раньше пробелов?",
+     "answer": "Во время инцидента уместен вопрос «что делаем сейчас», а не «полна ли шкала»."
     }
-  ],
-  "markdown_file": "middleplus-23.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-23-medium",
+   "kind": "function",
+   "skills": [
+    "reliability"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: postmortem, временная шкала и системные меры — политика",
+   "prompt": "invalid; ongoing → mitigate; < 2 свидетельств → collect_evidence; verify; track_action",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc IncidentAction(impact int, ongoing bool, mitigationReady bool, evidenceCount int, ownerAssigned bool, dueDay int) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"mitigate\"\n\"verify\"\n",
+   "criteria": [
+    "Сигнатура func IncidentAction(impact int, ongoing bool, mitigationReady bool, evidenceCount int, ownerAssigned bool, dueDay int) string сохранена; без func main, печати и импортов.",
+    "Отрицательные impact, evidenceCount или dueDay — invalid; ongoing — mitigate; меньше двух свидетельств — collect_evidence раньше проверки меры.",
+    "Готовая мера — verify; владелец и срок > 0 — track_action; иначе assign_action."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-23-easy",
-      "kind": "function",
-      "skills": [
-        "reliability"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: postmortem, временная шкала и системные меры — классификация",
-      "prompt": "Реализуйте чистую функцию `func IncidentPriority(impact int, ongoing bool, eventTimes []int, observed []bool) string`. Контракт: Требуются impact>=0 и непустые массивы eventTimes/observed одинаковой длины; timestamps неотрицательные и не убывают. При ongoing=true верните respond. Для закрытого инцидента при любом observed=false верните review_gaps, иначе review.\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc IncidentPriority(impact int, ongoing bool, eventTimes []int, observed []bool) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"respond\"\n\"review\"\n",
-      "criteria": [
-        "Точно соблюдать контракт функции `func IncidentPriority(impact int, ongoing bool, eventTimes []int, observed []bool) string` и заданный приоритет ветвей.",
-        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
-        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
-      ],
-      "self_check": [
-        {
-          "question": "Что доказывает прохождение векторов?",
-          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
-        }
-      ]
+     "question": "Почему свидетельства проверяются раньше готовности меры?",
+     "answer": "Проверять меру против недоказанного сценария бессмысленно; сначала два независимых свидетельства."
     },
     {
-      "id": "middleplus-23-medium",
-      "kind": "function",
-      "skills": [
-        "reliability"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: postmortem, временная шкала и системные меры — политика",
-      "prompt": "Реализуйте чистую функцию `func IncidentAction(impact int, ongoing bool, mitigationReady bool, evidenceCount int, ownerAssigned bool, dueDay int) string`. Контракт: При impact<0, evidenceCount<0 или dueDay<0 верните invalid. При ongoing — mitigate. Для завершённого инцидента сначала требуйте evidenceCount>=2, иначе collect_evidence; затем mitigationReady → verify; затем ownerAssigned и dueDay>0 → track_action; иначе assign_action.\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc IncidentAction(impact int, ongoing bool, mitigationReady bool, evidenceCount int, ownerAssigned bool, dueDay int) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"mitigate\"\n\"verify\"\n",
-      "criteria": [
-        "Точно соблюдать контракт функции `func IncidentAction(impact int, ongoing bool, mitigationReady bool, evidenceCount int, ownerAssigned bool, dueDay int) string` и заданный приоритет ветвей.",
-        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
-        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
-      ],
-      "self_check": [
-        {
-          "question": "Что доказывает прохождение векторов?",
-          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-23-hard",
-      "kind": "function",
-      "skills": [
-        "reliability"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: postmortem, временная шкала и системные меры — проверка инварианта",
-      "prompt": "Реализуйте чистую функцию `func PostmortemReady(eventTimes []int, observed []bool, actionStatus string, ownerAssigned bool, dueDay int, verified bool) bool`. Контракт: Верните true только если есть не менее двух eventTimes, массивы согласованы, все timestamps неотрицательны и не убывают и все observed=true; затем требуются actionStatus=\"closed\", ownerAssigned=true, dueDay>0 и verified=true. Это формальные сигналы отчёта, не оценка narrative или причинности.\n\nМодель проверяет только перечисленные входы и переходы; она не доказывает свойства внешней системы.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc PostmortemReady(eventTimes []int, observed []bool, actionStatus string, ownerAssigned bool, dueDay int, verified bool) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\nfalse\n",
-      "criteria": [
-        "Точно соблюдать контракт функции `func PostmortemReady(eventTimes []int, observed []bool, actionStatus string, ownerAssigned bool, dueDay int, verified bool) bool` и заданный приоритет ветвей.",
-        "Обрабатывать все независимые сигналы, граничные значения и некорректные комбинации из private cases.",
-        "Разделять проверяемый детерминированный контракт и внешние/человеческие утверждения, которые этим тестом не подтверждаются."
-      ],
-      "self_check": [
-        {
-          "question": "Что доказывает прохождение векторов?",
-          "answer": "Только соответствие детерминированной модели заданным входам и ветвям; интеграционные сигналы и человеческая оценка остаются внешними."
-        }
-      ]
+     "question": "Почему владелец без срока — не отслеживание?",
+     "answer": "Пункт без даты живёт в списке годами; срок делает его проверяемым."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-23-hard",
+   "kind": "function",
+   "skills": [
+    "reliability"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: postmortem, временная шкала и системные меры — проверка инварианта",
+   "prompt": "true: ≥ 2 упорядоченных подтверждённых отметок, статус closed, владелец, срок > 0",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc PostmortemReady(eventTimes []int, observed []bool, actionStatus string, ownerAssigned bool, dueDay int, verified bool) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\nfalse\n",
+   "criteria": [
+    "Сигнатура func PostmortemReady(eventTimes []int, observed []bool, actionStatus string, ownerAssigned bool, dueDay int, verified bool) bool сохранена; без func main, печати и импортов.",
+    "Не меньше двух отметок, согласованные массивы, неотрицательные неубывающие отметки, все наблюдения подтверждены; статус ровно closed, владелец назначен, срок > 0, результат проверен.",
+    "Формальные признаки не оценивают качество текста и причинность разбора."
+   ],
+   "self_check": [
     {
-      "question": "Какая структура делает postmortem проверяемым?",
-      "answer": "Факты timeline, impact, сигналы, действия, причины как гипотезы и ограниченные action items."
+     "question": "Почему Closed с заглавной — не closed?",
+     "answer": "Статус — машинное поле, сравниваемое точно; свободный текст в нём недопустим."
     },
     {
-      "question": "Что отличает blameless подход от отсутствия ответственности?",
-      "answer": "Он исследует системные условия, сохраняя владельцев конкретных проверяемых мер."
-    },
-    {
-      "question": "Почему «быть внимательнее» не закрывает риск?",
-      "answer": "У этого пожелания нет изменённого механизма или объективного критерия завершения."
-    },
-    {
-      "question": "Как проверить action item после закрытия?",
-      "answer": "Повторить исходный сценарий и показать, что новая защита сработала в заранее заданных пределах."
+     "question": "Почему закрытый, но непроверенный пункт не закрывает разбор?",
+     "answer": "Закрытие без проверки означает, что мера внедрена на словах; разбор открыт, пока она не блокирует сценарий."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Чем факт на шкале отличается от гипотезы?",
+   "answer": "У факта есть отметка времени и источник наблюдения; гипотеза — причинное объяснение, помеченное до подтверждения."
+  },
+  {
+   "question": "Почему разбор не начинают, пока инцидент продолжается?",
+   "answer": "Приоритет у безопасного смягчения; собирать шкалу во время инцидента — отвлекать тех, кто его устраняет."
+  },
+  {
+   "question": "Что означает «без обвинения» на практике?",
+   "answer": "Исследовать условия принятия решений и несработавшие защиты, а не назначать виноватого вместо починки барьера."
+  },
+  {
+   "question": "Что делает пункт действия действием, а не пожеланием?",
+   "answer": "Изменение системы или процесса, владелец, срок и проверяемый критерий завершения."
+  },
+  {
+   "question": "Какие три времени показывает шкала и как их улучшают?",
+   "answer": "Время до обнаружения, до смягчения и до восстановления; меры направлены на конкретное из них, а не на «надёжность вообще»."
+  }
+ ]
 }
