@@ -54,19 +54,19 @@
       ],
       "difficulty": "easy",
       "title": "Easy: метрики, traces и request context — базовое правило",
-      "prompt": "Реализуйте `func MetricLabelAllowed(label string) bool`. Контракт: true только для фиксированных labels operation, status_class, result; иначе false. Это проверка имени label, не instrumentation.",
+      "prompt": "Разрешены только operation, status_class и result; точное совпадение, иначе false.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc MetricLabelAllowed(label string) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\ntrue\ntrue\n",
       "criteria": [
-        "Точно выполнить контракт: true только для фиксированных labels operation, status_class, result; иначе false. Это проверка имени label, не instrumentation.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "MetricLabelAllowed(label string) bool компилируется; список меток фиксирован.",
+        "«Запустить»: три вызова дают true.",
+        "«Проверить»: закрытые примеры с user_id, пустой меткой и другим регистром дают false, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт MetricLabelAllowed для метки status?",
+          "answer": "false: разрешена метка status_class, а не status; точное совпадение обязательно."
         }
       ],
       "signature": "func MetricLabelAllowed(label string) bool"
@@ -79,23 +79,19 @@
       ],
       "difficulty": "medium",
       "title": "Medium: метрики, traces и request context — граничная политика",
-      "prompt": "Реализуйте `func TraceAttributeAllowed(key, value string) bool`. Контракт: Проверять пару key/value. Разрешить только route с точным известным router-template `/v1/tasks/{taskID}` или `/v1/projects/{projectID}/tasks/{taskID}`; method — GET/POST/PATCH/DELETE; status_code — строка кода HTTP 100..599. Любой raw path, query, ID, secret или неизвестный ключ запрещён. Это проверка allowlist пар и не доказывает, что значение пришло из router.",
+      "prompt": "Маршрут — шаблон без ID; метод — GET, POST, PATCH или DELETE; код 100–599; иначе false.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc TraceAttributeAllowed(key, value string) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\ntrue\ntrue\ntrue\n",
       "criteria": [
-        "Точно выполнить контракт: Проверять пару key/value. Разрешить только route с точным известным router-template `/v1/tasks/{taskID}` или `/v1/projects/{projectID}/tasks/{taskID}`; method — GET/POST/PATCH/DELETE; status_code — строка кода HTTP 100..599. Любой raw path, query, ID, secret или неизвестный ключ запрещён. Это проверка allowlist пар и не доказывает, что значение пришло из router.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "TraceAttributeAllowed(key, value string) bool компилируется; каждый ключ проверяется своим списком.",
+        "«Запустить»: четыре вызова дают true.",
+        "«Проверить»: закрытые примеры с сырым путём, методом TRACE и секретом в коде статуса дают false, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие allowlist key-value пар. Он не доказывает, что route получен от router, и не проверяет production telemetry."
-        },
-        {
-          "question": "Почему разрешённого имени ключа недостаточно?",
-          "answer": "Значение может содержать сырой ID, путь, query string или секрет."
+          "question": "Что вернёт TraceAttributeAllowed для ключа method и значения PUT?",
+          "answer": "false: метод PUT не входит в разрешённый список."
         }
       ],
       "signature": "func TraceAttributeAllowed(key, value string) bool"
@@ -108,19 +104,19 @@
       ],
       "difficulty": "hard",
       "title": "Hard: метрики, traces и request context — helper-проверка",
-      "prompt": "Реализуйте `func SignalDecision(requests, failures int) string`. Контракт: requests<0, failures<0 или failures>requests → invalid; requests==0 → no_sample; иначе failures>0 → errors_present, иначе no_errors_observed. Это классификация счётчиков, не вычисление SLO.",
+      "prompt": "Ошибочный ввод — invalid; нет запросов — no_sample; ошибки — errors_present; иначе чисто.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc SignalDecision(requests, failures int) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"no_errors_observed\"\n\"errors_present\"\n\"no_sample\"\n",
       "criteria": [
-        "Точно выполнить контракт: requests<0, failures<0 или failures>requests → invalid; requests==0 → no_sample; иначе failures>0 → errors_present, иначе no_errors_observed. Это классификация счётчиков, не вычисление SLO.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "SignalDecision(requests, failures int) string компилируется; корректность ввода проверяется первой.",
+        "«Запустить»: три вызова дают no_errors_observed, errors_present и no_sample.",
+        "«Проверить»: закрытые примеры с ошибками без запросов и с ошибками больше запросов дают invalid, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт SignalDecision для 5 запросов и 0 ошибок?",
+          "answer": "no_errors_observed: данные есть, ошибок нет, и ввод корректен."
         }
       ],
       "signature": "func SignalDecision(requests, failures int) string"
@@ -129,19 +125,27 @@
   "self_check": [
     {
       "question": "Какое назначение у metrics, logs и traces?",
-      "answer": "Metrics агрегируют сигналы, logs фиксируют события, traces связывают этапы одной операции."
+      "answer": "Метрики дают агрегаты для графиков и алертов, журнал хранит отдельные события, трасса показывает путь одного запроса через сервисы. Каждый вид отвечает на свой вопрос."
     },
     {
       "question": "Почему raw user ID опасен в metric label?",
-      "answer": "Уникальные значения создают неограниченную cardinality и могут раскрыть персональные данные."
+      "answer": "Каждое значение метки создаёт отдельный временной ряд. Миллионы пользователей перегрузят хранилище метрик и раскроют поведение людей."
     },
     {
       "question": "Что означает нулевая ошибка при пустой выборке?",
-      "answer": "Это отсутствие достаточных наблюдений, а не доказательство успешности."
+      "answer": "Ничего не наблюдалось. Ноль ошибок при нуле запросов нельзя читать как надёжность: это отсутствие данных."
     },
     {
       "question": "Как проверить propagation без попадания PII в telemetry?",
-      "answer": "Пройти integration trace с контрольным контекстом и проверить, что разрешённые атрибуты сохранились, а запрещённые отсутствуют."
+      "answer": "Тестом с заметным маркером: контекст трассировки доходит до downstream-вызова, а маркер не попадает ни в один атрибут, метку или журнал."
+    },
+    {
+      "question": "Зачем заменять идентификатор ресурса шаблоном маршрута?",
+      "answer": "Шаблон даёт конечное число значений. Сырой путь с идентификатором создаёт новый ряд на каждый ресурс и раскрывает данные."
+    },
+    {
+      "question": "Почему allowlist атрибутов надёжнее запрета?",
+      "answer": "Новый атрибут по умолчанию не попадает в телеметрию. Запрет пропускает поля, которые никто не предусмотрел."
     }
   ]
 }
