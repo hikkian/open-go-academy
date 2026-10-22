@@ -68,13 +68,11 @@ for lid in sys.argv[1:]:
         m=re.search(r"\*\*Ожидаемый вывод\*\*.*?\n```text\n(.*?)```", sec, flags=re.S)
         if not m: problems.append(f"{lid}/{e['id']}: no expected-output block"); continue
         block=m.group(1)
-        if e.get("kind")=="function":
-            spec=json.load(open(f"{ROOT}/internal/grading/specs/{e['id']}.json"))
-            exp="".join(json.dumps(x,ensure_ascii=False)+"\n" for x in spec["public_expected"])
-        else:
-            exp=e["public_output"]
-        if block!=exp: problems.append(f"{lid}/{e['id']}: expected-output block differs from grader: {block!r} vs {exp!r}")
-        if e.get("public_output") and e.get("kind")=="function" and e["public_output"]!=exp: problems.append(f"{lid}/{e['id']}: public_output differs from spec")
+        # The block must match the program's real output byte for byte: that is the text the learner has to print.
+        # public_output is that output (the Go encoder of the grader writes it, e.g. [1,2,3] with no spaces).
+        exp=e.get("public_output")
+        if not exp: problems.append(f"{lid}/{e['id']}: no public_output to compare the expected-output block with"); continue
+        if block!=exp: problems.append(f"{lid}/{e['id']}: expected-output block differs from public_output: {block!r} vs {exp!r}")
         for lab in ("**Цель.**","**Шаги.**","**Как проверить себя.**","**Если не принято.**","> **Подсказка.**"):
             if lab not in sec: problems.append(f"{lid}/{e['id']}: card lacks {lab}")
     for lab in re.findall(r"^> \*\*([^*]+)\*\*", md, flags=re.M):
