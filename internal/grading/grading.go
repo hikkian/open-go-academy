@@ -625,11 +625,28 @@ func (s *Spec) Check(result runner.Result, private bool) []runner.Check {
 	}
 	for i, e := range expected {
 		ok := pass && i < len(lines) && strictJSONEqual([]byte(lines[i]), e)
-		name := "пример"
+		check := runner.Check{Name: "пример " + strconv.Itoa(i+1), Passed: ok}
 		if private && i >= publicCount {
-			name = "закрытый пример"
+			// A closed example never shows its input or its expected value (docs/LESSON_UI_SPEC.md §2.2).
+			check.Name = "закрытый пример " + strconv.Itoa(i+1)
+			check.Hint = "закрытый пример: проверь границы и пустой ввод"
+		} else {
+			check.Expected = string(e)
+			// On a submission a failed run may print lines of the closed cases too, so a line is shown only from a clean run.
+			if i < len(lines) && (!private || pass) {
+				check.Actual = lines[i]
+			}
+			switch {
+			case ok:
+			case !pass:
+				check.Hint = "программа завершилась с ошибкой или вывела лишнее: смотри вывод выше"
+			case i >= len(lines):
+				check.Hint = "эта строка не напечатана"
+			default:
+				check.Hint = "значение не совпало: сравни «ждали» и «получили» в этой строке"
+			}
 		}
-		checks = append(checks, runner.Check{Name: fmt.Sprintf("%s %d", name, i+1), Passed: ok})
+		checks = append(checks, check)
 	}
 	return checks
 }

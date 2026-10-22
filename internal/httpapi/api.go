@@ -385,8 +385,7 @@ func (a *API) Handler(staticDir string) http.Handler {
 		}
 		if action == "submit" {
 			// The verdict is made here, outside the student's container. Printed PASS is never trusted.
-			result.Checks = []runner.Check{{Name: "Программа успешно завершилась", Passed: result.Status == "ok" && result.ExitCode == 0}, {Name: "Публичный пример вывода", Passed: strings.TrimSpace(result.Stdout) == strings.TrimSpace(ex.PublicOutput)}, {Name: "Точная проверка строк и отсутствия лишнего вывода", Passed: result.Stdout == ex.PublicOutput && result.Stderr == ""}}
-			result.Checks = append(result.Checks, structure(ex.ID, q.Files))
+			result.Checks = lessonChecks(ex, result, q.Files)
 			result.Passed = true
 			for _, c := range result.Checks {
 				result.Passed = result.Passed && c.Passed

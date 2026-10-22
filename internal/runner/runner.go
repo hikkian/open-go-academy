@@ -33,9 +33,18 @@ type Request struct {
 	Args   []string          `json:"args,omitempty"`
 	Assets map[string]string `json:"assets,omitempty"`
 }
+
+// Check is one verdict line. Expected, Actual and Hint are optional (OGAUX2, docs/LESSON_UI_SPEC.md §2.1): the learner
+// sees what was expected and what came out, never a hidden input. Criterion is the index in the exercise's criteria, or nil
+// when the check maps to none; nil is the spec's -1 (a pointer keeps index 0 distinct from "no criterion"). Empty fields are
+// left out of the JSON, so checks that set none (projects, exams) serialize exactly as before.
 type Check struct {
-	Name   string `json:"name"`
-	Passed bool   `json:"passed"`
+	Name      string `json:"name"`
+	Passed    bool   `json:"passed"`
+	Expected  string `json:"expected,omitempty"`
+	Actual    string `json:"actual,omitempty"`
+	Hint      string `json:"hint,omitempty"`
+	Criterion *int   `json:"criterion,omitempty"`
 }
 type Result struct {
 	Stdout   string            `json:"stdout"`
