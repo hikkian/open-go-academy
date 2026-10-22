@@ -68,23 +68,19 @@
       ],
       "difficulty": "easy",
       "title": "Ttl clamp — локальное правило",
-      "prompt": "Контракт `func CacheTTLEasy(seconds int64) int64`: non-positive TTL => 0 (do not cache); positive TTL is capped at one hour. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "TTL ≤ 0 — 0 (не кешировать); больше часа — 3600; иначе сам TTL.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc CacheTTLEasy(seconds int64) int64 {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "30\n3600\n3600\n",
       "criteria": [
-        "Контракт TTL clamp выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "CacheTTLEasy(seconds int64) int64 компилируется; срок не выше часа.",
+        "«Запустить»: три вызова дают 30, 3600 и 3600.",
+        "«Проверить»: закрытые примеры с нулевым и отрицательным сроком дают 0 и 0, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт CacheTTLEasy для 120?",
+          "answer": "120: положительный срок в пределах часа не меняется."
         }
       ]
     },
@@ -97,23 +93,19 @@
       ],
       "difficulty": "medium",
       "title": "Stale read policy — ветви политики",
-      "prompt": "Контракт `func CacheReadPolicyMedium(fresh, staleAllowed, backendAvailable bool) string`: fresh cached value => serve; otherwise, a stale value is served only when staleAllowed; if no usable cache value and backend is available => load; otherwise => unavailable. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Свежее — serve_fresh; разрешённое устаревшее — serve_stale; иначе load или unavailable.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc CacheReadPolicyMedium(fresh, staleAllowed, backendAvailable bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"serve_fresh\"\n\"serve_stale\"\n\"load\"\n",
       "criteria": [
-        "Контракт stale read policy выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "CacheReadPolicyMedium(fresh, staleAllowed, backendAvailable bool) string компилируется; свежее значение выигрывает.",
+        "«Запустить»: три вызова дают serve_fresh, serve_stale и load.",
+        "«Проверить»: закрытый пример без свежих данных, без устаревших и без источника даёт unavailable, совпадает."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт CacheReadPolicyMedium для fresh = false, staleAllowed = false, backendAvailable = true?",
+          "answer": "load: свежего и устаревшего значения нет, а источник доступен."
         }
       ]
     },
@@ -126,23 +118,19 @@
       ],
       "difficulty": "hard",
       "title": "Cache outage policy — отказ и граница гарантии",
-      "prompt": "Контракт `func CacheFailurePolicyHard(fresh, staleAllowed, backendAvailable, staleData bool) string`: fresh data wins; otherwise stale data can be served only if policy allows it; when backend is available load authoritative data; if neither route is safe return unavailable. No cache/database is accessed. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Свежее — serve_fresh; устаревшее — при разрешении и наличии; иначе load или unavailable.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc CacheFailurePolicyHard(fresh, staleAllowed, backendAvailable, staleData bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"serve_fresh\"\n\"serve_stale\"\n\"load\"\n",
       "criteria": [
-        "Контракт cache outage policy выполнен для нормального, граничного и отказного векторов.",
-        "Ветки policy имеют явный приоритет и обработку invalid input.",
-        "Не утверждаются свойства реальной БД, брокера, Redis или runtime, не проверяемые этой функцией."
+        "CacheFailurePolicyHard(fresh, staleAllowed, backendAvailable, staleData bool) string компилируется; устаревание требует наличия записи.",
+        "«Запустить»: три вызова дают serve_fresh, serve_stale и load.",
+        "«Проверить»: закрытые примеры без устаревшей записи и с разрешением без записи дают unavailable и unavailable, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт CacheFailurePolicyHard для fresh = false, staleAllowed = true, backendAvailable = true, staleData = false?",
+          "answer": "load: устаревшей записи нет, поэтому отдать stale нельзя, а источник доступен."
         }
       ]
     }
@@ -150,15 +138,27 @@
   "self_check": [
     {
       "question": "Какие данные подходят для кеша в модели урока?",
-      "answer": "Данные, которые можно восстановить или пересчитать из источника истины; кеш не должен быть единственным местом хранения незаменимого состояния."
+      "answer": "Пересчитываемые из источника истины данные, для которых короткая устарелость допустима. Баланс и права доступа без явного решения в кеш не кладут."
     },
     {
       "question": "Что задаёт TTL?",
-      "answer": "Время жизни записи в кеше, после которого она считается просроченной или может быть удалена; TTL сам по себе не гарантирует согласованность с источником."
+      "answer": "Срок свежести записи: после него запись считается устаревшей. Точный момент физического удаления ключа не гарантируется."
     },
     {
       "question": "Что должна определить fallback-политика при недоступности кеша?",
-      "answer": "Продолжать ли чтение из источника, возвращать ли ограниченную ошибку или применять иной явно заданный путь с учётом его стоимости и свежести."
+      "answer": "Что делать при промахе и отказе: отдать устаревшее по разрешению, загрузить источник или вернуть недоступность, и с каким ограничением нагрузки."
+    },
+    {
+      "question": "Почему TTL не решает инвалидацию полностью?",
+      "answer": "Запись в базу и событие могут разойтись, процесс может держать старое значение, Redis может вытеснить ключ."
+    },
+    {
+      "question": "Почему устаревшие права доступа нельзя отдавать из кеша без решения?",
+      "answer": "Право может быть уже отозвано, и устаревший ответ даст доступ, которого нет. Допустимость stale задаёт бизнес-контракт."
+    },
+    {
+      "question": "Почему при промахе кеша нельзя без ограничения обращаться к базе?",
+      "answer": "Одновременные промахи по одному ключу дают лавину запросов (stampede). Нужен лимит параллелизма загрузки."
     }
   ]
 }
