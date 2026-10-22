@@ -59,23 +59,19 @@
       ],
       "difficulty": "easy",
       "title": "Запрети mutation без principal",
-      "prompt": "Верни true только для authenticated principal. Public read является отдельным явно открытым route и не использует этот mutation gate.",
+      "prompt": "Верни true только для аутентифицированного principal; публичное чтение сюда не относится.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc CanMutate(authenticated bool) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse\n",
       "criteria": [
-        "Точная сигнатура компилируется и соответствует контракту.",
-        "Обычные и граничные значения обработаны согласно условию.",
-        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+        "CanMutate(authenticated bool) bool компилируется; возвращается значение флага.",
+        "«Запустить»: пример 1 и пример 2 дают true и false.",
+        "«Проверить»: закрытые примеры, включая повторные входы, совпадают."
       ],
       "self_check": [
         {
-          "question": "Какое условие определяет ответ?",
-          "answer": "Верни true только для authenticated principal. Public read является отдельным явно открытым route и не использует этот mutation gate."
-        },
-        {
-          "question": "Что доказывают перечисленные cases?",
-          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+          "question": "Почему публичное чтение не проверяется CanMutate?",
+          "answer": "Чтение открыто явно и не меняет данные. Этот gate относится только к изменяющим действиям."
         }
       ]
     },
@@ -89,23 +85,19 @@
       ],
       "difficulty": "medium",
       "title": "Сравни principal и owner",
-      "prompt": "true только при положительных равных ID. Principal должен быть получен из server-side session, owner — из storage, не из body.",
+      "prompt": "True только при положительных равных ID: principal из сессии, owner из хранилища.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc OwnsResource(principalID, ownerID int64) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse\n",
       "criteria": [
-        "Точная сигнатура компилируется и соответствует контракту.",
-        "Обычные и граничные значения обработаны согласно условию.",
-        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+        "OwnsResource(principalID, ownerID int64) bool компилируется; проверяются положительность и равенство.",
+        "«Запустить»: пример 1 и пример 2 дают true и false.",
+        "«Проверить»: закрытые примеры, включая нулевые и отрицательные идентификаторы, совпадают."
       ],
       "self_check": [
         {
-          "question": "Какое условие определяет ответ?",
-          "answer": "true только при положительных равных ID. Principal должен быть получен из server-side session, owner — из storage, не из body."
-        },
-        {
-          "question": "Что доказывают перечисленные cases?",
-          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+          "question": "Почему два нулевых идентификатора не дают true?",
+          "answer": "Ноль не принадлежит никому. Совпадение пустых значений не доказывает владение."
         }
       ]
     },
@@ -119,51 +111,47 @@
       ],
       "difficulty": "hard",
       "title": "Прими deny-by-default решение",
-      "prompt": "Unauthenticated→unauthenticated. PrincipalID и ownerID должны быть positive. User может read/update/delete только своего positive ID; admin — перечисленные read/update/delete любого positive owner. Unknown role/action/ID→forbidden. Role не приходит из body.",
+      "prompt": "Аноним — unauthenticated; пользователь только своё, админ любое; иное — forbidden.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc Authorize(role string, authenticated bool, principalID, ownerID int64, action string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"allow\"\n\"allow\"\n",
       "criteria": [
-        "Точная сигнатура компилируется и соответствует контракту.",
-        "Обычные и граничные значения обработаны согласно условию.",
-        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+        "Authorize(role string, authenticated bool, principalID, ownerID int64, action string) string компилируется; отказ по умолчанию.",
+        "«Запустить»: пример 1 и пример 2 дают \"allow\" и \"allow\".",
+        "«Проверить»: закрытые примеры, включая чужой ресурс, неизвестную роль и анонима, совпадают."
       ],
       "self_check": [
         {
-          "question": "Какое условие определяет ответ?",
-          "answer": "Unauthenticated→unauthenticated. PrincipalID и ownerID должны быть positive. User может read/update/delete только своего positive ID; admin — перечисленные read/update/delete любого positive owner. Unknown role/action/ID→forbidden. Role не приходит из body."
-        },
-        {
-          "question": "Что доказывают перечисленные cases?",
-          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+          "question": "Почему неаутентифицированный пользователь получает unauthenticated, а не forbidden?",
+          "answer": "Отсутствие входа — отдельная причина отказа. Клиент должен понимать, что нужно войти, а не что действие запрещено."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Какова граница или инвариант темы?",
-      "answer": "Отличать principal, resource owner и action."
+      "question": "Чем аутентификация отличается от авторизации?",
+      "answer": "Аутентификация отвечает, кто пользователь. Авторизация отвечает, можно ли ему выполнить это действие с этим ресурсом."
     },
     {
-      "question": "Что доказывает функциональный test?",
-      "answer": "Только заданные наблюдаемые результаты на перечисленных входах."
+      "question": "Что значит отказ по умолчанию?",
+      "answer": "Всё, что явно не разрешено, запрещено. Неизвестная роль, действие или идентификатор дают отказ."
     },
     {
-      "question": "Как воспроизвести отказ?",
-      "answer": "Создать один маленький fixture и изменить один параметр."
+      "question": "Откуда должен браться владелец ресурса?",
+      "answer": "Из хранилища, по идентификатору ресурса. Значение из тела запроса клиент может подменить."
     },
     {
-      "question": "Как обрабатывать внутреннюю ошибку?",
-      "answer": "Нормализовать её в стабильную безопасную категорию."
+      "question": "Зачем условие владельца ставить в WHERE?",
+      "answer": "Проверка в коде после выборки уже прочитала строку. Условие в запросе не даёт прочитать чужую запись."
     },
     {
-      "question": "Почему важны negative cases?",
-      "answer": "Успешный случай не проверяет deny, rollback, cleanup или expiry."
+      "question": "Что такое IDOR и как от него защищаются?",
+      "answer": "IDOR — доступ к чужому объекту по идентификатору без проверки владельца. Защита: проверять владельца на каждом обращении."
     },
     {
-      "question": "Обязателен ли AI Tutor?",
-      "answer": "Нет, материал можно пройти самостоятельно."
+      "question": "Почему роль не приходит из тела запроса?",
+      "answer": "Клиент может подставить любую роль. Роль берётся из серверной сессии, которую клиент не меняет."
     }
   ]
 }
