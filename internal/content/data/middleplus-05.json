@@ -1,129 +1,144 @@
 {
-  "id": "middleplus-05",
-  "title": "Heap profile и жизненный цикл памяти",
-  "rank": "Middle+",
-  "module": "middleplus-measurement",
-  "prerequisites": [
-    "middleplus-04"
-  ],
-  "estimated_minutes": 210,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 85,
-  "learning_outcomes": [
-    "Различать суммарный объём выделенной памяти и объём памяти, занятой сейчас.",
-    "Использовать профиль кучи и путь удержания объекта в памяти, указывая момент снимка и состояние сборщика мусора.",
-    "Сравнить занятую память с лимитом и не делать вывод об утечке по одному снимку."
-  ],
-  "glossary": [
+ "id": "middleplus-05",
+ "title": "Heap profile и жизненный цикл памяти",
+ "rank": "Middle+",
+ "module": "middleplus-measurement",
+ "prerequisites": [
+  "middleplus-04"
+ ],
+ "estimated_minutes": 210,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 85,
+ "learning_outcomes": [
+  "Различать накопленный объём выделений и живую память на момент снимка и выбирать режим heap-профиля под вопрос.",
+  "Отличать место выделения от владельца ссылки: искать путь удержания в коде от долгоживущих корней и доказывать его тестом жизненного цикла.",
+  "Сравнивать снимки памяти только при завершённом GC и сопоставимой нагрузке, не называя рост по одному снимку утечкой."
+ ],
+ "glossary": [
+  {
+   "term": "inuse_space",
+   "translation": "занятая память",
+   "definition": "Объём объектов, остающихся живыми на момент снимка."
+  },
+  {
+   "term": "alloc_space",
+   "translation": "выделенная память",
+   "definition": "Накопленный объём аллокаций за выбранный период."
+  },
+  {
+   "term": "retaining path",
+   "translation": "путь удержания",
+   "definition": "Цепочка ссылок, из-за которой объект остаётся достижимым."
+  }
+ ],
+ "markdown_file": "middleplus-05.md",
+ "exercises": [
+  {
+   "id": "middleplus-05-easy",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: проверь memory budget",
+   "prompt": "true при used ≥ 0, limit > 0 и used ≤ limit.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc MemoryBudget(used, limit int64) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func MemoryBudget(used, limit int64) bool сохранена; без func main, печати и импортов.",
+    "Нулевой лимит, отрицательное used и превышение дают false; равенство used и limit допустимо.",
+    "Функция сравнивает пару учебных чисел и не различает in-use и накопленные выделения — это помнит вызывающий."
+   ],
+   "self_check": [
     {
-      "term": "inuse_space",
-      "translation": "занятая память",
-      "definition": "Объём объектов, остающихся живыми на момент снимка."
+     "question": "Почему лимит должен быть строго положительным?",
+     "answer": "Нулевой или отрицательный лимит бессмысленен как бюджет; такой вход считается некорректным."
     },
     {
-      "term": "alloc_space",
-      "translation": "выделенная память",
-      "definition": "Накопленный объём аллокаций за выбранный период."
-    },
-    {
-      "term": "retaining path",
-      "translation": "путь удержания",
-      "definition": "Цепочка ссылок, из-за которой объект остаётся достижимым."
+     "question": "Что функция не знает о своих аргументах?",
+     "answer": "Какая метрика передана — живая память или накопленные выделения; смысл задаёт вызывающий код."
     }
-  ],
-  "markdown_file": "middleplus-05.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-05-medium",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: проверь heap counters без смешения метрик",
+   "prompt": "true, если inuse_space ≥ 0 и alloc_space ≥ 0; порядок между ними не требовать.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ValidHeapProfile(inuseBytes, allocBytes int64) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\ntrue\n",
+   "criteria": [
+    "Сигнатура func ValidHeapProfile(inuseBytes, allocBytes int64) bool сохранена; без func main, печати и импортов.",
+    "Неотрицательность каждой метрики проверяется отдельно; отрицательное значение любой из них даёт false.",
+    "Неравенство inuse ≤ alloc не требуется: у живой памяти и накопленных выделений разные временные границы."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-05-easy",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: проверь memory budget",
-      "prompt": "Верните true при неотрицательном used, положительном limit и `used<=limit`. Эти значения — фиктивные счётчики; функция ничего не читает из runtime/pprof.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc MemoryBudget(used, limit int64) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Обработать нулевой лимит и превышение.",
-        "Не путать heap in-use и cumulative allocations."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Проверка лимита на паре значений не измеряет память приложения."
-        }
-      ]
+     "question": "Почему inuse может быть больше alloc?",
+     "answer": "inuse включает объекты, выделенные до начала окна, за которое накоплен alloc_space."
     },
     {
-      "id": "middleplus-05-medium",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: проверь heap counters без смешения метрик",
-      "prompt": "Проверьте только, что `inuse_space` и `alloc_space` неотрицательны. Не требуйте `inuse<=alloc`: in-use может включать объекты, выделенные до окна накопления alloc_space. Функция не читает runtime profile.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ValidHeapProfile(inuseBytes, allocBytes int64) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\ntrue\n",
-      "criteria": [
-        "Неотрицательность каждой метрики проверяется отдельно.",
-        "Не сравнивать in-use snapshot с cumulative allocations как универсальное неравенство."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "`alloc_space` cumulative за период и `inuse_space` live на момент снимка имеют разные временные границы; между ними нет общего универсального порядка."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-05-hard",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: классифицируй retained heap после GC",
-      "prompt": "Сравните неотрицательные in-use fixture только если GC завершён: lower_after_gc / higher_after_gc / unchanged; иначе gc_not_completed. Не выводите leak из одного снимка.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc HeapChange(before, after int64, gcCompleted bool) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"lower_after_gc\"\n",
-      "criteria": [
-        "Проверять завершение GC и диапазоны до сравнения.",
-        "Снижение/рост — наблюдение, не диагноз утечки."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Retaining path и повторные снимки нужны для проверки причины удержания памяти."
-        }
-      ]
+     "question": "Что эта проверка говорит о профиле?",
+     "answer": "Только что счётчики не отрицательны; о режиме сбора и моменте снимка она ничего не знает."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-05-hard",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: классифицируй retained heap после GC",
+   "prompt": "invalid; gc_not_completed; затем lower_after_gc / higher_after_gc / unchanged по карточке.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc HeapChange(before, after int64, gcCompleted bool) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"lower_after_gc\"\n",
+   "criteria": [
+    "Сигнатура func HeapChange(before, after int64, gcCompleted bool) string сохранена; без func main, печати и импортов.",
+    "Порядок проверок: отрицательные значения → invalid, незавершённый GC → gc_not_completed, затем сравнение.",
+    "Результат — наблюдение об одной паре снимков: lower_after_gc, higher_after_gc или unchanged, не диагноз утечки."
+   ],
+   "self_check": [
     {
-      "question": "Чем alloc_space отличается от inuse_space?",
-      "answer": "Первое показывает накопленные выделения, второе приближает живую память на момент snapshot; один и тот же объект может давать разные картины."
+     "question": "Почему сравнивать снимки можно только при завершённом GC?",
+     "answer": "До сборки живая память включает мусор, ещё не освобождённый; разница тогда отражает фазу GC, а не удержание."
     },
     {
-      "question": "Какой вопрос задают allocs/op и heap profile соответственно?",
-      "answer": "allocs/op и B/op показывают цену выделений на операцию; heap profile помогает искать накопленные выделения или удержание объектов."
-    },
-    {
-      "question": "Почему важен момент получения heap snapshot?",
-      "answer": "Снимок зависит от GC, прогрева и жизненного цикла; сравнивать снимки нужно при сопоставимых условиях и с записанным режимом сбора."
-    },
-    {
-      "question": "Почему sync.Pool не является постоянным хранилищем?",
-      "answer": "Pool предназначен для повторного использования временных объектов, а его содержимое может очищаться сборщиком мусора."
-    },
-    {
-      "question": "Что проверить при большом retained heap?",
-      "answer": "Найти retaining path от корня к объекту, проверить ссылки в backing arrays, globals, maps и долгоживущих goroutine; отдельно оценить жизненный цикл."
+     "question": "Что нужно, чтобы назвать рост утечкой?",
+     "answer": "Серия снимков под одинаковой нагрузкой с монотонным ростом и найденный в коде путь удержания."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Чем alloc_space отличается от inuse_space?",
+   "answer": "alloc_space — накопленные выделения за период, inuse_space — живая память на момент снимка; один объект даёт разные картины в двух режимах."
+  },
+  {
+   "question": "Какой вопрос задают allocs/op и heap-профиль соответственно?",
+   "answer": "allocs/op и B/op — краткосрочная цена выделений на операцию; heap-профиль — кто выделяет много или что остаётся живым."
+  },
+  {
+   "question": "Почему важен момент получения снимка?",
+   "answer": "Снимок зависит от фазы GC, прогрева и жизненного цикла процесса; сравнивать можно только снимки с записанными и сопоставимыми условиями."
+  },
+  {
+   "question": "Почему sync.Pool не является постоянным хранилищем?",
+   "answer": "Пул создан для повторного использования временных объектов, и сборщик мусора вправе очистить его содержимое."
+  },
+  {
+   "question": "Что проверить при большом удерживаемом heap?",
+   "answer": "Путь удержания от корня к объекту: глобальные переменные, map и кеши, хвосты backing array, замыкания долгоживущих горутин; и отдельно жизненный цикл объекта."
+  }
+ ]
 }
