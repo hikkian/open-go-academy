@@ -78,7 +78,8 @@ for lid in sys.argv[1:]:
     for lab in re.findall(r"^> \*\*([^*]+)\*\*", md, flags=re.M):
         if lab not in ("Важно.","Подсказка.","Типичная ошибка.","Зачем."): problems.append(f"{lid}: unknown callout label {lab}")
     if re.search(r"^\|", md, flags=re.M): problems.append(f"{lid}: markdown table (not rendered)")
-    if re.search(r"<[a-z]+[ >]", md): problems.append(f"{lid}: raw HTML")
+    # <nil> is Go's printed output (fmt prints a nil error as <nil>), not markup
+    if re.search(r"<[a-z]+[ >]", md.replace("<nil>", "")): problems.append(f"{lid}: raw HTML")
     links(md, lesson_ids, all_ex)
     ex=examples(md)
     if not ex: problems.append(f"{lid}: no go example")
