@@ -1,135 +1,150 @@
 {
-  "id": "middleplus-10",
-  "title": "Репликация и lag",
-  "rank": "Middle+",
-  "module": "middleplus-data",
-  "prerequisites": [
-    "middleplus-09"
-  ],
-  "estimated_minutes": 210,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 90,
-  "learning_outcomes": [
-    "Классифицировать отставание реплики и выбирать безопасный источник чтения.",
-    "Объяснять, почему фиксация данных на основном сервере не гарантирует их немедленную видимость на реплике.",
-    "Обеспечивать чтение собственных записей, направляя запрос на основной сервер или проверяя отметку обработанной версии."
-  ],
-  "glossary": [
+ "id": "middleplus-10",
+ "title": "Репликация и lag",
+ "rank": "Middle+",
+ "module": "middleplus-data",
+ "prerequisites": [
+  "middleplus-09"
+ ],
+ "estimated_minutes": 210,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 90,
+ "learning_outcomes": [
+  "Различать lag по времени и по позиции журнала и сравнивать порог только с метрикой того же вида, не принимая «неизвестно» за ноль.",
+  "Объяснять, почему подтверждённый commit на primary не означает видимость записи на реплике, и задавать допустимое устаревание от операции.",
+  "Выбирать источник чтения после записи: primary, ожидание позиции или токен — и называть предел булевой модели свежести."
+ ],
+ "glossary": [
+  {
+   "term": "replica lag",
+   "translation": "отставание реплики",
+   "definition": "Задержка применения изменений на реплике относительно primary."
+  },
+  {
+   "term": "primary",
+   "translation": "основной сервер",
+   "definition": "Узел, принимающий запись в заданной топологии."
+  },
+  {
+   "term": "read-your-writes",
+   "translation": "чтение своей записи",
+   "definition": "Гарантия, что последующее чтение клиента видит его предшествующую запись."
+  }
+ ],
+ "markdown_file": "middleplus-10.md",
+ "exercises": [
+  {
+   "id": "middleplus-10-easy",
+   "kind": "function",
+   "skills": [
+    "sql",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: выбери replica по lag budget",
+   "prompt": "lag ≥ 0 и ≤ maxLag → replica; больше → primary; отрицательные → invalid.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ReadSource(lagSeconds, maxLag int) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"replica\"\n",
+   "criteria": [
+    "Сигнатура func ReadSource(lagSeconds, maxLag int) string сохранена; без func main, печати и импортов.",
+    "Отрицательный lag или порог дают invalid до сравнения; порог включительный.",
+    "Порог — продуктовое решение об операции; функция не подключается к базе и не измеряет lag."
+   ],
+   "self_check": [
     {
-      "term": "replica lag",
-      "translation": "отставание реплики",
-      "definition": "Задержка применения изменений на реплике относительно primary."
+     "question": "Что вернуть при lag, равном порогу?",
+     "answer": "replica: порог включительный."
     },
     {
-      "term": "primary",
-      "translation": "основной сервер",
-      "definition": "Узел, принимающий запись в заданной топологии."
-    },
-    {
-      "term": "read-your-writes",
-      "translation": "чтение своей записи",
-      "definition": "Гарантия, что последующее чтение клиента видит его предшествующую запись."
+     "question": "Почему отрицательный lag — invalid, а не replica?",
+     "answer": "Отрицательное значение означает ошибку измерения или расхождение часов; доверять ему нельзя."
     }
-  ],
-  "markdown_file": "middleplus-10.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-10-medium",
+   "kind": "function",
+   "skills": [
+    "sql",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: проверь допускаемый replica lag",
+   "prompt": "true только для неотрицательных lag и порога, когда lag ≤ maxLag.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ValidReplicaLag(lagSeconds, maxLag int) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func ValidReplicaLag(lagSeconds, maxLag int) bool сохранена; без func main, печати и импортов.",
+    "Отрицательные lag или порог дают false; порог включительный.",
+    "Секунды lag не отождествляются с согласованностью всех запросов."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-10-easy",
-      "kind": "function",
-      "skills": [
-        "sql",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: выбери replica по lag budget",
-      "prompt": "Выберите replica только если известный lag неотрицателен и не выше заданного maxLag; при большем lag — primary; отрицательные данные — invalid. Функция не подключается к БД.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ReadSource(lagSeconds, maxLag int) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"replica\"\n",
-      "criteria": [
-        "Не использовать replica при нарушенном бюджете lag.",
-        "Сформулировать что означает заданный порог."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Lag метрика может быть stale/неполной; read-after-write semantics требуют отдельной политики."
-        }
-      ]
+     "question": "Допустим ли нулевой lag?",
+     "answer": "Да: ноль неотрицателен и не больше любого неотрицательного порога."
     },
     {
-      "id": "middleplus-10-medium",
-      "kind": "function",
-      "skills": [
-        "sql",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: проверь допускаемый replica lag",
-      "prompt": "Верните true только для неотрицательных значений lag и порога, когда lag укладывается в бюджет. Это проверка чисел, не гарантия свежести данных.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ValidReplicaLag(lagSeconds, maxLag int) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Порог включительный.",
-        "Не отождествлять lag seconds с консистентностью всех запросов."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Физическая репликация и логическая задержка не всегда выражаются одной секундной метрикой."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-10-hard",
-      "kind": "function",
-      "skills": [
-        "sql",
-        "distributed",
-        "reliability"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: сохрани read-your-writes",
-      "prompt": "Для строгого read-your-writes читай с primary после записи; также выбери primary при stale replica. Replica разрешена лишь для чтения без предшествующей записи и с сигналом freshness=true. Сигналы задаются fixture.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ReadAfterWrite(wrote, replicaFresh bool) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"primary\"\n\"replica\"\n",
-      "criteria": [
-        "Запись всегда требует primary в этой модели.",
-        "Не утверждать, что boolean freshness подтверждает БД."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Маршрутизация на primary — один возможный механизм read-your-writes; реальные системы могут использовать LSN/token fencing."
-        }
-      ]
+     "question": "Что не говорит секундная метрика lag?",
+     "answer": "Видна ли конкретная запись: физическая репликация и логическая видимость не сводятся к одной цифре."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-10-hard",
+   "kind": "function",
+   "skills": [
+    "sql",
+    "distributed",
+    "reliability"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: сохрани read-your-writes",
+   "prompt": "После записи или при несвежей реплике → primary; иначе replica.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ReadAfterWrite(wrote, replicaFresh bool) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"primary\"\n\"replica\"\n",
+   "criteria": [
+    "Сигнатура func ReadAfterWrite(wrote, replicaFresh bool) string сохранена; без func main, печати и импортов.",
+    "Запись всегда ведёт на primary в этой модели; несвежая реплика — тоже primary.",
+    "Флаг свежести — входной сигнал, а не подтверждение базы; маршрут на primary — один из механизмов read-your-writes."
+   ],
+   "self_check": [
     {
-      "question": "Какие значения могут называться replication lag?",
-      "answer": "Разница времени, позиций журнала или оценка задержки между этапами передачи и применения; определения не взаимозаменяемы."
+     "question": "Почему после записи выбирается primary даже при свежей реплике?",
+     "answer": "Флаг свежести не доказывает, что именно эта запись уже применена на реплике."
     },
     {
-      "question": "Что гарантирует commit на primary о последующем чтении с replica?",
-      "answer": "Он не гарантирует немедленную видимость этой записи на replica; применение может отставать."
-    },
-    {
-      "question": "Что можно сделать для read-your-writes?",
-      "answer": "Направить последующее чтение на primary или применять согласованный барьер/токен, если архитектура гарантирует его достижение."
-    },
-    {
-      "question": "Почему неизвестный lag нельзя считать нулевым?",
-      "answer": "Отсутствие метрики не доказывает отсутствие задержки; fallback должен быть явно безопасным, например выбрать primary."
-    },
-    {
-      "question": "Почему replica не является backup?",
-      "answer": "Удаление или повреждение данных может реплицироваться; backup и проверенное восстановление решают отдельную задачу."
+     "question": "Какие ещё механизмы дают read-your-writes?",
+     "answer": "Ожидание позиции журнала на реплике и токен согласованности; функция их не моделирует."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Каким способом определён lag: временем или позицией журнала, и почему это важно?",
+   "answer": "Время включает расхождение часов и зависит от скорости применения; позиция точна, но не переводится в секунды; порог сравнивают с метрикой того же вида."
+  },
+  {
+   "question": "Что видит клиент сразу после commit при чтении с реплики?",
+   "answer": "Возможно, ещё старое состояние: запись не применена или снимок открыт раньше; данные не потеряны."
+  },
+  {
+   "question": "Что делать, когда lag неизвестен?",
+   "answer": "Идти безопасным путём — на primary или с отказом; отсутствие данных не равно нулевому lag."
+  },
+  {
+   "question": "Почему фиксированная пауза перед чтением не гарантия?",
+   "answer": "При всплеске нагрузки lag превысит паузу; ждать нужно событие — позицию журнала — или читать с primary."
+  },
+  {
+   "question": "Почему реплика не резервная копия?",
+   "answer": "Удаление и повреждение данных реплицируются так же, как полезные изменения; восстановление требует независимой копии."
+  }
+ ]
 }
