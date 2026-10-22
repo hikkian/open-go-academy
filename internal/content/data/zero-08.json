@@ -70,9 +70,9 @@
       "starter_code": "package main\n\nfunc countPassing(scores []int) int {\n\t// Считай оценки >= 60\n\treturn 0\n}",
       "public_output": "2\n0\n",
       "criteria": [
-        "Функция имеет указанную сигнатуру и компилируется.",
-        "Для каждого входа возвращается результат согласно контракту упражнения.",
-        "Обработан пустой или граничный пример, указанный в условии."
+        "countPassing(scores []int) int компилируется; оценка 60 засчитывается.",
+        "«Запустить»: пример 1 и пример 2 дают 2 и 0.",
+        "«Проверить»: закрытые примеры, включая оценку 0 и пустой ввод, совпадают."
       ],
       "self_check": [
         {
@@ -95,14 +95,14 @@
       ],
       "difficulty": "medium",
       "title": "Собери сводку результатов",
-      "prompt": "Реализуй summarizeScores. Поля ScoreSummary, пустой ввод и формула среднего уже заданы в starter code.",
+      "prompt": "Собери сводку: количество, сумму, среднее, минимум и максимум; для пустого ввода нули.",
       "starter_file": "main.go",
       "starter_code": "package main\n\ntype ScoreSummary struct {\n\tCount int\n\tTotal int\n\tAverage float64\n\tMinimum int\n\tMaximum int\n\tHasScores bool\n}\n\nfunc summarizeScores(scores []int) ScoreSummary {\n\t// Для пустого ввода все числа равны 0, HasScores=false.\n\t// Для непустого: посчитай сумму, среднее, минимум и максимум.\n\treturn ScoreSummary{}\n}",
       "public_output": "{\"Count\":2,\"Total\":30,\"Average\":15,\"Minimum\":10,\"Maximum\":20,\"HasScores\":true}\n{\"Count\":0,\"Total\":0,\"Average\":0,\"Minimum\":0,\"Maximum\":0,\"HasScores\":false}\n",
       "criteria": [
-        "Функция имеет указанную сигнатуру и компилируется.",
-        "Для каждого входа возвращается результат согласно контракту упражнения.",
-        "Обработан пустой или граничный пример, указанный в условии."
+        "summarizeScores(scores []int) ScoreSummary компилируется; структура ScoreSummary не изменена.",
+        "«Запустить»: пример 1 и пример 2 дают две сводки в виде JSON-объектов.",
+        "«Проверить»: закрытые примеры, включая одно значение и пустой ввод, совпадают; Average дробный."
       ],
       "self_check": [
         {
@@ -125,14 +125,14 @@
       ],
       "difficulty": "hard",
       "title": "Объясни результат сводки",
-      "prompt": "Верни `no data`, если HasScores=false; иначе `ready`, если Average >= 60; иначе `review`. Используй поля переданной структуры.",
+      "prompt": "Верни no data без оценок, иначе ready при среднем от 60 и review в остальных случаях.",
       "starter_file": "main.go",
       "starter_code": "package main\n\ntype ScoreSummary struct { Count int; Total int; Average float64; Minimum int; Maximum int; HasScores bool }\n\nfunc reviewStatus(summary ScoreSummary) string {\n\t// Примени правила статуса\n\treturn \"\"\n}",
       "public_output": "\"no data\"\n\"ready\"\n",
       "criteria": [
-        "Функция имеет указанную сигнатуру и компилируется.",
-        "Для каждого входа возвращается результат согласно контракту упражнения.",
-        "Обработан пустой или граничный пример, указанный в условии."
+        "reviewStatus(summary ScoreSummary) string компилируется; сначала проверяется HasScores.",
+        "«Запустить»: пример 1 и пример 2 дают «no data» и «ready».",
+        "«Проверить»: закрытые примеры, включая среднее 59, совпадают."
       ],
       "self_check": [
         {
