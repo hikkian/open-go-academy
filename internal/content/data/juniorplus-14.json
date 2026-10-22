@@ -66,23 +66,19 @@
       ],
       "difficulty": "easy",
       "title": "Проверь JSON response contract",
-      "prompt": "true только когда status 200 и media type case-insensitive application/json, в том числе с параметром charset. Это assertion helper, не HTTP вызов.",
+      "prompt": "True при статусе 200 и типе application/json без учёта регистра, параметры игнорируй.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc IsJSONSuccessResponse(status int, contentType string) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\ntrue\n",
       "criteria": [
-        "Точная сигнатура компилируется и соответствует контракту.",
-        "Обычные и граничные значения обработаны согласно условию.",
-        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+        "IsJSONSuccessResponse(status int, contentType string) bool компилируется; параметры типа отбрасываются.",
+        "«Запустить»: пример 1 и пример 2 дают true и true.",
+        "«Проверить»: закрытые примеры, включая другой регистр и похожий тип, совпадают."
       ],
       "self_check": [
         {
-          "question": "Какое условие определяет ответ?",
-          "answer": "true только когда status 200 и media type case-insensitive application/json, в том числе с параметром charset. Это assertion helper, не HTTP вызов."
-        },
-        {
-          "question": "Что доказывают перечисленные cases?",
-          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+          "question": "Почему Application/JSON с charset принимается?",
+          "answer": "Тип содержимого сравнивается без параметров и без учёта регистра. Параметр charset не меняет тип."
         }
       ]
     },
@@ -95,23 +91,19 @@
       ],
       "difficulty": "medium",
       "title": "Задай HTTP ожидаемый CRUD status",
-      "prompt": "GET found→200/missing→404; POST→201; PUT/PATCH found→200/missing→404; DELETE found→204/missing→404; иной method→405.",
+      "prompt": "GET и PUT с PATCH — 200 или 404; POST — 201; DELETE — 204 или 404; иначе 405.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc CRUDStatus(method string, resourceFound bool) int {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "200\n201\n",
       "criteria": [
-        "Точная сигнатура компилируется и соответствует контракту.",
-        "Обычные и граничные значения обработаны согласно условию.",
-        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+        "CRUDStatus(method string, resourceFound bool) int компилируется; неизвестный метод даёт 405.",
+        "«Запустить»: пример 1 и пример 2 дают 200 и 201.",
+        "«Проверить»: закрытые примеры, включая DELETE без ресурса и HEAD, совпадают."
       ],
       "self_check": [
         {
-          "question": "Какое условие определяет ответ?",
-          "answer": "GET found→200/missing→404; POST→201; PUT/PATCH found→200/missing→404; DELETE found→204/missing→404; иной method→405."
-        },
-        {
-          "question": "Что доказывают перечисленные cases?",
-          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+          "question": "Почему DELETE для отсутствующего ресурса даёт 404?",
+          "answer": "Удалять нечего: контракт задания сообщает об отсутствии ресурса статусом 404."
         }
       ]
     },
@@ -124,51 +116,47 @@
       ],
       "difficulty": "hard",
       "title": "Оцени rollback и cleanup evidence",
-      "prompt": "Не закрыта fixture→cleanup_failed; operation error + rollback seen→rollback_verified; error without rollback→rollback_missing; rollback without error→unexpected_rollback; otherwise committed. Функция классифицирует evidence и не выполняет транзакцию.",
+      "prompt": "Сначала уборка, потом исход: ошибка с откатом, ошибка без отката, откат без ошибки, иначе.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc TransactionTestOutcome(operationFailed, rollbackObserved, fixtureCleaned bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"rollback_verified\"\n\"committed\"\n",
       "criteria": [
-        "Точная сигнатура компилируется и соответствует контракту.",
-        "Обычные и граничные значения обработаны согласно условию.",
-        "Проверка не утверждает внешние свойства, которых функция не проверяет."
+        "TransactionTestOutcome(operationFailed, rollbackObserved, fixtureCleaned bool) string компилируется; уборка проверяется первой.",
+        "«Запустить»: пример 1 и пример 2 дают \"rollback_verified\" и \"committed\".",
+        "«Проверить»: закрытые примеры, включая неубранную фикстуру и откат без ошибки, совпадают."
       ],
       "self_check": [
         {
-          "question": "Какое условие определяет ответ?",
-          "answer": "Не закрыта fixture→cleanup_failed; operation error + rollback seen→rollback_verified; error without rollback→rollback_missing; rollback without error→unexpected_rollback; otherwise committed. Функция классифицирует evidence и не выполняет транзакцию."
-        },
-        {
-          "question": "Что доказывают перечисленные cases?",
-          "answer": "Только заданное наблюдаемое поведение функции в конечных test vectors."
+          "question": "Почему неубранная фикстура важнее результата теста?",
+          "answer": "Следующие тесты увидят мусор и упадут непонятно почему. Поэтому уборка проверяется раньше исхода."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Какова граница или инвариант темы?",
-      "answer": "Различать HTTP/fake проверки и реальные PostgreSQL tests."
+      "question": "Чем тест обработчика отличается от теста PostgreSQL?",
+      "answer": "Тест обработчика проверяет HTTP-контракт в памяти. Тест PostgreSQL проверяет миграции, откат и уборку на настоящей базе."
     },
     {
-      "question": "Что доказывает функциональный test?",
-      "answer": "Только заданные наблюдаемые результаты на перечисленных входах."
+      "question": "Почему время передаётся в функцию аргументом?",
+      "answer": "Тест тогда подставляет фиксированное время и не зависит от часов в момент запуска."
     },
     {
-      "question": "Как воспроизвести отказ?",
-      "answer": "Создать один маленький fixture и изменить один параметр."
+      "question": "Зачем уборка фикстуры стоит в defer?",
+      "answer": "Defer выполнится даже при падении теста, и одноразовая база не останется мусором."
     },
     {
-      "question": "Как обрабатывать внутреннюю ошибку?",
-      "answer": "Нормализовать её в стабильную безопасную категорию."
+      "question": "Почему важны негативные случаи таблицы?",
+      "answer": "Успешный случай не проверяет отказы. Негативные случаи показывают, что правило срабатывает там, где должно."
     },
     {
-      "question": "Почему важны negative cases?",
-      "answer": "Успешный случай не проверяет deny, rollback, cleanup или expiry."
+      "question": "Что значит тест, который проходит локально и падает в CI?",
+      "answer": "Тест зависит от окружения: времени, порядка или состояния соседнего теста. Его нужно сделать детерминированным."
     },
     {
-      "question": "Обязателен ли AI Tutor?",
-      "answer": "Нет, материал можно пройти самостоятельно."
+      "question": "Обязателен ли AI Tutor для этой главы?",
+      "answer": "Нет. Контракты и проверки доступны без него."
     }
   ]
 }

@@ -1,193 +1,200 @@
-# HTTP и PostgreSQL тесты
+# HTTP и PostgreSQL tests
+
+## Что ты сделаешь
+
+Ты напишешь три функции, которые проверяют ответы и результаты тестов: `IsJSONSuccessResponse` проверит контракт JSON-ответа, `CRUDStatus` выберет ожидаемый статус CRUD-операции, `TransactionTestOutcome` классифицирует результат теста транзакции. Каждая функция — assertion helper: она не делает HTTP-запрос и не открывает базу.
 
 ## Один тип теста не проверяет всё
 
-Тест (test, автоматическая проверка) — маленькая программа, которая задаёт вход, выполняет код и сравнивает наблюдаемый результат с договорённостью. В HTTP и SQL есть несколько границ, поэтому полезно разделять уровень теста:
-
-| Уровень | Что проверяет | Чего не подтверждает |
-|---|---|---|
-| Unit test функции | правило или преобразование | HTTP, сеть и PostgreSQL |
-| Handler test через `httptest.NewRecorder` | метод, путь, статус, headers, body | TCP listener и реальную БД |
-| Handler с fake repository | HTTP и решение о вызове dependency | SQL запрос и ограничения PostgreSQL |
-| PostgreSQL integration test | миграции, SQL, constraints, transaction | запуск production окружения целиком |
-| End-to-end | компоненты вместе через публичный контракт | все сочетания входов или все production сбои |
-
-Хорошая проверка явно называет, что она доказывает. Если сервис использует fake map, это unit/handler fixture, даже когда тест называется «integration». Внешняя форма теста не повышает доказательную силу внутри.
+Быстрые тесты проверяют правило на входах без внешних систем. Тест обработчика проверяет HTTP-контракт через `httptest`, без открытого порта. Реальный тест PostgreSQL проверяет миграции, откат и уборку на одноразовой базе. Эти типы отвечают на разные вопросы, и тест одного типа не доказывает того, что проверяет другой.
 
 ## Handler test без listener
 
-`httptest.NewRequest` создаёт локальный request, а `httptest.NewRecorder` записывает response в память. Handler вызывается как обычная функция через `ServeHTTP`. Это подходит для status, headers и JSON body. Для JSON декодируйте тело в структуру; whitespace и порядок ключей JSON объекта не должны ломать тест, если контракт их не фиксирует.
+`httptest.NewRecorder` записывает ответ в память. Тест проверяет статус и заголовки и не зависит от сети. Поэтому такие тесты быстрые и детерминированные:
 
-Пишите небольшие отдельные тесты для success, отсутствующего ресурса, неправильного method, malformed JSON и oversized body. Таблица случаев (`table-driven test`, тест с таблицей входов) упрощает добавление проверок без копирования одной и той же setup части. В каждом failure печатайте ожидаемое и фактическое значение.
-
-## Fake и PostgreSQL fixture отвечают на разные вопросы
-
-Fake store — контролируемая реализация нужного тесту интерфейса. Он позволяет создать повторяемый сценарий: alias уже занят, lookup выдаёт ошибку или fixture принадлежит другому owner. Fake быстрый и понятный. Он не умеет гарантировать, что уникальный индекс сработает конкурентно, что SQL placeholder действительно параметризирован или что transaction делает rollback.
-
-Integration test запускает PostgreSQL, применяет настоящие migrations на пустую тестовую схему или disposable database, выполняет операции реальным pgx и чистит только собственный fixture. Тест должен отвечать, какой ресурс создал и кому принадлежит. Не указывайте в тесте путь к пользовательской БД и не делайте очистку широким `DELETE FROM links` на общем сервере. Не имитируйте DB драйвер, если вопрос о реальном драйвере.
-
-Изоляция (isolation, независимость тестовых данных) нужна, чтобы два test case не зависели от порядка. Популярные варианты — отдельная БД на тест, schema/table namespace с уникальным ID или rollback transaction для операций, поддерживающих её. Одного `TRUNCATE` недостаточно, если параллельные тесты работают с той же БД.
-
-Если отдельная DB недоступна, честно выполните HTTP suite на fake repository, но обозначьте ограничение. Не перенаправляйте integration URI в личную базу автоматически. Тестовый источник данных может требовать явную метку disposable database и короткий allowlist hostname. Ошибка старта — причина skip с именованным объяснением только там, где suite допускает optional DB; обязательная CI PostgreSQL fixture должна провалить сборку, если не запустилась.
-
-Перед повторным прогоном сопоставьте признаки изоляции: уникальный schema name, owner test, номер миграции и число созданных строк. Если несколько тестов используют `t.Parallel()`, убедитесь, что транзакции независимы и cleanup не удаляет чужие строки. Непараллельный запуск может скрыть гонку, поэтому самый важный конкурентный unique constraint case стоит повторять параллельно.
-
-## Миграции и rollback
-
-Миграция (migration, версия изменения схемы) должна запускаться на пустой базе так же, как используется в проекте. Integration fixture создаёт чистую БД, применяет версии по порядку, выполняет запрос и завершает setup в `t.Cleanup`. Если migration runner использует pool/connection, cleanup обязан закрыть его даже после fatal error.
-
-Транзакционный тест устанавливает наблюдаемый инвариант: если второй шаг изменения fails, первая запись не остаётся одна. Fake может проверить orchestration, но реальный rollback проверяется PostgreSQL, потому что semantics transaction и constraint принадлежат БД. Для уникальности запустите две конкурирующие вставки и убедитесь, что один результат успех, второй — нормализованный conflict, а количество строк равно одному.
-
-## Пример 1. HTTP contract через recorder
-
-Путь `example_test.go`; внешний сервер не открывается.
-
-```go group=handler-recorder file=handler_test.go mode=test
-package academy
+```go
+package main
 
 import (
-	"net/http"
-	"net/http/httptest"
-	"testing"
+    "fmt"
+    "net/http"
+    "net/http/httptest"
 )
 
-func health(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/health" { http.NotFound(w,r); return }
-	if r.Method != http.MethodGet { w.Header().Set("Allow","GET"); http.Error(w,"method not allowed",405); return }
-	w.Header().Set("Content-Type","application/json")
-	w.WriteHeader(200)
-	_, _ = w.Write([]byte(`{"status":"ok"}`))
-}
-
-func TestHealthResponse(t *testing.T) {
-	w := httptest.NewRecorder()
-	r := httptest.NewRequest(http.MethodGet,"/health",nil)
-	health(w,r)
-	if w.Code != 200 { t.Fatalf("status=%d",w.Code) }
-	if w.Header().Get("Content-Type") != "application/json" { t.Fatal("wrong content type") }
-	if w.Body.String() != `{"status":"ok"}` { t.Fatalf("body=%q",w.Body.String()) }
+func main() {
+    h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(http.StatusOK)
+    })
+    rec := httptest.NewRecorder()
+    h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/", nil))
+    fmt.Println(rec.Code, rec.Header().Get("Content-Type"))
 }
 ```
 
-Тест осознанно фиксирует конкретные пробелы этого примера через строку; production JSON test обычно декодировал бы body и сравнивал поле `status`. Не переносите ненужное текстовое сравнение в договор.
+Вывод: `200 application/json`. Тест видит статус и заголовок так же, как клиент, но без сети.
 
-## Пример 2. Таблица method/path/status
+> **Важно.** Тест обработчика не проверяет базу. Если ответ зависит от данных, нужен отдельный тест с настоящим или подставным хранилищем.
 
-```go group=route-table-test file=route_test.go mode=test
-package academy
+## Таблица случаев и детерминизм
+
+Таблица случаев задаёт метод, признак наличия ресурса и ожидаемый статус. Каждый случай независим: тест не зависит от порядка и от времени запуска. Время и случайные значения передаются в функцию аргументами, а не берутся внутри:
+
+```go
+package main
 
 import (
-	"net/http"
-	"net/http/httptest"
-	"testing"
+    "fmt"
+    "time"
 )
 
-func healthTable(w http.ResponseWriter,r *http.Request) {
-	if r.URL.Path != "/health" { http.NotFound(w,r); return }
-	if r.Method != "GET" { w.Header().Set("Allow","GET"); http.Error(w,"method not allowed",405); return }
-	w.WriteHeader(http.StatusNoContent)
+func expired(now func() time.Time, deadline time.Time) bool {
+    return now().After(deadline)
 }
 
-func TestHealthRouteCases(t *testing.T) {
-	cases := []struct{name,method,path string; want int; allow string}{
-		{"ok","GET","/health",204,""},
-		{"wrong method","POST","/health",405,"GET"},
-		{"unknown path","GET","/other",404,""},
-	}
-	for _,tc := range cases { t.Run(tc.name,func(t *testing.T) {
-		w:=httptest.NewRecorder();healthTable(w,httptest.NewRequest(tc.method,tc.path,nil))
-		if w.Code!=tc.want { t.Fatalf("status=%d want=%d",w.Code,tc.want) }
-		if got:=w.Header().Get("Allow");got!=tc.allow{t.Fatalf("Allow=%q want=%q",got,tc.allow)}
-	}) }
+func main() {
+    fixed := time.Date(2026, 10, 23, 12, 0, 0, 0, time.UTC)
+    fmt.Println(expired(func() time.Time { return fixed }, fixed.Add(-time.Second)))
 }
 ```
 
-Имя каждого case объясняет failure. Такой тест можно выполнить в любом порядке: все локальные переменные принадлежат subtest.
+Вывод: `true`. Тест подставляет фиксированное время, поэтому результат одинаков при каждом запуске.
 
-## Пример 3. Cleanup локального fixture
+> **Типичная ошибка.** Вызывать `time.Now()` внутри проверяемой функции. Тест станет зависеть от часов и будет падать время от времени.
 
-`httptest.NewServer` открывает временный локальный listener для проверки HTTP client и server вместе. Он не использует DNS или внешний адрес; `Close` нужен обязательно.
+## Фикстура: создать, использовать, убрать
 
-```go group=local-server-test file=client_test.go mode=test
-package academy
+Одноразовая база или таблица — фикстура теста. Её создают в начале, используют и убирают в конце, даже если тест упал. Для этого используют `defer`:
 
-import (
-	"io"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-)
+```go
+package main
 
-func TestLocalHTTPClient(t *testing.T) {
-	server:=httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){w.WriteHeader(204)}))
-	t.Cleanup(server.Close)
-	response,err:=server.Client().Get(server.URL)
-	if err!=nil{t.Fatal(err)}
-	defer response.Body.Close()
-	_,_=io.Copy(io.Discard,response.Body)
-	if response.StatusCode!=204{t.Fatalf("status=%d",response.StatusCode)}
+import "fmt"
+
+func withFixture(run func()) {
+    fmt.Println("create")
+    defer fmt.Println("cleanup")
+    run()
+}
+
+func main() {
+    withFixture(func() {
+        fmt.Println("test")
+    })
 }
 ```
 
-Здесь нет PostgreSQL и нет реального DNS: этот integration test соединяет только локальный HTTP client с временным handler. БД тестируется отдельной disposable fixture.
+Вывод: `create`, `test`, `cleanup`. Уборка выполняется после теста, даже если внутри была паника.
 
-## Часы, случайность и стабильный тест
+## Если что-то пошло не так
 
-Время и случайность создают недетерминированность. Тест на expiry не должен ждать десять минут: передайте `now` через clock, например интерфейс `Now() time.Time` или функцию. Для случайного ID проверяйте свойства на границе — непустой допустимый размер, уникальность в наборе — и инъецируйте reader/generator там, где это действительно делает тест воспроизводимым. Не ослабляйте реальную генерацию до фиксированного токена в production.
-
-Старайтесь не обращаться к реальному DNS, внешнему HTTP, публичной PostgreSQL или платному service из unit теста. При недоступной disposable БД честно отмечайте integration suite unavailable; fake store не становится эквивалентом.
-
-### Время и порядок не должны быть случайными
-
-Не сравнивайте в тесте `time.Now()` с точностью до наносекунды, если контракт гарантирует только секунды. Внедрите фиксированную отметку времени, сравните диапазон или протестируйте нормализованное значение. Так вы сможете воспроизвести expiry ровно на границе. Аналогично, random ID хранится как случайный результат, но тесту не нужно требовать буквальное значение; проверяйте форму, длину и отличие двух токенов, если это уместно.
-
-Полезное failure сообщение отвечает: какое условие проверялось, что получилось и какое значение ожидалось. Не выводите весь приватный database row или access token ради контекста. Например, `TestUpdateOtherOwner/response` и `TestUpdateOtherOwner/persisted_state` разделяют отказ API и побочный эффект. Именованные subtests позволяют быстро запустить одно доказательство и затем полный набор.
-
-Проверяйте, что test cleanup выполняется и после раннего `t.Fatal`: `t.Cleanup` для этого надёжнее кода в конце тела. Порядок cleanup обратный регистрации, поэтому ресурсно зависимую схему запишите в понятной последовательности: handler stop, repository pool close, database/schema remove. Если ошибка cleanup важна для безопасности, CI не должна молча игнорировать её и объявлять тест успешным.
-
-### Что не нужно смешивать в один тест
-
-Один end-to-end сценарий полезен как acceptance proof, но плохая первая точка для поиска ошибки. Если он провалился, неизвестно, сломан ли router, auth middleware, repository query, migration или DB readiness. Быстрый handler test локализует protocol contract; repository integration test локализует SQL; один сквозной сценарий подтверждает их совместимость. Наиболее эффективная test suite содержит все три масштаба, а не только самые крупные сценарии.
-
-Для PostgreSQL race test дайте каждому конкуренту независимое действие и дождитесь обеих завершений через channel или WaitGroup. Не `Sleep` в надежде попасть в нужный interleaving. Уникальное ограничение БД принимает финальное решение; Service переводит ожидаемый конфликт в стабильный результат. Fake test может проверить нормализацию ошибки, но constraint race остаётся реальной DB responsibility.
-
-## Типичные ошибки и диагностика
-
-- **Один тест проверяет только status.** Успешный status ещё не подтверждает Content-Type, Location и body.
-- **Строковое сравнение JSON.** Порядок ключей и whitespace обычно незначимы. Декодируйте JSON.
-- **Запуск теста на общей user базе.** Fixture может удалить данные другого участника. Создавайте отдельный disposable database/schema.
-- **Утечка `httptest.Server`.** Включайте `t.Cleanup(server.Close)`; response body тоже закрывайте.
-- **Объявить fake proof PostgreSQL.** Fake не выполняет SQL, миграции, constraints или настоящий rollback.
-- **Параллельные тесты с общим static state.** Убирайте process globals, используйте уникальные IDs или изолированные схемы.
-- **Сравнивать текст SQL ошибки.** Нормализуйте результат в repository и тестируйте стабильную категорию; текст может измениться.
-- **Тестировать clock через sleep.** Подставьте значение времени напрямую, это быстрее и точнее.
-
-Если тест проходит отдельно, но падает в наборе, ищите общую БД, текущую папку, глобальную регистрацию маршрута, shared map и незакрытый listener. Запустите один case, затем весь пакет с повтором; тест, зависящий от порядка, содержит скрытое состояние.
+- Тест проходит локально и падает в CI → тест зависит от времени, порядка или состояния соседнего теста.
+- Тест оставляет таблицы после падения → уборка не в `defer`.
+- Статус другой, хотя логика верна → проверь, что тест использует нужный метод и признак ресурса.
+- `undefined: httptest` → импорт `"net/http/httptest"` не добавлен.
 
 ## Практика
 
-- **Easy:** запишите `httptest` response assertion для status, Content-Type и body. Для JSON декодируйте значение, не сравнивайте случайное форматирование.
-- **Medium:** протестируйте CRUD plus redirect через fake store: create меняет fake, GET отображает запись, redirect возвращает ожидаемый Location, неизвестный id — `404`. Назовите, что этот тест не проверяет SQL.
-- **Hard:** спроектируйте PostgreSQL fixture с migration с нуля, двумя users, rollback при конфликте и cleanup только созданных данных. Добавьте invalid body и conflict cases. Фикстура должна получать временную тестовую DSN явно; не подключайтесь к пользовательской DB.
+Три задания. Функции проверяются на входах из блока «Ожидаемый вывод»; закрытые примеры видны только в «Проверить». HTTP-запросов и базы нет.
 
-## Проверка понимания
+### Задание 1 · Проверь JSON response contract
 
-1. Что доказывает вызов handler через recorder?
-2. Какое свойство fake не может подтвердить?
-3. Для чего нужен `t.Cleanup`?
-4. Почему migration проверяют на пустой схеме?
-5. Как избавиться от `time.Sleep` в expiry test?
-6. Как изолировать параллельные PostgreSQL tests?
+**Цель.** Вернуть `true`, только если статус 200 и тип содержимого — `application/json` без учёта регистра, возможно с параметрами вроде `charset=utf-8`. Иначе `false`.
 
-Перед следующей главой повторите различие unit/handler/integration. В следующем уроке проверка password/session будет развита threat-driven тестами, а не фактом, что какой-либо fake метод вернул `true`.
+**Ожидаемый вывод** — входы: статус 200 с типом `application/json`, затем статус 200 с `application/json; charset=utf-8`:
 
-## Мини-глоссарий
+```text
+true
+true
+```
 
-- **unit test** — проверка одного правила или компонента с управляемыми зависимостями.
-- **integration test** — проверка связи с реальной зависимостью или внешней границей.
-- **fixture** — данные и ресурсы, подготовленные для одного теста.
-- **fake repository** — контролируемая тестовая реализация интерфейса хранения.
-- **migration** — версионированное изменение схемы БД.
-- **rollback** — отмена всех изменений транзакции.
-- **isolation (изоляция)** — независимость результата теста от соседних тестов.
-- **deterministic test** — тест, который повторяемо выдаёт одинаковый результат.
+**Шаги.**
+1. Выбери задание «Проверь JSON response contract»: в файле есть `IsJSONSuccessResponse` с `panic("TODO")`. Добавь импорт `"strings"`.
+2. Если статус не 200, верни `false`.
+3. Отрежь параметры: возьми часть строки до `;` и убери пробелы по краям.
+4. Сравни её с `application/json` без учёта регистра через `strings.EqualFold`.
+5. Нажми «Запустить» и сравни с блоком выше.
+6. Нажми «Проверить».
+
+**Как проверить себя.** `true` и `true`; все три критерия зелёные.
+
+**Если не принято.**
+- `application/jsonp` принят → сравнение целой части типа, а не префикса.
+- `Application/JSON` отвергнут → сравнение без учёта регистра.
+- Статус 201 принят → успех здесь только 200.
+
+> **Подсказка.** Сначала статус, потом тип содержимого.
+
+### Задание 2 · Задай HTTP ожидаемый CRUD status
+
+**Цель.** `GET`: 200, если ресурс найден, иначе 404. `POST` — 201. `PUT` и `PATCH`: 200 или 404. `DELETE`: 204 или 404. Любой другой метод — 405.
+
+**Ожидаемый вывод** — входы `GET` с найденным ресурсом и `POST` без ресурса:
+
+```text
+200
+201
+```
+
+**Шаги.**
+1. Выбери задание «Задай HTTP ожидаемый CRUD status»: в файле есть `CRUDStatus` с `panic("TODO")`.
+2. Для `GET` верни 200 при `resourceFound` и 404 иначе.
+3. Для `POST` верни 201.
+4. Для `PUT` и `PATCH` верни 200 при наличии и 404 без него.
+5. Для `DELETE` верни 204 при наличии и 404 без него.
+6. Иначе верни 405.
+7. Нажми «Запустить» и сравни с блоком выше.
+8. Нажми «Проверить».
+
+**Как проверить себя.** Два числа: `200` и `201`; все три критерия зелёные.
+
+**Если не принято.**
+- `DELETE` для отсутствующего ресурса даёт 204 → по контракту 404.
+- `PATCH` без ресурса даёт 200 → отсутствие ресурса даёт 404.
+- `HEAD` даёт 200 → HEAD не входит в таблицу и даёт 405.
+
+> **Подсказка.** По одной ветке на метод; для `GET`, `PUT`, `PATCH` и `DELETE` внутри ветки проверяется наличие.
+
+### Задание 3 · Оцени rollback и cleanup evidence
+
+**Цель.** Сначала проверить уборку: если фикстура не убрана — `cleanup_failed`. Затем: ошибка с откатом — `rollback_verified`; ошибка без отката — `rollback_missing`; откат без ошибки — `unexpected_rollback`; иначе `committed`.
+
+**Ожидаемый вывод** — входы: ошибка с откатом и уборкой, затем успех без отката и с уборкой:
+
+```text
+"rollback_verified"
+"committed"
+```
+
+**Шаги.**
+1. Выбери задание «Оцени rollback и cleanup evidence»: в файле есть `TransactionTestOutcome` с `panic("TODO")`.
+2. Если `fixtureCleaned` равно `false`, верни `cleanup_failed`.
+3. Если была ошибка и откат наблюдался, верни `rollback_verified`. Если была ошибка без отката, — `rollback_missing`.
+4. Если ошибки не было, но откат наблюдался, верни `unexpected_rollback`.
+5. Иначе верни `committed`.
+6. Нажми «Запустить» и сравни с блоком выше.
+7. Нажми «Проверить».
+
+**Как проверить себя.** Две строки в кавычках; все три критерия зелёные.
+
+**Если не принято.**
+- Неубранная фикстура даёт `committed` → проверка уборки должна стоять первой.
+- Ошибка без отката даёт `rollback_verified` → откат должен наблюдаться явно.
+- Откат без ошибки даёт `committed` → эта ветка отдельная: `unexpected_rollback`.
+
+> **Подсказка.** Порядок: уборка, потом ошибка с откатом, потом остальное.
+
+## Проверь себя
+
+- Чем тест обработчика отличается от теста PostgreSQL?
+- Почему время передаётся в функцию аргументом?
+- Зачем уборка фикстуры стоит в `defer`?
+- Почему важны негативные случаи таблицы?
+- Что значит тест, который проходит локально и падает в CI?
+- Обязателен ли AI Tutor для этой главы?
+
+## Итог
+
+- Тесты делятся по вопросам: HTTP-контракт, правило и реальная база проверяют разное.
+- Детерминизм обеспечивается передачей времени и других внешних значений аргументами.
+- Фикстура создаётся, используется и убирается через `defer`; уборка проверяется как отдельный результат.
