@@ -116,7 +116,7 @@
    ],
    "difficulty": "hard",
    "title": "Сверь статус и заголовки ответа",
-   "prompt": "201+JSON → created; 3xx с Location → redirect; 404 → resource-missing; иначе по правилам карточки.",
+   "prompt": "201+JSON → created; 3xx+Location → redirect; 404 → resource-missing; далее по карточке.",
    "starter_file": "main.go",
    "starter_code": "package main\n\nfunc ClassifyExchange(status int, contentType string, hasLocation bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
    "public_output": "\"created\"\n\"resource-missing\"\n",
