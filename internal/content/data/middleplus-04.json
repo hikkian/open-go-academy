@@ -1,130 +1,144 @@
 {
-  "id": "middleplus-04",
-  "title": "CPU profile и поиск горячего пути",
-  "rank": "Middle+",
-  "module": "middleplus-measurement",
-  "prerequisites": [
-    "middleplus-03"
-  ],
-  "estimated_minutes": 210,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 84,
-  "learning_outcomes": [
-    "Связать профиль загрузки процессора с тем же профилем нагрузки и определить, какие участки попали в выборку.",
-    "Различать затраты выбранной функции и всей цепочки вызовов; учитывать долю выборки и порог горячего участка, не считая профиль полным учётом затрат.",
-    "Классифицировать кандидата на оптимизацию по заданному порогу и учесть дополнительные затраты профилирования."
-  ],
-  "glossary": [
+ "id": "middleplus-04",
+ "title": "CPU profile и поиск горячего пути",
+ "rank": "Middle+",
+ "module": "middleplus-measurement",
+ "prerequisites": [
+  "middleplus-03"
+ ],
+ "estimated_minutes": 210,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 84,
+ "learning_outcomes": [
+  "Снимать CPU-профиль под той же нагрузкой, что и benchmark, и объяснять, какие участки попали в выборку сэмплов, а какие могли не попасть.",
+  "Различать flat и cum: находить дорогого потомка вместо переписывания обработчика с большим накопленным временем.",
+  "Считать долю сэмплов и порог кандидата целочисленно, учитывать стоимость сбора профиля и планировать различающий эксперимент."
+ ],
+ "glossary": [
+  {
+   "term": "CPU profile",
+   "translation": "профиль CPU",
+   "definition": "Выборка стеков вызовов, собранная во время CPU-нагрузки."
+  },
+  {
+   "term": "flat",
+   "translation": "собственная стоимость",
+   "definition": "Samples, приписанные непосредственно функции."
+  },
+  {
+   "term": "cumulative",
+   "translation": "накопленная стоимость",
+   "definition": "Samples функции вместе с её потомками по стеку."
+  }
+ ],
+ "markdown_file": "middleplus-04.md",
+ "exercises": [
+  {
+   "id": "middleplus-04-easy",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: вычисли долю CPU samples",
+   "prompt": "sample·100/total при 0 < total ≤ MaxInt/100 и 0 ≤ sample ≤ total; иначе −1.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ProfileShare(sample, total int) int {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "25\n",
+   "criteria": [
+    "Сигнатура func ProfileShare(sample, total int) int сохранена; без func main, печати и импортов.",
+    "Проверены 0 ≤ sample ≤ total, total > 0 и верхняя граница total; иначе −1.",
+    "Процент целочисленный с округлением вниз; доля сэмплов не трактуется как причина."
+   ],
+   "self_check": [
     {
-      "term": "CPU profile",
-      "translation": "профиль CPU",
-      "definition": "Выборка стеков вызовов, собранная во время CPU-нагрузки."
+     "question": "Почему ноль сэмплов — не ошибка?",
+     "answer": "Функция могла не попасть ни в один сэмпл; доля 0 % — допустимое наблюдение, а не некорректный вход."
     },
     {
-      "term": "flat",
-      "translation": "собственная стоимость",
-      "definition": "Samples, приписанные непосредственно функции."
-    },
-    {
-      "term": "cumulative",
-      "translation": "накопленная стоимость",
-      "definition": "Samples функции вместе с её потомками по стеку."
+     "question": "Зачем ограничение total ≤ MaxInt/100?",
+     "answer": "Чтобы умножение sample·100 не переполнилось: без импорта math граница берётся как int(^uint(0)>>1)/100."
     }
-  ],
-  "markdown_file": "middleplus-04.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-04-medium",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: проверь profile counts",
+   "prompt": "true, если total > 0 и 0 ≤ flat ≤ cumulative ≤ total.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ValidProfileCounts(flat, cumulative, total int) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func ValidProfileCounts(flat, cumulative, total int) bool сохранена; без func main, печати и импортов.",
+    "Отрицательные и несогласованные счётчики (flat > cumulative, cumulative > total, total ≤ 0) дают false.",
+    "Это модель с одним знаменателем; реальные профили pprof могут иметь несколько типов сэмплов."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-04-easy",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: вычисли долю CPU samples",
-      "prompt": "Верните целочисленный процент `sample/total*100` при `0<total<=MaxInt/100`; иначе -1. В профиле это условная доля sample count, не точная доля wall-clock времени.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ProfileShare(sample, total int) int {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "25\n",
-      "criteria": [
-        "Проверить 0≤sample≤total и total>0.",
-        "Использовать целочисленный процент с округлением вниз.",
-        "Не трактовать sample share как причинность."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "CPU profile sampling даёт выборку стека; доля samples служит локализации, не доказательству причины."
-        }
-      ]
+     "question": "Почему flat не может быть больше cumulative?",
+     "answer": "cumulative включает собственные сэмплы функции и сэмплы её потомков, поэтому всегда не меньше flat."
     },
     {
-      "id": "middleplus-04-medium",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: проверь profile counts",
-      "prompt": "Проверьте агрегированные counts: `total>0`, `0≤flat≤cumulative≤total`. Predicate валидирует только упрощённый fixture; реальные pprof значения могут иметь sampling/weight semantics.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ValidProfileCounts(flat, cumulative, total int) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Отклонять отрицательные и несогласованные counts.",
-        "Не утверждать, что все реальные профили обязаны иметь один total."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "В этой учебной модели counts имеют общий denominator; production pprof требует понимания sample types."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-04-hard",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: выбери hotspot по flat threshold",
-      "prompt": "Верните true, если counts согласованы и функция сама потребляет не менее заданного процента samples по flat. Cumulative учитывается только для проверки границ; helper помечает кандидата на исследование, не оптимизацию.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc HotPathCandidate(flat, cumulative, total, minPercent int) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Сравнивать flat share с порогом без дробной арифметики.",
-        "Кандидат требует дальнейшей проверки на том же workload."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Flat указывает samples непосредственно в функции; высокий cumulative может быть у родительской функции без собственной горячей работы."
-        }
-      ]
+     "question": "Что в реальном pprof сложнее этой модели?",
+     "answer": "Несколько типов сэмплов с разными весами и знаменателями; учебная функция проверяет только один total."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-04-hard",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: выбери hotspot по flat threshold",
+   "prompt": "true, если счётчики согласованы и flat ≥ minPercent % от total (порог вверх, без дробей).",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc HotPathCandidate(flat, cumulative, total, minPercent int) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func HotPathCandidate(flat, cumulative, total, minPercent int) bool сохранена; без func main, печати и импортов.",
+    "Несогласованные счётчики или minPercent вне 0…100 дают false; cumulative используется только для проверки границ.",
+    "Порог считается целочисленно с округлением вверх, сравнивается flat; кандидат — повод исследовать на той же нагрузке, не оптимизация."
+   ],
+   "self_check": [
     {
-      "question": "Что означает flat в CPU profile?",
-      "answer": "Стоимость, приписанная непосредственно узлу функции; она отличается от cumulative, включающей работу вызываемых функций."
+     "question": "Почему решает flat, а не cumulative?",
+     "answer": "Высокий cumulative бывает у родителя без собственной горячей работы; собственную стоимость показывает flat."
     },
     {
-      "question": "Как читать высокий cumulative у handler?",
-      "answer": "Он может быть следствием дорогих вызываемых функций, поэтому нужно найти фактический горячий общий участок, а не автоматически переписывать handler."
-    },
-    {
-      "question": "Почему отсутствие функции в профиле не доказывает нулевую стоимость?",
-      "answer": "CPU profiling использует sampling: короткие события могут не попасть в выборку, а профиль является оценкой выбранного workload."
-    },
-    {
-      "question": "Почему недостаточно анализировать профиль idle-процесса?",
-      "answer": "Он не отражает горячие пути и конкуренцию при выбранной нагрузке; профиль нужно собирать на сценарии, соответствующем вопросу."
-    },
-    {
-      "question": "Можно ли использовать профиль как финальную цифру скорости?",
-      "answer": "Нет. Сбор профиля создаёт overhead и служит поиску кандидатов; изменение проверяют обычным сопоставимым benchmark."
+     "question": "Чему равен порог при total = 3 и minPercent = 34?",
+     "answer": "Двум сэмплам: 34 % от трёх — 1,02, порог округляется вверх."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Что означает flat в CPU-профиле?",
+   "answer": "Сэмплы, в которых функция была на вершине стека, то есть выполняла собственный код; в отличие от cum, без потомков."
+  },
+  {
+   "question": "Как читать высокий cum у обработчика?",
+   "answer": "Как сумму работы вызванных функций: искать нужно дорогого потомка внизу стека, а не переписывать обработчик."
+  },
+  {
+   "question": "Почему отсутствие функции в профиле не доказывает нулевую стоимость?",
+   "answer": "Профиль — выборка стеков с периодом; короткие события могут не попасть ни в один сэмпл."
+  },
+  {
+   "question": "Почему недостаточно анализировать профиль простаивающего процесса?",
+   "answer": "Он не показывает горячие пути и конкуренцию под нагрузкой; профиль снимают на сценарии, соответствующем вопросу."
+  },
+  {
+   "question": "Можно ли использовать профиль как финальную цифру скорости?",
+   "answer": "Нет: сбор профиля меняет расходы; эффект подтверждает сопоставимый benchmark с повторами."
+  }
+ ]
 }
