@@ -60,23 +60,19 @@
       ],
       "difficulty": "easy",
       "title": "Перенаправляй только валидную активную ссылку",
-      "prompt": "Разреши redirect только при enabled и ранее выполненной validation URL. Pure helper не проверяет базу или сетевую политику. LinkHub не должен сам вызывать HTTP к target.",
+      "prompt": "Разреши переход только для включённой ссылки с ранее проверенной целью.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc RedirectAllowed(enabled, targetValidated bool) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "RedirectAllowed(enabled, targetValidated bool) bool компилируется; нужны оба условия.",
+        "«Запустить»: пример 1 и пример 2 дают true и false.",
+        "«Проверить»: закрытые примеры, где цель не проверена или ссылка отключена, дают false."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "Разреши redirect только при enabled и ранее выполненной validation URL. Pure helper не проверяет базу или сетевую политику. LinkHub не должен сам вызывать HTTP к target."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Почему редирект на отключённую ссылку не разрешён, даже если цель проверена?",
+          "answer": "Отключённая ссылка не должна работать; проверка enabled стоит отдельно от проверки цели."
         }
       ]
     },
@@ -91,23 +87,19 @@
       ],
       "difficulty": "medium",
       "title": "Проверь object ownership",
-      "prompt": "Без сессии верни unauthorized. Пустые либо несовпадающие непустые owner ID → not_found. Только совпадение дает allow. Session owner устанавливается сервером; не читай owner из body/query. Helper не проверяет SQL predicate или server session.",
+      "prompt": "Без сессии unauthorized; пустой или чужой владелец → not_found; иначе allow.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc OwnerAccess(authenticated bool, sessionOwner, resourceOwner string) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"unauthorized\"\n\"not_found\"",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "OwnerAccess(authenticated bool, sessionOwner, resourceOwner string) string компилируется; порядок: сессия, пустые значения, владелец.",
+        "«Запустить»: пример 1 и пример 2 дают unauthorized и not_found.",
+        "«Проверить»: закрытые примеры — совпавшие владельцы и пустые владельцы — дают allow и not_found."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "Без сессии верни unauthorized. Пустые либо несовпадающие непустые owner ID → not_found. Только совпадение дает allow. Session owner устанавливается сервером; не читай owner из body/query. Helper не проверяет SQL predicate или server session."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Что вернёт OwnerAccess для authenticated=true, пустых sessionOwner и resourceOwner?",
+          "answer": "not_found: пустой владелец не доказывает доступ, поэтому ресурс считается недоступным."
         }
       ]
     },
@@ -122,51 +114,47 @@
       ],
       "difficulty": "hard",
       "title": "Свяжи ссылку и tag атомарно",
-      "prompt": "Пустые или разные владельцы дают rejected; совпадающие владельцы и незавершённая transaction дают rolled_back; только совпадающие непустые ID с committed → linked. Pure function не доказывает атомарность. Она требует P2 PostgreSQL integration test.",
+      "prompt": "Пустой или чужой владелец → rejected; без коммита → rolled_back; иначе linked.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc TagAssociationOutcome(linkOwner, tagOwner string, transactionCommitted bool) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"linked\"\n\"rejected\"",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "TagAssociationOutcome(linkOwner, tagOwner string, transactionCommitted bool) string компилируется; владельцы проверяются первыми.",
+        "«Запустить»: пример 1 и пример 2 дают linked и rejected.",
+        "«Проверить»: закрытые примеры — незавершённая транзакция и пустые владельцы — дают rolled_back и rejected."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "Пустые или разные владельцы дают rejected; совпадающие владельцы и незавершённая transaction дают rolled_back; только совпадающие непустые ID с committed → linked. Pure function не доказывает атомарность. Она требует P2 PostgreSQL integration test."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Что вернёт TagAssociationOutcome для одинаковых владельцев и transactionCommitted=false?",
+          "answer": "rolled_back: владельцы совпали, но транзакция не зафиксирована, поэтому связь не появилась."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Как отличить автоматическое evidence от утверждения?",
-      "answer": "Назовите контракт, конкретный test boundary и остающиеся неизвестными зависимости."
+      "question": "Что меняется, если владелец берётся из тела запроса, а не из сессии?",
+      "answer": "Клиент выбирает владельца сам и может читать или менять чужую ссылку. Владелец должен приходить из серверной сессии."
     },
     {
-      "question": "Где посмотреть фактический P2?",
-      "answer": "В приложении «Проекты → LinkHub API» и в P2 README, OpenAPI, Compose и threat model."
+      "question": "Почему редирект не должен делать HTTP-запрос к цели?",
+      "answer": "Сервер станет отправлять запросы по адресам, которые выбрал пользователь, включая внутреннюю сеть. Это путь к SSRF."
     },
     {
-      "question": "Что означает reviewed course evidence?",
-      "answer": "Только проверку требований курса, не профессию, external accreditation или trusted credential."
+      "question": "Почему пустой владелец не совпадает с пустым?",
+      "answer": "Пустое значение не доказывает владение. Правило требует непустого идентификатора, совпавшего с владельцем ресурса."
     },
     {
-      "question": "Что должно оставаться ручным?",
-      "answer": "Читаемость проекта, объяснение компромисса, threat boundary и review security критериев."
+      "question": "Почему связь ссылки и тега нужно проверять в одной транзакции?",
+      "answer": "Без транзакции запись ссылки может пройти, а связь с тегом — нет, и данные окажутся наполовину записанными."
     },
     {
-      "question": "Как безопасно повторить проверку?",
-      "answer": "Fresh local/disposable environment, точная команда и результат без секретов и production данных."
+      "question": "Что проверяет integration test, а чего не проверяет pure function?",
+      "answer": "Integration test с PostgreSQL проверяет SQL, транзакцию и откат. Pure function проверяет только правило на уже известных значениях."
     },
     {
-      "question": "Нужен ли Tutor?",
-      "answer": "Нет, объяснение и критерии доступны самостоятельно."
+      "question": "Какие пункты threat model остаются открытыми после автоматических тестов?",
+      "answer": "Те, для которых нет связи с кодом и тестом, а также решения, требующие ручного review архитектуры и риска."
     }
   ]
 }
