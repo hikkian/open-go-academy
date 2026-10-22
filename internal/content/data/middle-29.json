@@ -50,19 +50,19 @@
       ],
       "difficulty": "easy",
       "title": "Easy: http middleware и context — базовое правило",
-      "prompt": "Реализуйте `func BodyAllowed(bodyBytes, maxBytes int64) bool`. Контракт: true если bodyBytes >= 0, maxBytes > 0 и bodyBytes <= maxBytes; иначе false. Числовой helper не ограничивает реальный HTTP reader.",
+      "prompt": "Тело не отрицательно, предел положителен и тело не больше предела — true; иначе false.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc BodyAllowed(bodyBytes, maxBytes int64) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\ntrue\n",
       "criteria": [
-        "Точно выполнить контракт: true если bodyBytes >= 0, maxBytes > 0 и bodyBytes <= maxBytes; иначе false. Числовой helper не ограничивает реальный HTTP reader.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "BodyAllowed(bodyBytes, maxBytes int64) bool компилируется; все три условия проверяются.",
+        "«Запустить»: два вызова дают true и true.",
+        "«Проверить»: закрытые примеры с телом больше предела и нулевым пределом дают false и false, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт BodyAllowed для bodyBytes = 8, maxBytes = 16?",
+          "answer": "true: тело не отрицательно, предел положителен, и тело укладывается в предел."
         }
       ],
       "signature": "func BodyAllowed(bodyBytes, maxBytes int64) bool"
@@ -76,19 +76,19 @@
       ],
       "difficulty": "medium",
       "title": "Medium: http middleware и context — граничная политика",
-      "prompt": "Реализуйте `func EffectiveTimeout(parentMillis, handlerMillis int64) int64`. Контракт: Если любой timeout неположителен, вернуть 0; иначе вернуть меньший parentMillis и handlerMillis. Функция не создаёт context deadline.",
+      "prompt": "Нулевой или отрицательный срок — 0; иначе меньший из родительского и локального сроков.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc EffectiveTimeout(parentMillis, handlerMillis int64) int64 {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "3000\n1200\n1000\n",
       "criteria": [
-        "Точно выполнить контракт: Если любой timeout неположителен, вернуть 0; иначе вернуть меньший parentMillis и handlerMillis. Функция не создаёт context deadline.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "EffectiveTimeout(parentMillis, handlerMillis int64) int64 компилируется; результат не больше любого положительного срока.",
+        "«Запустить»: три вызова дают 3000, 1200 и 1000.",
+        "«Проверить»: закрытые примеры с нулевым или отрицательным сроком дают 0 во всех случаях, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт EffectiveTimeout для родительского срока 800 и локального 2000?",
+          "answer": "800: действует меньший из двух сроков, и локальный таймаут не продлевает запрос."
         }
       ],
       "signature": "func EffectiveTimeout(parentMillis, handlerMillis int64) int64"
@@ -102,19 +102,19 @@
       ],
       "difficulty": "hard",
       "title": "Hard: http middleware и context — helper-проверка",
-      "prompt": "Реализуйте `func RequestDecision(bodyBytes, maxBytes int64, canceled bool) string`. Контракт: Приоритет: canceled → canceled; затем bodyBytes<0 или maxBytes<=0 → invalid; затем превышение → too_large; иначе continue. Это не реализация HTTP middleware или cancellation propagation.",
+      "prompt": "Отмена первой; неверные границы — invalid; тело больше предела — too_large; иначе continue",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc RequestDecision(bodyBytes, maxBytes int64, canceled bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"continue\"\n\"continue\"\n\"canceled\"\n",
       "criteria": [
-        "Точно выполнить контракт: Приоритет: canceled → canceled; затем bodyBytes<0 или maxBytes<=0 → invalid; затем превышение → too_large; иначе continue. Это не реализация HTTP middleware или cancellation propagation.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "RequestDecision(bodyBytes, maxBytes int64, canceled bool) string компилируется; отмена проверяется первой.",
+        "«Запустить»: три вызова дают continue, continue и canceled.",
+        "«Проверить»: закрытые примеры с отменой и неверными границами дают canceled и invalid, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт RequestDecision для bodyBytes = 5, maxBytes = 16, canceled = true?",
+          "answer": "canceled: отменённый запрос не читается, даже если тело маленькое."
         }
       ],
       "signature": "func RequestDecision(bodyBytes, maxBytes int64, canceled bool) string"
@@ -123,19 +123,27 @@
   "self_check": [
     {
       "question": "Почему downstream handler должен получить дочерний request context?",
-      "answer": "Он сохраняет отмену вызывающей стороны и deadline, одновременно позволяя ограничить локальную работу."
+      "answer": "Дочерний контекст наследует отмену и срок родителя, поэтому работа прекращается вместе с запросом клиента, а не продолжается в фоне."
     },
     {
       "question": "Что обязан сделать middleware с чрезмерным request body?",
-      "answer": "Отклонить его до неограниченного буферизования и не передавать его в service как доверенное значение."
+      "answer": "Ограничить чтение пределом и вернуть понятную категорию, не читая тело до конца."
     },
     {
       "question": "Останавливает ли context.Cancel произвольную функцию?",
-      "answer": "Нет, только кооперативную работу, которая наблюдает Done или deadline."
+      "answer": "Нет. Отмена сообщает о намерении. Функция сама должна проверять Done и завершаться."
     },
     {
       "question": "Как проверить, что отмена дошла до хранилища?",
-      "answer": "В integration test связать отменённый HTTP request с медленной операцией и проверить её остановку и освобождение ресурса."
+      "answer": "Интеграционным тестом: отменить запрос во время медленного обращения к хранилищу и проверить, что запрос к базе прерван."
+    },
+    {
+      "question": "Почему срок обработчика не может быть длиннее срока родителя?",
+      "answer": "Родительский срок задаёт общий бюджет. Более длинный локальный срок не продлит запрос, а введёт клиента в заблуждение."
+    },
+    {
+      "question": "Почему helper-векторы не доказывают распространение отмены?",
+      "answer": "Они проверяют арифметику и порядок веток. Распространение отмены требует запроса с отменой и наблюдения за хранилищем."
     }
   ]
 }
