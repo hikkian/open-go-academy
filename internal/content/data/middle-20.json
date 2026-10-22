@@ -43,7 +43,7 @@
       ],
       "difficulty": "easy",
       "title": "Topology readiness — локальное правило",
-      "prompt": "Контракт `func TopologyReadyEasy(exchange, queue, binding bool) bool`: ready only if the exchange, destination queue and binding all exist in the intended isolated test vhost; this does not contact RabbitMQ. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Готовность — exchange, очередь и binding существуют все три; иначе false.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc TopologyReadyEasy(exchange, queue, binding bool) bool {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse\nfalse\n",
@@ -72,7 +72,7 @@
       ],
       "difficulty": "medium",
       "title": "Direct routing — ветви политики",
-      "prompt": "Контракт `func DirectRouteMedium(exchange, routingKey, bindingKey string) string`: модель поддерживает только именованный direct exchange; пустой exchange, routing key или binding key => invalid; exact key match => route; otherwise unrouted. Это намеренное ограничение учебной модели: она не включает default exchange RabbitMQ. Реализуй только эту детерминированную модель; она не подключается к реальному внешнему сервису и не доказывает его состояние. Публичные и закрытые векторы различают policy branches и отказные границы.",
+      "prompt": "Пустые значения — invalid; точное совпадение ключа — route; иначе unrouted.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc DirectRouteMedium(exchange, routingKey, bindingKey string) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"route\"\n\"unrouted\"\n\"invalid\"\n",
@@ -101,7 +101,7 @@
       ],
       "difficulty": "hard",
       "title": "Publisher outcome — отказ и граница гарантии",
-      "prompt": "Контракт `func PublishOutcomeHard(mandatory, brokerConfirm, returned bool) string`: returned=true допустим только при mandatory=true; противоречивое сочетание возвращает invalid. Допустимый returned означает unrouted независимо от confirm; без return отсутствие publisher confirm даёт unknown; только confirm даёт confirmed. Confirm не означает обработку consumer. Модель локальная: она не реализует канал, retry или гарантию брокера. Векторы покрывают противоречивый ввод и каждую ветвь.",
+      "prompt": "Возврат без mandatory — invalid; возврат — unrouted; иначе confirmed при подтверждении.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc PublishOutcomeHard(mandatory, brokerConfirm, returned bool) string {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"confirmed\"\n\"unknown\"\n\"unrouted\"\n\"unrouted\"\n\"confirmed\"\n\"unknown\"\n",
@@ -125,15 +125,27 @@
   "self_check": [
     {
       "question": "Как различаются exchange, binding и queue?",
-      "answer": "Exchange принимает публикацию и выбирает маршрут; binding связывает exchange с queue по правилам маршрутизации; queue хранит направленные в неё сообщения."
+      "answer": "Exchange получает сообщение и выбирает маршрут, binding связывает его с очередью, а очередь хранит сообщения до выдачи потребителю."
     },
     {
       "question": "Гарантирует ли успешная маршрутизация, что сообщение уже сохранено и обработано?",
-      "answer": "Нет. Маршрутизация до очереди не равна подтверждённому хранению и тем более завершённой обработке потребителем."
+      "answer": "Нет. Маршрутизация говорит о выборе очереди. Сохранение зависит от настроек подтверждения, обработку подтверждает ack потребителя."
     },
     {
       "question": "Почему топологию для очистки следует ограничить тестовой областью?",
-      "answer": "Чтобы проверка не удалила очередь или данные другого окружения; в упражнении очистка допустима только для изолированной тестовой области."
+      "answer": "Удаление общих exchange или очередей затронет чужие сообщения и сервисы. Очистка должна касаться только собственных ресурсов."
+    },
+    {
+      "question": "Почему подтверждение брокера не равно подтверждению обработки?",
+      "answer": "Подтверждение брокера говорит о приёме публикации, а подтверждение обработки отправляет потребитель после своей работы. Это разные стадии."
+    },
+    {
+      "question": "Что означает возврат сообщения при mandatory?",
+      "answer": "Брокер сообщает публикатору, что маршрут не найден и сообщение не попало в очередь. Возврат допустим только при mandatory = true."
+    },
+    {
+      "question": "Почему ключ маршрута сравнивают точно для direct exchange?",
+      "answer": "Direct exchange сопоставляет ключи как точные строки. Шаблонные правила относятся к topic exchange и здесь не применяются."
     }
   ]
 }
