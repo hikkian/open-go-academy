@@ -43,23 +43,19 @@
       ],
       "difficulty": "easy",
       "title": "Validation до Begin — protocol boundary",
-      "prompt": "Контракт `func ValidationBoundaryEasy(valid bool, tx BeginnerEasy) string` и интерфейс `type BeginnerEasy interface { Begin() bool }`. Сначала отвергни invalid без вызова зависимости; при nil верни dependency_missing; иначе вызови Begin ровно один раз и верни begin_failed либо ready_to_write. Starter показывает сигнатуры. Fake grader наблюдает вызов Begin. Это проверяет только порядок на контролируемом fake, не SQL, isolation или ACID.",
+      "prompt": "Неверный ввод — invalid без вызовов; нет зависимости — dependency_missing; иначе Begin.",
       "starter_file": "main.go",
       "starter_code": "package main\n\ntype BeginnerEasy interface {\n\tBegin() bool\n}\n\nfunc ValidationBoundaryEasy(valid bool, tx BeginnerEasy) string {\n\t// Сначала проверь valid, затем dependency и Begin.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"ready_to_write:begin\"\n\"invalid:\"\n",
       "criteria": [
-        "Invalid input возвращается до Begin; последовательность вызовов соответствует контракту.",
-        "Nil и отказ Begin имеют разные безопасные outcomes.",
-        "Вывод не утверждает работу записи или commit, которых в Easy нет."
+        "ValidationBoundaryEasy(valid bool, tx BeginnerEasy) string компилируется; ввод проверяется до Begin.",
+        "«Запустить»: два вызова дают ready_to_write:begin и invalid:.",
+        "«Проверить»: закрытые примеры без зависимости и с неуспешным Begin дают dependency_missing: и begin_failed:begin, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт ValidationBoundaryEasy, если valid = true и Begin вернул true?",
+          "answer": "ready_to_write:begin: ввод верен, Begin прошёл один раз."
         }
       ]
     },
@@ -72,23 +68,19 @@
       ],
       "difficulty": "medium",
       "title": "Mutate, domain error и commit/rollback",
-      "prompt": "Реализуй `func RunTransactionMedium(valid bool, tx TransactionMedium) string` с интерфейсом Begin/Apply/Commit/Rollback из starter. Invalid не вызывает методы; после успешного Begin вызывается Apply. Результат Apply `ok` ведёт к Commit; `conflict` и `write_failed` требуют Rollback и отдельной категории; неизвестная строка — internal_error с Rollback. Begin failure не вызывает дальнейшие методы. При Commit=false попробуй Rollback и верни commit_outcome_unknown: ошибка Commit не доказывает, что запись не зафиксирована. Fake проверяет только protocol decisions, не свойства SQL.",
+      "prompt": "Ввод, Begin, Apply: ok — Commit; conflict и ошибки — Rollback; ответ без журнала.",
       "starter_file": "main.go",
       "starter_code": "package main\n\ntype TransactionMedium interface {\n\tBegin() bool\n\tApply() string\n\tCommit() bool\n\tRollback()\n}\n\nfunc RunTransactionMedium(valid bool, tx TransactionMedium) string {\n\t// Выполните валидацию, затем управляемый transaction protocol.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"committed\"\n\"conflict\"\n\"invalid\"\n",
       "criteria": [
-        "Валидация происходит до Begin, а Apply — только после успешного Begin.",
-        "Успех проходит Apply→Commit; conflict/write failure/unknown вызывают Rollback и не маскируются как успех.",
-        "Commit failure сообщает unknown outcome; Rollback здесь только попытка cleanup."
+        "RunTransactionMedium(valid bool, tx TransactionMedium) string компилируется; откат при любой неуспешной ветке.",
+        "«Запустить»: три вызова дают committed, conflict и invalid.",
+        "«Проверить»: закрытые примеры с ошибкой записи и неожиданным состоянием дают write_error и internal_error, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт RunTransactionMedium, если Begin прошёл, Apply вернул conflict и Commit не вызывался?",
+          "answer": "conflict: конфликт не фиксируется, и транзакция откатывается."
         }
       ]
     },
@@ -101,40 +93,47 @@
       ],
       "difficulty": "hard",
       "title": "Failure protocol с наблюдаемым trace",
-      "prompt": "Реализуй `func RunTransactionHard(valid bool, tx TransactionHard) string`, сохранив контракт Medium. Функция возвращает только категорию результата (`committed`, `conflict`, `write_error`, `internal_error`, `begin_failed`, `commit_outcome_unknown`, `dependency_missing` или `invalid`). Grader driver независимо записывает фактические вызовы fake и добавляет trace к категории в формате `outcome:op1,op2`; например успех `committed:begin,apply,commit`, invalid `invalid:`. На apply failure/conflict должен быть rollback без commit; после begin failure нельзя делать Apply/Commit/Rollback; после Commit=false возможна только best-effort попытка Rollback, результат остаётся `commit_outcome_unknown`. Fake подтверждает лишь вызовы протокола и их порядок. Он не моделирует SQL isolation, драйвер, фактический rollback или ACID; для этого нужен отдельный интеграционный тест на реальной БД.",
+      "prompt": "Тот же порядок, что в medium, но ответ с журналом begin, apply, commit, rollback.",
       "starter_file": "main.go",
       "starter_code": "package main\n\ntype TransactionHard interface {\n\tBegin() bool\n\tApply() string\n\tCommit() bool\n\tRollback()\n}\n\nfunc RunTransactionHard(valid bool, tx TransactionHard) string {\n\t// Реализуйте контракт и внимательно выберите порядок вызовов.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"committed:begin,apply,commit\"\n\"invalid:\"\n\"conflict:begin,apply,rollback\"\n",
       "criteria": [
-        "Trace подтверждает отсутствие побочных вызовов при invalid и зависимости при begin failure.",
-        "После Apply failure/conflict выполняется Rollback и Commit не вызывается.",
-        "Commit вызывается только после успешного Apply; commit failure обозначен как неопределённый outcome.",
-        "Утверждения ограничены fake protocol; SQL isolation/driver/ACID не проверяются."
+        "RunTransactionHard(valid bool, tx TransactionHard) string компилируется; журнал пишется в момент вызова.",
+        "«Запустить»: три вызова дают committed, invalid и conflict с журналом.",
+        "«Проверить»: закрытые примеры с неуспешной фиксацией и ошибкой записи дают commit_outcome_unknown и write_error, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что подтверждает этот grader?",
-          "answer": "Только поведение локальной модели на переданных векторах."
-        },
-        {
-          "question": "Как подтвердить гарантию реальной зависимости?",
-          "answer": "Отдельным интеграционным тестом на закрепленной конфигурации и сценарии отказа."
+          "question": "Что вернёт RunTransactionHard при valid = true, успешном Begin и Apply со значением conflict?",
+          "answer": "conflict:begin,apply,rollback: журнал показывает откат вместо фиксации."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Когда следует выполнять входную валидацию относительно `Begin`?",
-      "answer": "До начала транзакционного протокола, чтобы заведомо неверный ввод не открывал транзакцию и не запускал побочные действия."
+      "question": "Когда следует выполнять входную валидацию относительно Begin?",
+      "answer": "До Begin, если проверка видна из входных данных: невалидный ввод не должен открывать транзакцию и занимать соединение."
     },
     {
       "question": "Зачем сопоставлять внутренние ошибки стабильным доменным outcome?",
-      "answer": "Чтобы вызывающий код мог различать ожидаемые причины отказа без раскрытия внутренних деталей и без зависимости от текста ошибки."
+      "answer": "Вызывающий код получает категорию, которую можно обработать и безопасно показать. Текст драйвера и детали запроса наружу не уходят."
     },
     {
-      "question": "Какой порядок вызовов ожидается при успехе и при ошибке `Apply` в учебном fake?",
-      "answer": "Успех: `Begin → Apply → Commit`; ошибка `Apply`: rollback вместо commit, согласно заданному протоколу упражнения."
+      "question": "Какой порядок вызовов ожидается при успехе и при ошибке Apply в учебном fake?",
+      "answer": "При успехе Begin, Apply, Commit. При ошибке Apply вместо Commit вызывается Rollback."
+    },
+    {
+      "question": "Почему после неуспешного Commit в учебном fake вызывается Rollback?",
+      "answer": "Так fake фиксирует незавершённое состояние в журнале. Поведение реального драйвера проверяют на настоящей базе."
+    },
+    {
+      "question": "Что не доказывает fake-тест порядка вызовов?",
+      "answer": "Изоляцию, атомарность и реальное поведение базы. Fake показывает только порядок вызовов."
+    },
+    {
+      "question": "Почему результат Commit после ошибки считается неизвестным?",
+      "answer": "Фиксация могла пройти на стороне базы, а ответ потерялся. Повтор без сверки может записать данные дважды."
     }
   ]
 }
