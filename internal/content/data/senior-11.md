@@ -1,6 +1,8 @@
 # Изоляция арендаторов и безопасность межклиентских границ
 
-**Senior · модуль 2 · занятие 5 из 6 · 270 минут.** Зависимость: `senior-10`. Tenant isolation (изоляция арендаторов) означает, что клиент организации не может читать или менять ресурсы другой организации, а их нагрузка и администрирование не должны случайно сливаться. Tenant-ом может быть команда, организация, проект или отдельный аккаунт — понятие должно соответствовать модели доступа. Эта глава не сертифицирует multi-tenant продукт; она помогает сформулировать угрозы и тесты.
+## Что ты сделаешь
+
+Ты разберёшь, как сохранить границы между клиентами: откуда сервер берёт доверенную область, какие пути копирования данных нужно проверить и как составить матрицу отрицательных проверок. Три функции урока классифицируют совпадение области, ключ квоты и состояние удаления. Они не являются middleware авторизации и не доказывают изоляцию приложения.
 
 ## Tenant как часть модели доступа
 
@@ -52,57 +54,172 @@ Property-like проверка может генерировать случай�
 
 Проверяйте с пулом соединений при минимальном числе connections, чтобы принудительно повторно использовать состояние. Выполните A, возврат, B и снова A; добавьте ошибку и cancellation, прежде чем соединение вернётся. Тестируйте кэш с совпадающими resource ID для двух tenants. Для exporter убедитесь, что background job получает неизменяемый, авторизованный scope, а не читает текущую случайную session.
 
-## Примеры Go
+## Совпадение области клиента
 
-Функции моделируют классификацию контекста, но не security middleware. Каждый пример автономный и запускается как `go run main.go`.
+Пример 1 проверяет самое простое необходимое условие: две явно переданные области клиента должны быть непустыми и совпадать. Пустая область не может совпасть ни с чем, поэтому она сразу даёт отказ.
 
-### Проверка совпадения tenant scope
-```go group=scope mode=run
+```go
 package main
-import "fmt"
-func sameTenantScope(principalTenant, resourceTenant string) bool { return principalTenant != "" && resourceTenant != "" && principalTenant == resourceTenant }
-func main() { fmt.Println(sameTenantScope("tenant-a", "tenant-a"), sameTenantScope("tenant-a", "tenant-b"), sameTenantScope("", "tenant-a")) }
-```
-Это только необходимая проверка совпадения явно названных областей tenant-а, а не решение об авторизации. Реальный principal должен быть получен из доверенной сессии, иметь membership, а ресурс должен принадлежать известному tenant-у; затем отдельно проверяются разрешение на действие и контекст. Равенство любых двух идентификаторов само по себе ничего из этого не доказывает.
 
-### Классификация обращения по rate key
-```go group=limit mode=run
+import "fmt"
+
+func sameTenantScope(principalTenant, resourceTenant string) bool {
+	return principalTenant != "" && resourceTenant != "" && principalTenant == resourceTenant
+}
+
+func main() {
+	fmt.Println(sameTenantScope("tenant-a", "tenant-a"))
+	fmt.Println(sameTenantScope("tenant-a", "tenant-b"))
+	fmt.Println(sameTenantScope("", "tenant-a"))
+}
+```
+
+Вывод: `true`, `false`, `false`. Это лишь необходимое условие. Реальный principal должен прийти из доверенной сессии, иметь membership, а ресурс должен принадлежать известной области. Равенство двух идентификаторов не доказывает ни одно из этих свойств.
+
+## Ключ квоты по области
+
+Пример 2 выбирает класс обращения для квоты. Аноним и аутентифицированный запрос без известной области не должны попадать в квоту клиента, поэтому у них разные классы.
+
+```go
 package main
-import "fmt"
-func rateScope(authenticated, tenantKnown bool) string { if !authenticated { return "anonymous" }; if !tenantKnown { return "invalid-scope" }; return "tenant" }
-func main() { fmt.Println(rateScope(false, false), rateScope(true, false), rateScope(true, true)) }
-```
-Выбор ключа должен учитывать abuse и справедливость. IP, account и tenant имеют разные свойства.
 
-### Результат удаления
-```go group=delete mode=run
+import "fmt"
+
+func rateScope(authenticated, tenantKnown bool) string {
+	if !authenticated {
+		return "anonymous"
+	}
+	if !tenantKnown {
+		return "invalid-scope"
+	}
+	return "tenant"
+}
+
+func main() {
+	fmt.Println(rateScope(false, false))
+	fmt.Println(rateScope(true, false))
+	fmt.Println(rateScope(true, true))
+}
+```
+
+Вывод: `anonymous`, `invalid-scope`, `tenant`. Функция выбирает класс, но не реализует ограничитель. Выбор ключа учитывает злоупотребления и справедливость: IP, аккаунт и клиент имеют разные свойства.
+
+## Статус удаления
+
+Пример 3 показывает, что удаление клиента состоит из нескольких состояний. Активная запись уже не удалена; пока остаются копии для очистки, удаление не завершено.
+
+```go
 package main
+
 import "fmt"
-func deletionState(active, pendingCopies bool) string { if active { return "active" }; if pendingCopies { return "cleanup-pending" }; return "deleted" }
-func main() { fmt.Println(deletionState(true, false), deletionState(false, true), deletionState(false, false)) }
+
+func deletionState(active, pendingCopies bool) string {
+	if active {
+		return "active"
+	}
+	if pendingCopies {
+		return "cleanup-pending"
+	}
+	return "deleted"
+}
+
+func main() {
+	fmt.Println(deletionState(true, false))
+	fmt.Println(deletionState(false, true))
+	fmt.Println(deletionState(false, false))
+}
 ```
-Статус не очищает данные. Реальный deletion workflow должен быть повторяемым, auditable и проверять каждую систему хранения.
 
-## Практика E / M / H
+Вывод: `active`, `cleanup-pending`, `deleted`. Статус не очищает данные. Настоящий процесс удаления должен быть повторяемым, проверяемым и покрывать каждое место хранения.
 
-**Easy — необходимое совпадение tenant scope.** Реализуйте `func SameTenantScope(principalTenant, resourceTenant string) bool`: верните `true`, только если оба явно переданных значения tenant scope непустые и равны. Имена `principalTenant` и `resourceTenant` обозначают уже полученные scope, а не ID пользователя и ID ресурса. `true` подтверждает лишь совпадение областей и никогда само по себе не разрешает доступ: требуются доверенная аутентификация, membership, принадлежность ресурса, действие и контекст.
+## Если что-то пошло не так
 
-**Medium — ключ квоты.** Реализуйте `func RateScope(authenticated, tenantKnown bool) string`: anonymous при отсутствии аутентификации; invalid-scope если tenant неизвестен; иначе tenant. Функция только выбирает класс, не реализует rate limiter.
+- Берёшь tenant ID из тела запроса → свяжи его с серверной идентичностью и проверь membership.
+- Полагаешься на случайность UUID → проверь, что чужой валидный ID отказывает.
+- Кэш ключуешь только ресурсом → включи область клиента и вариант представления в ключ.
+- Удаляешь основную запись и считаешь клиента удалённым → отследи поиск, кэш, файлы и резервные копии.
 
-**Hard — статус удаления.** Реализуйте `func DeletionState(active, pendingCopies bool) string`: active → `active`; inactive и pending copies → `cleanup-pending`; иначе `deleted`. Задайте owner и критерий завершения для каждого места хранения.
+## Практика
 
-Private/public vectors покрывают совпадающие/различающиеся tenant scope, пустые значения, неизвестный scope и отложенную очистку. Grader не проверяет SQL, middleware, connection pool, membership или реальные права. Успех не доказывает tenant isolation приложения.
+### Задание 1 · SameTenantScope
 
-## Частые ошибки
+**Цель.** Реализуй `SameTenantScope(principalTenant, resourceTenant string) bool`: результат `true` только для непустых и равных областей клиента.
 
-- Доверять tenant ID из body. Связывайте его с серверной идентичностью и membership.
-- Использовать непредсказуемость UUID как авторизацию. Любой валидный чужой ID должен отказать.
-- Считать общий connection pool нейтральным. Тестируйте повторное использование session context.
-- Забывать tenant в cache key, export или analytics. Пройдите весь data flow.
-- Проверять роль только на list, но не на download или background worker. Постройте полную матрицу операций.
-- Возвращать разные ответы для foreign/missing resources без причины. Обдумайте information disclosure.
-- Удалить primary record и считать tenant удалённым. Отслеживайте все copies и retention.
-- Вводить DB-per-tenant без операционного плана. Посчитайте миграции, backup, connections и provisioning.
+**Ожидаемый вывод** — для (`tenant-a`, `tenant-a`) и (`tenant-a`, `tenant-b`):
+
+```text
+true
+false
+```
+
+**Шаги.**
+1. Выбери задание «SameTenantScope»: в файле есть `SameTenantScope` с `panic("TODO")`. Импорты не нужны.
+2. Верни `false`, если любая из областей пустая.
+3. Сравни области и верни результат сравнения.
+4. Нажми «Запустить» и сравни с блоком выше.
+5. Нажми «Проверить».
+
+**Как проверить себя.** Вывод — `true` и `false` без кавычек; случай с пустой областью даёт `false`.
+
+**Если не принято.**
+- `true` при пустой области принципала → проверка пустоты пропущена.
+- `true` для разных областей → сравнение записано неверно.
+
+> **Подсказка.** Это лишь необходимое условие: функция не решает, разрешён ли доступ.
+
+### Задание 2 · RateScope
+
+**Цель.** Реализуй `RateScope(authenticated, tenantKnown bool) string`: без аутентификации — `"anonymous"`, при неизвестной области — `"invalid-scope"`, иначе `"tenant"`.
+
+**Ожидаемый вывод** — для (false, false) и (true, false):
+
+```text
+"anonymous"
+"invalid-scope"
+```
+
+**Шаги.**
+1. Выбери задание «RateScope»: в файле есть `RateScope` с `panic("TODO")`.
+2. Если запрос не аутентифицирован, верни `"anonymous"`.
+3. Если область неизвестна, верни `"invalid-scope"`.
+4. Иначе верни `"tenant"`.
+5. Нажми «Запустить» и сравни с блоком выше.
+6. Нажми «Проверить».
+
+**Как проверить себя.** Вывод — две строки в кавычках; случай (true, true) даёт `"tenant"`.
+
+**Если не принято.**
+- `"invalid-scope"` при (false, false) → проверка аутентификации стоит после области.
+- `"tenant"` при (true, false) → неизвестная область не отброшена.
+
+> **Подсказка.** Сначала субъект, потом область.
+
+### Задание 3 · DeletionState
+
+**Цель.** Реализуй `DeletionState(active, pendingCopies bool) string`: активная запись даёт `"active"`, при оставшихся копиях — `"cleanup-pending"`, иначе `"deleted"`.
+
+**Ожидаемый вывод** — для (true, false) и (false, true):
+
+```text
+"active"
+"cleanup-pending"
+```
+
+**Шаги.**
+1. Выбери задание «DeletionState»: в файле есть `DeletionState` с `panic("TODO")`.
+2. Если запись активна, верни `"active"`.
+3. Если остались копии для очистки, верни `"cleanup-pending"`.
+4. Иначе верни `"deleted"`.
+5. Нажми «Запустить» и сравни с блоком выше.
+6. Нажми «Проверить».
+
+**Как проверить себя.** Вывод — две строки в кавычках; случай (false, false) даёт `"deleted"`.
+
+**Если не принято.**
+- `"deleted"` при (false, true) → копии не учтены.
+- `"active"` при (true, true) → порядок веток перепутан.
+
+> **Подсказка.** Сначала активность, потом копии.
 
 ## Самостоятельная лаборатория
 
@@ -110,14 +227,17 @@ Private/public vectors покрывают совпадающие/различа�
 
 Добавьте сценарий смены роли при занятом connection pool, кэш с одинаковым ключом и удаление workspace с pending event. Укажите, какой сценарий требует реальной интеграционной среды. Не используйте реальные аккаунты или клиентские данные. Запишите остаточный риск, который не проверяется локальным harness.
 
-## Итог и вопросы
+## Проверь себя
 
-Вы должны уметь отличать tenant selector от доверенного scope; проверять principal-resource-action; учитывать все хранилища и worker-ы; сравнивать logical и physical separation; защищать shared resource fairness; тестировать foreign-resource отрицательными cases; и отслеживать deletion lifecycle.
+- Какие доверенные значения сервер должен связать перед разрешением доступа к объекту?
+- Какие пути копирования данных проверить на межtenant-утечку?
+- Как составить негативную интеграционную матрицу доступа?
+- Почему совпадение областей клиента не равно разрешению доступа?
+- Почему аноним и запрос с неизвестной областью попадают в разные классы квоты?
+- Что должно произойти, чтобы удаление клиента считалось завершённым?
 
-1. Откуда сервер получил авторитетный tenant scope?
-2. Есть ли альтернативный путь к ресурсу через search/export/worker?
-3. Какие данные могут остаться в pooled session или cache?
-4. Как доказать, что удаление завершилось в каждой копии?
-5. Какое integration proof нужно перед public multi-tenant use?
+## Итог
 
-**Глоссарий:** tenant — изолируемая организация/клиент; IDOR — доступ к объекту по прямой ссылке без должной авторизации; noisy neighbor — tenant, чрезмерно расходующий shared resource; row-level security — ограничение строк политикой БД; break-glass — ограниченный аварийный административный доступ; cache key — ключ, определяющий область и вариант кэшированных данных.
+- Серверная идентичность и membership задают доверенную область; значения из тела запроса остаются лишь вводом для проверки.
+- Утечки возникают не только в SQL: кэш, пул соединений, экспорт, поиск, фоновые задачи и логи требуют собственной проверки.
+- Матрица отрицательных проверок с чужим, отсутствующим и отозванным ресурсом показывает границы лучше, чем один положительный тест.
