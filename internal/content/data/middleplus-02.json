@@ -1,130 +1,144 @@
 {
-  "id": "middleplus-02",
-  "title": "Go benchmarks и стоимость операции",
-  "rank": "Middle+",
-  "module": "middleplus-measurement",
-  "prerequisites": [
-    "middleplus-01"
-  ],
-  "estimated_minutes": 210,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 82,
-  "learning_outcomes": [
-    "Построить тест производительности `Go`, в котором компилятор не удаляет полезную работу, а подготовка данных остаётся вне измеряемого участка.",
-    "Отдельно толковать наносекунды, байты и выделения памяти на операцию; сравнивать только одинаковые операции.",
-    "Проверить допустимость набора метрик и сформулировать вывод с точностью, которую поддерживают запуски."
-  ],
-  "glossary": [
+ "id": "middleplus-02",
+ "title": "Go benchmarks и стоимость операции",
+ "rank": "Middle+",
+ "module": "middleplus-measurement",
+ "prerequisites": [
+  "middleplus-01"
+ ],
+ "estimated_minutes": 210,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 82,
+ "learning_outcomes": [
+  "Построить benchmark Go, в котором подготовка данных вынесена за таймер, а результат операции остаётся наблюдаемым для компилятора.",
+  "Читать строку вывода go test -bench: толковать ns/op, B/op и allocs/op как три независимых измерения одной названной операции.",
+  "Проверять форму результата и сравнивать два прогона по заранее записанной политике, не выдавая выигрыш по одной метрике за общий."
+ ],
+ "glossary": [
+  {
+   "term": "benchmark harness",
+   "translation": "обвязка benchmark",
+   "definition": "Код и инструменты, которые многократно запускают benchmark и собирают метрики."
+  },
+  {
+   "term": "ns/op",
+   "translation": "наносекунд на операцию",
+   "definition": "Среднее время одной операции в выводе Go benchmark."
+  },
+  {
+   "term": "allocs/op",
+   "translation": "аллокаций на операцию",
+   "definition": "Число выделений памяти на одну операцию в benchmark."
+  }
+ ],
+ "markdown_file": "middleplus-02.md",
+ "exercises": [
+  {
+   "id": "middleplus-02-easy",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: сопоставь имя метрики Go benchmark",
+   "prompt": "time → ns_per_op, bytes → bytes_per_op, allocs → allocs_per_op, иначе unknown.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc MetricLabel(metric string) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"ns_per_op\"\n\"bytes_per_op\"\n\"allocs_per_op\"\n",
+   "criteria": [
+    "Сигнатура func MetricLabel(metric string) string сохранена; без func main, печати и импортов.",
+    "Три известные метрики дают точные подписи с подчёркиваниями; любая другая строка, включая пустую, — unknown.",
+    "B/op и allocs/op не перепутаны: это подпись, не измерение."
+   ],
+   "self_check": [
     {
-      "term": "benchmark harness",
-      "translation": "обвязка benchmark",
-      "definition": "Код и инструменты, которые многократно запускают benchmark и собирают метрики."
+     "question": "Что вернуть для пустой строки?",
+     "answer": "unknown: пустое имя — такая же неизвестная метрика, как и любое другое непредусмотренное."
     },
     {
-      "term": "ns/op",
-      "translation": "наносекунд на операцию",
-      "definition": "Среднее время одной операции в выводе Go benchmark."
-    },
-    {
-      "term": "allocs/op",
-      "translation": "аллокаций на операцию",
-      "definition": "Число выделений памяти на одну операцию в benchmark."
+     "question": "Почему bytes и allocs — разные подписи?",
+     "answer": "B/op считает байты, allocs/op — число выделений; одно не выводится из другого."
     }
-  ],
-  "markdown_file": "middleplus-02.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-02-medium",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: проверь диапазоны показателей benchmark",
+   "prompt": "true, только если ns/op > 0, B/op ≥ 0 и allocs/op ≥ 0.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ValidBenchmarkResult(nsPerOp, bytesPerOp, allocsPerOp int64) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func ValidBenchmarkResult(nsPerOp, bytesPerOp, allocsPerOp int64) bool сохранена; без func main, печати и импортов.",
+    "Время строго положительно, байты и аллокации неотрицательны; ноль байтов и ноль аллокаций допустимы.",
+    "Функция проверяет непротиворечивость чисел, а не корректность обвязки; меньшие аллокации не трактуются как меньшая задержка."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-02-easy",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: сопоставь имя метрики Go benchmark",
-      "prompt": "Преобразуйте имена `time`, `bytes`, `allocs` в `ns_per_op`, `bytes_per_op`, `allocs_per_op`; неизвестную строку — в `unknown`. Это только подпись, не запуск benchmark.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc MetricLabel(metric string) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"ns_per_op\"\n\"bytes_per_op\"\n\"allocs_per_op\"\n",
-      "criteria": [
-        "Поддержать все три известные метрики и неизвестный ввод.",
-        "Не смешивать `B/op` и `allocs/op`."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Go benchmark выводит разные единицы ns/op, B/op и allocs/op; labels здесь фиксированы задачей."
-        }
-      ]
+     "question": "Почему для времени условие строгое, а для байтов нет?",
+     "answer": "Операция не может занимать ноль наносекунд, но может не выделять память вовсе."
     },
     {
-      "id": "middleplus-02-medium",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: проверь диапазоны показателей benchmark",
-      "prompt": "Проверьте формальные диапазоны одного результата: `ns/op > 0`, `B/op >= 0`, `allocs/op >= 0`. Успех означает только непротиворечивые числа, не корректность измерительного harness.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ValidBenchmarkResult(nsPerOp, bytesPerOp, allocsPerOp int64) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Требовать положительное время и неотрицательные счётчики.",
-        "Не интерпретировать меньшие аллокации как автоматически меньшую задержку."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Метрики независимы: меньше аллокаций не гарантирует меньшее время."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-02-hard",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: сравни время и аллокации без подмены метрик",
-      "prompt": "Сравните baseline и candidate по `ns/op` и `allocs/op`: классифицируйте invalid, улучшение времени без роста allocations, отсутствие улучшения обеих метрик или trade-off. Это решает только по паре агрегатов и не учитывает разброс.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc BenchmarkComparison(baseNs, candidateNs, baseAllocs, candidateAllocs int64) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"faster_no_allocation_regression\"\n",
-      "criteria": [
-        "Проверить диапазоны всех четырёх чисел.",
-        "Не считать снижение одной метрики безусловным улучшением.",
-        "Не делать вывода о статистической значимости."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Четыре числа не содержат распределение повторов; классификация не заменяет статистическое сравнение."
-        }
-      ]
+     "question": "Что эта проверка не доказывает?",
+     "answer": "Что обвязка измерила нужную операцию и что setup не попал в таймер — это проверяют чтением кода benchmark."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-02-hard",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: сравни время и аллокации без подмены метрик",
+   "prompt": "Быстрее и аллокаций не больше → faster_no_allocation_regression; остальное по карточке.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc BenchmarkComparison(baseNs, candidateNs, baseAllocs, candidateAllocs int64) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"faster_no_allocation_regression\"\n",
+   "criteria": [
+    "Сигнатура func BenchmarkComparison(baseNs, candidateNs, baseAllocs, candidateAllocs int64) string сохранена; без func main, печати и импортов.",
+    "Время ≤ 0 или аллокации < 0 у любой стороны дают invalid до сравнения.",
+    "Быстрее и аллокаций не больше — faster_no_allocation_regression; не быстрее и аллокаций не меньше — no_metric_improved; остальное — tradeoff; статистическая значимость не выводится."
+   ],
+   "self_check": [
     {
-      "question": "Что задаёт параметр b.N в Go benchmark?",
-      "answer": "Harness выбирает число итераций, достаточное для выполнения выбранного benchmark режима; тест не должен предполагать фиксированное N."
+     "question": "Что вернуть при равных времени и аллокациях?",
+     "answer": "no_metric_improved: ни одна метрика не стала лучше."
     },
     {
-      "question": "Когда использовать b.ResetTimer?",
-      "answer": "После setup, который сознательно не должен входить в измеряемый интервал; подготовку нужно явно отделять от стоимости операции."
-    },
-    {
-      "question": "Чем отличаются ns/op, B/op и allocs/op?",
-      "answer": "Это нормированное время, байты выделений и количество выделений на операцию; уменьшение одного показателя не гарантирует улучшение остальных."
-    },
-    {
-      "question": "Зачем результат операции должен оставаться наблюдаемым?",
-      "answer": "Иначе оптимизатор может удалить вычисление, которое не влияет на программу; sink сохраняет наблюдаемость, но должен быть безопасным для конкурентного запуска."
-    },
-    {
-      "question": "Чем benchmark отличается от функционального теста?",
-      "answer": "Benchmark оценивает стоимость выбранного пути и не подтверждает полноту корректности endpoint, БД или очереди; семантику сначала проверяют тестами."
+     "question": "Почему tradeoff — не победа и не поражение?",
+     "answer": "Одна метрика лучше, другая хуже; что из них дороже, решает человек по требованиям сервиса, а не функция."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Что задаёт параметр b.N в Go benchmark?",
+   "answer": "Число итераций, которое выбирает обвязка, чтобы прогон длился достаточно долго; тело не должно предполагать фиксированное N."
+  },
+  {
+   "question": "Когда использовать b.ResetTimer?",
+   "answer": "Сразу после подготовки данных, которая не должна входить в измеряемый участок."
+  },
+  {
+   "question": "Чем отличаются ns/op, B/op и allocs/op?",
+   "answer": "Время, байты выделений и число выделений на операцию; уменьшение одного не гарантирует улучшения остальных."
+  },
+  {
+   "question": "Зачем результат операции должен оставаться наблюдаемым?",
+   "answer": "Иначе компилятор вправе убрать вычисление, и benchmark измерит пустой цикл; sink сохраняет наблюдаемость."
+  },
+  {
+   "question": "Чем benchmark отличается от функционального теста?",
+   "answer": "Benchmark оценивает стоимость одного пути и не подтверждает корректность обработчика, базы или очереди; семантику проверяют тестами."
+  }
+ ]
 }
