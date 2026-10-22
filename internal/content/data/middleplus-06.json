@@ -1,130 +1,144 @@
 {
-  "id": "middleplus-06",
-  "title": "pprof: гипотеза, изменение и повтор",
-  "rank": "Middle+",
-  "module": "middleplus-measurement",
-  "prerequisites": [
-    "middleplus-05"
-  ],
-  "estimated_minutes": 210,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 86,
-  "learning_outcomes": [
-    "Сформулировать проверяемую гипотезу оптимизации по конкретному сигналу `pprof`.",
-    "Сохранить исходный профиль и сравнить два профиля при одинаковой нагрузке и окружении, меняя только один фактор.",
-    "Связать изменение профиля с результатом теста производительности и отказаться от вывода о причине, если условия сравнения различаются."
-  ],
-  "glossary": [
+ "id": "middleplus-06",
+ "title": "pprof: гипотеза, изменение и повтор",
+ "rank": "Middle+",
+ "module": "middleplus-measurement",
+ "prerequisites": [
+  "middleplus-05"
+ ],
+ "estimated_minutes": 210,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 86,
+ "learning_outcomes": [
+  "Превращать наблюдение pprof в гипотезу с причиной, прогнозом на выигрыш, прогнозом на риск и опровергающим наблюдением.",
+  "Сохранять профиль «до» как неизменяемый артефакт и сравнивать профили только одного типа, окна, нагрузки и сборки, меняя одну причину за раз.",
+  "Сопоставлять изменение профиля с benchmark, оценивать потолок выигрыша по закону Амдала и записывать отрицательный результат."
+ ],
+ "glossary": [
+  {
+   "term": "hypothesis",
+   "translation": "гипотеза",
+   "definition": "Проверяемое объяснение наблюдения с возможным опровергающим результатом."
+  },
+  {
+   "term": "profile diff",
+   "translation": "разность профилей",
+   "definition": "Сопоставление профилей одинаковой семантики и нагрузки."
+  },
+  {
+   "term": "confounder",
+   "translation": "смешивающий фактор",
+   "definition": "Изменившееся условие, которое может объяснить разницу измерений."
+  }
+ ],
+ "markdown_file": "middleplus-06.md",
+ "exercises": [
+  {
+   "id": "middleplus-06-easy",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: вычисли изменение flat samples",
+   "prompt": "before − after для одного типа сэмплов на сопоставимых профилях; плюс — сэмплов меньше.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ProfileDelta(before, after int64) int64 {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "25\n",
+   "criteria": [
+    "Сигнатура func ProfileDelta(before, after int64) int64 сохранена; без func main, печати и импортов.",
+    "Результат — знаковая разность before − after, не модуль; ноль при равенстве.",
+    "Одинаковый тип сэмплов и нагрузка — предусловие, которое функция не проверяет; причинность из разности не следует."
+   ],
+   "self_check": [
     {
-      "term": "hypothesis",
-      "translation": "гипотеза",
-      "definition": "Проверяемое объяснение наблюдения с возможным опровергающим результатом."
+     "question": "Почему отрицательный результат — не ошибка входа?",
+     "answer": "Он означает, что сэмплов стало больше; знак — информация, а не признак некорректных данных."
     },
     {
-      "term": "profile diff",
-      "translation": "разность профилей",
-      "definition": "Сопоставление профилей одинаковой семантики и нагрузки."
-    },
-    {
-      "term": "confounder",
-      "translation": "смешивающий фактор",
-      "definition": "Изменившееся условие, которое может объяснить разницу измерений."
+     "question": "Что должно быть проверено до вызова этой функции?",
+     "answer": "Что оба профиля одного типа сэмплов, сняты под одной нагрузкой, в одном окне и с одной сборки."
     }
-  ],
-  "markdown_file": "middleplus-06.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-06-medium",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: проверь сопоставимость profile pair",
+   "prompt": "true, если оба окна одинаковой положительной длительности и нагрузка помечена одинаковой.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc SameProfileWindow(beforeSeconds, afterSeconds int, sameWorkload bool) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func SameProfileWindow(beforeSeconds, afterSeconds int, sameWorkload bool) bool сохранена; без func main, печати и импортов.",
+    "Окна должны быть равны и строго положительны, нагрузка — одинаковой; иначе false.",
+    "Равная длительность не считается равным числом событий: это аудит формы пары, не проверка профилей."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-06-easy",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: вычисли изменение flat samples",
-      "prompt": "Верните `before-after` для доли/счётчика одного и того же profile sample type на сопоставимых профилях. Положительное значение означает снижение после; helper не строит профиль.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ProfileDelta(before, after int64) int64 {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "25\n",
-      "criteria": [
-        "Одинаковые sample type и workload должны быть предварительно подтверждены.",
-        "Не делать вывод о причинности по разности."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Profile сравнение требует одного workload и одинаковой семантики sample type."
-        }
-      ]
+     "question": "Почему равных окон недостаточно для сопоставимости?",
+     "answer": "За одинаковое время нагрузка могла быть разной, а значит и число событий; сопоставимость проверяют по нагрузке, среде, сборке и настройкам сэмплирования."
     },
     {
-      "id": "middleplus-06-medium",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: проверь сопоставимость profile pair",
-      "prompt": "Верните true, если оба окна одинаковой положительной длительности и workload помечен одинаковым. Это только fixture audit, не проверка реальных профилей.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc SameProfileWindow(beforeSeconds, afterSeconds int, sameWorkload bool) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Требовать одинаковые положительные окна и workload.",
-        "Не считать равную длительность достаточной для равного числа событий."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Сопоставимость также требует проверить нагрузку, среду, build и sampling settings."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-06-hard",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: сопоставь профиль и benchmark",
-      "prompt": "Классифицируйте два набора положительных benchmark ns и неотрицательных flat counts: consistent_candidate только если оба снизились; conflicting_signals если хотя бы один ухудшился; иначе no_change. Это не подтверждает причинность или статистическую значимость.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc OptimizationEvidence(beforeFlat, afterFlat, beforeNs, afterNs int64) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"consistent_candidate\"\n",
-      "criteria": [
-        "Проверять все диапазоны.",
-        "Считать профиль локализацией, benchmark — отдельным наблюдением.",
-        "Не объявлять причинность."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Оптимизация — гипотеза; повторите измерение и проверьте корректность после изменения."
-        }
-      ]
+     "question": "Что означает флаг sameWorkload?",
+     "answer": "Утверждение автора замера, что нагрузка совпадала; функция ему верит, проверять его нужно по манифесту."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-06-hard",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: сопоставь профиль и benchmark",
+   "prompt": "invalid; оба ниже → consistent_candidate; рост → conflicting_signals; иначе no_change.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc OptimizationEvidence(beforeFlat, afterFlat, beforeNs, afterNs int64) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"consistent_candidate\"\n",
+   "criteria": [
+    "Сигнатура func OptimizationEvidence(beforeFlat, afterFlat, beforeNs, afterNs int64) string сохранена; без func main, печати и импортов.",
+    "Отрицательные flat или неположительные ns дают invalid до сравнения.",
+    "Оба сигнала снизились — consistent_candidate; хотя бы один вырос — conflicting_signals; иначе no_change; причинность и значимость не выводятся."
+   ],
+   "self_check": [
     {
-      "question": "Что делает гипотезу профилирования проверяемой?",
-      "answer": "Она связывает предполагаемую причину с прогнозом наблюдения после изменения и заранее называет возможный побочный эффект."
+     "question": "Что вернуть, если flat снизился, а ns/op не изменился?",
+     "answer": "no_change: нет согласия обоих сигналов и нет ухудшения; это повод проверить, не мала ли доля функции."
     },
     {
-      "question": "Почему следует менять одну причину за раз?",
-      "answer": "Так проще связать изменение результата с изменённой гипотезой; несколько независимых правок усложняют атрибуцию."
-    },
-    {
-      "question": "Почему profile artifacts должны относиться к одной сборке и workload?",
-      "answer": "Иначе символы или стеки могут не соответствовать исходникам, а сравнение разных сценариев не объясняет эффект изменения."
-    },
-    {
-      "question": "Что делать, если после изменения ожидаемая доля профиля не снизилась?",
-      "answer": "Пересмотреть гипотезу, репрезентативность workload и достаточность измерения; не объявлять успех только по другому показателю."
-    },
-    {
-      "question": "Что ограничивает закон Амдала?",
-      "answer": "Максимальное ускорение всего пути ограничено долей работы, которую удалось ускорить; это ориентир для рассуждения, не точный прогноз при меняющейся нагрузке."
+     "question": "Почему conflicting_signals — информативный исход?",
+     "answer": "Он говорит, что работа переехала на другой ресурс или гипотеза была о не том пути."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Что делает гипотезу профилирования проверяемой?",
+   "answer": "Названная причина, прогноз на наблюдение после изменения, прогноз на побочный эффект и результат, который гипотезу опровергнет."
+  },
+  {
+   "question": "Почему следует менять одну причину за раз?",
+   "answer": "Иначе выигрыш или проигрыш нельзя приписать конкретной правке."
+  },
+  {
+   "question": "Почему артефакты профиля должны относиться к одной сборке и нагрузке?",
+   "answer": "Символы и стеки другой сборки указывают не на те строки, а разность профилей под разной нагрузкой не объясняет эффект изменения."
+  },
+  {
+   "question": "Что делать, если после изменения ожидаемая доля профиля не снизилась?",
+   "answer": "Пересмотреть гипотезу, репрезентативность нагрузки и достаточность измерения; записать отрицательный результат, а не искать другой показатель."
+  },
+  {
+   "question": "Что ограничивает закон Амдала?",
+   "answer": "Ускорение всего пути ограничено долей работы, которую удалось ускорить; это ориентир, а не точный прогноз при меняющейся нагрузке."
+  }
+ ]
 }
