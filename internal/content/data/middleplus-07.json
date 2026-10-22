@@ -1,132 +1,147 @@
 {
-  "id": "middleplus-07",
-  "title": "Селективность и выбор SQL-плана",
-  "rank": "Middle+",
-  "module": "middleplus-data",
-  "prerequisites": [
-    "middleplus-06"
-  ],
-  "estimated_minutes": 210,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 87,
-  "learning_outcomes": [
-    "Вычислять долю подходящих строк и число различных значений с явными числителем и знаменателем.",
-    "Объяснить, как распределение данных и статистика влияют на оценку стоимости альтернативных `SQL`-планов.",
-    "Сравнивать оценку плана с фактическим результатом и проверять индекс на тех же данных и запросе."
-  ],
-  "glossary": [
+ "id": "middleplus-07",
+ "title": "Селективность и выбор SQL-плана",
+ "rank": "Middle+",
+ "module": "middleplus-data",
+ "prerequisites": [
+  "middleplus-06"
+ ],
+ "estimated_minutes": 210,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 87,
+ "learning_outcomes": [
+  "Считать селективность как долю от рассматриваемого множества строк и классифицировать её по заданным порогам с целочисленным округлением.",
+  "Объяснять, почему низкая доля совпадений не гарантирует индексный доступ: сравнивать стоимость последовательных и случайных чтений страниц.",
+  "Сопоставлять оценку планировщика с фактом из EXPLAIN ANALYZE, называть причины расхождения и формулировать узкий вопрос к плану."
+ ],
+ "glossary": [
+  {
+   "term": "selectivity",
+   "translation": "селективность",
+   "definition": "Доля строк, удовлетворяющих предикату, от общего числа строк."
+  },
+  {
+   "term": "cardinality",
+   "translation": "кардинальность",
+   "definition": "Количество строк или различных значений в указанном контексте."
+  },
+  {
+   "term": "EXPLAIN",
+   "translation": "план запроса",
+   "definition": "Планировочное дерево операций, выбранное PostgreSQL для запроса."
+  }
+ ],
+ "markdown_file": "middleplus-07.md",
+ "exercises": [
+  {
+   "id": "middleplus-07-easy",
+   "kind": "function",
+   "skills": [
+    "sql",
+    "performance"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: оцени selectivity по доле строк",
+   "prompt": "matches/total: < 10 % → low, < 50 % → medium, иначе high; пороги вверх; invalid.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc SelectivityClass(matches, total int) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"low\"\n",
+   "criteria": [
+    "Сигнатура func SelectivityClass(matches, total int) string сохранена; без func main, печати и импортов.",
+    "total ≤ 0, matches < 0 или matches > total дают invalid до классификации.",
+    "Пороги 10 % и 50 % считаются целочисленно с округлением вверх; класс — учебная группировка, не решение планировщика."
+   ],
+   "self_check": [
     {
-      "term": "selectivity",
-      "translation": "селективность",
-      "definition": "Доля строк, удовлетворяющих предикату, от общего числа строк."
+     "question": "Какой порог «меньше 10 %» для 15 строк?",
+     "answer": "Две строки: ceil(15 / 10) = 2, поэтому одна строка — low, две — уже medium."
     },
     {
-      "term": "cardinality",
-      "translation": "кардинальность",
-      "definition": "Количество строк или различных значений в указанном контексте."
-    },
-    {
-      "term": "EXPLAIN",
-      "translation": "план запроса",
-      "definition": "Планировочное дерево операций, выбранное PostgreSQL для запроса."
+     "question": "Почему класс low не означает «нужен индекс»?",
+     "answer": "Индексный доступ — случайные чтения страниц; план зависит от стоимости, статистики и распределения данных."
     }
-  ],
-  "markdown_file": "middleplus-07.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-07-medium",
+   "kind": "function",
+   "skills": [
+    "sql",
+    "performance"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: проверь знаменатель и cardinality",
+   "prompt": "true, если total > 0 и 0 ≤ matches ≤ total.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ValidSelectivity(matches, total int) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func ValidSelectivity(matches, total int) bool сохранена; без func main, печати и импортов.",
+    "Нулевой или отрицательный total недопустим; matches не отрицателен и не превышает total.",
+    "Функция проверяет только числа и не анализирует SQL или статистику базы."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-07-easy",
-      "kind": "function",
-      "skills": [
-        "sql",
-        "performance"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: оцени selectivity по доле строк",
-      "prompt": "Классифицируйте `matches/total`: low <10%, medium <50%, иначе high. Границы и пороги заданы учебной моделью, а не универсальной эвристикой planner.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc SelectivityClass(matches, total int) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"low\"\n",
-      "criteria": [
-        "Проверить 0≤matches≤total и total>0.",
-        "Не утверждать, что класс однозначно определяет план PostgreSQL."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "План зависит от статистики, стоимости, индексов, параметров и распределения данных."
-        }
-      ]
+     "question": "Почему ноль совпадений допустим, а нулевой total — нет?",
+     "answer": "Ноль совпадений — осмысленная доля 0 %; при нулевом знаменателе доля не определена."
     },
     {
-      "id": "middleplus-07-medium",
-      "kind": "function",
-      "skills": [
-        "sql",
-        "performance"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: проверь знаменатель и cardinality",
-      "prompt": "Проверьте допустимость фактического числа совпадений и размера набора. Функция не анализирует SQL или статистику базы.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ValidSelectivity(matches, total int) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Нулевой total недопустим.",
-        "matches не может превышать total."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Селективность — доля совпавших строк; реальная оценка planner может отличаться от факта."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-07-hard",
-      "kind": "function",
-      "skills": [
-        "sql",
-        "performance"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: сравни estimate и actual для кандидата индекса",
-      "prompt": "Верните true, если входы допустимы и planner estimate меньше половины общего числа строк. Это критерий для дальнейшего EXPLAIN анализа, не доказательство, что индекс будет быстрее.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc IndexCandidate(matches, total, estimatedRows int) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Проверять фактические и оценённые количества отдельно.",
-        "Не объявлять индекс выгодным без плана и измерения."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Погрешность estimate указывает на возможную проблему статистики; индексный выбор требует полного плана/стоимости."
-        }
-      ]
+     "question": "Чем факт совпадений отличается от оценки планировщика?",
+     "answer": "Факт получают из EXPLAIN ANALYZE, оценку — из статистики; они могут расходиться в разы."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-07-hard",
+   "kind": "function",
+   "skills": [
+    "sql",
+    "performance"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: сравни estimate и actual для кандидата индекса",
+   "prompt": "true, если входы корректны и estimatedRows меньше половины total (половина — вверх).",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc IndexCandidate(matches, total, estimatedRows int) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func IndexCandidate(matches, total, estimatedRows int) bool сохранена; без func main, печати и импортов.",
+    "Фактические и оценённые количества проверяются отдельно: total > 0, 0 ≤ matches ≤ total, estimatedRows ≥ 0.",
+    "Кандидат — повод открыть EXPLAIN: оценка меньше половины строк (с округлением вверх); выгода индекса не объявляется без плана и измерения."
+   ],
+   "self_check": [
     {
-      "question": "Что такое селективность?",
-      "answer": "Доля строк, удовлетворяющих предикату, относительно набора строк, который рассматривается."
+     "question": "Почему решает оценка, а не факт?",
+     "answer": "Планировщик выбирает план по своей оценке; если она далека от факта, сначала чинят статистику."
     },
     {
-      "question": "Почему низкая селективность не гарантирует пользу индекса?",
-      "answer": "Случайное чтение многих страниц может оказаться дороже последовательного чтения, особенно когда совпадений много."
-    },
-    {
-      "question": "Что означает расхождение estimated rows и actual rows?",
-      "answer": "Модель оптимизатора не совпала с наблюдаемым числом строк; проверьте статистику, её актуальность, skew, корреляцию и форму параметров."
-    },
-    {
-      "question": "Что делает EXPLAIN ANALYZE?",
-      "answer": "Он фактически исполняет запрос и сообщает наблюдаемое выполнение; для изменяющего запроса это имеет побочные эффекты и требует безопасной среды."
-    },
-    {
-      "question": "Почему нельзя принять решение по одному Index Scan?",
-      "answer": "Наличие операции в плане само по себе не доказывает выигрыш; сравните фактические строки, блоки, фильтрацию, сортировку и общую стоимость."
+     "question": "Что эта функция не учитывает?",
+     "answer": "Стоимость случайных чтений, корреляцию расположения строк, цену записи для индекса и кеш."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Что такое селективность и почему важен знаменатель?",
+   "answer": "Доля строк, подходящих под предикат, от рассматриваемого множества; одно и то же число совпадений даёт разную долю при разном размере."
+  },
+  {
+   "question": "Почему низкая доля не гарантирует индексный доступ?",
+   "answer": "Индекс читает страницы таблицы случайно; при многих совпадениях или плохой локальности последовательное чтение дешевле."
+  },
+  {
+   "question": "Откуда планировщик берёт оценку rows и когда она устаревает?",
+   "answer": "Из статистики столбцов, обновляемой ANALYZE; после массовых вставок, при перекосе и корреляции столбцов оценка расходится с фактом."
+  },
+  {
+   "question": "Чем EXPLAIN отличается от EXPLAIN ANALYZE и когда второй опасен?",
+   "answer": "EXPLAIN показывает план и оценку, EXPLAIN ANALYZE исполняет запрос; для изменяющих команд нужен откат транзакции или одноразовый стенд."
+  },
+  {
+   "question": "Что означает расхождение оценки и факта в сто раз?",
+   "answer": "Проблему статистики, перекоса или параметров; план с таким расхождением обсуждать рано."
+  }
+ ]
 }
