@@ -55,19 +55,19 @@
       ],
       "difficulty": "easy",
       "title": "Easy: сборка приложения и di — базовое правило",
-      "prompt": "Реализуйте `func ConfigStatus(dbURL string) string`. Контракт: Пустая строка → missing_database; иначе byte length менее 8 → invalid_database; иначе configured. Это строковая классификация, а не URL/DSN проверка.",
+      "prompt": "Пустая строка — missing_database; короче восьми байт — invalid_database; иначе configured.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc ConfigStatus(dbURL string) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"configured\"\n\"configured\"\n",
       "criteria": [
-        "Точно выполнить контракт: Пустая строка → missing_database; иначе byte length менее 8 → invalid_database; иначе configured. Это строковая классификация, а не URL/DSN проверка.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "ConfigStatus(dbURL string) string компилируется; граница длины восемь байт включена.",
+        "«Запустить»: два вызова дают configured и configured.",
+        "«Проверить»: закрытые примеры с пустой строкой, короткой строкой и одной буквой дают missing_database, configured и invalid_database, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт ConfigStatus для строки из семи символов?",
+          "answer": "invalid_database: строка задана, но короче восьми байт."
         }
       ],
       "signature": "func ConfigStatus(dbURL string) string"
@@ -81,19 +81,19 @@
       ],
       "difficulty": "medium",
       "title": "Medium: сборка приложения и di — граничная политика",
-      "prompt": "Реализуйте `func DependencyPlan(repositoryProvided, serviceProvided, handlerProvided bool) string`. Контракт: Первое отсутствующее звено в порядке repository, service, handler возвращает missing_repository/service/handler; все переданы → ready.",
+      "prompt": "Порядок: repository, service, handler; все переданы — ready; иначе первый отсутствующий.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc DependencyPlan(repositoryProvided, serviceProvided, handlerProvided bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"ready\"\n\"missing_repository\"\n",
       "criteria": [
-        "Точно выполнить контракт: Первое отсутствующее звено в порядке repository, service, handler возвращает missing_repository/service/handler; все переданы → ready.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "DependencyPlan(repositoryProvided, serviceProvided, handlerProvided bool) string компилируется; порядок проверок соблюдён.",
+        "«Запустить»: два вызова дают ready и missing_repository.",
+        "«Проверить»: закрытые примеры с отсутствующими сервисом, обработчиком и всеми зависимостями дают missing_service, missing_handler и missing_repository, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт DependencyPlan, если хранилища нет, а сервис и обработчик есть?",
+          "answer": "missing_repository: хранилище проверяется первым, поэтому его отсутствие называется раньше остальных."
         }
       ],
       "signature": "func DependencyPlan(repositoryProvided, serviceProvided, handlerProvided bool) string"
@@ -107,21 +107,19 @@
       ],
       "difficulty": "hard",
       "title": "Hard: service с внедрённым repository",
-      "prompt": "Реализуйте тип `TaskService`, `NewTaskService(repo TaskRepository) (*TaskService, error)` и метод `(*TaskService).Get(ctx context.Context, id string) (Task, error)`. Типы `Task`, `TaskRepository` и `RepositoryMissingError` уже заданы в starter; production driver использует те же контракты. Конструктор должен отклонить nil repository, иначе сохранить именно переданный экземпляр. Get должен один раз передать исходные ctx и id repository и вернуть его Task и ошибку без подмены. Не используйте глобальное состояние.",
+      "prompt": "Конструктор отвергает nil; Get передаёт ctx и id и возвращает ответ хранилища как есть.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nimport \"context\"\n\ntype Task struct { ID string `json:\"id\"`; Repository string `json:\"repository\"` }\ntype TaskRepository interface { Get(context.Context, string) (Task, error) }\ntype RepositoryMissingError struct{}\nfunc (RepositoryMissingError) Error() string { return \"repository missing\" }\n\ntype TaskService struct {\n\trepo TaskRepository\n}\n\nfunc NewTaskService(repo TaskRepository) (*TaskService, error) {\n\t// Отклоните nil и сохраните точный экземпляр.\n\tpanic(\"TODO\")\n}\n\nfunc (s *TaskService) Get(ctx context.Context, id string) (Task, error) {\n\t// Передайте аргументы repository и сохраните его результат без потерь.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"task:task-17|repo-1|calls=1|id=task-17|ctx=true|error=false\"\n\"task:||calls=1|id=task-18|ctx=true|error=true\"\n",
       "criteria": [
-        "NewTaskService возвращает RepositoryMissingError при nil-интерфейсе и не создаёт частичный service.",
-        "Конструктор сохраняет и использует именно переданный экземпляр repository.",
-        "Get вызывает repository ровно один раз с исходными context и ID, без нормализации или замены ID.",
-        "Get возвращает результат и ошибку repository без потери ошибки.",
-        "Решение не использует mutable global для хранения зависимости."
+        "NewTaskService и Get компилируются; nil отвергается при сборке, аргументы передаются без изменений.",
+        "«Запустить»: два вызова дают task:task-17 с успехом и task с ошибкой.",
+        "«Проверить»: закрытые примеры с nil-хранилищем и пустым или сырым идентификатором дают constructor_error, task с пустым ID и task с сырым ID, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что напечатает тест для успешного Get задачи task-21 из хранилища repo-5?",
+          "answer": "task:task-21|repo-5|calls=1|id=task-21|ctx=true|error=false: задача и идентификатор переданы без изменений."
         }
       ],
       "signature": "type TaskService; func NewTaskService(repo TaskRepository) (*TaskService, error); func (s *TaskService) Get(ctx context.Context, id string) (Task, error)"
@@ -129,20 +127,28 @@
   ],
   "self_check": [
     {
-      "question": "Почему зависимости передаются конструктору, а не читаются из global singleton?",
-      "answer": "Явная сборка показывает обязательные зависимости, облегчает изолированный тест и предсказуемое закрытие ресурсов."
+      "question": "Почему зависимости передаются конструктору, а не читаются из глобального синглтона?",
+      "answer": "Конструктор делает зависимости явными и подменяемыми. Глобальное состояние скрывает их и заставляет тесты влиять друг на друга."
     },
     {
       "question": "Как должна вести себя сборка при отсутствии обязательного repository?",
-      "answer": "Завершиться с ясной ошибкой конфигурации до readiness, а не создать частично работающий handler."
+      "answer": "Отказать при сборке понятной ошибкой, а не падать позже при первом запросе."
     },
     {
       "question": "Что именно доказывает тест конструктора с fake repository?",
-      "answer": "Только корректность выбранной wiring-ветки; он не подтверждает production конфигурацию или фактическое соединение с хранилищем."
+      "answer": "Что сервис сохраняет переданный экземпляр и передаёт аргументы без потерь. Реальную базу такой тест не проверяет."
     },
     {
       "question": "Как определить размер интерфейса для service?",
-      "answer": "Оставить только операции, необходимые этому потребителю, и проверить контракт на реальной реализации интеграционным тестом."
+      "answer": "Включить только методы, которые сценарий вызывает. Лишние методы усложняют fake и расширяют зависимость."
+    },
+    {
+      "question": "Почему пустая строка подключения классифицируется отдельно от короткой?",
+      "answer": "Пустая означает отсутствие конфигурации, короткая — подозрительную конфигурацию. Разные причины требуют разных действий оператора."
+    },
+    {
+      "question": "Почему строковая классификация конфигурации не заменяет проверку подключения?",
+      "answer": "Проверка длины не разбирает URL и не показывает, что база доступна. Это отдельная проверка."
     }
   ]
 }
