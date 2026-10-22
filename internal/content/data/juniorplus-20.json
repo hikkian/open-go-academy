@@ -59,23 +59,19 @@
       ],
       "difficulty": "easy",
       "title": "Сгруппируй failure без заявления о pass",
-      "prompt": "Точные symbolic keys: http_contract → http; auth_session → authentication; owner_scope → ownership; postgres_integrity → database; redirect_boundary → redirect; неизвестное значение → unknown. Это группирует evidence, не запускает acceptance suite.",
+      "prompt": "Сгруппируй пять ключей по категориям; неизвестный ключ даёт unknown.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc FailureCategory(check string) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"http\"\n\"ownership\"",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "FailureCategory(check string) string компилируется; проверяются все пять ключей и unknown.",
+        "«Запустить»: пример 1 и пример 2 дают http и ownership.",
+        "«Проверить»: закрытые примеры postgres_integrity и made_up дают database и unknown."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "Точные symbolic keys: http_contract → http; auth_session → authentication; owner_scope → ownership; postgres_integrity → database; redirect_boundary → redirect; неизвестное значение → unknown. Это группирует evidence, не запускает acceptance suite."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Что вернёт FailureCategory для auth_session?",
+          "answer": "authentication: ключ относится к категории аутентификации. Функция только группирует и не запускает проверку."
         }
       ]
     },
@@ -89,23 +85,19 @@
       ],
       "difficulty": "medium",
       "title": "Подготовь evidence для ручного review",
-      "prompt": "Если любой сигнал false — incomplete; если все true — manual_review_required. Выход не означает ранг, credential, security certification или профессию.",
+      "prompt": "Любой false — incomplete; все три true — manual_review_required.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc EvidenceStage(automaticPassed, cleanSetup, testsAndDocs bool) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"incomplete\"\n\"manual_review_required\"",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "EvidenceStage(automaticPassed, cleanSetup, testsAndDocs bool) string компилируется; любой false блокирует стадию.",
+        "«Запустить»: пример 1 и пример 2 дают incomplete и manual_review_required.",
+        "«Проверить»: закрытые примеры с незавершённой чистой установкой и без документации дают incomplete."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "Если любой сигнал false — incomplete; если все true — manual_review_required. Выход не означает ранг, credential, security certification или профессию."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Почему EvidenceStage возвращает incomplete, если testsAndDocs=false, а остальные true?",
+          "answer": "Тесты и документация входят в evidence. Без них пакет неполон и до ручного review не доходит."
         }
       ]
     },
@@ -119,51 +111,47 @@
       ],
       "difficulty": "hard",
       "title": "Раздели security gate и ручное решение",
-      "prompt": "При securityGatePassed=false → security_gate_failed; иначе если automaticPassed=false → automatic_checks_incomplete; иначе если manualReviewComplete=false → manual_review_required; иначе reviewed_evidence. Последняя категория означает только просмотренный evidence курса, не выдачу ранга, публичного credential или профессиональной квалификации.",
+      "prompt": "Сначала security gate, затем автоматика, ручное решение и reviewed_evidence.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc AssessmentDisposition(automaticPassed, securityGatePassed, manualReviewComplete bool) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"automatic_checks_incomplete\"\n\"manual_review_required\"\n\"security_gate_failed\"",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "AssessmentDisposition(automaticPassed, securityGatePassed, manualReviewComplete bool) string компилируется; gate проверяется первым.",
+        "«Запустить»: три вызова дают automatic_checks_incomplete, manual_review_required и security_gate_failed.",
+        "«Проверить»: закрытый пример со всеми пройденными проверками даёт reviewed_evidence."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "При securityGatePassed=false → security_gate_failed; иначе если automaticPassed=false → automatic_checks_incomplete; иначе если manualReviewComplete=false → manual_review_required; иначе reviewed_evidence. Последняя категория означает только просмотренный evidence курса, не выдачу ранга, публичного credential или профессиональной квалификации."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Что вернёт AssessmentDisposition при всех трёх true?",
+          "answer": "reviewed_evidence: просмотрен evidence курса. Это не выдача ранга или credential."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Как отличить автоматическое evidence от утверждения?",
-      "answer": "Назовите контракт, конкретный test boundary и остающиеся неизвестными зависимости."
+      "question": "Что доказывает зелёный automated acceptance, а что нет?",
+      "answer": "Доказывает, что проверенные правила выполнены на тестовых входах. Архитектуру, риск и ручное решение он не доказывает."
     },
     {
-      "question": "Где посмотреть фактический P2?",
-      "answer": "В приложении «Проекты → LinkHub API» и в P2 README, OpenAPI, Compose и threat model."
+      "question": "Зачем сначала наблюдать seeded failure, а потом исправлять?",
+      "answer": "Наблюдение фиксирует фактическое расхождение HTTP и SQL. Regression test, написанный до исправления, должен на нём падать."
     },
     {
-      "question": "Что означает reviewed course evidence?",
-      "answer": "Только проверку требований курса, не профессию, external accreditation или trusted credential."
+      "question": "Почему security gate стоит раньше ручного review?",
+      "answer": "Непройденный gate блокирует решение независимо от ручной оценки. Хороший отчёт не компенсирует уязвимость."
     },
     {
-      "question": "Что должно оставаться ручным?",
-      "answer": "Читаемость проекта, объяснение компромисса, threat boundary и review security критериев."
+      "question": "Что означает reviewed_evidence?",
+      "answer": "Просмотрен evidence курса. Это не ранг, публичный credential или профессиональная квалификация."
+    },
+    {
+      "question": "Что должно оставаться ручным после автоматических проверок?",
+      "answer": "Оценка архитектуры и риска, решение по threat model и защита проекта. Зелёный automatic pass их не заменяет."
     },
     {
       "question": "Как безопасно повторить проверку?",
-      "answer": "Fresh local/disposable environment, точная команда и результат без секретов и production данных."
-    },
-    {
-      "question": "Нужен ли Tutor?",
-      "answer": "Нет, объяснение и критерии доступны самостоятельно."
+      "answer": "Из чистой установки того же commit, теми же командами, с записанным результатом. Старые данные и секреты не переиспользуются."
     }
   ]
 }
