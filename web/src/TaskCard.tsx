@@ -154,12 +154,13 @@ export function TaskChips({ exercises, activeId, completed, onSelect }: { exerci
 
 type Row = { text: string; newline: boolean };
 
+// The grader drops one final newline before it compares lines (internal/grading/grading.go), so the learner's view does the
+// same: a final newline is not a difference, and every remaining row is a line.
+const dropFinalNewline = (text: string) => (text.endsWith('\n') ? text.slice(0, -1) : text);
+
 function rowsOf(text: string): Row[] {
   if (text === '') return [];
-  const parts = text.split('\n');
-  const endsWithNewline = text.endsWith('\n');
-  if (endsWithNewline) parts.pop();
-  return parts.map((line, i) => ({ text: line, newline: endsWithNewline || i < parts.length - 1 }));
+  return dropFinalNewline(text).split('\n').map(line => ({ text: line, newline: true }));
 }
 
 // Spaces are shown as · so that a double space or a trailing one is visible (§1.3).
