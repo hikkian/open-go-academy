@@ -59,23 +59,19 @@
       ],
       "difficulty": "easy",
       "title": "Ответь на health запрос",
-      "prompt": "GET /health → 200 JSON {status:ok}; другой method на пути → 405 и Allow: GET; неизвестный path → 404.",
+      "prompt": "GET /health — 200 и JSON {status:ok}; другой метод — 405 с Allow GET; прочее — 404.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc NewHealthHandler() http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "{\"Status\":200,\"Body\":\"{\\\"status\\\":\\\"ok\\\"}\\n\",\"ContentType\":\"application/json; charset=utf-8\",\"Location\":\"\",\"Allow\":\"\"}\n{\"Status\":405,\"Body\":\"method not allowed\\n\",\"ContentType\":\"text/plain; charset=utf-8\",\"Location\":\"\",\"Allow\":\"GET\"}\n",
       "criteria": [
-        "Точная сигнатура компилируется.",
-        "Проверяются HTTP method, path, status, headers и body по контракту.",
-        "Неверные случаи обрабатываются безопасно и детерминированно."
+        "NewHealthHandler() http.Handler компилируется; метод проверяется до ответа.",
+        "«Запустить»: пример 1 и пример 2 дают ответ 200 с JSON и ответ 405 с Allow GET.",
+        "«Проверить»: закрытые примеры, включая HEAD и путь с завершающим слэшем, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что задаёт ожидаемое поведение?",
-          "answer": "GET /health → 200 JSON {status:ok}; другой method на пути → 405 и Allow: GET; неизвестный path → 404."
-        },
-        {
-          "question": "Что доказывает httptest?",
-          "answer": "Только наблюдаемое поведение handler в локальном процессе; не внешний listener или сервис."
+          "question": "Почему HEAD на /health даёт 405, а не 200?",
+          "answer": "Контракт разрешает только GET. Метод проверяется точным сравнением, и HEAD в список не входит."
         }
       ]
     },
@@ -89,23 +85,19 @@
       ],
       "difficulty": "medium",
       "title": "Проверь JSON echo handler",
-      "prompt": "POST /echo декодирует объект с непустым message и возвращает JSON 200. Неверный method → 405/Allow POST; malformed, пустой или неизвестный field → 400.",
+      "prompt": "POST /echo: валидный JSON с непустым message — 200; иначе 400; другой метод — 405.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc NewJSONEchoHandler() http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "{\"Status\":200,\"Body\":\"{\\\"message\\\":\\\"hello\\\"}\\n\",\"ContentType\":\"application/json; charset=utf-8\",\"Location\":\"\",\"Allow\":\"\"}\n{\"Status\":405,\"Body\":\"method not allowed\\n\",\"ContentType\":\"text/plain; charset=utf-8\",\"Location\":\"\",\"Allow\":\"POST\"}\n",
       "criteria": [
-        "Точная сигнатура компилируется.",
-        "Проверяются HTTP method, path, status, headers и body по контракту.",
-        "Неверные случаи обрабатываются безопасно и детерминированно."
+        "NewJSONEchoHandler() http.Handler компилируется; тело декодируется с запретом неизвестных полей.",
+        "«Запустить»: пример 1 и пример 2 дают ответ 200 с echo и ответ 405 с Allow POST.",
+        "«Проверить»: закрытые примеры, включая повреждённый JSON и пустое сообщение, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что задаёт ожидаемое поведение?",
-          "answer": "POST /echo декодирует объект с непустым message и возвращает JSON 200. Неверный method → 405/Allow POST; malformed, пустой или неизвестный field → 400."
-        },
-        {
-          "question": "Что доказывает httptest?",
-          "answer": "Только наблюдаемое поведение handler в локальном процессе; не внешний listener или сервис."
+          "question": "Почему лишнее поле в JSON даёт 400, а не 200?",
+          "answer": "DisallowUnknownFields делает неизвестные поля ошибкой декодирования, поэтому запрос не принимается целиком."
         }
       ]
     },
@@ -119,51 +111,47 @@
       ],
       "difficulty": "hard",
       "title": "Отдай согласованную коллекцию",
-      "prompt": "GET /links возвращает один фиксированный JSON список со статусом 200. Другой method → 405/Allow GET; неизвестный path → 404. Хранилище не симулируется.",
+      "prompt": "GET /links — 200 со списком; другой метод — 405 с Allow GET; прочие пути — 404.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nimport (\n\t\"net/http\"\n)\n\nfunc NewLinksCollectionHandler() http.Handler {\n\t// Реализуйте контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "{\"Status\":200,\"Body\":\"[{\\\"alias\\\":\\\"go\\\",\\\"target\\\":\\\"https://go.dev/\\\"}]\\n\",\"ContentType\":\"application/json; charset=utf-8\",\"Location\":\"\",\"Allow\":\"\"}\n{\"Status\":405,\"Body\":\"method not allowed\\n\",\"ContentType\":\"text/plain; charset=utf-8\",\"Location\":\"\",\"Allow\":\"GET\"}\n",
       "criteria": [
-        "Точная сигнатура компилируется.",
-        "Проверяются HTTP method, path, status, headers и body по контракту.",
-        "Неверные случаи обрабатываются безопасно и детерминированно."
+        "NewLinksCollectionHandler() http.Handler компилируется; список фиксирован, хранилище не используется.",
+        "«Запустить»: пример 1 и пример 2 дают ответ 200 со списком и ответ 405 с Allow GET.",
+        "«Проверить»: закрытые примеры, включая HEAD и вложенные пути, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что задаёт ожидаемое поведение?",
-          "answer": "GET /links возвращает один фиксированный JSON список со статусом 200. Другой method → 405/Allow GET; неизвестный path → 404. Хранилище не симулируется."
-        },
-        {
-          "question": "Что доказывает httptest?",
-          "answer": "Только наблюдаемое поведение handler в локальном процессе; не внешний listener или сервис."
+          "question": "Почему /links/x даёт 404, хотя /links существует?",
+          "answer": "Путь зарегистрирован точно. Вложенный путь без своего обработчика не совпадает ни с одним маршрутом."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Какова граница темы?",
-      "answer": "Создавать handler стандартной библиотекой."
+      "question": "Что такое handler и какие два аргумента он получает?",
+      "answer": "Значение с методом ServeHTTP. Оно получает ResponseWriter для ответа и *http.Request с запросом."
     },
     {
-      "question": "Что доказывает локальный тест?",
-      "answer": "Только случаи, запущенные в httptest, не сетевую доступность."
+      "question": "Почему статус и заголовки задаются до тела ответа?",
+      "answer": "После записи тела или статуса заголовки уже ушли клиенту и изменить их нельзя."
     },
     {
-      "question": "Как проверить неверный route или method?",
-      "answer": "Отдельно подать fixture и сверить status, headers, body."
+      "question": "Почему /health/ даёт 404, а /health — нет?",
+      "answer": "ServeMux сопоставляет точный путь. Путь без завершающего слэша зарегистрирован, с ним — нет."
     },
     {
-      "question": "Как сравнить JSON устойчиво?",
-      "answer": "Декодировать JSON и сравнивать значения полей, не пробелы."
+      "question": "Что делает DisallowUnknownFields?",
+      "answer": "Декодер отвергает поля, которых нет в структуре, вместо того чтобы молча их пропускать."
     },
     {
-      "question": "Как отдавать внутренние ошибки?",
-      "answer": "Без SQL, stack trace, пути или секрета в клиентском ответе."
+      "question": "Почему HEAD отвергается, если контракт говорит только про GET?",
+      "answer": "Контракт задания разрешает один метод. Все остальные, включая HEAD, получают 405 с Allow: GET."
     },
     {
-      "question": "Нужен ли AI Tutor?",
-      "answer": "Нет, все критерии доступны для самостоятельной проверки."
+      "question": "Как проверить обработчик без открытия порта?",
+      "answer": "Создать запрос через httptest.NewRequest и записать ответ через httptest.NewRecorder, затем проверить код и заголовки."
     }
   ]
 }
