@@ -50,19 +50,19 @@
       ],
       "difficulty": "easy",
       "title": "Easy: authn, authz и границы tenant — базовое правило",
-      "prompt": "Реализуйте `func AccessDecision(principalTenant, resourceTenant string) string`. Контракт: Пустое значение любого tenant → invalid; равные непустые → tenant_match; разные → deny.",
+      "prompt": "Пустой арендатор — invalid; равные — tenant_match; разные — deny.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc AccessDecision(principalTenant, resourceTenant string) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"tenant_match\"\n\"invalid\"\n\"invalid\"\n",
       "criteria": [
-        "Точно выполнить контракт: Пустое значение любого tenant → invalid; равные непустые → tenant_match; разные → deny.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "AccessDecision(principalTenant, resourceTenant string) string компилируется; пустое значение отвергается до сравнения.",
+        "«Запустить»: три вызова дают tenant_match, invalid и invalid.",
+        "«Проверить»: закрытые примеры с разными арендаторами и разным регистром дают deny и deny, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт AccessDecision для t2 и t2?",
+          "answer": "tenant_match: арендаторы непусты и совпадают точно."
         }
       ],
       "signature": "func AccessDecision(principalTenant, resourceTenant string) string"
@@ -76,19 +76,19 @@
       ],
       "difficulty": "medium",
       "title": "Medium: authn, authz и границы tenant — граничная политика",
-      "prompt": "Реализуйте `func OwnerDecision(principalID, ownerID string, authenticated bool) string`. Контракт: Порядок: authenticated=false → unauthenticated; затем пустой principalID/ownerID → invalid; разные непустые ID → forbidden; иначе allow.",
+      "prompt": "Не вошёл — unauthenticated; пустой id — invalid; свой — allow; чужой — forbidden.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc OwnerDecision(principalID, ownerID string, authenticated bool) string {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"allow\"\n\"unauthenticated\"\n",
       "criteria": [
-        "Точно выполнить контракт: Порядок: authenticated=false → unauthenticated; затем пустой principalID/ownerID → invalid; разные непустые ID → forbidden; иначе allow.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "OwnerDecision(principalID, ownerID string, authenticated bool) string компилируется; вход проверяется первым.",
+        "«Запустить»: два вызова дают allow и unauthenticated.",
+        "«Проверить»: закрытые примеры с пустыми идентификаторами и чужим владельцем дают invalid, invalid, forbidden и unauthenticated, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что доказывает grader?",
-          "answer": "Только соответствие этой чистой функции фиксированным public/private-векторам, а не безопасность приложения или свойства внешней зависимости."
+          "question": "Что вернёт OwnerDecision для principal u4, owner u4 и authenticated = true?",
+          "answer": "allow: клиент вошёл, и он владелец ресурса."
         }
       ],
       "signature": "func OwnerDecision(principalID, ownerID string, authenticated bool) string"
@@ -102,23 +102,19 @@
       ],
       "difficulty": "hard",
       "title": "Hard: таблица решений authentication × role × operation × tenant × owner",
-      "prompt": "Реализуйте `func AuthorizeTask(authenticated bool, role, operation, principalTenant, taskTenant, principalID, ownerID string) bool`. Контракт: true только при authentication, непустых совпадающих tenant и principal/owner ID, поддерживаемой роли и операции. owner/editor разрешены read/write; viewer только read. Это helper-матрица, не доказательство middleware, SQL или безопасности IDOR.",
+      "prompt": "Вход, арендатор, свой владелец и пара роль-операция из таблицы; иначе false.",
       "starter_file": "main.go",
       "starter_code": "package main\n\nfunc AuthorizeTask(authenticated bool, role, operation, principalTenant, taskTenant, principalID, ownerID string) bool {\n\t// Реализуйте точный контракт из условия.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\ntrue\ntrue\ntrue\n",
       "criteria": [
-        "Точно выполнить контракт: true только при authentication, непустых совпадающих tenant и principal/owner ID, поддерживаемой роли и операции. owner/editor разрешены read/write; viewer только read. Это helper-матрица, не доказательство middleware, SQL или безопасности IDOR.",
-        "Пройти все приведённые ветви и границы; неизвестные значения обрабатывать так, как требует контракт.",
-        "Описать границы helper и не приписывать ему свойства внешних компонентов, которых он не проверяет."
+        "AuthorizeTask(...) bool компилируется; владелец и таблица ролей проверяются явно.",
+        "«Запустить»: четыре вызова дают true.",
+        "«Проверить»: закрытые примеры с наблюдателем на записи, чужим владельцем и пустым арендатором дают false, совпадают."
       ],
       "self_check": [
         {
-          "question": "Какие измерения должны разрешиться одновременно?",
-          "answer": "Authentication, роль, действие, tenant и совпадение principal/task owner; нарушение любого условия запрещает операцию."
-        },
-        {
-          "question": "Доказывает ли этот helper отсутствие IDOR в сервисе?",
-          "answer": "Нет. Он проверяет только свою таблицу входных значений; нужны endpoint/storage integration tests, проверка происхождения principal и review полного пути."
+          "question": "Что вернёт AuthorizeTask для роли viewer, операции read, если владелец задачи другой?",
+          "answer": "false: наблюдатель читает, но не чужую задачу, потому что владелец не совпадает."
         }
       ],
       "signature": "func AuthorizeTask(authenticated bool, role, operation, principalTenant, taskTenant, principalID, ownerID string) bool"
@@ -127,19 +123,27 @@
   "self_check": [
     {
       "question": "Где заканчивается authentication и начинается authorization?",
-      "answer": "Authentication устанавливает проверенного principal; authorization решает, разрешено ли ему конкретное действие над конкретным объектом."
+      "answer": "Аутентификация отвечает, кто клиент. Авторизация решает, что ему разрешено с конкретным ресурсом, и проверяется для каждой операции."
     },
     {
       "question": "Какая независимая граница защищает от подмены чужого task ID?",
-      "answer": "Сервис должен связать доверенный principal, tenant, объект и действие; одного совпадения tenant недостаточно."
+      "answer": "Проверка арендатора и владельца по данным из сессии и хранилища. Идентификатор из запроса сам по себе не доказывает право доступа."
     },
     {
       "question": "Что доказывают чистые helper-векторы этой главы?",
-      "answer": "Только таблицу решений переданной функции; происхождение principal, SQL-предикат и поведение HTTP endpoint требуют integration tests."
+      "answer": "Таблицу решений на выбранных входах. Они не доказывают, что cookie, токен и база ведут себя так же."
     },
     {
       "question": "Какой отрицательный тест вы добавите до расширения набора ролей?",
-      "answer": "Выполню запрос от проверенного пользователя другой роли и tenant и подтвержу отсутствие чтения или изменения чужой задачи."
+      "answer": "Тест на чужой арендатор, чужого владельца и роль вне таблицы: доступа быть не должно, и побочных записей тоже."
+    },
+    {
+      "question": "Почему пустой tenant считается ошибкой, а не значением по умолчанию?",
+      "answer": "Пустой арендатор означает, что граница не определена. Сравнение пустых строк дало бы ложное совпадение."
+    },
+    {
+      "question": "Почему регистр tenant имеет значение?",
+      "answer": "Учебный контракт сравнивает строки точно. Нормализацию регистра нужно описать явно, иначе t1 и T1 станут одной границей без решения."
     }
   ]
 }
