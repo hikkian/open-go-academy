@@ -1,130 +1,144 @@
 {
-  "id": "middleplus-01",
-  "title": "Воспроизводимый baseline для Go",
-  "rank": "Middle+",
-  "module": "middleplus-measurement",
-  "prerequisites": [
-    "middle-40"
-  ],
-  "estimated_minutes": 210,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 81,
-  "learning_outcomes": [
-    "Задать профиль нагрузки, подготовленные тестовые данные и измеряемый участок так, чтобы другой человек мог повторить запуск.",
-    "Сохранить версию `Go`, операционную систему, архитектуру, модель процессора, коммит `Git` и команду запуска как исходный замер.",
-    "Рассчитать изменение со знаком относительно исходного замера и сравнить его с заданным порогом, не смешивая изменения кода и тестового стенда."
-  ],
-  "glossary": [
+ "id": "middleplus-01",
+ "title": "Воспроизводимый baseline для Go",
+ "rank": "Middle+",
+ "module": "middleplus-measurement",
+ "prerequisites": [
+  "middle-40"
+ ],
+ "estimated_minutes": 210,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 81,
+ "learning_outcomes": [
+  "Задать нагрузку, тестовые данные и границы измеряемого участка так, чтобы другой человек повторил запуск по манифесту.",
+  "Сохранить версию Go, ОС, архитектуру, процессор, коммит и команду запуска как исходный замер и отличать изменение кода от изменения стенда.",
+  "Рассчитать изменение со знаком относительно исходного замера, проверить сопоставимость замеров и применить порог решения, не выдавая результат за доказательство ускорения."
+ ],
+ "glossary": [
+  {
+   "term": "baseline",
+   "translation": "исходный уровень",
+   "definition": "Зафиксированное наблюдение до изменения для сравнения по той же процедуре."
+  },
+  {
+   "term": "fixture",
+   "translation": "тестовый набор",
+   "definition": "Закреплённые входные данные учебного эксперимента."
+  },
+  {
+   "term": "workload",
+   "translation": "нагрузка",
+   "definition": "Набор операций, частот и входных данных, описывающий проверяемую работу."
+  }
+ ],
+ "markdown_file": "middleplus-01.md",
+ "exercises": [
+  {
+   "id": "middleplus-01-easy",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: вычисли signed delta baseline",
+   "prompt": "Верни before − after в той же единице: плюс — сокращение, минус — регресс, 0 — равенство.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc BenchmarkDelta(before, after int64) int64 {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "10\n-10\n",
+   "criteria": [
+    "Сигнатура func BenchmarkDelta(before, after int64) int64 сохранена; без func main, печати и импортов.",
+    "Результат — знаковая разность before − after в единице входов, не модуль и не процент.",
+    "Результат не называется измерением или доказательством выигрыша."
+   ],
+   "self_check": [
     {
-      "term": "baseline",
-      "translation": "исходный уровень",
-      "definition": "Зафиксированное наблюдение до изменения для сравнения по той же процедуре."
+     "question": "Почему вычитание здесь не переполняется?",
+     "answer": "Оба входа неотрицательны и не больше MaxInt64, поэтому разность лежит в [−MaxInt64, MaxInt64]."
     },
     {
-      "term": "fixture",
-      "translation": "тестовый набор",
-      "definition": "Закреплённые входные данные учебного эксперимента."
-    },
-    {
-      "term": "workload",
-      "translation": "нагрузка",
-      "definition": "Набор операций, частот и входных данных, описывающий проверяемую работу."
+     "question": "Что означает отрицательный результат для метрики ns/op?",
+     "answer": "Длительность после изменения выросла — регресс; для метрики «операций в секунду» знак читался бы наоборот."
     }
-  ],
-  "markdown_file": "middleplus-01.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-01-medium",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: проверь сопоставимость baseline",
+   "prompt": "true только если workload зафиксирован, единицы совпадают и среда сопоставима.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ComparableBaseline(validWorkload, sameUnit, sameEnvironment bool) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func ComparableBaseline(validWorkload, sameUnit, sameEnvironment bool) bool сохранена; без func main, печати и импортов.",
+    "Все три условия обязательны: любая ложная отметка даёт false.",
+    "Функция оценивает только переданные флаги и не утверждает, что среда реально совпала."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-01-easy",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: вычисли signed delta baseline",
-      "prompt": "Для одной операции даны длительности до и после изменения в одинаковой единице. Верните `before-after`: положительное значение означает меньшую длительность после изменения. Pure helper вычисляет только входы и не запускает benchmark.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc BenchmarkDelta(before, after int64) int64 {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "10\n-10\n",
-      "criteria": [
-        "Сохранить единицу измерения и знак `before-after`.",
-        "Не называть результат измерением или доказательством выигрыша."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Delta сберегает знак и единицу; без сопоставимой процедуры числа интерпретировать нельзя."
-        }
-      ]
+     "question": "Почему «два из трёх» недостаточно?",
+     "answer": "Разные единицы или разный стенд делают сравнение бессмысленным даже при одинаковом workload."
     },
     {
-      "id": "middleplus-01-medium",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: проверь сопоставимость baseline",
-      "prompt": "Верните true, только если workload зафиксирован и одинаков, единицы измерения совпадают, а существенные условия среды сопоставимы. Это checklist-предикат по переданным отметкам, а не проверка самой среды.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ComparableBaseline(validWorkload, sameUnit, sameEnvironment bool) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Все три условия обязательны.",
-        "Функция оценивает только boolean-поля; не утверждать, что среда реально совпала."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Сопоставимость требует одного workload, единиц и документированной среды; boolean fixture не верифицирует host."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-01-hard",
-      "kind": "function",
-      "skills": [
-        "performance"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: примени порог решения к измеренной дельте",
-      "prompt": "Классифицируйте переданные неотрицательные длительности и минимальный абсолютный выигрыш (одинаковая единица): invalid / regression / candidate_improved / below_threshold. Это политика над fixture, а не рекомендация выпуска.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc BaselineDecision(before, after, minImprovement int64) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"candidate_improved\"\n",
-      "criteria": [
-        "Отрицательные значения недопустимы.",
-        "Отличать регрессию от улучшения ниже порога.",
-        "Не выводить статистическую значимость из одной пары чисел."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Пороговый helper не оценивает шум/повторы; одно наблюдение не обосновывает релиз."
-        }
-      ]
+     "question": "Что функция не проверяет?",
+     "answer": "Саму среду: флаги — это утверждения автора замера, их правдивость проверяют по манифесту."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-01-hard",
+   "kind": "function",
+   "skills": [
+    "performance"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: примени порог решения к измеренной дельте",
+   "prompt": "Минус → invalid; delta<0 → regression; delta ≥ порога → candidate_improved; иначе below.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc BaselineDecision(before, after, minImprovement int64) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"candidate_improved\"\n",
+   "criteria": [
+    "Сигнатура func BaselineDecision(before, after, minImprovement int64) string сохранена; без func main, печати и импортов.",
+    "Отрицательное значение любого аргумента даёт invalid до любых вычислений.",
+    "Регрессия отличается от улучшения ниже порога; выигрыш, равный порогу, — candidate_improved; статистическая значимость из одной пары чисел не выводится."
+   ],
+   "self_check": [
     {
-      "question": "Что именно возвращает BenchmarkDelta?",
-      "answer": "Знаковую абсолютную разность before - after в той же единице измерения; это не модуль разности и не процент."
+     "question": "Почему проверка валидности стоит первой?",
+     "answer": "Отрицательный порог или длительность — ошибка входа; классифицировать такую пару бессмысленно."
     },
     {
-      "question": "Как интерпретировать знак результата?",
-      "answer": "Положительный результат означает, что after меньше before и измеренная длительность сократилась; отрицательный означает регресс, ноль — равенство."
-    },
-    {
-      "question": "Какие входы делают signed int64 вычитание безопасным в этом контракте?",
-      "answer": "Оба измерения неотрицательны и не превосходят MaxInt64. Разность двух чисел из диапазона [0, MaxInt64] принадлежит [-MaxInt64, MaxInt64]."
-    },
-    {
-      "question": "Когда два числа допустимо сравнивать?",
-      "answer": "Когда они относятся к одной операции, измерены в одинаковых единицах и получены на сопоставимом workload и процедуре."
-    },
-    {
-      "question": "Что доказывает прохождение этой функции?",
-      "answer": "Только правильную арифметику для переданных чисел. Она не запускает benchmark и не доказывает ускорение реального сервиса."
+     "question": "Что вернёт функция при дельте, равной порогу?",
+     "answer": "candidate_improved: условие «не меньше порога» (>=)."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Что именно возвращает BenchmarkDelta?",
+   "answer": "Знаковую разность before − after в той же единице; это не модуль разности и не процент."
+  },
+  {
+   "question": "Как интерпретировать знак результата?",
+   "answer": "Положительный — after меньше before, длительность сократилась; отрицательный — регресс; ноль — равенство."
+  },
+  {
+   "question": "Какие входы делают вычитание int64 безопасным в этом контракте?",
+   "answer": "Оба замера неотрицательны и не превосходят MaxInt64, поэтому разность принадлежит [−MaxInt64, MaxInt64]."
+  },
+  {
+   "question": "Когда два числа допустимо сравнивать?",
+   "answer": "Когда они относятся к одной операции, измерены в одинаковых единицах и получены на сопоставимом workload и процедуре."
+  },
+  {
+   "question": "Что доказывает прохождение этих функций?",
+   "answer": "Только правильную арифметику и логику над переданными числами; они не запускают benchmark и не доказывают ускорение сервиса."
+  }
+ ]
 }
