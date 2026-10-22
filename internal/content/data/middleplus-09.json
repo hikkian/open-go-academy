@@ -1,132 +1,147 @@
 {
-  "id": "middleplus-09",
-  "title": "Партиционирование и маршрутизация данных",
-  "rank": "Middle+",
-  "module": "middleplus-data",
-  "prerequisites": [
-    "middleplus-08"
-  ],
-  "estimated_minutes": 210,
-  "go_version": "1.27.2",
-  "curriculum_version": "2026.10",
-  "order": 89,
-  "learning_outcomes": [
-    "Направлять значение ключа в единственный учебный раздел таблицы по заданным границам.",
-    "Проверить границы диапазона, включительность и отсутствие пересечений или пробелов.",
-    "Объяснить влияние ключа и исключение ненужных разделов на локальность, уникальность и операционную сложность."
-  ],
-  "glossary": [
+ "id": "middleplus-09",
+ "title": "Партиционирование и маршрутизация данных",
+ "rank": "Middle+",
+ "module": "middleplus-data",
+ "prerequisites": [
+  "middleplus-08"
+ ],
+ "estimated_minutes": 210,
+ "go_version": "1.27.2",
+ "curriculum_version": "2026.10",
+ "order": 89,
+ "learning_outcomes": [
+  "Называть две задачи, которые решает партиционирование — отсечение разделов при чтении по ключу и дешёвое удаление сегментов, — и запросы, которым оно не помогает.",
+  "Проверять границы разделов на стыках включительно/исключительно и правила уникальности с ключом разделения до миграции.",
+  "Вычислять отсечение раздела как непересечение интервалов в одномерной модели и отличать её от решения планировщика на параметрах."
+ ],
+ "glossary": [
+  {
+   "term": "partition pruning",
+   "translation": "отсечение partitions",
+   "definition": "Исключение разделов, чьи границы несовместимы с предикатом запроса."
+  },
+  {
+   "term": "partition key",
+   "translation": "ключ разделения",
+   "definition": "Колонка или выражение, по которому строки направляются в partitions."
+  },
+  {
+   "term": "range bound",
+   "translation": "граница диапазона",
+   "definition": "Значение, задающее интервал строк конкретного раздела."
+  }
+ ],
+ "markdown_file": "middleplus-09.md",
+ "exercises": [
+  {
+   "id": "middleplus-09-easy",
+   "kind": "function",
+   "skills": [
+    "sql",
+    "performance"
+   ],
+   "difficulty": "easy",
+   "title": "Easy: маршрутизируй день в учебный shard",
+   "prompt": "Дни 1–10 → p1, 11–20 → p2, 21–31 → p3; остальное → invalid.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc PartitionRoute(day int) string {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "\"p1\"\n\"p2\"\n\"p3\"\n",
+   "criteria": [
+    "Сигнатура func PartitionRoute(day int) string сохранена; без func main, печати и импортов.",
+    "Интервалы включают указанные границы: 10 — p1, 11 — p2, 20 — p2, 21 — p3; 0 и 32 — invalid.",
+    "Это условная схема по дню без месяца, не календарный ключ раздела."
+   ],
+   "self_check": [
     {
-      "term": "partition pruning",
-      "translation": "отсечение partitions",
-      "definition": "Исключение разделов, чьи границы несовместимы с предикатом запроса."
+     "question": "Куда попадает день 20?",
+     "answer": "В p2: интервал 11–20 включает обе границы."
     },
     {
-      "term": "partition key",
-      "translation": "ключ разделения",
-      "definition": "Колонка или выражение, по которому строки направляются в partitions."
-    },
-    {
-      "term": "range bound",
-      "translation": "граница диапазона",
-      "definition": "Значение, задающее интервал строк конкретного раздела."
+     "question": "Чем эта модель отличается от диапазона PostgreSQL?",
+     "answer": "В PostgreSQL верхняя граница диапазона исключительная (FROM включительно, TO исключительно); здесь обе границы включены."
     }
-  ],
-  "markdown_file": "middleplus-09.md",
-  "exercises": [
+   ]
+  },
+  {
+   "id": "middleplus-09-medium",
+   "kind": "function",
+   "skills": [
+    "sql",
+    "performance"
+   ],
+   "difficulty": "medium",
+   "title": "Medium: проверь диапазон partition key",
+   "prompt": "true, если включительный диапазон лежит в 1…31 и start ≤ end.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc ValidPartitionRange(startDay, endDay int) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func ValidPartitionRange(startDay, endDay int) bool сохранена; без func main, печати и импортов.",
+    "Оба конца внутри 1…31 и start ≤ end; перевёрнутый интервал даёт false.",
+    "Это проверка описания схемы, не отсечение планировщиком."
+   ],
+   "self_check": [
     {
-      "id": "middleplus-09-easy",
-      "kind": "function",
-      "skills": [
-        "sql",
-        "performance"
-      ],
-      "difficulty": "easy",
-      "title": "Easy: маршрутизируй день в учебный shard",
-      "prompt": "Маршрутизируйте day 1–10 в p1, 11–20 в p2, 21–31 в p3; остальное — invalid. Это условная схема, не реальная календарная дата.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc PartitionRoute(day int) string {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "\"p1\"\n\"p2\"\n\"p3\"\n",
-      "criteria": [
-        "Интервалы включают указанные границы.",
-        "Не трактовать day без месяца как календарный partition key."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Partition routing зависит от реального ключа и границ partitions."
-        }
-      ]
+     "question": "Допустим ли раздел из одного дня?",
+     "answer": "Да: start равен end, условие start ≤ end выполнено."
     },
     {
-      "id": "middleplus-09-medium",
-      "kind": "function",
-      "skills": [
-        "sql",
-        "performance"
-      ],
-      "difficulty": "medium",
-      "title": "Medium: проверь диапазон partition key",
-      "prompt": "Проверьте включительный учебный диапазон 1..31, где start≤end. Это только валидация диапазона, не SQL pruning.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc ValidPartitionRange(startDay, endDay int) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Оба конца внутри границ.",
-        "Отклонить перевёрнутый интервал."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Планировщик pruning требует предиката над ключом и знает реальные границы partitions."
-        }
-      ]
-    },
-    {
-      "id": "middleplus-09-hard",
-      "kind": "function",
-      "skills": [
-        "sql",
-        "performance"
-      ],
-      "difficulty": "hard",
-      "title": "Hard: проверь пересечение диапазонов",
-      "prompt": "Верните true, когда включительные query и partition ranges не пересекаются (то есть partition можно исключить в этой одномерной модели). Некорректные перевёрнутые интервалы возвращают false.",
-      "starter_file": "main.go",
-      "starter_code": "package main\n\nfunc PartitionPrunes(queryStart, queryEnd, partStart, partEnd int) bool {\n\tpanic(\"TODO\")\n}\n",
-      "public_output": "true\n",
-      "criteria": [
-        "Учесть границу равенства как пересечение.",
-        "Не пересекающиеся диапазоны можно исключить только при корректных bounds."
-      ],
-      "self_check": [
-        {
-          "question": "Что именно проверяет упражнение и чего оно не доказывает?",
-          "answer": "Это иллюстрация pruning по одному упорядоченному ключу, не полноценная модель PostgreSQL partition pruning."
-        }
-      ]
+     "question": "Зачем проверять диапазоны до миграции?",
+     "answer": "Дыра или перекрытие между разделами обнаружится иначе только по потерянной или продублированной строке."
     }
-  ],
-  "self_check": [
+   ]
+  },
+  {
+   "id": "middleplus-09-hard",
+   "kind": "function",
+   "skills": [
+    "sql",
+    "performance"
+   ],
+   "difficulty": "hard",
+   "title": "Hard: проверь пересечение диапазонов",
+   "prompt": "true, если диапазоны запроса и раздела не пересекаются; перевёрнутые → false.",
+   "starter_file": "main.go",
+   "starter_code": "package main\n\nfunc PartitionPrunes(queryStart, queryEnd, partStart, partEnd int) bool {\n\tpanic(\"TODO\")\n}\n",
+   "public_output": "true\n",
+   "criteria": [
+    "Сигнатура func PartitionPrunes(queryStart, queryEnd, partStart, partEnd int) bool сохранена; без func main, печати и импортов.",
+    "Касание границ считается пересечением; отсечение только при queryEnd < partStart или partEnd < queryStart.",
+    "Перевёрнутые интервалы дают false: при сомнительном входе безопаснее прочитать раздел, чем пропустить данные."
+   ],
+   "self_check": [
     {
-      "question": "Когда partition pruning может сократить работу?",
-      "answer": "Когда предикат запроса ограничивает partition key так, что движок может исключить partitions по их границам."
+     "question": "Почему касание границы — пересечение?",
+     "answer": "Включительные интервалы с общей точкой содержат одну и ту же строку; раздел нужно читать."
     },
     {
-      "question": "Какой риск у большого числа мелких partitions?",
-      "answer": "Растут metadata и стоимость планирования и обслуживания, поэтому увеличение числа partitions не всегда улучшает запрос."
-    },
-    {
-      "question": "Почему выбор ключа влияет на продуктовые запросы?",
-      "answer": "Запросы, не фильтрующие partition key, могут посетить много сегментов и не получить ожидаемое сокращение чтения."
-    },
-    {
-      "question": "Что важно в границах range partitions?",
-      "answer": "Нужно точно проверить включающую нижнюю и исключающую верхнюю границу, чтобы записи не терялись и не дублировались."
-    },
-    {
-      "question": "Почему partitioning влияет на уникальность?",
-      "answer": "Ограничение уникальности для partitioned table зависит от включения partition key; глобальную уникальность может потребоваться обеспечить иначе."
+     "question": "Почему для перевёрнутого интервала ответ false, а не true?",
+     "answer": "Отсечение означает «не читать»; при некорректном входе безопасный ответ — читать."
     }
-  ]
+   ]
+  }
+ ],
+ "self_check": [
+  {
+   "question": "Какие два выигрыша даёт партиционирование и чего оно не гарантирует?",
+   "answer": "Отсечение разделов при чтении по ключу и дешёвое удаление старых сегментов; ускорение произвольных запросов не гарантируется."
+  },
+  {
+   "question": "Почему граница FROM/TO — самое опасное место миграции?",
+   "answer": "Нижняя граница включительная, верхняя исключительная; ошибка на стыке теряет строки или направляет их в раздел по умолчанию."
+  },
+  {
+   "question": "Что требуется от уникального ограничения на партиционированной таблице?",
+   "answer": "Включить ключ разделения; глобальная уникальность без ключа не поддерживается напрямую."
+  },
+  {
+   "question": "Чем опасен раздел по умолчанию?",
+   "answer": "Он прячет ошибку заведения разделов: строки накапливаются тихо, и позже их придётся перемещать."
+  },
+  {
+   "question": "Почему отсечение на константе не доказывает отсечение на параметре?",
+   "answer": "С параметром отсечение происходит во время выполнения и зависит от формы запроса; план может посещать больше разделов."
+  }
+ ]
 }
