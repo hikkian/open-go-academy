@@ -63,23 +63,19 @@
       ],
       "difficulty": "easy",
       "title": "Узкий интерфейс чтения и простое правило",
-      "prompt": "Объяви интерфейс `ProfileReaderEasy` с методом `FindProfile(id string) (name string, found bool)` и реализуй `func WelcomeEasy(repository ProfileReaderEasy, id string) string`. Пустой id даёт `invalid_request`; отсутствие записи — `not_found`; найденная запись с пустым именем — `invalid_profile`; иначе результат `hello:` + имя. Зависимость передаётся параметром; не используй global. Это локальная функция с fake, не HTTP/SQL-интеграция.",
+      "prompt": "Пустой id — invalid_request; нет записи — not_found; пустое имя — invalid_profile.",
       "starter_file": "main.go",
       "starter_code": "package main\n\ntype ProfileReaderEasy interface {\n\tFindProfile(id string) (name string, found bool)\n}\n\nfunc WelcomeEasy(repository ProfileReaderEasy, id string) string {\n\t// Проверяйте запрос, вызов интерфейса и результат по контракту.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"hello:Алия\"\n\"not_found\"\n\"invalid_request\"",
       "criteria": [
-        "Интерфейс содержит только чтение профиля, функция получает его аргументом.",
-        "Правильно различаются успешный результат, отсутствующая запись и пустой id.",
-        "Не читается глобальное хранилище и не заявляется гарантия реальной БД."
+        "WelcomeEasy(repository, id) string компилируется; интерфейс передаётся аргументом.",
+        "«Запустить»: три вызова дают hello:Алия, not_found и invalid_request.",
+        "«Проверить»: закрытые примеры с пустым именем и отсутствующим профилем дают invalid_profile и not_found, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что делает зависимость заменяемой в тесте?",
-          "answer": "Service получает узкий интерфейс параметром; fake может реализовать тот же метод."
-        },
-        {
-          "question": "Что доказывают grader-векторы?",
-          "answer": "Только категории функции при заданных ответах fake repository."
+          "question": "Что вернёт WelcomeEasy для id = \"12\", если профиль найден и его имя «Борис»?",
+          "answer": "hello:Борис: профиль найден, имя не пустое, и результат собирается из приветствия и имени."
         }
       ]
     },
@@ -92,23 +88,19 @@
       ],
       "difficulty": "medium",
       "title": "Use case: переименование и отказ записи",
-      "prompt": "Объяви `ProfileRepositoryMedium` с методами `FindProfile(id string) (name string, found bool)` и `SaveProfile(id, name string) bool`. Реализуй `func RenameProfileMedium(repository ProfileRepositoryMedium, id, newName string) string`: пустой id/имя => `invalid_request`; nil dependency => `dependency_missing`; нет записи => `not_found`; пустое старое имя => `invalid_profile`; имя уже такое же => `unchanged` без записи; неудачный Save => `storage_error`; иначе `updated`. Тестовый fake управляет всеми ответами; bool здесь лишь упрощённый сигнал grader, не замена production error API.",
+      "prompt": "Проверки по порядку; ответ категория:число записей, например updated:1.",
       "starter_file": "main.go",
       "starter_code": "package main\n\ntype ProfileRepositoryMedium interface {\n\tFindProfile(id string) (name string, found bool)\n\tSaveProfile(id, name string) bool\n}\n\nfunc RenameProfileMedium(repository ProfileRepositoryMedium, id, newName string) string {\n\t// Сначала валидируйте, затем прочитайте и примените правило.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"updated:1\"\n\"unchanged:0\"\n\"not_found:0\"",
       "criteria": [
-        "Явно передаётся repository с минимальным read/write контрактом.",
-        "Повтор того же имени не вызывает необходимость записи и даёт unchanged.",
-        "Ошибки валидации, отсутствующей записи и неуспешной записи имеют разные результаты."
+        "RenameProfileMedium(repository, id, newName) string компилируется; запись вызывается только после проверок.",
+        "«Запустить»: три вызова дают updated:1, unchanged:0 и not_found:0.",
+        "«Проверить»: закрытые примеры без репозитория и с неуспешной записью дают dependency_missing:0 и storage_error:1, совпадают."
       ],
       "self_check": [
         {
-          "question": "Почему неизменённое имя проверяется до Save?",
-          "answer": "Чтобы не выполнять побочный эффект, когда состояние уже соответствует запросу."
-        },
-        {
-          "question": "Что упрощено относительно production?",
-          "answer": "Fake возвращает bool; реальная реализация обычно возвращает error и сохраняет причину отказа."
+          "question": "Что вернёт RenameProfileMedium для пустого id?",
+          "answer": "invalid_request:0: ввод не прошёл проверку, поэтому ни чтения, ни записи не было."
         }
       ]
     },
@@ -121,23 +113,19 @@
       ],
       "difficulty": "hard",
       "title": "Две зависимости и частичный отказ",
-      "prompt": "Объяви минимальные интерфейсы `ProfileCreatorHard` (`CreateProfile(name string) bool`) и `AuditSinkHard` (`Record(event string) bool`). Реализуй `func CreateProfileHard(repository ProfileCreatorHard, audit AuditSinkHard, name string) string`: пустое имя => `invalid_request`; nil зависимость => `dependency_missing`; ошибка Create => `create_error`; успешное Create, но ошибка Record => `audit_error_after_create`; оба успеха => `created`. Важен порядок: после сбоя audit профиль уже создан. Не утверждай, что эта функция делает rollback или атомарную операцию; результат fake не доказывает поведение SQL/outbox.",
+      "prompt": "Пустое имя, нет зависимости, отказ создания или аудита — с журналом вызовов.",
       "starter_file": "main.go",
       "starter_code": "package main\n\ntype ProfileCreatorHard interface { CreateProfile(name string) bool }\ntype AuditSinkHard interface { Record(event string) bool }\n\nfunc CreateProfileHard(repository ProfileCreatorHard, audit AuditSinkHard, name string) string {\n\t// Различайте validation, зависимости, сохранение и частичный отказ аудита.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"created:create,audit:profile_created\"\n\"create_error:create\"\n\"audit_error_after_create:create,audit:profile_created\"",
       "criteria": [
-        "Две узкие зависимости передаются явно и вызываются в заданном порядке.",
-        "Невалидный ввод, отсутствие зависимости, отказ создания и отказ аудита различаются.",
-        "Частичный отказ явно сообщает, что создание уже прошло; не заявляется rollback/атомарность."
+        "CreateProfileHard(repository, audit, name) string компилируется; аудит вызывается только после успешного создания.",
+        "«Запустить»: три вызова дают created, create_error и audit_error_after_create с журналом.",
+        "«Проверить»: закрытые примеры с пустым именем и отсутствующим аудитом дают invalid_request: и dependency_missing:, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что произошло при audit_error_after_create?",
-          "answer": "Create уже вернул успех; функция не может утверждать, что профиль откатился."
-        },
-        {
-          "question": "Как проверять реальную атомарность?",
-          "answer": "Отдельным integration test на выбранной БД и транзакционной или outbox реализации."
+          "question": "Что вернёт CreateProfileHard, если CreateProfile вернул false?",
+          "answer": "create_error:create: создание не выполнено, поэтому аудит не вызывается."
         }
       ]
     }
@@ -145,15 +133,27 @@
   "self_check": [
     {
       "question": "Как доказать заменяемость зависимости?",
-      "answer": "Передать fake, реализующий узкий интерфейс, и проверить наблюдаемое поведение сценария."
+      "answer": "Передать вместо настоящей реализации подставную с тем же интерфейсом и проверить результаты и вызовы. Подставная реализация не доказывает работу настоящего хранилища."
     },
     {
       "question": "Что означает частичный отказ двух записей?",
-      "answer": "Первый побочный эффект может сохраниться, даже если второй завершился ошибкой; стратегию восстановления нужно проектировать отдельно."
+      "answer": "Первая запись уже выполнена, а вторая нет. Ответ должен сообщить, что первый эффект произошёл, иначе вызывающий код повторит его."
     },
     {
       "question": "Доказывает ли этот урок корректность HTTP, SQL и транзакций?",
-      "answer": "Нет. Для этого нужен отдельный integration test на фактических адаптерах и конфигурации."
+      "answer": "Нет. Локальные функции проверяют ветки правила и порядок вызовов на подставных зависимостях. HTTP, SQL и транзакции требуют отдельных тестов."
+    },
+    {
+      "question": "Зачем интерфейс делают узким?",
+      "answer": "Узкий интерфейс содержит только нужные сценарию методы. Подставная реализация становится короткой, а зависимость легко заменить."
+    },
+    {
+      "question": "Почему nil-зависимость проверяют явно?",
+      "answer": "Вызов метода у nil-интерфейса приводит к панике. Явная проверка даёт понятную категорию dependency_missing."
+    },
+    {
+      "question": "Почему порядок вызовов важен?",
+      "answer": "Аудит должен писаться после создания: иначе он опишет событие, которого не было."
     }
   ]
 }
