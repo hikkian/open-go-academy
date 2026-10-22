@@ -87,7 +87,7 @@ func main() {
 
 ### Задание 1 · Вынеси проверку в доменный слой
 
-**Цель.** Проверить slug и target и вернуть код категории: `invalid_alias`, `alias_too_long`, `invalid_target`, `unsupported_scheme`, `target_too_long` или пустую строку при успехе. HTTP-статусы не возвращаются.
+**Цель.** Проверить slug и target и вернуть код категории: `invalid_alias`, `invalid_target`, `unsupported_scheme`, `target_too_long` или пустую строку при успехе. HTTP-статусы не возвращаются.
 
 **Ожидаемый вывод** — входы `go` с `https://go.dev/` и `green-2` с `http://example.test/path`:
 
@@ -98,10 +98,10 @@ func main() {
 
 **Шаги.**
 1. Выбери задание «Вынеси проверку в доменный слой»: в файле есть `ValidateLinkInput` с `panic("TODO")`. Добавь импорт `"net/url"`.
-2. Проверь `alias` первым: пустой, длиннее 24 символов или с символами вне строчных латинских букв, цифр и дефиса — `invalid_alias`. Длина больше 24 — `alias_too_long`.
+2. Проверь `alias` первым: пустой, длиннее 24 символов или с символами вне строчных латинских букв, цифр и дефиса — `invalid_alias`.
 3. Если `target` длиннее 2048 байт, верни `target_too_long`.
 4. Разбери `target` через `url.Parse`. Ошибка — `invalid_target`.
-5. Если схема не `http` и не `https`, — `unsupported_scheme`. Если хост пустой или есть `userinfo` или фрагмент, — `invalid_target`.
+5. Пустая схема — `invalid_target`. Схема не `http` и не `https` — `unsupported_scheme`. Пустой хост, `userinfo` или фрагмент — `invalid_target`.
 6. Иначе верни пустую строку.
 7. Нажми «Запустить» и сравни с блоком выше.
 8. Нажми «Проверить».
