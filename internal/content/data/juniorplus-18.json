@@ -59,23 +59,19 @@
       ],
       "difficulty": "easy",
       "title": "Оставь host bind на loopback",
-      "prompt": "Разреши ровно hostname localhost или loopback IP. Отклони 0.0.0.0 и обычные интерфейсы. Helper классифицирует host и не читает весь Compose manifest.",
+      "prompt": "Разреши localhost или loopback IP; 0.0.0.0 и обычные интерфейсы отклоняй.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc IsLoopbackBind(host string) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "IsLoopbackBind(host string) bool компилируется; проверяются localhost и loopback IP.",
+        "«Запустить»: пример 1 и пример 2 дают true и false.",
+        "«Проверить»: закрытые примеры, включая ::1, localhost и приватный адрес сети, совпадают."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "Разреши ровно hostname localhost или loopback IP. Отклони 0.0.0.0 и обычные интерфейсы. Helper классифицирует host и не читает весь Compose manifest."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Почему ::1 тоже считается loopback, хотя это не 127.0.0.1?",
+          "answer": "Это IPv6-адрес обратной петли. Он тоже доступен только с этой машины, поэтому bind на него остаётся локальным."
         }
       ]
     },
@@ -89,23 +85,19 @@
       ],
       "difficulty": "medium",
       "title": "Ограничь cleanup именованным disposable volume",
-      "prompt": "Верни true только при явно disposable проекте и выборе ровно его volume. В остальных случаях false. Это policy helper, не запускающий Docker. Не вызывай общий volume prune для очистки учебных данных.",
+      "prompt": "true только для явно disposable проекта и ровно его volume; иначе false.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc MayRemoveVolume(disposableProject, exactProjectVolume bool) bool {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "true\nfalse",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "MayRemoveVolume(disposableProject, exactProjectVolume bool) bool компилируется; нужны оба условия.",
+        "«Запустить»: пример 1 и пример 2 дают true и false.",
+        "«Проверить»: закрытые примеры, где проект не disposable или volume не выбран точно, дают false."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "Верни true только при явно disposable проекте и выборе ровно его volume. В остальных случаях false. Это policy helper, не запускающий Docker. Не вызывай общий volume prune для очистки учебных данных."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Почему одного disposableProject=true недостаточно для удаления volume?",
+          "answer": "Нужно ещё, чтобы выбран ровно его volume. Иначе общий или чужой том может попасть под очистку."
         }
       ]
     },
@@ -119,51 +111,47 @@
       ],
       "difficulty": "hard",
       "title": "Разбери последовательность старта",
-      "prompt": "DB unhealthy → wait_database; иначе миграция не завершилась → migration_failed; затем unhealthy API → api_unhealthy; ready только при всех true. Функция классифицирует signals, но не проверяет Compose, migration или endpoint.",
+      "prompt": "Сначала база, затем миграции, затем API; ready только когда все три true.",
       "starter_file": "main.go",
       "starter_code": "package main\n\n\nfunc ComposeStartupState(dbHealthy, migrationsApplied, apiHealthy bool) string {\n\t// Точный контракт указан в условии.\n\tpanic(\"TODO\")\n}\n",
       "public_output": "\"wait_database\"\n\"migration_failed\"\n\"api_unhealthy\"\n\"ready\"",
       "criteria": [
-        "Сигнатура и детерминированное поведение совпадают с условием.",
-        "Public и private cases проверяют границы контракта.",
-        "Pure helper не называется проверкой всей базы, Compose, API или assessment."
+        "ComposeStartupState(dbHealthy, migrationsApplied, apiHealthy bool) string компилируется; порядок: база, миграции, API.",
+        "«Запустить»: четыре вызова дают wait_database, migration_failed, api_unhealthy и ready.",
+        "«Проверить»: закрытые примеры — база нездорова и база здорова с API нездоровым — совпадают."
       ],
       "self_check": [
         {
-          "question": "Что именно проверяет эта функция?",
-          "answer": "DB unhealthy → wait_database; иначе миграция не завершилась → migration_failed; затем unhealthy API → api_unhealthy; ready только при всех true. Функция классифицирует signals, но не проверяет Compose, migration или endpoint."
-        },
-        {
-          "question": "Что требуется для полного project evidence?",
-          "answer": "Фактические P2 worker checks и human review по рубрике; это упражнение не подтверждает end-to-end поведение."
+          "question": "Что вернёт ComposeStartupState при dbHealthy=true, migrationsApplied=false и apiHealthy=true?",
+          "answer": "migration_failed: база здорова, но миграции не применены, и эта проверка идёт раньше состояния API."
         }
       ]
     }
   ],
   "self_check": [
     {
-      "question": "Как отличить автоматическое evidence от утверждения?",
-      "answer": "Назовите контракт, конкретный test boundary и остающиеся неизвестными зависимости."
+      "question": "Что означает localhost внутри контейнера приложения?",
+      "answer": "Этот же контейнер, а не соседний сервис db. Соседнюю базу адресуют по имени сервиса в сети Compose."
     },
     {
-      "question": "Где посмотреть фактический P2?",
-      "answer": "В приложении «Проекты → LinkHub API» и в P2 README, OpenAPI, Compose и threat model."
+      "question": "Почему тег postgres:18.6-bookworm без digest не даёт полной воспроизводимости?",
+      "answer": "Тег можно переназначить на другое содержимое. Digest sha256 закрепляет конкретный образ."
     },
     {
-      "question": "Что означает reviewed course evidence?",
-      "answer": "Только проверку требований курса, не профессию, external accreditation или trusted credential."
+      "question": "Что значит публикация 127.0.0.1:8097:8097 в Compose?",
+      "answer": "Порт доступен только через loopback интерфейс host. Публикация на 0.0.0.0 открыла бы его на все интерфейсы."
     },
     {
-      "question": "Что должно оставаться ручным?",
-      "answer": "Читаемость проекта, объяснение компромисса, threat boundary и review security критериев."
+      "question": "Почему depends_on с service_healthy не означает готовность API?",
+      "answer": "Условие ждёт только healthcheck базы через pg_isready. Миграции и HTTP API проверяются отдельно."
     },
     {
-      "question": "Как безопасно повторить проверку?",
-      "answer": "Fresh local/disposable environment, точная команда и результат без секретов и production данных."
+      "question": "Что удаляет очистка тома и почему нельзя вызывать общий prune?",
+      "answer": "Очистка удаляет том данных проекта. Общий prune может удалить чужие тома, поэтому очистка ограничивается именованным disposable volume."
     },
     {
-      "question": "Нужен ли Tutor?",
-      "answer": "Нет, объяснение и критерии доступны самостоятельно."
+      "question": "Что остаётся ручной проверкой после зелёных тестов?",
+      "answer": "Review секретов и порта публикации, решение о безопасности среды и реальный запуск в Docker. Тесты helper этого не доказывают."
     }
   ]
 }
